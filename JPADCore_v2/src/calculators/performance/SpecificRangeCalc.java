@@ -1,30 +1,20 @@
 package calculators.performance;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import javax.measure.quantity.Angle;
+
+import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
+import javax.measure.quantity.Temperature;
 import javax.measure.unit.NonSI;
-import javax.measure.unit.SI;
+
 import org.jscience.physics.amount.Amount;
 
 import aircraft.components.powerplant.PowerPlant;
-import calculators.aerodynamics.DragCalc;
-import calculators.aerodynamics.LiftCalc;
-import calculators.performance.customdata.DragMap;
-import calculators.performance.customdata.ThrustMap;
-import configuration.MyConfiguration;
-import configuration.enumerations.AirfoilTypeEnum;
 import configuration.enumerations.EngineOperatingConditionEnum;
-import configuration.enumerations.EngineTypeEnum;
-import configuration.enumerations.FoldersEnum;
-import database.databasefunctions.engine.EngineDatabaseManager_old;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
-import standaloneutils.atmosphere.AtmosphereCalc;
 import standaloneutils.atmosphere.SpeedCalc;
-import writers.JPADStaticWriteUtils;
 
 /**
  * Class that allows user to evaluate the specific range for different mach numbers.
@@ -60,31 +50,26 @@ public class SpecificRangeCalc {
 	 * @param engineType
 	 * @return
 	 */
-	public static Double[] calculateSfcVsMach(
-			Double[] mach,
-			double altitude,
-			double bpr,
-			EngineTypeEnum engineType,
-			PowerPlant thePowerPlant) {
+	public static double[] calculateSfcVsMach(
+			double[] mach,
+			Amount<Length> altitude,
+			Amount<Temperature> deltaTemperature,
+			double phi,
+			double sfcCorrectionFactor,
+			PowerPlant thePowerPlant
+			) {
 		
-		Double sfcMach[] = new Double[mach.length];
+		double sfcMach[] = new double[mach.length];
 
 		for (int i=0; i<mach.length; i++) {
-			sfcMach[i] = EngineDatabaseManager_old.getSFC(
+			
+			sfcMach[i] = thePowerPlant.getEngineDatabaseReaderList().get(i).getSfc(
 					mach[i],
 					altitude,
-					EngineDatabaseManager_old.getThrustRatio(
-							mach[i],
-							altitude,
-							bpr,
-							engineType,
-							EngineOperatingConditionEnum.CRUISE,
-							thePowerPlant
-							),
-					bpr,
-					engineType,
+					deltaTemperature,
+					phi,
 					EngineOperatingConditionEnum.CRUISE,
-					thePowerPlant
+					sfcCorrectionFactor
 					);
 		}
 		return sfcMach;
@@ -106,34 +91,34 @@ public class SpecificRangeCalc {
 	 * @param engineType
 	 * @return specificRange, an array of the specific range, in [nmi/lb], v.s. Mach at that MTOM 
 	 */
-	public static Double[] calculateSpecificRangeVsMach(
+	public static double[] calculateSpecificRangeVsMach(
 			Amount<Mass> maxTakeOffMass,
-			Double[] mach,
-			Double[] sfc,
-			Double[] efficiency,
-			double altitude,
-			double bpr,
-			double eta,
-			EngineTypeEnum engineType) {
+			double[] mach,
+			double[] sfc,
+			double[] efficiency,
+			Amount<Length> altitude,
+			Amount<Temperature> deltaTemperature
+//			double eta,
+//			EngineTypeEnum engineType
+			) {
 		
-		Double specificRange[] = new Double[mach.length];
+		double specificRange[] = new double[mach.length];
 		
-		if (engineType == EngineTypeEnum.TURBOFAN) {
+//		if (engineType == EngineTypeEnum.TURBOFAN) {
 			
-			Double speed[] = new Double [mach.length];
-			for (int i=0; i<mach.length; i++) {
-				speed[i] = SpeedCalc.calculateTAS(mach[i], altitude);
-				speed[i] = Amount.valueOf(speed[i],SI.METERS_PER_SECOND).to(NonSI.KNOT).getEstimatedValue();
-			}
-			for (int i=0; i<sfc.length; i++)
-				specificRange[i] = ((speed[i]*efficiency[i])/sfc[i])/(maxTakeOffMass.to(NonSI.POUND).getEstimatedValue());
-		}
-		else if(engineType == EngineTypeEnum.TURBOPROP) {
+		double speed[] = new double [mach.length];
+		for (int i=0; i<mach.length; i++) 
+			speed[i] = SpeedCalc.calculateTAS(mach[i], altitude, deltaTemperature).doubleValue(NonSI.KNOT);
+		for (int i=0; i<sfc.length; i++)
+			specificRange[i] = ((speed[i]*efficiency[i])/sfc[i])/(maxTakeOffMass.doubleValue(NonSI.POUND));
 			
-			for (int i=0; i<sfc.length; i++) 
-				// the constant is needed in order to use sfc in lb/(hp*h) and obtain [nmi]/[lbs]
-				specificRange[i] = 325.8640495*(((eta*efficiency[i])/sfc[i])/(maxTakeOffMass.to(NonSI.POUND).getEstimatedValue()));
-		}
+//		}
+//		else if(engineType == EngineTypeEnum.TURBOPROP) {
+//			
+//			for (int i=0; i<sfc.length; i++) 
+//				// the constant is needed in order to use sfc in lb/(hp*h) and obtain [nmi]/[lbs]
+//				specificRange[i] = 325.8640495*(((eta*efficiency[i])/sfc[i])/(maxTakeOffMass.doubleValue(NonSI.POUND)));
+//		}
 		
 		return specificRange;
 	}
@@ -220,40 +205,38 @@ public class SpecificRangeCalc {
 			List<Double[]> sfc,
 			List<Double[]> mach,
 			List<String> legend,
-			EngineTypeEnum engineType,
+			String performanceFolderPath,
+//			EngineTypeEnum engineType,
 			boolean createCSV) throws InstantiationException, IllegalAccessException {
 		
 		System.out.println("\n-----------WRITING SFC v.s. MACH CHART TO FILE-------------");
 		
-		String folderPath = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR);
-		String subfolderPath = JPADStaticWriteUtils.createNewFolder(folderPath + "SpecificRange" + File.separator);
-	
 		// check on mach list elements
 		if(mach.size() == sfc.size()+2) {
 			mach.remove(mach.size()-1);
 			mach.remove(mach.size()-1);
 		}
 		
-		if(engineType == EngineTypeEnum.TURBOFAN )
-			MyChartToFileUtils.plot(
-					mach, sfc,
-					"SFC v.s. Mach", "Mach", "SFC",
-					null, null, null, null,
-					"", "lb/(lb*h)",
-					true, legend,
-					subfolderPath, "SFC",
-					createCSV
-					);
-		else if(engineType == EngineTypeEnum.TURBOPROP)
-			MyChartToFileUtils.plot(
-					mach, sfc,
-					"SFC v.s. Mach", "Mach", "SFC",
-					null, null, null, null,
-					"", "lb/(hp*h)",
-					true, legend,
-					subfolderPath, "SFC",
-					createCSV
-					);  
+//		if(engineType == EngineTypeEnum.TURBOFAN )
+		MyChartToFileUtils.plot(
+				mach, sfc,
+				"SFC v.s. Mach", "Mach", "SFC",
+				null, null, null, null,
+				"", "lb/(lb*h)",
+				true, legend,
+				performanceFolderPath, "SFC",
+				createCSV
+				);
+//		else if(engineType == EngineTypeEnum.TURBOPROP)
+//			MyChartToFileUtils.plot(
+//					mach, sfc,
+//					"SFC v.s. Mach", "Mach", "SFC",
+//					null, null, null, null,
+//					"", "lb/(hp*h)",
+//					true, legend,
+//					subfolderPath, "SFC",
+//					createCSV
+//					);  
 	}
 	
 	//--------------------------------------------------------------------------------------

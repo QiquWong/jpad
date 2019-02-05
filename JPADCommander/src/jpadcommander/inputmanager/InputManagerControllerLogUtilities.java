@@ -19,6 +19,9 @@ import aircraft.components.powerplant.Engine;
 import configuration.enumerations.ClassTypeEnum;
 import configuration.enumerations.FlapTypeEnum;
 import configuration.enumerations.WindshieldTypeEnum;
+import it.unina.daf.jpadcad.occ.OCCUtils.FileExtension;
+import it.unina.daf.jpadcad.utils.AircraftCADUtils.WingTipType;
+import it.unina.daf.jpadcad.utils.AircraftCADUtils.XSpacingType;
 import jpadcommander.Main;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyXMLReaderUtils;
@@ -323,7 +326,7 @@ public class InputManagerControllerLogUtilities {
 
 			if(Main.getTheAircraft()
 					.getWing()
-					.getRiggingAngle().getUnit().toString().equalsIgnoreCase("°")
+					.getRiggingAngle().getUnit().toString().equalsIgnoreCase("ï¿½")
 					|| Main.getTheAircraft()
 					.getWing()
 					.getRiggingAngle().getUnit().toString().equalsIgnoreCase("deg"))
@@ -447,7 +450,7 @@ public class InputManagerControllerLogUtilities {
 
 			if(Main.getTheAircraft()
 					.getHTail()
-					.getRiggingAngle().getUnit().toString().equalsIgnoreCase("°")
+					.getRiggingAngle().getUnit().toString().equalsIgnoreCase("ï¿½")
 					|| Main.getTheAircraft()
 					.getHTail()
 					.getRiggingAngle().getUnit().toString().equalsIgnoreCase("deg"))
@@ -571,7 +574,7 @@ public class InputManagerControllerLogUtilities {
 
 			if(Main.getTheAircraft()
 					.getVTail()
-					.getRiggingAngle().getUnit().toString().equalsIgnoreCase("°")
+					.getRiggingAngle().getUnit().toString().equalsIgnoreCase("ï¿½")
 					|| Main.getTheAircraft()
 					.getVTail()
 					.getRiggingAngle().getUnit().toString().equalsIgnoreCase("deg"))
@@ -695,7 +698,7 @@ public class InputManagerControllerLogUtilities {
 
 			if(Main.getTheAircraft()
 					.getCanard()
-					.getRiggingAngle().getUnit().toString().equalsIgnoreCase("°")
+					.getRiggingAngle().getUnit().toString().equalsIgnoreCase("ï¿½")
 					|| Main.getTheAircraft()
 					.getCanard()
 					.getRiggingAngle().getUnit().toString().equalsIgnoreCase("deg"))
@@ -848,7 +851,7 @@ public class InputManagerControllerLogUtilities {
 									)
 							);
 					if(Main.getTheAircraft().getPowerPlant().getEngineList().get(i)
-							.getTiltingAngle().getUnit().toString().equalsIgnoreCase("°")
+							.getTiltingAngle().getUnit().toString().equalsIgnoreCase("ï¿½")
 							|| Main.getTheAircraft().getPowerPlant().getEngineList().get(i)
 							.getTiltingAngle().getUnit().toString().equalsIgnoreCase("deg"))
 						theController.getChoiceBoxAircraftEngineTiltUnitList().get(i).getSelectionModel().select(0);
@@ -1766,7 +1769,7 @@ public class InputManagerControllerLogUtilities {
 						String.valueOf(currentSpoiler.getMinimumDeflection().getEstimatedValue())
 						);
 				
-				if(currentSpoiler.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("°")
+				if(currentSpoiler.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("ï¿½")
 						|| currentSpoiler.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("deg"))
 					theController.getChoiceBoxFuselageMinimumDeflectionAngleSpoilerUnitList().get(i).getSelectionModel().select(0);
 				else if(currentSpoiler.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("rad"))
@@ -1786,7 +1789,7 @@ public class InputManagerControllerLogUtilities {
 						String.valueOf(currentSpoiler.getMaximumDeflection().getEstimatedValue())
 						);
 				
-				if(currentSpoiler.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("°")
+				if(currentSpoiler.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("ï¿½")
 						|| currentSpoiler.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("deg"))
 					theController.getChoiceBoxFuselageMaximumDeflectionAngleSpoilerUnitList().get(i).getSelectionModel().select(0);
 				else if(currentSpoiler.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("rad"))
@@ -1814,28 +1817,16 @@ public class InputManagerControllerLogUtilities {
 
 			//---------------------------------------------------------------------------------
 			// ACTUAL PASSENGERS NUMBER:
-			if(Integer.valueOf(Main.getTheAircraft().getCabinConfiguration().getActualPassengerNumber()) != null) 
+			if(Integer.valueOf(Main.getTheAircraft().getCabinConfiguration().getDesignPassengerNumber()) != null) 
 				theController.getTextFieldActualPassengersNumber().setText(
 					Integer.toString(
 							Main.getTheAircraft()
 							.getCabinConfiguration()
-							.getActualPassengerNumber()
+							.getDesignPassengerNumber()
 							)
 					);
 			else
 				theController.getTextFieldActualPassengersNumber().setText("0");
-			//---------------------------------------------------------------------------------
-			// MAXIMUM PASSENGERS NUMBER:
-			if(Integer.valueOf(Main.getTheAircraft().getCabinConfiguration().getMaximumPassengerNumber()) != null)
-				theController.getTextFieldMaximumPassengersNumber().setText(
-						Integer.toString(
-								Main.getTheAircraft()
-								.getCabinConfiguration()
-								.getMaximumPassengerNumber()
-								)
-						);
-			else
-				theController.getTextFieldMaximumPassengersNumber().setText("0");
 			//---------------------------------------------------------------------------------
 			// FLIGHT CREW NUMBER:
 			if(Integer.valueOf(Main.getTheAircraft().getCabinConfiguration().getFlightCrewNumber()) != null)
@@ -2457,11 +2448,11 @@ public class InputManagerControllerLogUtilities {
 				
 				if(Main.getTheAircraft()
 						.getWing()
-						.getSurfacePlanform().getUnit().toString().equalsIgnoreCase("m²"))
+						.getSurfacePlanform().getUnit().toString().equalsIgnoreCase("mï¿½"))
 					theController.getEquivalentWingAreaUnitChoiceBox().getSelectionModel().select(0);
 				else if(Main.getTheAircraft()
 						.getWing()
-						.getSurfacePlanform().getUnit().toString().equalsIgnoreCase("ft²"))
+						.getSurfacePlanform().getUnit().toString().equalsIgnoreCase("ftï¿½"))
 					theController.getEquivalentWingAreaUnitChoiceBox().getSelectionModel().select(1);
 				
 			}
@@ -2525,7 +2516,7 @@ public class InputManagerControllerLogUtilities {
 				
 				if(Main.getTheAircraft()
 						.getWing().getEquivalentWing().getPanels().get(0)
-						.getSweepLeadingEdge().getUnit().toString().equalsIgnoreCase("°")
+						.getSweepLeadingEdge().getUnit().toString().equalsIgnoreCase("ï¿½")
 						|| Main.getTheAircraft()
 						.getWing().getEquivalentWing().getPanels().get(0)
 						.getSweepLeadingEdge().getUnit().toString().equalsIgnoreCase("deg"))
@@ -2559,7 +2550,7 @@ public class InputManagerControllerLogUtilities {
 				
 				if(Main.getTheAircraft()
 						.getWing().getEquivalentWing().getPanels().get(0)
-						.getTwistAerodynamicAtTip().getUnit().toString().equalsIgnoreCase("°")
+						.getTwistAerodynamicAtTip().getUnit().toString().equalsIgnoreCase("ï¿½")
 						|| Main.getTheAircraft()
 						.getWing().getEquivalentWing().getPanels().get(0)
 						.getTwistAerodynamicAtTip().getUnit().toString().equalsIgnoreCase("deg"))
@@ -2593,7 +2584,7 @@ public class InputManagerControllerLogUtilities {
 				
 				if(Main.getTheAircraft()
 						.getWing().getEquivalentWing().getPanels().get(0)
-						.getDihedral().getUnit().toString().equalsIgnoreCase("°")
+						.getDihedral().getUnit().toString().equalsIgnoreCase("ï¿½")
 						|| Main.getTheAircraft()
 						.getWing().getEquivalentWing().getPanels().get(0)
 						.getDihedral().getUnit().toString().equalsIgnoreCase("deg"))
@@ -2804,7 +2795,7 @@ public class InputManagerControllerLogUtilities {
 							String.valueOf(currentPanel.getSweepLeadingEdge().getEstimatedValue())
 							);
 					
-					if(currentPanel.getSweepLeadingEdge().getUnit().toString().equalsIgnoreCase("°")
+					if(currentPanel.getSweepLeadingEdge().getUnit().toString().equalsIgnoreCase("ï¿½")
 							|| currentPanel.getSweepLeadingEdge().getUnit().toString().equalsIgnoreCase("deg"))
 						theController.getChoiceBoxWingSweepLEPanelUnitList().get(i).getSelectionModel().select(0);
 					else if(currentPanel.getSweepLeadingEdge().getUnit().toString().equalsIgnoreCase("rad"))
@@ -2824,7 +2815,7 @@ public class InputManagerControllerLogUtilities {
 							String.valueOf(currentPanel.getDihedral().getEstimatedValue())
 							);
 					
-					if(currentPanel.getDihedral().getUnit().toString().equalsIgnoreCase("°")
+					if(currentPanel.getDihedral().getUnit().toString().equalsIgnoreCase("ï¿½")
 							|| currentPanel.getDihedral().getUnit().toString().equalsIgnoreCase("deg"))
 						theController.getChoiceBoxWingDihedralPanelUnitList().get(i).getSelectionModel().select(0);
 					else if(currentPanel.getDihedral().getUnit().toString().equalsIgnoreCase("rad"))
@@ -2863,7 +2854,7 @@ public class InputManagerControllerLogUtilities {
 							String.valueOf(currentPanel.getTwistGeometricRoot().getEstimatedValue())
 							);
 					
-					if(currentPanel.getTwistGeometricRoot().getUnit().toString().equalsIgnoreCase("°")
+					if(currentPanel.getTwistGeometricRoot().getUnit().toString().equalsIgnoreCase("ï¿½")
 							|| currentPanel.getTwistGeometricRoot().getUnit().toString().equalsIgnoreCase("deg"))
 						theController.getChoiceBoxWingInnerTwistPanelUnitList().get(i).getSelectionModel().select(0);
 					else if(currentPanel.getTwistGeometricRoot().getUnit().toString().equalsIgnoreCase("rad"))
@@ -2915,7 +2906,7 @@ public class InputManagerControllerLogUtilities {
 							String.valueOf(currentPanel.getTwistGeometricAtTip().getEstimatedValue())
 							);
 					
-					if(currentPanel.getTwistGeometricAtTip().getUnit().toString().equalsIgnoreCase("°")
+					if(currentPanel.getTwistGeometricAtTip().getUnit().toString().equalsIgnoreCase("ï¿½")
 							|| currentPanel.getTwistGeometricAtTip().getUnit().toString().equalsIgnoreCase("deg"))
 						theController.getChoiceBoxWingOuterTwistPanelUnitList().get(i).getSelectionModel().select(0);
 					else if(currentPanel.getTwistGeometricAtTip().getUnit().toString().equalsIgnoreCase("rad"))
@@ -3033,7 +3024,7 @@ public class InputManagerControllerLogUtilities {
 							String.valueOf(currentFlap.getMinimumDeflection().getEstimatedValue())
 							);
 					
-					if(currentFlap.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("°")
+					if(currentFlap.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("ï¿½")
 							|| currentFlap.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("deg"))
 						theController.getChoiceBoxWingMinimumDeflectionAngleFlapUnitList().get(i).getSelectionModel().select(0);
 					else if(currentFlap.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("rad"))
@@ -3053,7 +3044,7 @@ public class InputManagerControllerLogUtilities {
 							String.valueOf(currentFlap.getMaximumDeflection().getEstimatedValue())
 							);
 					
-					if(currentFlap.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("°")
+					if(currentFlap.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("ï¿½")
 							|| currentFlap.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("deg"))
 						theController.getChoiceBoxWingMaximumDeflectionAngleFlapUnitList().get(i).getSelectionModel().select(0);
 					else if(currentFlap.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("rad"))
@@ -3154,7 +3145,7 @@ public class InputManagerControllerLogUtilities {
 							String.valueOf(currentSlat.getMinimumDeflection().getEstimatedValue())
 							);
 					
-					if(currentSlat.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("°")
+					if(currentSlat.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("ï¿½")
 							|| currentSlat.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("deg"))
 						theController.getChoiceBoxWingMinimumDeflectionAngleSlatUnitList().get(i).getSelectionModel().select(0);
 					else if(currentSlat.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("rad"))
@@ -3174,7 +3165,7 @@ public class InputManagerControllerLogUtilities {
 							String.valueOf(currentSlat.getMaximumDeflection().getEstimatedValue())
 							);
 					
-					if(currentSlat.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("°")
+					if(currentSlat.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("ï¿½")
 							|| currentSlat.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("deg"))
 						theController.getChoiceBoxWingMaximumDeflectionAngleSlatUnitList().get(i).getSelectionModel().select(0);
 					else if(currentSlat.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("rad"))
@@ -3188,205 +3179,320 @@ public class InputManagerControllerLogUtilities {
 				
 			}
 			
+//			//---------------------------------------------------------------------------------
+//			// LEFT AILERONS:
+//
+//			AsymmetricFlapCreator leftAileron = Main.getTheAircraft().getWing().getAsymmetricFlaps().get(0);
+//
+//			//---------------------------------------------------------------------------------
+//			// TYPE:
+//			if(leftAileron.getType() != null) {
+//				if(leftAileron.getType().equals(FlapTypeEnum.PLAIN))
+//					theController.getWingAileron1TypeChoiceBox().getSelectionModel().select(0);
+//			}
+//			
+//			//---------------------------------------------------------------------------------
+//			// INNER POSITION:
+//			if(Double.valueOf(leftAileron.getInnerStationSpanwisePosition()) != null) {
+//				theController.getTextFieldWingInnerPositionAileron1().setText(
+//						String.valueOf(leftAileron.getInnerStationSpanwisePosition())
+//						);
+//			}
+//			else
+//				theController.getTextFieldWingInnerPositionAileron1().setText(
+//						"NOT INITIALIZED"
+//						);
+//
+//			//---------------------------------------------------------------------------------
+//			// OUTER POSITION:
+//			if(Double.valueOf(leftAileron.getOuterStationSpanwisePosition()) != null) {
+//				theController.getTextFieldWingOuterPositionAileron1().setText(
+//						String.valueOf(leftAileron.getOuterStationSpanwisePosition())
+//						);
+//			}
+//			else
+//				theController.getTextFieldWingOuterPositionAileron1().setText(
+//						"NOT INITIALIZED"
+//						);
+//
+//			//---------------------------------------------------------------------------------
+//			// INNER CHORD RATIO:
+//			if(Double.valueOf(leftAileron.getInnerChordRatio()) != null) {
+//				theController.getTextFieldWingInnerChordRatioAileron1().setText(
+//						String.valueOf(leftAileron.getInnerChordRatio())
+//						);
+//			}
+//			else
+//				theController.getTextFieldWingInnerChordRatioAileron1().setText(
+//						"NOT INITIALIZED"
+//						);
+//
+//			//---------------------------------------------------------------------------------
+//			// OUTER CHORD RATIO:
+//			if(Double.valueOf(leftAileron.getOuterChordRatio()) != null) {
+//				theController.getTextFieldWingOuterChordRatioAileron1().setText(
+//						String.valueOf(leftAileron.getOuterChordRatio())
+//						);
+//			}
+//			else
+//				theController.getTextFieldWingOuterChordRatioAileron1().setText(
+//						"NOT INITIALIZED"
+//						);
+//
+//			//---------------------------------------------------------------------------------
+//			// MINIMUM DEFLECTION:
+//			if(leftAileron.getMinimumDeflection() != null) {
+//
+//				theController.getTextFieldWingMinimumDeflectionAngleAileron1().setText(
+//						String.valueOf(leftAileron.getMinimumDeflection().getEstimatedValue())
+//						);
+//
+//				if(leftAileron.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("ï¿½")
+//						|| leftAileron.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("deg"))
+//					theController.getWingMinimumDeflectionAngleAileron1UnitChoiceBox().getSelectionModel().select(0);
+//				else if(leftAileron.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("rad"))
+//					theController.getWingMinimumDeflectionAngleAileron1UnitChoiceBox().getSelectionModel().select(1);
+//
+//			}
+//			else
+//				theController.getTextFieldWingMinimumDeflectionAngleAileron1().setText(
+//						"NOT INITIALIZED"
+//						);
+//
+//			//---------------------------------------------------------------------------------
+//			// MAXIMUM DEFLECTION:
+//			if(leftAileron.getMaximumDeflection() != null) {
+//
+//				theController.getTextFieldWingMaximumDeflectionAngleAileron1().setText(
+//						String.valueOf(leftAileron.getMaximumDeflection().getEstimatedValue())
+//						);
+//
+//				if(leftAileron.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("ï¿½")
+//						|| leftAileron.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("deg"))
+//					theController.getWingMaximumDeflectionAngleAileron1UnitChoiceBox().getSelectionModel().select(0);
+//				else if(leftAileron.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("rad"))
+//					theController.getWingMaximumDeflectionAngleAileron1UnitChoiceBox().getSelectionModel().select(1);
+//
+//			}
+//			else
+//				theController.getTextFieldWingMaximumDeflectionAngleAileron1().setText(
+//						"NOT INITIALIZED"
+//						);
+//
+//			//---------------------------------------------------------------------------------
+//			// RIGHT AILERONS:
+//
+//			AsymmetricFlapCreator rightAileron = Main.getTheAircraft().getWing().getAsymmetricFlaps().get(1);
+//
+//			//---------------------------------------------------------------------------------
+//			// TYPE:
+//			if(rightAileron.getType() != null) {
+//				if(rightAileron.getType().equals(FlapTypeEnum.PLAIN))
+//					theController.getWingRightAileronTypeChoichBox().getSelectionModel().select(0);
+//			}
+//			
+//			//---------------------------------------------------------------------------------
+//			// INNER POSITION:
+//			if(Double.valueOf(rightAileron.getInnerStationSpanwisePosition()) != null) {
+//				theController.getTextFieldWingInnerPositionAileronRight().setText(
+//						String.valueOf(rightAileron.getInnerStationSpanwisePosition())
+//						);
+//			}
+//			else
+//				theController.getTextFieldWingInnerPositionAileronRight().setText(
+//						"NOT INITIALIZED"
+//						);
+//
+//			//---------------------------------------------------------------------------------
+//			// OUTER POSITION:
+//			if(Double.valueOf(rightAileron.getOuterStationSpanwisePosition()) != null) {
+//				theController.getTextFieldWingOuterPositionAileronRight().setText(
+//						String.valueOf(rightAileron.getOuterStationSpanwisePosition())
+//						);
+//			}
+//			else
+//				theController.getTextFieldWingOuterPositionAileronRight().setText(
+//						"NOT INITIALIZED"
+//						);
+//
+//			//---------------------------------------------------------------------------------
+//			// INNER CHORD RATIO:
+//			if(Double.valueOf(rightAileron.getInnerChordRatio()) != null) {
+//				theController.getTextFieldWingInnerChordRatioAileronRight().setText(
+//						String.valueOf(rightAileron.getInnerChordRatio())
+//						);
+//			}
+//			else
+//				theController.getTextFieldWingInnerChordRatioAileronRight().setText(
+//						"NOT INITIALIZED"
+//						);
+//
+//			//---------------------------------------------------------------------------------
+//			// OUTER CHORD RATIO:
+//			if(Double.valueOf(rightAileron.getOuterChordRatio()) != null) {
+//				theController.getTextFieldWingOuterChordRatioAileronRight().setText(
+//						String.valueOf(rightAileron.getOuterChordRatio())
+//						);
+//			}
+//			else
+//				theController.getTextFieldWingOuterChordRatioAileronRight().setText(
+//						"NOT INITIALIZED"
+//						);
+//
+//			//---------------------------------------------------------------------------------
+//			// MINIMUM DEFLECTION:
+//			if(rightAileron.getMinimumDeflection() != null) {
+//
+//				theController.getTextFieldWingMinimumDeflectionAngleAileronRight().setText(
+//						String.valueOf(rightAileron.getMinimumDeflection().getEstimatedValue())
+//						);
+//
+//				if(rightAileron.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("ï¿½")
+//						|| rightAileron.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("deg"))
+//					theController.getWingMinimumDeflectionAngleAileronRigthUnitChoiceBox().getSelectionModel().select(0);
+//				else if(rightAileron.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("rad"))
+//					theController.getWingMinimumDeflectionAngleAileronRigthUnitChoiceBox().getSelectionModel().select(1);
+//
+//			}
+//			else
+//				theController.getTextFieldWingMinimumDeflectionAngleAileronRight().setText(
+//						"NOT INITIALIZED"
+//						);
+//
+//			//---------------------------------------------------------------------------------
+//			// MAXIMUM DEFLECTION:
+//			if(rightAileron.getMaximumDeflection() != null) {
+//
+//				theController.getTextFieldWingMaximumDeflectionAngleAileronRight().setText(
+//						String.valueOf(rightAileron.getMaximumDeflection().getEstimatedValue())
+//						);
+//
+//				if(rightAileron.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("ï¿½")
+//						|| rightAileron.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("deg"))
+//					theController.getWingMaximumDeflectionAngleAileronRightUnitChoiceBox().getSelectionModel().select(0);
+//				else if(rightAileron.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("rad"))
+//					theController.getWingMaximumDeflectionAngleAileronRightUnitChoiceBox().getSelectionModel().select(1);
+//
+//			}
+//			else
+//				theController.getTextFieldWingMaximumDeflectionAngleAileronRight().setText(
+//						"NOT INITIALIZED"
+//						);
+			
 			//---------------------------------------------------------------------------------
-			// LEFT AILERONS:
-
-			AsymmetricFlapCreator leftAileron = Main.getTheAircraft().getWing().getAsymmetricFlaps().get(0);
-
-			//---------------------------------------------------------------------------------
-			// TYPE:
-			if(leftAileron.getType() != null) {
-				if(leftAileron.getType().equals(FlapTypeEnum.PLAIN))
-					theController.getWingLeftAileronTypeChoichBox().getSelectionModel().select(0);
+			// AILERONS NUMBER CHECK:
+			if (Main.getTheAircraft().getWing().getAsymmetricFlaps().size() >= 
+					theController.getTabPaneWingAilerons().getTabs().size()) {
+				
+				int iStart = theController.getTabPaneWingAilerons().getTabs().size();
+				
+				for(int i=iStart; i<Main.getTheAircraft().getWing().getAsymmetricFlaps().size(); i++)
+					theController.addAileron();
+				
 			}
 			
 			//---------------------------------------------------------------------------------
-			// INNER POSITION:
-			if(Double.valueOf(leftAileron.getInnerStationSpanwisePosition()) != null) {
-				theController.getTextFieldWingInnerPositionAileronLeft().setText(
-						String.valueOf(leftAileron.getInnerStationSpanwisePosition())
-						);
+			// LOOP OVER AILERONS:
+			for (int i=0; i<Main.getTheAircraft().getWing().getAsymmetricFlaps().size(); i++) {
+				
+				AsymmetricFlapCreator currentAileron = Main.getTheAircraft().getWing().getAsymmetricFlaps().get(i);
+				
+				//---------------------------------------------------------------------------------
+				// TYPE:
+				if(currentAileron.getType() != null) {					
+					if(currentAileron.getType().equals(FlapTypeEnum.PLAIN))
+						theController.getChoiceBoxWingAileronTypeList().get(i).getSelectionModel().select(0);					
+				}
+				
+				//---------------------------------------------------------------------------------
+				// INNER POSITION:
+				if(Double.valueOf(currentAileron.getInnerStationSpanwisePosition()) != null) {
+					theController.getTextFieldWingInnerPositionAileronList().get(i).setText(
+							String.valueOf(currentAileron.getInnerStationSpanwisePosition())
+							);
+				}
+				else
+					theController.getTextFieldWingInnerPositionAileronList().get(i).setText(
+							"NOT INITIALIZED"
+							);
+				
+				//---------------------------------------------------------------------------------
+				// OUTER POSITION:
+				if(Double.valueOf(currentAileron.getOuterStationSpanwisePosition()) != null) {
+					theController.getTextFieldWingOuterPositionAileronList().get(i).setText(
+							String.valueOf(currentAileron.getOuterStationSpanwisePosition())
+							);
+				}
+				else
+					theController.getTextFieldWingOuterPositionAileronList().get(i).setText(
+							"NOT INITIALIZED"
+							);
+				
+				//---------------------------------------------------------------------------------
+				// INNER CHORD RATIO:
+				if(Double.valueOf(currentAileron.getInnerChordRatio()) != null) {
+					theController.getTextFieldWingInnerChordRatioAileronList().get(i).setText(
+							String.valueOf(currentAileron.getInnerChordRatio())
+							);
+				}
+				else
+					theController.getTextFieldWingInnerChordRatioAileronList().get(i).setText(
+							"NOT INITIALIZED"
+							);
+				
+				//---------------------------------------------------------------------------------
+				// OUTER CHORD RATIO:
+				if(Double.valueOf(currentAileron.getOuterChordRatio())!= null) {
+					theController.getTextFieldWingOuterChordRatioAileronList().get(i).setText(
+							String.valueOf(currentAileron.getOuterChordRatio())
+							);
+				}
+				else
+					theController.getTextFieldWingOuterChordRatioAileronList().get(i).setText(
+							"NOT INITIALIZED"
+							);
+				
+				//---------------------------------------------------------------------------------
+				// MINIMUM DEFLECTION:
+				if(currentAileron.getMinimumDeflection() != null) {
+					
+					theController.getTextFieldWingMinimumDeflectionAngleAileronList().get(i).setText(
+							String.valueOf(currentAileron.getMinimumDeflection().getEstimatedValue())
+							);
+					
+					if(currentAileron.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("ï¿½")
+							|| currentAileron.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("deg"))
+						theController.getChoiceBoxWingMinimumDeflectionAngleAileronUnitList().get(i).getSelectionModel().select(0);
+					else if(currentAileron.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("rad"))
+						theController.getChoiceBoxWingMinimumDeflectionAngleAileronUnitList().get(i).getSelectionModel().select(1);
+					
+				}
+				else
+					theController.getTextFieldWingMinimumDeflectionAngleAileronList().get(i).setText(
+							"NOT INITIALIZED"
+							);
+				
+				//---------------------------------------------------------------------------------
+				// MAXIMUM DEFLECTION:
+				if(currentAileron.getMaximumDeflection() != null) {
+					
+					theController.getTextFieldWingMaximumDeflectionAngleAileronList().get(i).setText(
+							String.valueOf(currentAileron.getMaximumDeflection().getEstimatedValue())
+							);
+					
+					if(currentAileron.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("ï¿½")
+							|| currentAileron.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("deg"))
+						theController.getChoiceBoxWingMaximumDeflectionAngleAileronUnitList().get(i).getSelectionModel().select(0);
+					else if(currentAileron.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("rad"))
+						theController.getChoiceBoxWingMaximumDeflectionAngleAileronUnitList().get(i).getSelectionModel().select(1);
+					
+				}
+				else
+					theController.getTextFieldWingMaximumDeflectionAngleAileronList().get(i).setText(
+							"NOT INITIALIZED"
+							);
+				
 			}
-			else
-				theController.getTextFieldWingInnerPositionAileronLeft().setText(
-						"NOT INITIALIZED"
-						);
-
-			//---------------------------------------------------------------------------------
-			// OUTER POSITION:
-			if(Double.valueOf(leftAileron.getOuterStationSpanwisePosition()) != null) {
-				theController.getTextFieldWingOuterPositionAileronLeft().setText(
-						String.valueOf(leftAileron.getOuterStationSpanwisePosition())
-						);
-			}
-			else
-				theController.getTextFieldWingOuterPositionAileronLeft().setText(
-						"NOT INITIALIZED"
-						);
-
-			//---------------------------------------------------------------------------------
-			// INNER CHORD RATIO:
-			if(Double.valueOf(leftAileron.getInnerChordRatio()) != null) {
-				theController.getTextFieldWingInnerChordRatioAileronLeft().setText(
-						String.valueOf(leftAileron.getInnerChordRatio())
-						);
-			}
-			else
-				theController.getTextFieldWingInnerChordRatioAileronLeft().setText(
-						"NOT INITIALIZED"
-						);
-
-			//---------------------------------------------------------------------------------
-			// OUTER CHORD RATIO:
-			if(Double.valueOf(leftAileron.getOuterChordRatio()) != null) {
-				theController.getTextFieldWingOuterChordRatioAileronLeft().setText(
-						String.valueOf(leftAileron.getOuterChordRatio())
-						);
-			}
-			else
-				theController.getTextFieldWingOuterChordRatioAileronLeft().setText(
-						"NOT INITIALIZED"
-						);
-
-			//---------------------------------------------------------------------------------
-			// MINIMUM DEFLECTION:
-			if(leftAileron.getMinimumDeflection() != null) {
-
-				theController.getTextFieldWingMinimumDeflectionAngleAileronLeft().setText(
-						String.valueOf(leftAileron.getMinimumDeflection().getEstimatedValue())
-						);
-
-				if(leftAileron.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("°")
-						|| leftAileron.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("deg"))
-					theController.getWingMinimumDeflectionAngleAileronLeftUnitChoiceBox().getSelectionModel().select(0);
-				else if(leftAileron.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("rad"))
-					theController.getWingMinimumDeflectionAngleAileronLeftUnitChoiceBox().getSelectionModel().select(1);
-
-			}
-			else
-				theController.getTextFieldWingMinimumDeflectionAngleAileronLeft().setText(
-						"NOT INITIALIZED"
-						);
-
-			//---------------------------------------------------------------------------------
-			// MAXIMUM DEFLECTION:
-			if(leftAileron.getMaximumDeflection() != null) {
-
-				theController.getTextFieldWingMaximumDeflectionAngleAileronLeft().setText(
-						String.valueOf(leftAileron.getMaximumDeflection().getEstimatedValue())
-						);
-
-				if(leftAileron.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("°")
-						|| leftAileron.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("deg"))
-					theController.getWingMaximumDeflectionAngleAileronLeftUnitChoiceBox().getSelectionModel().select(0);
-				else if(leftAileron.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("rad"))
-					theController.getWingMaximumDeflectionAngleAileronLeftUnitChoiceBox().getSelectionModel().select(1);
-
-			}
-			else
-				theController.getTextFieldWingMaximumDeflectionAngleAileronLeft().setText(
-						"NOT INITIALIZED"
-						);
-
-			//---------------------------------------------------------------------------------
-			// RIGHT AILERONS:
-
-			AsymmetricFlapCreator rightAileron = Main.getTheAircraft().getWing().getAsymmetricFlaps().get(1);
-
-			//---------------------------------------------------------------------------------
-			// TYPE:
-			if(rightAileron.getType() != null) {
-				if(rightAileron.getType().equals(FlapTypeEnum.PLAIN))
-					theController.getWingRightAileronTypeChoichBox().getSelectionModel().select(0);
-			}
-			
-			//---------------------------------------------------------------------------------
-			// INNER POSITION:
-			if(Double.valueOf(rightAileron.getInnerStationSpanwisePosition()) != null) {
-				theController.getTextFieldWingInnerPositionAileronRight().setText(
-						String.valueOf(rightAileron.getInnerStationSpanwisePosition())
-						);
-			}
-			else
-				theController.getTextFieldWingInnerPositionAileronRight().setText(
-						"NOT INITIALIZED"
-						);
-
-			//---------------------------------------------------------------------------------
-			// OUTER POSITION:
-			if(Double.valueOf(rightAileron.getOuterStationSpanwisePosition()) != null) {
-				theController.getTextFieldWingOuterPositionAileronRight().setText(
-						String.valueOf(rightAileron.getOuterStationSpanwisePosition())
-						);
-			}
-			else
-				theController.getTextFieldWingOuterPositionAileronRight().setText(
-						"NOT INITIALIZED"
-						);
-
-			//---------------------------------------------------------------------------------
-			// INNER CHORD RATIO:
-			if(Double.valueOf(rightAileron.getInnerChordRatio()) != null) {
-				theController.getTextFieldWingInnerChordRatioAileronRight().setText(
-						String.valueOf(rightAileron.getInnerChordRatio())
-						);
-			}
-			else
-				theController.getTextFieldWingInnerChordRatioAileronRight().setText(
-						"NOT INITIALIZED"
-						);
-
-			//---------------------------------------------------------------------------------
-			// OUTER CHORD RATIO:
-			if(Double.valueOf(rightAileron.getOuterChordRatio()) != null) {
-				theController.getTextFieldWingOuterChordRatioAileronRight().setText(
-						String.valueOf(rightAileron.getOuterChordRatio())
-						);
-			}
-			else
-				theController.getTextFieldWingOuterChordRatioAileronRight().setText(
-						"NOT INITIALIZED"
-						);
-
-			//---------------------------------------------------------------------------------
-			// MINIMUM DEFLECTION:
-			if(rightAileron.getMinimumDeflection() != null) {
-
-				theController.getTextFieldWingMinimumDeflectionAngleAileronRight().setText(
-						String.valueOf(rightAileron.getMinimumDeflection().getEstimatedValue())
-						);
-
-				if(rightAileron.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("°")
-						|| rightAileron.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("deg"))
-					theController.getWingMinimumDeflectionAngleAileronRigthUnitChoiceBox().getSelectionModel().select(0);
-				else if(rightAileron.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("rad"))
-					theController.getWingMinimumDeflectionAngleAileronRigthUnitChoiceBox().getSelectionModel().select(1);
-
-			}
-			else
-				theController.getTextFieldWingMinimumDeflectionAngleAileronRight().setText(
-						"NOT INITIALIZED"
-						);
-
-			//---------------------------------------------------------------------------------
-			// MAXIMUM DEFLECTION:
-			if(rightAileron.getMaximumDeflection() != null) {
-
-				theController.getTextFieldWingMaximumDeflectionAngleAileronRight().setText(
-						String.valueOf(rightAileron.getMaximumDeflection().getEstimatedValue())
-						);
-
-				if(rightAileron.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("°")
-						|| rightAileron.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("deg"))
-					theController.getWingMaximumDeflectionAngleAileronRightUnitChoiceBox().getSelectionModel().select(0);
-				else if(rightAileron.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("rad"))
-					theController.getWingMaximumDeflectionAngleAileronRightUnitChoiceBox().getSelectionModel().select(1);
-
-			}
-			else
-				theController.getTextFieldWingMaximumDeflectionAngleAileronRight().setText(
-						"NOT INITIALIZED"
-						);
 			
 			//---------------------------------------------------------------------------------
 			// SPOILERS NUMBER CHECK:
@@ -3462,7 +3568,7 @@ public class InputManagerControllerLogUtilities {
 							String.valueOf(currentSpoiler.getMinimumDeflection().getEstimatedValue())
 							);
 					
-					if(currentSpoiler.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("°")
+					if(currentSpoiler.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("ï¿½")
 							|| currentSpoiler.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("deg"))
 						theController.getChoiceBoxWingMinimumDeflectionAngleSpoilerUnitList().get(i).getSelectionModel().select(0);
 					else if(currentSpoiler.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("rad"))
@@ -3482,7 +3588,7 @@ public class InputManagerControllerLogUtilities {
 							String.valueOf(currentSpoiler.getMaximumDeflection().getEstimatedValue())
 							);
 					
-					if(currentSpoiler.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("°")
+					if(currentSpoiler.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("ï¿½")
 							|| currentSpoiler.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("deg"))
 						theController.getChoiceBoxWingMaximumDeflectionAngleSpoilerUnitList().get(i).getSelectionModel().select(0);
 					else if(currentSpoiler.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("rad"))
@@ -3625,7 +3731,7 @@ public class InputManagerControllerLogUtilities {
 							String.valueOf(currentPanel.getSweepLeadingEdge().getEstimatedValue())
 							);
 					
-					if(currentPanel.getSweepLeadingEdge().getUnit().toString().equalsIgnoreCase("°")
+					if(currentPanel.getSweepLeadingEdge().getUnit().toString().equalsIgnoreCase("ï¿½")
 							|| currentPanel.getSweepLeadingEdge().getUnit().toString().equalsIgnoreCase("deg"))
 						theController.getChoiceBoxHTailSweepLEPanelUnitList().get(i).getSelectionModel().select(0);
 					else if(currentPanel.getSweepLeadingEdge().getUnit().toString().equalsIgnoreCase("rad"))
@@ -3645,7 +3751,7 @@ public class InputManagerControllerLogUtilities {
 							String.valueOf(currentPanel.getDihedral().getEstimatedValue())
 							);
 					
-					if(currentPanel.getDihedral().getUnit().toString().equalsIgnoreCase("°")
+					if(currentPanel.getDihedral().getUnit().toString().equalsIgnoreCase("ï¿½")
 							|| currentPanel.getDihedral().getUnit().toString().equalsIgnoreCase("deg"))
 						theController.getChoiceBoxHTailDihedralPanelUnitList().get(i).getSelectionModel().select(0);
 					else if(currentPanel.getDihedral().getUnit().toString().equalsIgnoreCase("rad"))
@@ -3684,7 +3790,7 @@ public class InputManagerControllerLogUtilities {
 							String.valueOf(currentPanel.getTwistGeometricRoot().getEstimatedValue())
 							);
 					
-					if(currentPanel.getTwistGeometricRoot().getUnit().toString().equalsIgnoreCase("°")
+					if(currentPanel.getTwistGeometricRoot().getUnit().toString().equalsIgnoreCase("ï¿½")
 							|| currentPanel.getTwistGeometricRoot().getUnit().toString().equalsIgnoreCase("deg"))
 						theController.getChoiceBoxHTailInnerTwistPanelUnitList().get(i).getSelectionModel().select(0);
 					else if(currentPanel.getTwistGeometricRoot().getUnit().toString().equalsIgnoreCase("rad"))
@@ -3736,7 +3842,7 @@ public class InputManagerControllerLogUtilities {
 							String.valueOf(currentPanel.getTwistGeometricAtTip().getEstimatedValue())
 							);
 					
-					if(currentPanel.getTwistGeometricAtTip().getUnit().toString().equalsIgnoreCase("°")
+					if(currentPanel.getTwistGeometricAtTip().getUnit().toString().equalsIgnoreCase("ï¿½")
 							|| currentPanel.getTwistGeometricAtTip().getUnit().toString().equalsIgnoreCase("deg"))
 						theController.getChoiceBoxHTailOuterTwistPanelUnitList().get(i).getSelectionModel().select(0);
 					else if(currentPanel.getTwistGeometricAtTip().getUnit().toString().equalsIgnoreCase("rad"))
@@ -3844,7 +3950,7 @@ public class InputManagerControllerLogUtilities {
 							String.valueOf(currentElevator.getMinimumDeflection().getEstimatedValue())
 							);
 					
-					if(currentElevator.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("°")
+					if(currentElevator.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("ï¿½")
 							|| currentElevator.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("deg"))
 						theController.getChoiceBoxHTailMinimumDeflectionAngleElevatorUnitList().get(i).getSelectionModel().select(0);
 					else if(currentElevator.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("rad"))
@@ -3864,7 +3970,7 @@ public class InputManagerControllerLogUtilities {
 							String.valueOf(currentElevator.getMaximumDeflection().getEstimatedValue())
 							);
 					
-					if(currentElevator.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("°")
+					if(currentElevator.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("ï¿½")
 							|| currentElevator.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("deg"))
 						theController.getChoiceBoxHTailMaximumDeflectionAngleElevatorUnitList().get(i).getSelectionModel().select(0);
 					else if(currentElevator.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("rad"))
@@ -4006,7 +4112,7 @@ public class InputManagerControllerLogUtilities {
 							String.valueOf(currentPanel.getSweepLeadingEdge().getEstimatedValue())
 							);
 					
-					if(currentPanel.getSweepLeadingEdge().getUnit().toString().equalsIgnoreCase("°")
+					if(currentPanel.getSweepLeadingEdge().getUnit().toString().equalsIgnoreCase("ï¿½")
 							|| currentPanel.getSweepLeadingEdge().getUnit().toString().equalsIgnoreCase("deg"))
 						theController.getChoiceBoxVTailSweepLEPanelUnitList().get(i).getSelectionModel().select(0);
 					else if(currentPanel.getSweepLeadingEdge().getUnit().toString().equalsIgnoreCase("rad"))
@@ -4026,7 +4132,7 @@ public class InputManagerControllerLogUtilities {
 							String.valueOf(currentPanel.getDihedral().getEstimatedValue())
 							);
 					
-					if(currentPanel.getDihedral().getUnit().toString().equalsIgnoreCase("°")
+					if(currentPanel.getDihedral().getUnit().toString().equalsIgnoreCase("ï¿½")
 							|| currentPanel.getDihedral().getUnit().toString().equalsIgnoreCase("deg"))
 						theController.getChoiceBoxVTailDihedralPanelUnitList().get(i).getSelectionModel().select(0);
 					else if(currentPanel.getDihedral().getUnit().toString().equalsIgnoreCase("rad"))
@@ -4065,7 +4171,7 @@ public class InputManagerControllerLogUtilities {
 							String.valueOf(currentPanel.getTwistGeometricRoot().getEstimatedValue())
 							);
 					
-					if(currentPanel.getTwistGeometricRoot().getUnit().toString().equalsIgnoreCase("°")
+					if(currentPanel.getTwistGeometricRoot().getUnit().toString().equalsIgnoreCase("ï¿½")
 							|| currentPanel.getTwistGeometricRoot().getUnit().toString().equalsIgnoreCase("deg"))
 						theController.getChoiceBoxVTailInnerTwistPanelUnitList().get(i).getSelectionModel().select(0);
 					else if(currentPanel.getTwistGeometricRoot().getUnit().toString().equalsIgnoreCase("rad"))
@@ -4117,7 +4223,7 @@ public class InputManagerControllerLogUtilities {
 							String.valueOf(currentPanel.getTwistGeometricAtTip().getEstimatedValue())
 							);
 					
-					if(currentPanel.getTwistGeometricAtTip().getUnit().toString().equalsIgnoreCase("°")
+					if(currentPanel.getTwistGeometricAtTip().getUnit().toString().equalsIgnoreCase("ï¿½")
 							|| currentPanel.getTwistGeometricAtTip().getUnit().toString().equalsIgnoreCase("deg"))
 						theController.getChoiceBoxVTailOuterTwistPanelUnitList().get(i).getSelectionModel().select(0);
 					else if(currentPanel.getTwistGeometricAtTip().getUnit().toString().equalsIgnoreCase("rad"))
@@ -4225,7 +4331,7 @@ public class InputManagerControllerLogUtilities {
 							String.valueOf(currentRudder.getMinimumDeflection().getEstimatedValue())
 							);
 					
-					if(currentRudder.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("°")
+					if(currentRudder.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("ï¿½")
 							|| currentRudder.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("deg"))
 						theController.getChoiceBoxVTailMinimumDeflectionAngleRudderUnitList().get(i).getSelectionModel().select(0);
 					else if(currentRudder.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("rad"))
@@ -4245,7 +4351,7 @@ public class InputManagerControllerLogUtilities {
 							String.valueOf(currentRudder.getMaximumDeflection().getEstimatedValue())
 							);
 					
-					if(currentRudder.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("°")
+					if(currentRudder.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("ï¿½")
 							|| currentRudder.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("deg"))
 						theController.getChoiceBoxVTailMaximumDeflectionAngleRudderUnitList().get(i).getSelectionModel().select(0);
 					else if(currentRudder.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("rad"))
@@ -4387,7 +4493,7 @@ public class InputManagerControllerLogUtilities {
 							String.valueOf(currentPanel.getSweepLeadingEdge().getEstimatedValue())
 							);
 					
-					if(currentPanel.getSweepLeadingEdge().getUnit().toString().equalsIgnoreCase("°")
+					if(currentPanel.getSweepLeadingEdge().getUnit().toString().equalsIgnoreCase("ï¿½")
 							|| currentPanel.getSweepLeadingEdge().getUnit().toString().equalsIgnoreCase("deg"))
 						theController.getChoiceBoxCanardSweepLEPanelUnitList().get(i).getSelectionModel().select(0);
 					else if(currentPanel.getSweepLeadingEdge().getUnit().toString().equalsIgnoreCase("rad"))
@@ -4407,7 +4513,7 @@ public class InputManagerControllerLogUtilities {
 							String.valueOf(currentPanel.getDihedral().getEstimatedValue())
 							);
 					
-					if(currentPanel.getDihedral().getUnit().toString().equalsIgnoreCase("°")
+					if(currentPanel.getDihedral().getUnit().toString().equalsIgnoreCase("ï¿½")
 							|| currentPanel.getDihedral().getUnit().toString().equalsIgnoreCase("deg"))
 						theController.getChoiceBoxCanardDihedralPanelUnitList().get(i).getSelectionModel().select(0);
 					else if(currentPanel.getDihedral().getUnit().toString().equalsIgnoreCase("rad"))
@@ -4446,7 +4552,7 @@ public class InputManagerControllerLogUtilities {
 							String.valueOf(currentPanel.getTwistGeometricRoot().getEstimatedValue())
 							);
 					
-					if(currentPanel.getTwistGeometricRoot().getUnit().toString().equalsIgnoreCase("°")
+					if(currentPanel.getTwistGeometricRoot().getUnit().toString().equalsIgnoreCase("ï¿½")
 							|| currentPanel.getTwistGeometricRoot().getUnit().toString().equalsIgnoreCase("deg"))
 						theController.getChoiceBoxCanardInnerTwistPanelUnitList().get(i).getSelectionModel().select(0);
 					else if(currentPanel.getTwistGeometricRoot().getUnit().toString().equalsIgnoreCase("rad"))
@@ -4498,7 +4604,7 @@ public class InputManagerControllerLogUtilities {
 							String.valueOf(currentPanel.getTwistGeometricAtTip().getEstimatedValue())
 							);
 					
-					if(currentPanel.getTwistGeometricAtTip().getUnit().toString().equalsIgnoreCase("°")
+					if(currentPanel.getTwistGeometricAtTip().getUnit().toString().equalsIgnoreCase("ï¿½")
 							|| currentPanel.getTwistGeometricAtTip().getUnit().toString().equalsIgnoreCase("deg"))
 						theController.getChoiceBoxCanardOuterTwistPanelUnitList().get(i).getSelectionModel().select(0);
 					else if(currentPanel.getTwistGeometricAtTip().getUnit().toString().equalsIgnoreCase("rad"))
@@ -4606,7 +4712,7 @@ public class InputManagerControllerLogUtilities {
 							String.valueOf(currentControlSurface.getMinimumDeflection().getEstimatedValue())
 							);
 					
-					if(currentControlSurface.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("°")
+					if(currentControlSurface.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("ï¿½")
 							|| currentControlSurface.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("deg"))
 						theController.getChoiceBoxCanardMinimumDeflectionAngleControlSurfaceUnitList().get(i).getSelectionModel().select(0);
 					else if(currentControlSurface.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("rad"))
@@ -4626,7 +4732,7 @@ public class InputManagerControllerLogUtilities {
 							String.valueOf(currentControlSurface.getMaximumDeflection().getEstimatedValue())
 							);
 					
-					if(currentControlSurface.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("°")
+					if(currentControlSurface.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("ï¿½")
 							|| currentControlSurface.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("deg"))
 						theController.getChoiceBoxCanardMaximumDeflectionAngleControlSurfaceUnitList().get(i).getSelectionModel().select(0);
 					else if(currentControlSurface.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("rad"))
@@ -5515,6 +5621,308 @@ public class InputManagerControllerLogUtilities {
 		
 	}
 	
+	public void logCADConfigurationFromFileToInterface() {
+		
+		// Print the CADManager toString() method inside the text area of the GUI ...
+		theController.getTextAreaCAD3DViewConsoleOutput().setText(
+				Main.getTheCADManager().toString()
+				);
+		
+		//-------------------------------------------------------------------------
+		// CAD EXPORT OPTIONS
+		if (theController.getExportCADWireframeCheckBox().isDisabled())
+			theController.getExportCADWireframeCheckBox().setDisable(false);
+		theController.getExportCADWireframeCheckBox().setSelected(
+				Main.getTheCADManager().getTheCADBuilderInterface().getExportWireframe());
+		
+		if (theController.getFileExtensionCADChoiceBox().isDisabled())
+			theController.getFileExtensionCADChoiceBox().setDisable(false);
+		if (Main.getTheCADManager().getTheCADBuilderInterface().getFileExtension().equals(FileExtension.BREP))
+			theController.getFileExtensionCADChoiceBox().getSelectionModel().select(0);
+		if (Main.getTheCADManager().getTheCADBuilderInterface().getFileExtension().equals(FileExtension.STEP))
+			theController.getFileExtensionCADChoiceBox().getSelectionModel().select(1);
+		if (Main.getTheCADManager().getTheCADBuilderInterface().getFileExtension().equals(FileExtension.IGES))
+			theController.getFileExtensionCADChoiceBox().getSelectionModel().select(2);
+		if (Main.getTheCADManager().getTheCADBuilderInterface().getFileExtension().equals(FileExtension.STL))
+			theController.getFileExtensionCADChoiceBox().getSelectionModel().select(3);
+		
+		//-------------------------------------------------------------------------
+		// FUSELAGE OPTIONS
+		if (Main.getTheAircraft().getFuselage() != null) {
+			
+			if (theController.getGenerateFuselageCADCheckBox().isDisabled())
+				theController.getGenerateFuselageCADCheckBox().setDisable(false);
+			theController.getGenerateFuselageCADCheckBox().setSelected(
+					Main.getTheCADManager().getTheCADBuilderInterface().getGenerateFuselage());
 
-	
+			if (theController.getFuselageCADNumberNoseSectionsTextField().isDisabled())
+				theController.getFuselageCADNumberNoseSectionsTextField().setDisable(false);
+			theController.getFuselageCADNumberNoseSectionsTextField().setText(
+					String.valueOf(Main.getTheCADManager().getTheCADBuilderInterface().getNumberNoseTrunkSections()));
+
+			if (theController.getFuselageCADNoseSpacingChoiceBox().isDisabled())
+				theController.getFuselageCADNoseSpacingChoiceBox().setDisable(false);
+			if (Main.getTheCADManager().getTheCADBuilderInterface().getSpacingTypeNoseTrunk().equals(XSpacingType.UNIFORM))
+				theController.getFuselageCADNoseSpacingChoiceBox().getSelectionModel().select(0);
+			if (Main.getTheCADManager().getTheCADBuilderInterface().getSpacingTypeNoseTrunk().equals(XSpacingType.COSINUS))
+				theController.getFuselageCADNoseSpacingChoiceBox().getSelectionModel().select(1);
+			if (Main.getTheCADManager().getTheCADBuilderInterface().getSpacingTypeNoseTrunk().equals(XSpacingType.HALFCOSINUS1))
+				theController.getFuselageCADNoseSpacingChoiceBox().getSelectionModel().select(2);
+			if (Main.getTheCADManager().getTheCADBuilderInterface().getSpacingTypeNoseTrunk().equals(XSpacingType.HALFCOSINUS2))
+				theController.getFuselageCADNoseSpacingChoiceBox().getSelectionModel().select(3);
+
+			if (theController.getFuselageCADNumberTailSectionsTextField().isDisabled())
+				theController.getFuselageCADNumberTailSectionsTextField().setDisable(false);
+			theController.getFuselageCADNumberTailSectionsTextField().setText(
+					String.valueOf(Main.getTheCADManager().getTheCADBuilderInterface().getNumberTailTrunkSections()));
+
+			if (theController.getFuselageCADTailSpacingChoiceBox().isDisabled())
+				theController.getFuselageCADTailSpacingChoiceBox().setDisable(false);
+			if (Main.getTheCADManager().getTheCADBuilderInterface().getSpacingTypeTailTrunk().equals(XSpacingType.UNIFORM))
+				theController.getFuselageCADTailSpacingChoiceBox().getSelectionModel().select(0);
+			if (Main.getTheCADManager().getTheCADBuilderInterface().getSpacingTypeTailTrunk().equals(XSpacingType.COSINUS))
+				theController.getFuselageCADTailSpacingChoiceBox().getSelectionModel().select(1);
+			if (Main.getTheCADManager().getTheCADBuilderInterface().getSpacingTypeTailTrunk().equals(XSpacingType.HALFCOSINUS1))
+				theController.getFuselageCADTailSpacingChoiceBox().getSelectionModel().select(2);
+			if (Main.getTheCADManager().getTheCADBuilderInterface().getSpacingTypeTailTrunk().equals(XSpacingType.HALFCOSINUS2))
+				theController.getFuselageCADTailSpacingChoiceBox().getSelectionModel().select(3);
+
+		} else {
+			
+			theController.getGenerateFuselageCADCheckBox().setDisable(true);
+			theController.getFuselageCADNumberNoseSectionsTextField().setDisable(true);
+			theController.getFuselageCADNoseSpacingChoiceBox().setDisable(true);
+			theController.getFuselageCADNumberTailSectionsTextField().setDisable(true);
+			theController.getFuselageCADTailSpacingChoiceBox().setDisable(true);
+			
+		}
+		
+		//-------------------------------------------------------------------------
+		// WING OPTIONS
+		if (Main.getTheAircraft().getWing() != null) {
+			
+			if (theController.getGenerateWingCADCheckBox().isDisabled())
+				theController.getGenerateWingCADCheckBox().setDisable(false);
+			theController.getGenerateWingCADCheckBox().setSelected(
+					Main.getTheCADManager().getTheCADBuilderInterface().getGenerateWing());
+			
+			if (theController.getWingCADTipTypeChoiceBox().isDisabled())
+				theController.getWingCADTipTypeChoiceBox().setDisable(false);
+			if (Main.getTheCADManager().getTheCADBuilderInterface().getWingTipType().equals(WingTipType.CUTOFF))
+				theController.getWingCADTipTypeChoiceBox().getSelectionModel().select(0);
+			if (Main.getTheCADManager().getTheCADBuilderInterface().getWingTipType().equals(WingTipType.ROUNDED))
+				theController.getWingCADTipTypeChoiceBox().getSelectionModel().select(1);
+			if (Main.getTheCADManager().getTheCADBuilderInterface().getWingTipType().equals(WingTipType.WINGLET))
+				theController.getWingCADTipTypeChoiceBox().getSelectionModel().select(2);
+						
+			if (theController.getWingletCADYOffsetFactorTextField().isDisabled())
+				theController.getWingletCADYOffsetFactorTextField().setDisable(false);
+			theController.getWingletCADYOffsetFactorTextField().setText(
+					String.valueOf(Main.getTheCADManager().getTheCADBuilderInterface().getWingletYOffsetFactor()));
+
+			if (theController.getWingletCADXOffsetFactorTextField().isDisabled())
+				theController.getWingletCADXOffsetFactorTextField().setDisable(false);
+			theController.getWingletCADXOffsetFactorTextField().setText(
+					String.valueOf(Main.getTheCADManager().getTheCADBuilderInterface().getWingletXOffsetFactor()));
+
+			if (theController.getWingletCADTaperRatioTextField().isDisabled())
+				theController.getWingletCADTaperRatioTextField().setDisable(false);
+			theController.getWingletCADTaperRatioTextField().setText(
+					String.valueOf(Main.getTheCADManager().getTheCADBuilderInterface().getWingletTaperRatio()));
+		
+		} else {
+			
+			theController.getGenerateWingCADCheckBox().setDisable(true);
+			theController.getWingCADTipTypeChoiceBox().setDisable(true);
+			theController.getWingletCADYOffsetFactorTextField().setDisable(true);
+			theController.getWingletCADXOffsetFactorTextField().setDisable(true);
+			theController.getWingletCADTaperRatioTextField().setDisable(true);
+			
+		}
+		
+		//-------------------------------------------------------------------------
+		// HTAIL OPTIONS
+		if (Main.getTheAircraft().getHTail() != null) {
+			
+			if (theController.getGenerateHTailCADCheckBox().isDisabled())
+				theController.getGenerateHTailCADCheckBox().setDisable(false);
+			theController.getGenerateHTailCADCheckBox().setSelected(
+					Main.getTheCADManager().getTheCADBuilderInterface().getGenerateHTail());
+			
+			if (theController.getHTailCADTipTypeChoiceBox().isDisabled())
+				theController.getHTailCADTipTypeChoiceBox().setDisable(false);
+			if (Main.getTheCADManager().getTheCADBuilderInterface().getHTailTipType().equals(WingTipType.CUTOFF))
+				theController.getHTailCADTipTypeChoiceBox().getSelectionModel().select(0);
+			if (Main.getTheCADManager().getTheCADBuilderInterface().getHTailTipType().equals(WingTipType.ROUNDED))
+				theController.getHTailCADTipTypeChoiceBox().getSelectionModel().select(1);
+		
+		} else {
+			
+			theController.getGenerateHTailCADCheckBox().setDisable(true);
+			theController.getHTailCADTipTypeChoiceBox().setDisable(true);		
+			
+		}
+		
+		//-------------------------------------------------------------------------
+		// VTAIL OPTIONS
+		if (Main.getTheAircraft().getVTail() != null) {
+			
+			if (theController.getGenerateVTailCADCheckBox().isDisabled())
+				theController.getGenerateVTailCADCheckBox().setDisable(false);
+			theController.getGenerateVTailCADCheckBox().setSelected(
+					Main.getTheCADManager().getTheCADBuilderInterface().getGenerateVTail());
+			
+			if (theController.getVTailCADTipTypeChoiceBox().isDisabled())
+				theController.getVTailCADTipTypeChoiceBox().setDisable(false);
+			if (Main.getTheCADManager().getTheCADBuilderInterface().getVTailTipType().equals(WingTipType.CUTOFF))
+				theController.getVTailCADTipTypeChoiceBox().getSelectionModel().select(0);
+			if (Main.getTheCADManager().getTheCADBuilderInterface().getVTailTipType().equals(WingTipType.ROUNDED))
+				theController.getVTailCADTipTypeChoiceBox().getSelectionModel().select(1);
+		
+		} else {
+			
+			theController.getGenerateVTailCADCheckBox().setDisable(true);
+			theController.getVTailCADTipTypeChoiceBox().setDisable(true);
+			
+		}
+		
+		//-------------------------------------------------------------------------
+		// CANARD OPTIONS
+		if (Main.getTheAircraft().getCanard() != null) {
+			
+			if (theController.getGenerateCanardCADCheckBox().isDisabled())
+				theController.getGenerateCanardCADCheckBox().setDisable(false);
+			theController.getGenerateCanardCADCheckBox().setSelected(
+					Main.getTheCADManager().getTheCADBuilderInterface().getGenerateCanard());
+			
+			if (theController.getCanardCADTipTypeChoiceBox().isDisabled())
+				theController.getCanardCADTipTypeChoiceBox().setDisable(false);
+			if (Main.getTheCADManager().getTheCADBuilderInterface().getCanardTipType().equals(WingTipType.CUTOFF))
+				theController.getCanardCADTipTypeChoiceBox().getSelectionModel().select(0);
+			if (Main.getTheCADManager().getTheCADBuilderInterface().getCanardTipType().equals(WingTipType.ROUNDED))
+				theController.getCanardCADTipTypeChoiceBox().getSelectionModel().select(1);
+		
+		} else {
+			
+			theController.getGenerateCanardCADCheckBox().setDisable(true);
+			theController.getCanardCADTipTypeChoiceBox().setDisable(true);
+			
+		}
+		
+		//-------------------------------------------------------------------------
+		// WING FAIRING OPTIONS
+		if (Main.getTheAircraft().getWing() != null && Main.getTheAircraft().getFuselage() != null) {
+			
+			if (theController.getGenerateWingFairingCADCheckBox().isDisabled())
+				theController.getGenerateWingFairingCADCheckBox().setDisable(false);
+			theController.getGenerateWingFairingCADCheckBox().setSelected(
+					Main.getTheCADManager().getTheCADBuilderInterface().getGenerateWingFairing());
+			
+			if (theController.getWingFairingCADFrontLengthFactorTextField().isDisabled())
+				theController.getWingFairingCADFrontLengthFactorTextField().setDisable(false);
+			theController.getWingFairingCADFrontLengthFactorTextField().setText(
+					String.valueOf(Main.getTheCADManager().getTheCADBuilderInterface().getWingFairingFrontLengthFactor()));
+			
+			if (theController.getWingFairingCADBackLengthFactorTextField().isDisabled())
+				theController.getWingFairingCADBackLengthFactorTextField().setDisable(false);
+			theController.getWingFairingCADBackLengthFactorTextField().setText(
+					String.valueOf(Main.getTheCADManager().getTheCADBuilderInterface().getWingFairingBackLengthFactor()));
+			
+			if (theController.getWingFairingCADWidthFactorTextField().isDisabled())
+				theController.getWingFairingCADWidthFactorTextField().setDisable(false);
+			theController.getWingFairingCADWidthFactorTextField().setText(
+					String.valueOf(Main.getTheCADManager().getTheCADBuilderInterface().getWingFairingWidthFactor()));
+			
+			if (theController.getWingFairingCADHeightFactorTextField().isDisabled())
+				theController.getWingFairingCADHeightFactorTextField().setDisable(false);
+			theController.getWingFairingCADHeightFactorTextField().setText(
+					String.valueOf(Main.getTheCADManager().getTheCADBuilderInterface().getWingFairingHeightFactor()));
+			
+			if (theController.getWingFairingCADHeightBelowReferenceFactorTextField().isDisabled())
+				theController.getWingFairingCADHeightBelowReferenceFactorTextField().setDisable(false);
+			theController.getWingFairingCADHeightBelowReferenceFactorTextField().setText(
+					String.valueOf(Main.getTheCADManager().getTheCADBuilderInterface().getWingFairingHeightBelowReferenceFactor()));
+			
+			if (theController.getWingFairingCADHeightAboveReferenceFactorTextField().isDisabled())
+				theController.getWingFairingCADHeightAboveReferenceFactorTextField().setDisable(false);
+			theController.getWingFairingCADHeightAboveReferenceFactorTextField().setText(
+					String.valueOf(Main.getTheCADManager().getTheCADBuilderInterface().getWingFairingHeightAboveReferenceFactor()));
+			
+			if (theController.getWingFairingCADFilletRadiusFactorTextField().isDisabled())
+				theController.getWingFairingCADFilletRadiusFactorTextField().setDisable(false);
+			theController.getWingFairingCADFilletRadiusFactorTextField().setText(
+					String.valueOf(Main.getTheCADManager().getTheCADBuilderInterface().getWingFairingFilletRadiusFactor()));
+			
+		} else {
+			
+			theController.getGenerateWingFairingCADCheckBox().setDisable(true);
+			theController.getWingFairingCADFrontLengthFactorTextField().setDisable(true);
+			theController.getWingFairingCADBackLengthFactorTextField().setDisable(true);
+			theController.getWingFairingCADWidthFactorTextField().setDisable(true);
+			theController.getWingFairingCADHeightFactorTextField().setDisable(true);
+			theController.getWingFairingCADHeightBelowReferenceFactorTextField().setDisable(true);
+			theController.getWingFairingCADHeightAboveReferenceFactorTextField().setDisable(true);
+			theController.getWingFairingCADFilletRadiusFactorTextField().setDisable(true);
+			
+		}
+		
+		//-------------------------------------------------------------------------
+		// CANARD FAIRING OPTIONS
+		if (Main.getTheAircraft().getCanard() != null && Main.getTheAircraft().getFuselage() != null) {
+			
+			if (theController.getGenerateCanardFairingCADCheckBox().isDisabled())
+				theController.getGenerateCanardFairingCADCheckBox().setDisable(false);
+			theController.getGenerateCanardFairingCADCheckBox().setSelected(
+					Main.getTheCADManager().getTheCADBuilderInterface().getGenerateCanardFairing());
+			
+			if (theController.getCanardFairingCADFrontLengthFactorTextField().isDisabled())
+				theController.getCanardFairingCADFrontLengthFactorTextField().setDisable(false);
+			theController.getCanardFairingCADFrontLengthFactorTextField().setText(
+					String.valueOf(Main.getTheCADManager().getTheCADBuilderInterface().getCanardFairingFrontLengthFactor()));
+			
+			if (theController.getCanardFairingCADBackLengthFactorTextField().isDisabled())
+				theController.getCanardFairingCADBackLengthFactorTextField().setDisable(false);
+			theController.getCanardFairingCADBackLengthFactorTextField().setText(
+					String.valueOf(Main.getTheCADManager().getTheCADBuilderInterface().getCanardFairingBackLengthFactor()));
+			
+			if (theController.getCanardFairingCADWidthFactorTextField().isDisabled())
+				theController.getCanardFairingCADWidthFactorTextField().setDisable(false);
+			theController.getCanardFairingCADWidthFactorTextField().setText(
+					String.valueOf(Main.getTheCADManager().getTheCADBuilderInterface().getCanardFairingWidthFactor()));
+			
+			if (theController.getCanardFairingCADHeightFactorTextField().isDisabled())
+				theController.getCanardFairingCADHeightFactorTextField().setDisable(false);
+			theController.getCanardFairingCADHeightFactorTextField().setText(
+					String.valueOf(Main.getTheCADManager().getTheCADBuilderInterface().getCanardFairingHeightFactor()));
+			
+			if (theController.getCanardFairingCADHeightBelowReferenceFactorTextField().isDisabled())
+				theController.getCanardFairingCADHeightBelowReferenceFactorTextField().setDisable(false);
+			theController.getCanardFairingCADHeightBelowReferenceFactorTextField().setText(
+					String.valueOf(Main.getTheCADManager().getTheCADBuilderInterface().getCanardFairingHeightBelowReferenceFactor()));
+			
+			if (theController.getCanardFairingCADHeightAboveReferenceFactorTextField().isDisabled())
+				theController.getCanardFairingCADHeightAboveReferenceFactorTextField().setDisable(false);
+			theController.getCanardFairingCADHeightAboveReferenceFactorTextField().setText(
+					String.valueOf(Main.getTheCADManager().getTheCADBuilderInterface().getCanardFairingHeightAboveReferenceFactor()));
+			
+			if (theController.getCanardFairingCADFilletRadiusFactorTextField().isDisabled())
+				theController.getCanardFairingCADFilletRadiusFactorTextField().setDisable(false);
+			theController.getCanardFairingCADFilletRadiusFactorTextField().setText(
+					String.valueOf(Main.getTheCADManager().getTheCADBuilderInterface().getCanardFairingFilletRadiusFactor()));
+			
+		} else {
+			
+			theController.getGenerateCanardFairingCADCheckBox().setDisable(true);
+			theController.getCanardFairingCADFrontLengthFactorTextField().setDisable(true);
+			theController.getCanardFairingCADBackLengthFactorTextField().setDisable(true);
+			theController.getCanardFairingCADWidthFactorTextField().setDisable(true);
+			theController.getCanardFairingCADHeightFactorTextField().setDisable(true);
+			theController.getCanardFairingCADHeightBelowReferenceFactorTextField().setDisable(true);
+			theController.getCanardFairingCADHeightAboveReferenceFactorTextField().setDisable(true);
+			theController.getCanardFairingCADFilletRadiusFactorTextField().setDisable(true);
+			
+		}
+		
+	}
+
 }

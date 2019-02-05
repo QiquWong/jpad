@@ -2,6 +2,18 @@ package calculators.performance;
 
 import java.util.List;
 
+import javax.measure.quantity.Angle;
+import javax.measure.quantity.Force;
+import javax.measure.quantity.Length;
+import javax.measure.quantity.Mass;
+import javax.measure.quantity.Power;
+import javax.measure.quantity.Temperature;
+import javax.measure.quantity.Velocity;
+import javax.measure.unit.NonSI;
+import javax.measure.unit.SI;
+
+import org.jscience.physics.amount.Amount;
+
 import calculators.performance.customdata.CeilingMap;
 import calculators.performance.customdata.DragMap;
 import calculators.performance.customdata.DragThrustIntersectionMap;
@@ -15,516 +27,640 @@ import configuration.enumerations.EngineOperatingConditionEnum;
  * retrieve from each list the data 
  * stored in it 
  * 
- * @author Lorenzo Attanasio
+ * @author Vittorio Trifari
  *
  */
 public class PerformanceDataManager {
 
 	/**
-	 * @author Lorenzo Attanasio
+	 * @author Vittorio Trifari
 	 * @param altitude
+	 * @param deltaTemperature
 	 * @param weight
 	 * @param list
 	 * @return
 	 */
-	public static double[] getDrag(double altitude, double weight, List<DragMap> list) {
+	public static List<Amount<Force>> getDrag(
+			Amount<Length> altitude, 
+			Amount<Temperature> deltaTemperature, 
+			Amount<Mass> weight, 
+			List<DragMap> list
+			) {
 
 		for (DragMap x : list) {
 			if (x.getWeight() == weight 
-					&& x.getAltitude() == altitude) return x.getDrag();
+					&& x.getAltitude() == altitude
+					&& x.getDeltaTemperature() == deltaTemperature
+					) 
+				return x.getDrag();
 		}
 
 		return null;
 	}
 
 	/**
-	 * @author Lorenzo Attanasio
+	 * @author Vittorio Trifari
 	 * @param weight
 	 * @param altitude
+	 * @param deltaTemperature
 	 * @param phi
 	 * @param list
 	 * @return
 	 */
-	public static double[] getSpeed(double weight, double altitude, double phi, List<DragMap> list) {
+	public static List<Amount<Velocity>> getSpeed(
+			Amount<Length> altitude, 
+			Amount<Temperature> deltaTemperature, 
+			double phi,
+			Amount<Mass> weight, 
+			List<DragMap> list) {
 
 		for (int i=0; i < list.size(); i++) {
 			DragMap x = list.get(i);
 			if (x.getWeight() == weight 
 					&& x.getAltitude() == altitude 
-					&& x.getPhi() == phi) return x.getSpeed();
+					&& x.getPhi() == phi
+					&& x.getDeltaTemperature() == deltaTemperature
+					) return x.getSpeed();
 		}
 
 		return null;
 	}
 
 	/**
-	 * @author Lorenzo Attanasio
+	 * @author Vittorio Trifari
 	 * @param altitude
+	 * @param deltaTemperature
 	 * @param weight
 	 * @param list
 	 * @param phi
 	 * @return
 	 */
-	public static double[] getPowerRequired(double altitude, double weight, List<DragMap> list) {
+	public static List<Amount<Power>> getPowerRequired(Amount<Length> altitude, Amount<Temperature> deltaTemperature, Amount<Mass> weight, List<DragMap> list) {
 
 		for (int i=0; i < list.size(); i++) {
 			DragMap x = list.get(i);
 			if (x.getWeight() == weight
-					&& x.getAltitude() == altitude) return x.getPower();
+					&& x.getAltitude() == altitude
+					&& x.getDeltaTemperature() == deltaTemperature
+					)
+				return x.getPower();
 		}
 
 		return null;
 	}
 
 	/**
-	 * @author Lorenzo Attanasio
+	 * @author Vittorio Trifari
 	 * @param altitude
+	 * @param deltaTemperature
 	 * @param phi
-	 * @param BPR
 	 * @param flightCondition
 	 * @param list
 	 * @return
 	 */
-	public static double[] getThrust( double altitude, double phi,
-			double BPR, EngineOperatingConditionEnum flightCondition,
-			List<ThrustMap> list) {
+	public static List<Amount<Force>> getThrust( 
+			Amount<Length> altitude,
+			Amount<Temperature> deltaTemperature,
+			double phi,
+			EngineOperatingConditionEnum flightCondition,
+			List<ThrustMap> list
+			) {
 
 		for (int i=0; i < list.size(); i++) {
 			ThrustMap x = list.get(i);
 			if (x.getAltitude() == altitude
 					&& x.getFlightCondition().equals(flightCondition)
-					&& x.getBpr() == BPR
-					&& x.getPhi() == phi) return x.getThrust();
+					&& x.getDeltaTemperature() == deltaTemperature
+					&& x.getPhi() == phi
+					) 
+				return x.getThrust();
 		}
 
 		return null;
 	}
 
 	/**
-	 * @author Lorenzo Attanasio
+	 * @author Vittorio Trifari
 	 * @param altitude
+	 * @param deltaTemperature
 	 * @param phi
 	 * @param flightCondition
-	 * @param BPR
 	 * @param list
 	 * @return
 	 */
-	public static double[] getSpeed(double altitude, double phi,
-			EngineOperatingConditionEnum flightCondition, double BPR,
-			List<ThrustMap> list) {
+	public static List<Amount<Velocity>> getSpeed(
+			Amount<Length> altitude, 
+			Amount<Temperature> deltaTemperaturem, 
+			double phi,
+			EngineOperatingConditionEnum flightCondition, 
+			List<ThrustMap> list
+			) {
 
 		for (int i=0; i < list.size(); i++) {			
 			ThrustMap x = list.get(i);
 			if (x.getAltitude() == altitude 
 					&& x.getFlightCondition().equals(flightCondition)
-					&& x.getBpr() == BPR
-					&& x.getPhi() == phi) return x.getSpeed();
+					&& x.getDeltaTemperature() == deltaTemperaturem
+					&& x.getPhi() == phi
+					)
+				return x.getSpeed();
 		}
 
 		return null;
 	}
 
 	/**
-	 * @author Lorenzo Attanasio
+	 * @author Vittorio Trifari
 	 * @param altitude
+	 * @param deltaTemperature
 	 * @param phi
 	 * @param flightCondition
-	 * @param BPR
 	 * @param list
 	 * @return
 	 */
-	public static double[] getPowerAvailable( double altitude, double phi,
-			EngineOperatingConditionEnum flightCondition, double BPR,
-			List<ThrustMap> list) {
+	public static List<Amount<Power>> getPowerAvailable( 
+			Amount<Length> altitude, 
+			Amount<Temperature> deltaTemperature, 
+			double phi,
+			EngineOperatingConditionEnum flightCondition,
+			List<ThrustMap> list
+			) {
 
 		for (int i=0; i < list.size(); i++) {
 			ThrustMap x = list.get(i);
 			if (x.getAltitude() == altitude 
 					&& x.getFlightCondition().equals(flightCondition)
-					&& x.getBpr() == BPR
-					&& x.getPhi() == phi) return x.getPower();
+					&& x.getDeltaTemperature() == deltaTemperature
+					&& x.getPhi() == phi
+					) 
+				return x.getPower();
 		}
 
 		return null;
 	}
 
 	/**
-	 * @author Lorenzo Attanasio
+	 * @author Vittorio Trifari
 	 * @param phi
-	 * @param BPR
 	 * @param fligthCondition
 	 * @param weight
 	 * @param list
 	 * @return
 	 */
-	public static Double getAbsoluteCeiling(double phi, double BPR, 
-			EngineOperatingConditionEnum fligthCondition, double weight,
-			List<CeilingMap> list) {
+	public static Amount<Length> getAbsoluteCeiling(
+			double phi, 
+			EngineOperatingConditionEnum fligthCondition, 
+			Amount<Mass> weight,
+			List<CeilingMap> list
+			) {
 
 		for (int i=0; i < list.size(); i++) {
 			CeilingMap x = list.get(i);
 			if (x.getFlightCondition().equals(fligthCondition)
-					&& x.getBpr() == BPR
-					&& x.getPhi() == phi) return x.getAbsoluteCeiling();
+					&& x.getWeight() == weight
+					&& x.getPhi() == phi
+					) 
+				return x.getAbsoluteCeiling();
 		}
 
-		return null;
+		return Amount.valueOf(0.0, SI.METER);
 	}
 
 	/**
-	 * @author Lorenzo Attanasio
+	 * @author Vittorio Trifari
 	 * @param phi
-	 * @param BPR
 	 * @param fligthCondition
 	 * @param weight
 	 * @param list
 	 * @return
 	 */
-	public static Double getServiceCeiling(double phi, double BPR,
-			EngineOperatingConditionEnum fligthCondition, double weight,
+	public static Amount<Length> getServiceCeiling(
+			double phi,
+			EngineOperatingConditionEnum fligthCondition, 
+			Amount<Mass> weight,
 			List<CeilingMap> list) {
 
 		for (int i=0; i < list.size(); i++) {			
 			CeilingMap x = list.get(i);
 			if ( x.getFlightCondition().equals(fligthCondition)
-					&& x.getBpr() == BPR
-					&& x.getPhi() == phi) return x.getServiceCeiling();
+					&& x.getWeight() == weight
+					&& x.getPhi() == phi
+					)
+				return x.getServiceCeiling();
+		}
+
+		return Amount.valueOf(0.0, SI.METER);
+	}
+
+	/**
+	 * @author Vittorio Trifari
+	 * @param altitude
+	 * @param deltaTemperature
+	 * @param phi
+	 * @param weight
+	 * @param flightCondition
+	 * @param list
+	 * @return
+	 */
+	public static List<Amount<Velocity>> getSpeed(
+			Amount<Length> altitude, 
+			Amount<Temperature> deltaTemperature, 
+			double phi,
+			Amount<Mass> weight,
+			EngineOperatingConditionEnum flightCondition,
+			List<DragThrustIntersectionMap> list
+			) {
+
+		for (int i=0; i < list.size(); i++) {
+			DragThrustIntersectionMap x = list.get(i);
+			if (x.getAltitude() == altitude 
+					&& x.getFlightCondition().equals(flightCondition)
+					&& x.getDeltaTemperature() == deltaTemperature
+					&& x.getPhi() == phi
+					&& x.getWeight() == weight
+					)
+				return x.getSpeed();
 		}
 
 		return null;
 	}
 
 	/**
-	 * @author Lorenzo Attanasio
+	 * @author Vittorio Trifari
 	 * @param altitude
-	 * @param phi
-	 * @param bpr
+	 * @param deltaTemperature
 	 * @param weight
+	 * @param phi
 	 * @param flightCondition
 	 * @param list
 	 * @return
 	 */
-//	public static double[] getIntersectionPoints(double altitude, double phi,
-//			double bpr, double weight, FlightConditionEnum flightCondition,
-//			List<DragThrustIntersectionMap> list) {
-//
-//		for (int i=0; i < list.size(); i++) {
-//			DragThrustIntersectionMap x = list.get(i);
-//			if (x.getAltitude() == altitude 
-//					&& x.getFlightCondition().equals(flightCondition)
-//					&& x.getBpr() == bpr
-//					&& x.getPhi() == phi
-//					&& x.getWeight() == weight) return x.getIntersectionPoints();
-//		}
-//
-//		return null;
-//	}
-
-	/**
-	 * @author Lorenzo Attanasio
-	 * @param altitude
-	 * @param phi
-	 * @param bpr
-	 * @param weight
-	 * @param flightCondition
-	 * @param list
-	 * @return
-	 */
-	public static double[] getSpeed(double altitude, double phi,
-			double bpr, double weight, EngineOperatingConditionEnum flightCondition,
-			List<DragThrustIntersectionMap> list) {
+	public static Amount<Velocity> getMaxSpeed(
+			Amount<Length> altitude, 
+			Amount<Temperature> deltaTemperature,
+			Amount<Mass> weight,
+			double phi,
+			EngineOperatingConditionEnum flightCondition, 
+			List<DragThrustIntersectionMap> list
+			) {
 
 		for (int i=0; i < list.size(); i++) {
 			DragThrustIntersectionMap x = list.get(i);
 			if (x.getAltitude() == altitude 
 					&& x.getFlightCondition().equals(flightCondition)
-					&& x.getBpr() == bpr
+					&& x.getDeltaTemperature() == deltaTemperature
 					&& x.getPhi() == phi
-					&& x.getWeight() == weight) return x.getSpeed();
+					&& x.getWeight() == weight
+					)
+				return x.getMaxSpeed();
 		}
 
-		return null;
+		return Amount.valueOf(0.0, SI.METERS_PER_SECOND);
 	}
 
 	/**
-	 * @author Lorenzo Attanasio
+	 * @author Vittorio Trifari
 	 * @param altitude
+	 * @param deltaTemperature
 	 * @param weight
 	 * @param phi
 	 * @param flightCondition
-	 * @param bpr
 	 * @param list
 	 * @return
 	 */
-	public static Double getMaxSpeed(double altitude, double weight,
-			double phi, EngineOperatingConditionEnum flightCondition, double bpr,
-			List<DragThrustIntersectionMap> list) {
+	public static Amount<Velocity> getMinSpeed(
+			Amount<Length> altitude, 
+			Amount<Temperature> deltaTemperature,
+			Amount<Mass> weight,
+			double phi,
+			EngineOperatingConditionEnum flightCondition, 
+			List<DragThrustIntersectionMap> list
+			) {
 
 		for (int i=0; i < list.size(); i++) {
 			DragThrustIntersectionMap x = list.get(i);
 			if (x.getAltitude() == altitude 
 					&& x.getFlightCondition().equals(flightCondition)
-					&& x.getBpr() == bpr
+					&& x.getDeltaTemperature() == deltaTemperature
 					&& x.getPhi() == phi
-					&& x.getWeight() == weight) return x.getMaxSpeed();
+					&& x.getWeight() == weight
+					)
+				return x.getMinSpeed();
+		}
+
+		return Amount.valueOf(0.0, SI.METERS_PER_SECOND);
+	}
+
+	/**
+	 * @author Vittorio Trifari
+	 * @param altitude
+	 * @param deltaTemperature
+	 * @param weight
+	 * @param phi
+	 * @param flightCondition
+	 * @param list
+	 * @return
+	 */
+	public static double getMaxMach(
+			Amount<Length> altitude, 
+			Amount<Temperature> deltaTemperature,
+			Amount<Mass> weight,
+			double phi,
+			EngineOperatingConditionEnum flightCondition, 
+			List<DragThrustIntersectionMap> list
+			) {
+
+		for (int i=0; i < list.size(); i++) {
+			DragThrustIntersectionMap x = list.get(i);
+			if (x.getAltitude() == altitude 
+					&& x.getFlightCondition().equals(flightCondition)
+					&& x.getDeltaTemperature() == deltaTemperature
+					&& x.getPhi() == phi
+					&& x.getWeight() == weight
+					)
+				return x.getMaxMach();
 		}
 
 		return 0.0;
 	}
 
 	/**
-	 * @author Lorenzo Attanasio
+	 * @author Vittorio Trifari
 	 * @param altitude
+	 * @param deltaTemperature
 	 * @param weight
 	 * @param phi
 	 * @param flightCondition
-	 * @param bpr
 	 * @param list
 	 * @return
 	 */
-	public static Double getMinSpeed(double altitude, double weight,
-			double phi, EngineOperatingConditionEnum flightCondition, double bpr,
-			List<DragThrustIntersectionMap> list) {
+	public static double getMinMach(
+			Amount<Length> altitude, 
+			Amount<Temperature> deltaTemperature,
+			Amount<Mass> weight,
+			double phi,
+			EngineOperatingConditionEnum flightCondition, 
+			List<DragThrustIntersectionMap> list
+			) {
 
 		for (int i=0; i < list.size(); i++) {
 			DragThrustIntersectionMap x = list.get(i);
 			if (x.getAltitude() == altitude 
 					&& x.getFlightCondition().equals(flightCondition)
-					&& x.getBpr() == bpr
+					&& x.getDeltaTemperature() == deltaTemperature
 					&& x.getPhi() == phi
-					&& x.getWeight() == weight) return x.getMinSpeed();
+					&& x.getWeight() == weight
+					)
+				return x.getMinMach();
 		}
 
 		return 0.0;
 	}
 
 	/**
-	 * @author Lorenzo Attanasio
-	 * @param altitude
-	 * @param weight
+	 * @author Vittorio Trifari
 	 * @param phi
-	 * @param flightCondition
-	 * @param bpr
-	 * @param list
-	 * @return
-	 */
-	public static Double getMaxMach(double altitude, double weight,
-			double phi, EngineOperatingConditionEnum flightCondition, double bpr,
-			List<DragThrustIntersectionMap> list) {
-
-		for (int i=0; i < list.size(); i++) {
-			DragThrustIntersectionMap x = list.get(i);
-			if (x.getAltitude() == altitude 
-					&& x.getFlightCondition().equals(flightCondition)
-					&& x.getBpr() == bpr
-					&& x.getPhi() == phi
-					&& x.getWeight() == weight) return x.getMaxMach();
-		}
-
-		return null;
-	}
-
-	/**
-	 * @author Lorenzo Attanasio
-	 * @param altitude
-	 * @param weight
-	 * @param phi
-	 * @param flightCondition
-	 * @param bpr
-	 * @param list
-	 * @return
-	 */
-	public static Double getMinMach(double altitude, double weight,
-			double phi, EngineOperatingConditionEnum flightCondition, double bpr,
-			List<DragThrustIntersectionMap> list) {
-
-		for (int i=0; i < list.size(); i++) {
-			DragThrustIntersectionMap x = list.get(i);
-			if (x.getAltitude() == altitude 
-					&& x.getFlightCondition().equals(flightCondition)
-					&& x.getBpr() == bpr
-					&& x.getPhi() == phi
-					&& x.getWeight() == weight) return x.getMinMach();
-		}
-
-		return null;
-	}
-
-	/**
-	 * @author Lorenzo Attanasio
-	 * @param phi
-	 * @param BPR
 	 * @param fligthCondition
 	 * @param weight
 	 * @param list
 	 * @return
 	 */
-	public static Double getAltitude(double phi, double BPR, 
-			EngineOperatingConditionEnum fligthCondition, double weight,
-			List<FlightEnvelopeMap> list) {
+	public static Amount<Length> getAltitude(
+			double phi, 
+			EngineOperatingConditionEnum fligthCondition, 
+			Amount<Mass> weight,
+			List<FlightEnvelopeMap> list
+			) {
 
 		for (int i=0; i < list.size(); i++) {
 			FlightEnvelopeMap x = list.get(i);
 			if (x.getFlightCondition().equals(fligthCondition)
 					&& x.getWeight() == weight
-					&& x.getBpr() == BPR
-					&& x.getPhi() == phi) return x.getAltitude();
+					&& x.getPhi() == phi
+					)
+				return x.getAltitude();
 		}
 
-		return null;
+		return Amount.valueOf(0.0, SI.METER);
 	}
 
 	/**
-	 * @author Lorenzo Attanasio
+	 * @author Vittorio Trifari
 	 * @param phi
-	 * @param BPR
 	 * @param fligthCondition
 	 * @param weight
 	 * @param list
 	 * @return
 	 */
-	public static Double getMaxSpeed(double phi, double BPR, 
-			EngineOperatingConditionEnum fligthCondition, double weight,
-			List<FlightEnvelopeMap> list) {
+	public static Amount<Velocity> getMaxSpeed(
+			double phi, 
+			EngineOperatingConditionEnum fligthCondition, 
+			Amount<Mass> weight,
+			List<FlightEnvelopeMap> list
+			) {
 
 		for (int i=0; i < list.size(); i++) {			
 			FlightEnvelopeMap x = list.get(i);
 			if ( x.getFlightCondition().equals(fligthCondition)
 					&& x.getWeight() == weight
-					&& x.getBpr() == BPR
-					&& x.getPhi() == phi) return x.getMaxSpeed();
+					&& x.getPhi() == phi
+					) 
+				return x.getMaxSpeed();
 		}
 
-		return null;
+		return Amount.valueOf(0.0, SI.METERS_PER_SECOND);
 	}
 
 	/**
-	 * @author Lorenzo Attanasio
+	 * @author Vittorio Trifari
 	 * @param phi
-	 * @param BPR
 	 * @param fligthCondition
 	 * @param weight
 	 * @param list
 	 * @return
 	 */
-	public static Double getMinSpeed(double phi, double BPR, 
-			EngineOperatingConditionEnum fligthCondition, double weight,
-			List<FlightEnvelopeMap> list) {
+	public static Amount<Velocity> getMinSpeed(
+			double phi, 
+			EngineOperatingConditionEnum fligthCondition, 
+			Amount<Mass> weight,
+			List<FlightEnvelopeMap> list
+			) {
 
 		for (int i=0; i < list.size(); i++) {			
 			FlightEnvelopeMap x = list.get(i);
 			if ( x.getFlightCondition().equals(fligthCondition)
 					&& x.getWeight() == weight
-					&& x.getBpr() == BPR
-					&& x.getPhi() == phi) return x.getMinSpeed();
+					&& x.getPhi() == phi
+					) 
+				return x.getMinSpeed();
+		}
+
+		return Amount.valueOf(0.0, SI.METERS_PER_SECOND);
+	}
+
+	/**
+	 * @author Vittorio Trifari
+	 * @param altitude
+	 * @param deltaTemperature
+	 * @param weight
+	 * @param phi
+	 * @param flightCondition
+	 * @param rcList
+	 * @return
+	 */
+	public static List<Amount<Velocity>> getRC( 
+			Amount<Length> altitude,
+			Amount<Temperature> deltaTemperature,
+			Amount<Mass> weight,
+			double phi, 
+			EngineOperatingConditionEnum flightCondition,
+			List<RCMap> rcList
+			) {
+
+		for (int i=0; i < rcList.size(); i++) {
+			RCMap x = rcList.get(i);
+			if (x.getAltitude() == altitude 
+					&& x.getFlightCondition().equals(flightCondition)
+					&& x.getDeltaTemperature() == deltaTemperature 
+					&& x.getWeight() == weight
+					&& x.getPhi() == phi
+					) 
+				return x.getRCList();
 		}
 
 		return null;
 	}
 
 	/**
-	 * @author Lorenzo Attanasio
+	 * @author Vittorio Trifari
 	 * @param altitude
-	 * @param weight
+	 * @param deltaTemperature
 	 * @param phi
 	 * @param flightCondition
-	 * @param bpr
+	 * @param weight
 	 * @param rcList
 	 * @return
 	 */
-	public static double[] getDrag( double altitude, double weight,
-			double phi, EngineOperatingConditionEnum flightCondition, double bpr,
-			List<RCMap> rcList) {
+	public static List<Amount<Velocity>> getRCSpeed( 
+			Amount<Length> altitude, 
+			Amount<Temperature> deltaTemperature,
+			double phi,
+			EngineOperatingConditionEnum flightCondition, 
+			Amount<Mass> weight,
+			List<RCMap> rcList
+			) {
 
 		for (int i=0; i < rcList.size(); i++) {
 			RCMap x = rcList.get(i);
 			if (x.getAltitude() == altitude 
 					&& x.getFlightCondition().equals(flightCondition)
-					&& x.getBpr() == bpr
+					&& x.getDeltaTemperature() == deltaTemperature 
 					&& x.getWeight() == weight
-					&& x.getPhi() == phi) return x.getRC();
+					&& x.getPhi() == phi
+					) 
+				return x.getSpeedList();
 		}
 
 		return null;
 	}
 
 	/**
-	 * @author Lorenzo Attanasio
+	 * @author Vittorio Trifari
 	 * @param altitude
-	 * @param phi
-	 * @param BPR
-	 * @param flightCondition
+	 * @param deltaTemperature
 	 * @param weight
+	 * @param phi
+	 * @param flightCondition
 	 * @param rcList
 	 * @return
 	 */
-	public static double[] getRCSpeed( double altitude, double phi,
-			double BPR, EngineOperatingConditionEnum flightCondition, double weight,
-			List<RCMap> rcList) {
+	public static Amount<Velocity> getRCmax(
+			Amount<Length> altitude,
+			Amount<Temperature> deltaTemperature,
+			double phi,
+			Amount<Mass> weight,
+			EngineOperatingConditionEnum flightCondition, 
+			List<RCMap> rcList
+			) {
 
 		for (int i=0; i < rcList.size(); i++) {
 			RCMap x = rcList.get(i);
 			if (x.getAltitude() == altitude 
 					&& x.getFlightCondition().equals(flightCondition)
-					&& x.getBpr() == BPR
+					&& x.getDeltaTemperature() == deltaTemperature
 					&& x.getWeight() == weight
-					&& x.getPhi() == phi) return x.getSpeed();
+					&& x.getPhi() == phi
+					) 
+				return x.getRCMax();
+		}
+
+		return Amount.valueOf(0.0, SI.METERS_PER_SECOND);
+	}
+
+	/**
+	 * @author Vittorio Trifari
+	 * @param altitude
+	 * @param deltaTemperature
+	 * @param phi
+	 * @param flightCondition
+	 * @param weight
+	 * @param rcList
+	 * @return
+	 */
+	public static List<Amount<Angle>> getGamma(
+			Amount<Length> altitude, 
+			Amount<Temperature> deltaTemperature,
+			double phi, 
+			Amount<Mass> weight,
+			EngineOperatingConditionEnum flightCondition,
+			List<RCMap> rcList
+			) {
+
+		for (int i=0; i < rcList.size(); i++) {
+			RCMap x = rcList.get(i);
+			if (x.getAltitude() == altitude 
+					&& x.getFlightCondition().equals(flightCondition)
+					&& x.getDeltaTemperature() == deltaTemperature
+					&& x.getWeight() == weight
+					&& x.getPhi() == phi
+					) 
+				return x.getClimbAngleList();
 		}
 
 		return null;
 	}
 
 	/**
-	 * @author Lorenzo Attanasio
+	 * @author Vittorio Trifari
 	 * @param altitude
-	 * @param weight
+	 * @param deltaTemperature
 	 * @param phi
-	 * @param flightCondition
-	 * @param bpr
-	 * @param rcList
-	 * @return
-	 */
-	public static Double getRCmax(double altitude, double weight,
-			double phi, EngineOperatingConditionEnum flightCondition, double bpr,
-			List<RCMap> rcList) {
-
-		for (int i=0; i < rcList.size(); i++) {
-			RCMap x = rcList.get(i);
-			if (x.getAltitude() == altitude 
-					&& x.getFlightCondition().equals(flightCondition)
-					&& x.getBpr() == bpr
-					&& x.getWeight() == weight
-					&& x.getPhi() == phi) return x.getRCmax();
-		}
-
-		return null;
-	}
-
-	/**
-	 * @author Lorenzo Attanasio
-	 * @param altitude
-	 * @param phi
-	 * @param BPR
 	 * @param flightCondition
 	 * @param weight
 	 * @param rcList
 	 * @return
 	 */
-	public static double[] getGamma( double altitude, double weight,
-			double phi, EngineOperatingConditionEnum flightCondition, double bpr,
-			List<RCMap> rcList) {
+	public static Amount<Angle> getCGR (
+			Amount<Length> altitude, 
+			Amount<Temperature> deltaTemperature,
+			double phi, 
+			Amount<Mass> weight,
+			EngineOperatingConditionEnum flightCondition,
+			List<RCMap> rcList
+			) {
 
 		for (int i=0; i < rcList.size(); i++) {
 			RCMap x = rcList.get(i);
 			if (x.getAltitude() == altitude 
 					&& x.getFlightCondition().equals(flightCondition)
-					&& x.getBpr() == bpr
+					&& x.getDeltaTemperature() == deltaTemperature
 					&& x.getWeight() == weight
-					&& x.getPhi() == phi) return x.getGamma();
+					&& x.getPhi() == phi
+					) 
+				return x.getClimbAngle();
 		}
 
-		return null;
+		return Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
 	}
-
-
+	
 }

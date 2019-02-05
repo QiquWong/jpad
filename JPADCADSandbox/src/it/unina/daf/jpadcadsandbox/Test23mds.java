@@ -10,8 +10,8 @@ import java.util.stream.Collectors;
 
 import aircraft.Aircraft;
 import configuration.enumerations.ComponentEnum;
-import it.unina.daf.jpadcad.occ.OCCFXMeshExtractor;
 import it.unina.daf.jpadcad.occ.OCCShape;
+import it.unina.daf.jpadcad.occfx.OCCFXMeshExtractor;
 import it.unina.daf.jpadcadsandbox.utils.AircraftUtils;
 import javafx.application.Application;
 import javafx.event.EventHandler;
@@ -203,10 +203,10 @@ public class Test23mds extends Application {
         double scaleFactorY = 1.0;
         double scaleFactorX = 1.0;
         if (bounds.getWidth() > 0.0001) {
-            scaleFactorX = width / bounds.getWidth(); // / 2.0;
+            scaleFactorX = width / bounds.getWidth() / 2.0; // / 2.0;
         }
         if (bounds.getHeight() > 0.0001) {
-            scaleFactorY = height / bounds.getHeight(); //  / 1.5;
+            scaleFactorY = height / bounds.getHeight() / 2.0; //  / 1.5;
         }
         if (scaleFactorX > scaleFactorY) {
             scaleFactor = scaleFactorY;

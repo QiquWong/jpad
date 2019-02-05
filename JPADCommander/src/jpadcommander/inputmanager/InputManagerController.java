@@ -19,6 +19,7 @@ import aircraft.Aircraft;
 import aircraft.components.powerplant.Engine;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.EngineTypeEnum;
+import it.unina.daf.jpadcad.CADManager;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
@@ -103,6 +104,8 @@ public class InputManagerController {
 	@FXML
 	private SplitPane nacelleViewsAndDataLogSplitPane;
 	@FXML
+	private SplitPane cad3DViewsAndDataLogSplitPane;
+	@FXML
 	private Pane aircraftFrontViewPane;
 	@FXML
 	private Pane aircraftSideViewPane;
@@ -133,6 +136,8 @@ public class InputManagerController {
 	@FXML
 	private Pane nacelle1TopViewPane;
 	@FXML
+	private Pane cad3DViewPane;
+	@FXML
 	private BorderPane engine1BorderPane;
 	@FXML	
 	private TextArea textAreaAircraftConsoleOutput;
@@ -155,6 +160,8 @@ public class InputManagerController {
 	@FXML
 	private TextArea textAreaLandingGearsConsoleOutput;
 	@FXML
+	private TextArea textAreaCAD3DViewConsoleOutput;
+	@FXML
 	private TabPane tabPaneAircraftEngines;
 	@FXML
 	private TabPane tabPaneAircraftNacelles;
@@ -166,6 +173,8 @@ public class InputManagerController {
 	private TabPane tabPaneWingFlaps;
 	@FXML
 	private TabPane tabPaneWingSlats;
+	@FXML
+	private TabPane tabPaneWingAilerons;
 	@FXML
 	private TabPane tabPaneWingSpoilers;	
 	@FXML
@@ -198,6 +207,8 @@ public class InputManagerController {
 	private TabPane tabPaneNacellesFrontViews;
 	@FXML
 	private TabPane tabPaneEngines;	
+	@FXML
+	private TabPane tabPaneCAD3DView;
 	//...........................................................................................
 	// BUTTONS:
 	//...........................................................................................
@@ -264,6 +275,8 @@ public class InputManagerController {
 	@FXML
 	private Button wingAddSlatButton;
 	@FXML
+	private Button wingAddAileronButton;
+	@FXML
 	private Button wingAddSpoilerButton;
 	@FXML
 	private Button wingChooseInnerAirfoilPanel1Button;
@@ -317,6 +330,14 @@ public class InputManagerController {
 	private Button nacelleKDiameterOutletInfoButton1;
 	@FXML
 	private Button landingGearsKMainLegLengthInfoButton;
+	@FXML
+	private Button chooseCADConfigurationFileButton;
+	@FXML
+	private Button loadCADConfigurationFileButton;
+	@FXML
+	private Button updateCAD3DViewButton;
+	@FXML
+	private Button saveCADToFileButton;
 	
 	//...........................................................................................
 	// BUTTON MAP:
@@ -440,6 +461,8 @@ public class InputManagerController {
 	private FileChooser engineFileChooser;
 	private FileChooser nacelleFileChooser;
 	private FileChooser landingGearsFileChooser;
+	private FileChooser cad3DViewFileChooser;
+	private FileChooser saveCADFileChooser;
 	
 	//...........................................................................................
 	// VALIDATIONS (ControlsFX):
@@ -601,6 +624,27 @@ public class InputManagerController {
 			"Nacelles",
 			"Landing Gears",
 			"Systems"
+			);
+	ObservableList<String> fuselageCADSpacingsList = FXCollections.observableArrayList(
+			"UNIFORM",
+			"COSINUS",
+			"HALFCOSINUS1",
+			"HALFCOSINUS2"
+			);
+	ObservableList<String> cadFileExtensionsList = FXCollections.observableArrayList(
+			"BREP",
+			"STEP",
+			"IGES",
+			"STL"
+			);
+	ObservableList<String> wingTipTypesList = FXCollections.observableArrayList(
+			"CUTOFF",
+			"ROUNDED",
+			"WINGLET"
+			);
+	ObservableList<String> liftingSurfaceTipTypesList = FXCollections.observableArrayList(
+			"CUTOFF",
+			"ROUNDED"
 			);
 	
 	//...........................................................................................
@@ -908,8 +952,6 @@ public class InputManagerController {
 	@FXML
 	private TextField textFieldActualPassengersNumber;
 	@FXML
-	private TextField textFieldMaximumPassengersNumber;
-	@FXML
 	private TextField textFieldFlightCrewNumber;
 	@FXML
 	private TextField textFieldClassesNumber;
@@ -1070,33 +1112,19 @@ public class InputManagerController {
 	@FXML
 	private TextField textFieldWingMaximumDeflectionAngleSlat1;
 	@FXML
-	private ChoiceBox<String> wingLeftAileronTypeChoichBox;
+	private ChoiceBox<String> wingAileron1TypeChoiceBox;
 	@FXML
-	private TextField textFieldWingInnerPositionAileronLeft;
+	private TextField textFieldWingInnerPositionAileron1;
 	@FXML
-	private TextField textFieldWingOuterPositionAileronLeft;
+	private TextField textFieldWingOuterPositionAileron1;
 	@FXML
-	private TextField textFieldWingInnerChordRatioAileronLeft;
+	private TextField textFieldWingInnerChordRatioAileron1;
 	@FXML
-	private TextField textFieldWingOuterChordRatioAileronLeft;
+	private TextField textFieldWingOuterChordRatioAileron1;
 	@FXML
-	private TextField textFieldWingMinimumDeflectionAngleAileronLeft;
+	private TextField textFieldWingMinimumDeflectionAngleAileron1;
 	@FXML
-	private TextField textFieldWingMaximumDeflectionAngleAileronLeft;
-	@FXML
-	private ChoiceBox<String> wingRightAileronTypeChoichBox;
-	@FXML
-	private TextField textFieldWingInnerPositionAileronRight;
-	@FXML
-	private TextField textFieldWingOuterPositionAileronRight;
-	@FXML
-	private TextField textFieldWingInnerChordRatioAileronRight;
-	@FXML
-	private TextField textFieldWingOuterChordRatioAileronRight;
-	@FXML
-	private TextField textFieldWingMinimumDeflectionAngleAileronRight;
-	@FXML
-	private TextField textFieldWingMaximumDeflectionAngleAileronRight;
+	private TextField textFieldWingMaximumDeflectionAngleAileron1;
 	@FXML
 	private TextField textFieldWingInnerSpanwisePositionSpolier1;
 	@FXML
@@ -1156,6 +1184,17 @@ public class InputManagerController {
 	private List<ChoiceBox<String>> choiceBoxWingMinimumDeflectionAngleSlatUnitList;
 	private List<ChoiceBox<String>> choiceBoxWingMaximumDeflectionAngleSlatUnitList;
 	
+	// ailerons
+	private List<ChoiceBox<String>> choiceBoxWingAileronTypeList;
+	private List<TextField> textFieldWingInnerPositionAileronList;
+	private List<TextField> textFieldWingOuterPositionAileronList;
+	private List<TextField> textFieldWingInnerChordRatioAileronList;
+	private List<TextField> textFieldWingOuterChordRatioAileronList;
+	private List<TextField> textFieldWingMinimumDeflectionAngleAileronList;
+	private List<TextField> textFieldWingMaximumDeflectionAngleAileronList;
+	private List<ChoiceBox<String>> choiceBoxWingMinimumDeflectionAngleAileronUnitList;
+	private List<ChoiceBox<String>> choiceBoxWingMaximumDeflectionAngleAileronUnitList;
+	
 	// spoilers
 	private List<TextField> textFieldWingInnerSpanwisePositionSpoilerList;
 	private List<TextField> textFieldWingOuterSpanwisePositionSpoilerList;
@@ -1204,13 +1243,9 @@ public class InputManagerController {
 	@FXML
 	private ChoiceBox<String> wingMaximumDeflectionAngleSlat1UnitChoiceBox;
 	@FXML
-	private ChoiceBox<String> wingMinimumDeflectionAngleAileronLeftUnitChoiceBox;
+	private ChoiceBox<String> wingMinimumDeflectionAngleAileron1UnitChoiceBox;
 	@FXML
-	private ChoiceBox<String> wingMaximumDeflectionAngleAileronLeftUnitChoiceBox;
-	@FXML
-	private ChoiceBox<String> wingMinimumDeflectionAngleAileronRightUnitChoiceBox;
-	@FXML
-	private ChoiceBox<String> wingMaximumDeflectionAngleAileronRightUnitChoiceBox;
+	private ChoiceBox<String> wingMaximumDeflectionAngleAileron1UnitChoiceBox;
 	@FXML
 	private ChoiceBox<String> wingMinimumDeflectionAngleSpoiler1UnitChoiceBox;
 	@FXML
@@ -1677,6 +1712,98 @@ public class InputManagerController {
 	@FXML
 	private ChoiceBox<String> landingGearsRearWheelsWidthUnitChoiceBox;
 	
+	//...........................................................................................
+	// CAD 3D VIEW
+	//...........................................................................................
+	
+	// CAD file import
+	@FXML
+	private TextField cadConfigurationInputFileTextField;
+	
+	// CAD file export
+	@FXML
+	private CheckBox exportCADWireframeCheckBox;
+	@FXML
+	private ChoiceBox<String> fileExtensionCADChoiceBox;
+	
+	// FUSELAGE
+	@FXML
+	private CheckBox generateFuselageCADCheckBox;
+	@FXML
+	private TextField fuselageCADNumberNoseSectionsTextField;
+	@FXML
+	private ChoiceBox<String> fuselageCADNoseSpacingChoiceBox;
+	@FXML
+	private TextField fuselageCADNumberTailSectionsTextField;
+	@FXML
+	private ChoiceBox<String> fuselageCADTailSpacingChoiceBox;
+	
+	// WING
+	@FXML
+	private CheckBox generateWingCADCheckBox;
+	@FXML
+	private ChoiceBox<String> wingCADTipTypeChoiceBox;
+	@FXML
+	private TextField wingletCADYOffsetFactorTextField;
+	@FXML
+	private TextField wingletCADXOffsetFactorTextField;
+	@FXML
+	private TextField wingletCADTaperRatioTextField;
+	
+	// HORIZONTAL TAIL
+	@FXML
+	private CheckBox generateHTailCADCheckBox;
+	@FXML
+	private ChoiceBox<String> hTailCADTipTypeChoiceBox;
+	
+	// VERTICAL TAIL
+	@FXML
+	private CheckBox generateVTailCADCheckBox;
+	@FXML
+	private ChoiceBox<String> vTailCADTipTypeChoiceBox;
+	
+	// CANARD
+	@FXML
+	private CheckBox generateCanardCADCheckBox;
+	@FXML
+	private ChoiceBox<String> canardCADTipTypeChoiceBox;
+	
+	// WING FAIRING
+	@FXML
+	private CheckBox generateWingFairingCADCheckBox;
+	@FXML
+	private TextField wingFairingCADFrontLengthFactorTextField;
+	@FXML
+	private TextField wingFairingCADBackLengthFactorTextField;
+	@FXML
+	private TextField wingFairingCADWidthFactorTextField;
+	@FXML
+	private TextField wingFairingCADHeightFactorTextField;
+	@FXML
+	private TextField wingFairingCADHeightBelowReferenceFactorTextField;
+	@FXML
+	private TextField wingFairingCADHeightAboveReferenceFactorTextField;
+	@FXML
+	private TextField wingFairingCADFilletRadiusFactorTextField;
+	
+	// CANARD FAIRING
+	@FXML
+	private CheckBox generateCanardFairingCADCheckBox;
+	@FXML
+	private TextField canardFairingCADFrontLengthFactorTextField;
+	@FXML
+	private TextField canardFairingCADBackLengthFactorTextField;
+	@FXML
+	private TextField canardFairingCADWidthFactorTextField;
+	@FXML
+	private TextField canardFairingCADHeightFactorTextField;
+	@FXML
+	private TextField canardFairingCADHeightBelowReferenceFactorTextField;
+	@FXML
+	private TextField canardFairingCADHeightAboveReferenceFactorTextField;
+	@FXML
+	private TextField canardFairingCADFilletRadiusFactorTextField;
+	
 	//-------------------------------------------------------------------------------------------
 	// METHODS
 	//-------------------------------------------------------------------------------------------
@@ -1757,6 +1884,7 @@ public class InputManagerController {
 		actionButtonToolbar.getItems().add(new Label("<- Update Components Using Files"));
 		
 		ObjectProperty<Aircraft> aircraft = new SimpleObjectProperty<>();
+		ObjectProperty<CADManager> cadManager = new SimpleObjectProperty<>();
 		ObjectProperty<Boolean> aircraftSavedFlag = new SimpleObjectProperty<>();
 
 		try {
@@ -1789,6 +1917,23 @@ public class InputManagerController {
 			newAircraftButton.setDisable(true);
 		}
 		
+		try {
+			cadManager.set(Main.getTheCADManager());
+			chooseCADConfigurationFileButton.disableProperty().bind(
+					Bindings.isNull(aircraft).or(Bindings.isNull(cadManager))
+					);
+			updateCAD3DViewButton.disableProperty().bind(
+					Bindings.isNull(aircraft).or(Bindings.isNull(cadManager))
+					);
+			saveCADToFileButton.disableProperty().bind(
+					Bindings.isNull(aircraft).or(Bindings.isNull(cadManager))
+					);		
+		} catch (Exception e) {
+			chooseCADConfigurationFileButton.setDisable(true);
+			updateCAD3DViewButton.setDisable(true);
+			saveCADToFileButton.setDisable(true);
+		}
+		
 		tabPaneFuselageSpoilers.setTabClosingPolicy(TabClosingPolicy.SELECTED_TAB);
 		for(int i=0; i<tabPaneFuselageSpoilers.getTabs().size(); i++)
 			inputManagerControllerSecondaryActionUtilities.removeContentOnSpoilerTabClose(tabPaneFuselageSpoilers.getTabs().get(i), ComponentEnum.FUSELAGE);
@@ -1804,6 +1949,7 @@ public class InputManagerController {
 		tabPaneWingPanels.setTabClosingPolicy(TabClosingPolicy.SELECTED_TAB);
 		tabPaneWingFlaps.setTabClosingPolicy(TabClosingPolicy.SELECTED_TAB);
 		tabPaneWingSlats.setTabClosingPolicy(TabClosingPolicy.SELECTED_TAB);
+		tabPaneWingAilerons.setTabClosingPolicy(TabClosingPolicy.SELECTED_TAB);
 		tabPaneWingSpoilers.setTabClosingPolicy(TabClosingPolicy.SELECTED_TAB);
 		tabPaneWingViewAndAirfoils.setTabClosingPolicy(TabClosingPolicy.SELECTED_TAB);
 		tabPaneWingViewAndAirfoils.getTabs().get(0).closableProperty().set(false);
@@ -1815,6 +1961,8 @@ public class InputManagerController {
 			inputManagerControllerSecondaryActionUtilities.removeContentOnFlapTabClose(tabPaneWingFlaps.getTabs().get(i), ComponentEnum.WING);
 		for(int i=0; i<tabPaneWingSlats.getTabs().size(); i++)
 			inputManagerControllerSecondaryActionUtilities.removeContentOnSlatTabClose(tabPaneWingSlats.getTabs().get(i));
+		for(int i=0; i<tabPaneWingAilerons.getTabs().size(); i++)
+			inputManagerControllerSecondaryActionUtilities.removeContentOnAileronTabClose(tabPaneWingAilerons.getTabs().get(i)); 
 		for(int i=0; i<tabPaneWingSpoilers.getTabs().size(); i++)
 			inputManagerControllerSecondaryActionUtilities.removeContentOnSpoilerTabClose(tabPaneWingSpoilers.getTabs().get(i), ComponentEnum.WING);
 		
@@ -1875,11 +2023,19 @@ public class InputManagerController {
 		vTailAdjustCriterionChoiceBox.setItems(liftingSurfaceAdjustCriteriaTypeList);
 		canardAdjustCriterionChoiceBox.setItems(liftingSurfaceAdjustCriteriaTypeList);
 		wingFlap1TypeChoichBox.setItems(flapTypeList);
-		wingLeftAileronTypeChoichBox.setItems(aileronTypeList);
-		wingRightAileronTypeChoichBox.setItems(aileronTypeList);
+		wingAileron1TypeChoiceBox.setItems(aileronTypeList);
 		hTailElevator1TypeChoiceBox.setItems(elevatorTypeList);
 		vTailRudder1TypeChoiceBox.setItems(rudderTypeList);
 		canardControlSurface1TypeChoiceBox.setItems(canardSurfaceTypeList);
+		
+		// 3D View
+		fileExtensionCADChoiceBox.setItems(cadFileExtensionsList);
+		fuselageCADNoseSpacingChoiceBox.setItems(fuselageCADSpacingsList);
+		fuselageCADTailSpacingChoiceBox.setItems(fuselageCADSpacingsList);
+		wingCADTipTypeChoiceBox.setItems(wingTipTypesList);
+		hTailCADTipTypeChoiceBox.setItems(liftingSurfaceTipTypesList);
+		vTailCADTipTypeChoiceBox.setItems(liftingSurfaceTipTypesList);
+		canardCADTipTypeChoiceBox.setItems(liftingSurfaceTipTypesList);
 		
 		// Units 
 		fuselageXUnitChoiceBox.setItems(lengthUnitsList);
@@ -1952,10 +2108,8 @@ public class InputManagerController {
 		wingMaximumDeflectionAngleFlap1UnitChoiceBox.setItems(angleUnitsList);
 		wingMinimumDeflectionAngleSlat1UnitChoiceBox.setItems(angleUnitsList);
 		wingMaximumDeflectionAngleSlat1UnitChoiceBox.setItems(angleUnitsList);
-		wingMinimumDeflectionAngleAileronLeftUnitChoiceBox.setItems(angleUnitsList);
-		wingMaximumDeflectionAngleAileronLeftUnitChoiceBox.setItems(angleUnitsList);
-		wingMinimumDeflectionAngleAileronRightUnitChoiceBox.setItems(angleUnitsList);
-		wingMaximumDeflectionAngleAileronRightUnitChoiceBox.setItems(angleUnitsList);
+		wingMinimumDeflectionAngleAileron1UnitChoiceBox.setItems(angleUnitsList);
+		wingMaximumDeflectionAngleAileron1UnitChoiceBox.setItems(angleUnitsList);
 		wingMinimumDeflectionAngleSpoiler1UnitChoiceBox.setItems(angleUnitsList);
 		wingMaximumDeflectionAngleSpoiler1UnitChoiceBox.setItems(angleUnitsList);
 		hTailRoughnessUnitChoiceBox.setItems(lengthUnitsList);
@@ -1999,7 +2153,7 @@ public class InputManagerController {
 		landingGearsRearWheelsWidthUnitChoiceBox.setItems(lengthUnitsList);
 		
 		//.......................................................................................
-		// ADJUST CRITERIA CHOICE BOXES INITIALIZATION TODO: eventually move this initialization elsewhere
+		// ADJUST CRITERIA CHOICE BOXES INITIALIZATION
 		fuselageAdjustCriterionChoiceBox.getSelectionModel().select(0);
 		wingAdjustCriterionChoiceBox.getSelectionModel().select(0);
 		hTailAdjustCriterionChoiceBox.getSelectionModel().select(0);
@@ -2217,6 +2371,34 @@ public class InputManagerController {
 		
 		choiceBoxWingMaximumDeflectionAngleSlatUnitList = new ArrayList<>();
 		choiceBoxWingMaximumDeflectionAngleSlatUnitList.add(wingMaximumDeflectionAngleSlat1UnitChoiceBox);
+		
+		// ailerons
+		choiceBoxWingAileronTypeList= new ArrayList<>();
+		choiceBoxWingAileronTypeList.add(wingAileron1TypeChoiceBox);
+		
+		textFieldWingInnerPositionAileronList = new ArrayList<>();
+		textFieldWingInnerPositionAileronList.add(textFieldWingInnerPositionAileron1);
+		
+		textFieldWingOuterPositionAileronList = new ArrayList<>();
+		textFieldWingOuterPositionAileronList.add(textFieldWingOuterPositionAileron1);
+		
+		textFieldWingInnerChordRatioAileronList = new ArrayList<>();
+		textFieldWingInnerChordRatioAileronList.add(textFieldWingInnerChordRatioAileron1);
+		
+		textFieldWingOuterChordRatioAileronList = new ArrayList<>();
+		textFieldWingOuterChordRatioAileronList.add(textFieldWingOuterChordRatioAileron1);
+		
+		textFieldWingMinimumDeflectionAngleAileronList = new ArrayList<>();
+		textFieldWingMinimumDeflectionAngleAileronList.add(textFieldWingMinimumDeflectionAngleAileron1);
+		
+		textFieldWingMaximumDeflectionAngleAileronList = new ArrayList<>();
+		textFieldWingMaximumDeflectionAngleAileronList.add(textFieldWingMaximumDeflectionAngleAileron1);
+		
+		choiceBoxWingMinimumDeflectionAngleAileronUnitList = new ArrayList<>();
+		choiceBoxWingMinimumDeflectionAngleAileronUnitList.add(wingMinimumDeflectionAngleAileron1UnitChoiceBox);
+		
+		choiceBoxWingMaximumDeflectionAngleAileronUnitList = new ArrayList<>();
+		choiceBoxWingMaximumDeflectionAngleAileronUnitList.add(wingMaximumDeflectionAngleAileron1UnitChoiceBox);
 		
 		// spoilers
 		textFieldWingInnerSpanwisePositionSpoilerList = new ArrayList<>();
@@ -2683,7 +2865,7 @@ public class InputManagerController {
 		inputManagerControllerSecondaryActionUtilities.setShowEngineDataAction(powerPlantJetRadioButton1, 0, EngineTypeEnum.TURBOFAN);
 		inputManagerControllerSecondaryActionUtilities.setShowEngineDataAction(powerPlantTurbopropRadioButton1, 0, EngineTypeEnum.TURBOPROP);
 		inputManagerControllerSecondaryActionUtilities.setShowEngineDataAction(powerPlantPistonRadioButton1, 0, EngineTypeEnum.PISTON);
-		
+		inputManagerControllerSecondaryActionUtilities.cadConfigurationLoadButtonDisableCheck();	
 	}
 	
 	@FXML
@@ -3532,6 +3714,134 @@ public class InputManagerController {
 		newSlatTab.setContent(contentPane);
 		tabPaneWingSlats.getTabs().add(newSlatTab);
 		
+	}
+	
+	@FXML
+	public void addAileron() {
+		
+		Tab newAileronTab = new Tab("Aileron " + (tabPaneWingAilerons.getTabs().size()+1));
+		Pane contentPane = new Pane();
+		
+		Label aileronTypeLabel = new Label("Type:");
+		aileronTypeLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		aileronTypeLabel.setLayoutX(6.0);
+		aileronTypeLabel.setLayoutY(0.0);
+		contentPane.getChildren().add(aileronTypeLabel);
+		
+		ChoiceBox<String> aileronTypeChoiceBox = new ChoiceBox<String>();
+		aileronTypeChoiceBox.setLayoutX(6.0);
+		aileronTypeChoiceBox.setLayoutY(21);
+		aileronTypeChoiceBox.setPrefWidth(340);
+		aileronTypeChoiceBox.setPrefHeight(31);
+		aileronTypeChoiceBox.setItems(aileronTypeList);
+		contentPane.getChildren().add(aileronTypeChoiceBox);
+		
+		Label aileronInnerPositionLabel = new Label("Inner position (% semispan):");
+		aileronInnerPositionLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		aileronInnerPositionLabel.setLayoutX(6.0);
+		aileronInnerPositionLabel.setLayoutY(50.0);
+		contentPane.getChildren().add(aileronInnerPositionLabel);
+		
+		TextField aileronInnerPositionTextField = new TextField();
+		aileronInnerPositionTextField.setLayoutX(6.0);
+		aileronInnerPositionTextField.setLayoutY(71);
+		aileronInnerPositionTextField.setPrefWidth(340);
+		aileronInnerPositionTextField.setPrefHeight(31);
+		contentPane.getChildren().add(aileronInnerPositionTextField);
+		
+		Label aileronOuterPositionLabel = new Label("Outer position (% semispan):");
+		aileronOuterPositionLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		aileronOuterPositionLabel.setLayoutX(6.0);
+		aileronOuterPositionLabel.setLayoutY(102.0);
+		contentPane.getChildren().add(aileronOuterPositionLabel);
+		
+		TextField aileronOuterPositionTextField = new TextField();
+		aileronOuterPositionTextField.setLayoutX(6.0);
+		aileronOuterPositionTextField.setLayoutY(123);
+		aileronOuterPositionTextField.setPrefWidth(340);
+		aileronOuterPositionTextField.setPrefHeight(31);
+		contentPane.getChildren().add(aileronOuterPositionTextField);
+		
+		Label aileronInnerChordRatioLabel = new Label("Inner chord ratio:");
+		aileronInnerChordRatioLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		aileronInnerChordRatioLabel.setLayoutX(6.0);
+		aileronInnerChordRatioLabel.setLayoutY(154.0);
+		contentPane.getChildren().add(aileronInnerChordRatioLabel);
+		
+		TextField aileronInnerChordRatioTextField = new TextField();
+		aileronInnerChordRatioTextField.setLayoutX(6.0);
+		aileronInnerChordRatioTextField.setLayoutY(175);
+		aileronInnerChordRatioTextField.setPrefWidth(340);
+		aileronInnerChordRatioTextField.setPrefHeight(31);
+		contentPane.getChildren().add(aileronInnerChordRatioTextField);
+		
+		Label aileronOuterChordRatioLabel = new Label("Outer chord ratio:");
+		aileronOuterChordRatioLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		aileronOuterChordRatioLabel.setLayoutX(6.0);
+		aileronOuterChordRatioLabel.setLayoutY(206.0);
+		contentPane.getChildren().add(aileronOuterChordRatioLabel);
+		
+		TextField aileronOuterChordRatioTextField = new TextField();
+		aileronOuterChordRatioTextField.setLayoutX(6.0);
+		aileronOuterChordRatioTextField.setLayoutY(227);
+		aileronOuterChordRatioTextField.setPrefWidth(340);
+		aileronOuterChordRatioTextField.setPrefHeight(31);
+		contentPane.getChildren().add(aileronOuterChordRatioTextField);
+		
+		Label aileronMinimumDeflectionLabel = new Label("Minimum deflection angle:");
+		aileronMinimumDeflectionLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		aileronMinimumDeflectionLabel.setLayoutX(6.0);
+		aileronMinimumDeflectionLabel.setLayoutY(258.0);
+		contentPane.getChildren().add(aileronMinimumDeflectionLabel);
+		
+		TextField aileronMinimumDeflectionTextField = new TextField();
+		aileronMinimumDeflectionTextField.setLayoutX(6.0);
+		aileronMinimumDeflectionTextField.setLayoutY(279);
+		aileronMinimumDeflectionTextField.setPrefWidth(340);
+		aileronMinimumDeflectionTextField.setPrefHeight(31);
+		contentPane.getChildren().add(aileronMinimumDeflectionTextField);
+		
+		ChoiceBox<String> aileronMinimumDeflectionChoiceBox = new ChoiceBox<String>();
+		aileronMinimumDeflectionChoiceBox.setLayoutX(348.0);
+		aileronMinimumDeflectionChoiceBox.setLayoutY(279);
+		aileronMinimumDeflectionChoiceBox.setPrefWidth(47);
+		aileronMinimumDeflectionChoiceBox.setPrefHeight(30);
+		aileronMinimumDeflectionChoiceBox.setItems(angleUnitsList);
+		contentPane.getChildren().add(aileronMinimumDeflectionChoiceBox);
+		
+		Label aileronMaximumDeflectionLabel = new Label("Maximum deflection angle:");
+		aileronMaximumDeflectionLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		aileronMaximumDeflectionLabel.setLayoutX(6.0);
+		aileronMaximumDeflectionLabel.setLayoutY(310.0);
+		contentPane.getChildren().add(aileronMaximumDeflectionLabel);
+		
+		TextField aileronMaximumDeflectionTextField = new TextField();
+		aileronMaximumDeflectionTextField.setLayoutX(6.0);
+		aileronMaximumDeflectionTextField.setLayoutY(331);
+		aileronMaximumDeflectionTextField.setPrefWidth(331);
+		aileronMaximumDeflectionTextField.setPrefHeight(31);
+		contentPane.getChildren().add(aileronMaximumDeflectionTextField);
+		
+		ChoiceBox<String> aileronMaximumDeflectionChoiceBox = new ChoiceBox<String>();
+		aileronMaximumDeflectionChoiceBox.setLayoutX(348.0);
+		aileronMaximumDeflectionChoiceBox.setLayoutY(331);
+		aileronMaximumDeflectionChoiceBox.setPrefWidth(47);
+		aileronMaximumDeflectionChoiceBox.setPrefHeight(30);
+		aileronMaximumDeflectionChoiceBox.setItems(angleUnitsList);
+		contentPane.getChildren().add(aileronMaximumDeflectionChoiceBox);
+		
+		choiceBoxWingAileronTypeList.add(aileronTypeChoiceBox);
+		textFieldWingInnerPositionAileronList.add(aileronInnerPositionTextField);
+		textFieldWingOuterPositionAileronList.add(aileronOuterPositionTextField);
+		textFieldWingInnerChordRatioAileronList.add(aileronInnerChordRatioTextField);
+		textFieldWingOuterChordRatioAileronList.add(aileronOuterChordRatioTextField);
+		textFieldWingMinimumDeflectionAngleAileronList.add(aileronMinimumDeflectionTextField);
+		textFieldWingMaximumDeflectionAngleAileronList.add(aileronMaximumDeflectionTextField);
+		choiceBoxWingMinimumDeflectionAngleAileronUnitList.add(aileronMinimumDeflectionChoiceBox);
+		choiceBoxWingMaximumDeflectionAngleAileronUnitList.add(aileronMaximumDeflectionChoiceBox);
+		
+		newAileronTab.setContent(contentPane);
+		tabPaneWingAilerons.getTabs().add(newAileronTab);
 	}
 	
 	@FXML
@@ -5857,6 +6167,23 @@ public class InputManagerController {
 	}
 	
 	@FXML
+	private void chooseCADConfigurationFile() throws IOException {
+
+		cad3DViewFileChooser = new FileChooser();
+		cad3DViewFileChooser.setTitle("Open CAD Configuration File");
+		cad3DViewFileChooser.setInitialDirectory(new File(Main.getInputDirectoryPath() + File.separator + "Template_CADConfigs"));
+		File file = cad3DViewFileChooser.showOpenDialog(null);
+		if (file != null) {
+			// get full path and populate the text box
+			cadConfigurationInputFileTextField.setText(file.getAbsolutePath());
+			Main.setCADConfigurationFileAbsolutePath(file.getAbsolutePath());
+			chooseCADConfigurationFileButton.setStyle("");
+			
+			loadCADConfigurationFileButton.setStyle(buttonSuggestedActionStyle);
+		}		
+	}
+	
+	@FXML
 	private void newAircraft() throws IOException {
 		
 		//..................................................................................
@@ -5912,10 +6239,37 @@ public class InputManagerController {
 				loadAircraftButton.setStyle("");
 				saveAircraftButton.setStyle(buttonSuggestedActionStyle);
 				updateAircraftDataButton.setStyle(buttonSuggestedActionStyle);
+				chooseCADConfigurationFileButton.setStyle(buttonSuggestedActionStyle);
 			} catch (IOException | InterruptedException e) {
 				e.printStackTrace();
 			}
 		
+	}
+	
+	@FXML 
+	private void loadCADConfigurationFile() {
+		
+		if (inputManagerControllerSecondaryActionUtilities.isCADConfigurationFile(cadConfigurationInputFileTextField.getText())) {
+			
+			inputManagerControllerMainActionUtilities.loadCADConfigurationFileImplementation();
+			loadCADConfigurationFileButton.setStyle("");
+			updateCAD3DViewButton.setStyle(buttonSuggestedActionStyle);
+		}
+		
+	}
+	
+	@FXML
+	private void updateCAD3DView() {
+		
+		inputManagerControllerMainActionUtilities.updateCAD3DViewImplementation();
+		
+		saveCADToFileButton.setStyle(buttonSuggestedActionStyle);
+	}
+	
+	@FXML
+	private void saveCADToFile() {
+		
+		inputManagerControllerMainActionUtilities.saveCADToFileImplementation();
 	}
 
 	@FXML
@@ -6269,6 +6623,16 @@ public class InputManagerController {
 	private void zoomViewsNacelle() {
 		nacelleViewsAndDataLogSplitPane.setDividerPositions(0.9);
 	}
+	
+	@FXML
+	private void zoomDataLogAndMessageCAD3DView() {
+		cad3DViewsAndDataLogSplitPane.setDividerPositions(0.5);
+	}
+	
+	@FXML
+	private void zoomCAD3DView() {
+		cad3DViewsAndDataLogSplitPane.setDividerPositions(0.9);
+	}
 
 	//..........................................................................................
 	// GETTERS AND SETTERS
@@ -6600,6 +6964,14 @@ public class InputManagerController {
 
 	public void setTabPaneWingSlats(TabPane tabPaneWingSlats) {
 		this.tabPaneWingSlats = tabPaneWingSlats;
+	}
+
+	public TabPane getTabPaneWingAilerons() {
+		return tabPaneWingAilerons;
+	}
+
+	public void setTabPaneWingAilerons(TabPane tabPaneWingAilerons) {
+		this.tabPaneWingAilerons = tabPaneWingAilerons;
 	}
 
 	public TabPane getTabPaneWingSpoilers() {
@@ -9379,14 +9751,6 @@ public class InputManagerController {
 		this.textFieldActualPassengersNumber = textFieldActualPassengersNumber;
 	}
 
-	public TextField getTextFieldMaximumPassengersNumber() {
-		return textFieldMaximumPassengersNumber;
-	}
-
-	public void setTextFieldMaximumPassengersNumber(TextField textFieldMaximumPassengersNumber) {
-		this.textFieldMaximumPassengersNumber = textFieldMaximumPassengersNumber;
-	}
-
 	public TextField getTextFieldFlightCrewNumber() {
 		return textFieldFlightCrewNumber;
 	}
@@ -10006,120 +10370,62 @@ public class InputManagerController {
 		this.textFieldWingMaximumDeflectionAngleSlat1 = textFieldWingMaximumDeflectionAngleSlat1;
 	}
 
-	public ChoiceBox<String> getWingLeftAileronTypeChoichBox() {
-		return wingLeftAileronTypeChoichBox;
+	public ChoiceBox<String> getWingAileron1TypeChoiceBox() {
+		return wingAileron1TypeChoiceBox;
 	}
 
-	public void setWingLeftAileronTypeChoichBox(ChoiceBox<String> wingLeftAileronTypeChoichBox) {
-		this.wingLeftAileronTypeChoichBox = wingLeftAileronTypeChoichBox;
+	public void setWingAileron1TypeChoiceBox(ChoiceBox<String> wingAileron1TypeChoiceBox) {
+		this.wingAileron1TypeChoiceBox = wingAileron1TypeChoiceBox;
 	}
 
-	public TextField getTextFieldWingInnerPositionAileronLeft() {
-		return textFieldWingInnerPositionAileronLeft;
+	public TextField getTextFieldWingInnerPositionAileron1() {
+		return textFieldWingInnerPositionAileron1;
 	}
 
-	public void setTextFieldWingInnerPositionAileronLeft(TextField textFieldWingInnerPositionAileronLeft) {
-		this.textFieldWingInnerPositionAileronLeft = textFieldWingInnerPositionAileronLeft;
+	public void setTextFieldWingInnerPositionAileron1(TextField textFieldWingInnerPositionAileron1) {
+		this.textFieldWingInnerPositionAileron1 = textFieldWingInnerPositionAileron1;
 	}
 
-	public TextField getTextFieldWingOuterPositionAileronLeft() {
-		return textFieldWingOuterPositionAileronLeft;
+	public TextField getTextFieldWingOuterPositionAileron1() {
+		return textFieldWingOuterPositionAileron1;
 	}
 
-	public void setTextFieldWingOuterPositionAileronLeft(TextField textFieldWingOuterPositionAileronLeft) {
-		this.textFieldWingOuterPositionAileronLeft = textFieldWingOuterPositionAileronLeft;
+	public void setTextFieldWingOuterPositionAileron1(TextField textFieldWingOuterPositionAileron1) {
+		this.textFieldWingOuterPositionAileron1 = textFieldWingOuterPositionAileron1;
 	}
 
-	public TextField getTextFieldWingInnerChordRatioAileronLeft() {
-		return textFieldWingInnerChordRatioAileronLeft;
+	public TextField getTextFieldWingInnerChordRatioAileron1() {
+		return textFieldWingInnerChordRatioAileron1;
 	}
 
-	public void setTextFieldWingInnerChordRatioAileronLeft(TextField textFieldWingInnerChordRatioAileronLeft) {
-		this.textFieldWingInnerChordRatioAileronLeft = textFieldWingInnerChordRatioAileronLeft;
+	public void setTextFieldWingInnerChordRatioAileron1(TextField textFieldWingInnerChordRatioAileron1) {
+		this.textFieldWingInnerChordRatioAileron1 = textFieldWingInnerChordRatioAileron1;
 	}
 
-	public TextField getTextFieldWingOuterChordRatioAileronLeft() {
-		return textFieldWingOuterChordRatioAileronLeft;
+	public TextField getTextFieldWingOuterChordRatioAileron1() {
+		return textFieldWingOuterChordRatioAileron1;
 	}
 
-	public void setTextFieldWingOuterChordRatioAileronLeft(TextField textFieldWingOuterChordRatioAileronLeft) {
-		this.textFieldWingOuterChordRatioAileronLeft = textFieldWingOuterChordRatioAileronLeft;
+	public void setTextFieldWingOuterChordRatioAileron1(TextField textFieldWingOuterChordRatioAileron1) {
+		this.textFieldWingOuterChordRatioAileron1 = textFieldWingOuterChordRatioAileron1;
 	}
 
-	public TextField getTextFieldWingMinimumDeflectionAngleAileronLeft() {
-		return textFieldWingMinimumDeflectionAngleAileronLeft;
+	public TextField getTextFieldWingMinimumDeflectionAngleAileron1() {
+		return textFieldWingMinimumDeflectionAngleAileron1;
 	}
 
-	public void setTextFieldWingMinimumDeflectionAngleAileronLeft(
-			TextField textFieldWingMinimumDeflectionAngleAileronLeft) {
-		this.textFieldWingMinimumDeflectionAngleAileronLeft = textFieldWingMinimumDeflectionAngleAileronLeft;
+	public void setTextFieldWingMinimumDeflectionAngleAileron1(
+			TextField textFieldWingMinimumDeflectionAngleAileron1) {
+		this.textFieldWingMinimumDeflectionAngleAileron1 = textFieldWingMinimumDeflectionAngleAileron1;
 	}
 
-	public TextField getTextFieldWingMaximumDeflectionAngleAileronLeft() {
-		return textFieldWingMaximumDeflectionAngleAileronLeft;
+	public TextField getTextFieldWingMaximumDeflectionAngleAileron1() {
+		return textFieldWingMaximumDeflectionAngleAileron1;
 	}
 
-	public void setTextFieldWingMaximumDeflectionAngleAileronLeft(
-			TextField textFieldWingMaximumDeflectionAngleAileronLeft) {
-		this.textFieldWingMaximumDeflectionAngleAileronLeft = textFieldWingMaximumDeflectionAngleAileronLeft;
-	}
-
-	public ChoiceBox<String> getWingRightAileronTypeChoichBox() {
-		return wingRightAileronTypeChoichBox;
-	}
-
-	public void setWingRightAileronTypeChoichBox(ChoiceBox<String> wingRightAileronTypeChoichBox) {
-		this.wingRightAileronTypeChoichBox = wingRightAileronTypeChoichBox;
-	}
-
-	public TextField getTextFieldWingInnerPositionAileronRight() {
-		return textFieldWingInnerPositionAileronRight;
-	}
-
-	public void setTextFieldWingInnerPositionAileronRight(TextField textFieldWingInnerPositionAileronRight) {
-		this.textFieldWingInnerPositionAileronRight = textFieldWingInnerPositionAileronRight;
-	}
-
-	public TextField getTextFieldWingOuterPositionAileronRight() {
-		return textFieldWingOuterPositionAileronRight;
-	}
-
-	public void setTextFieldWingOuterPositionAileronRight(TextField textFieldWingOuterPositionAileronRight) {
-		this.textFieldWingOuterPositionAileronRight = textFieldWingOuterPositionAileronRight;
-	}
-
-	public TextField getTextFieldWingInnerChordRatioAileronRight() {
-		return textFieldWingInnerChordRatioAileronRight;
-	}
-
-	public void setTextFieldWingInnerChordRatioAileronRight(TextField textFieldWingInnerChordRatioAileronRight) {
-		this.textFieldWingInnerChordRatioAileronRight = textFieldWingInnerChordRatioAileronRight;
-	}
-
-	public TextField getTextFieldWingOuterChordRatioAileronRight() {
-		return textFieldWingOuterChordRatioAileronRight;
-	}
-
-	public void setTextFieldWingOuterChordRatioAileronRight(TextField textFieldWingOuterChordRatioAileronRight) {
-		this.textFieldWingOuterChordRatioAileronRight = textFieldWingOuterChordRatioAileronRight;
-	}
-
-	public TextField getTextFieldWingMinimumDeflectionAngleAileronRight() {
-		return textFieldWingMinimumDeflectionAngleAileronRight;
-	}
-
-	public void setTextFieldWingMinimumDeflectionAngleAileronRight(
-			TextField textFieldWingMinimumDeflectionAngleAileronRight) {
-		this.textFieldWingMinimumDeflectionAngleAileronRight = textFieldWingMinimumDeflectionAngleAileronRight;
-	}
-
-	public TextField getTextFieldWingMaximumDeflectionAngleAileronRight() {
-		return textFieldWingMaximumDeflectionAngleAileronRight;
-	}
-
-	public void setTextFieldWingMaximumDeflectionAngleAileronRight(
-			TextField textFieldWingMaximumDeflectionAngleAileronRight) {
-		this.textFieldWingMaximumDeflectionAngleAileronRight = textFieldWingMaximumDeflectionAngleAileronRight;
+	public void setTextFieldWingMaximumDeflectionAngleAileron1(
+			TextField textFieldWingMaximumDeflectionAngleAileron1) {
+		this.textFieldWingMaximumDeflectionAngleAileron1 = textFieldWingMaximumDeflectionAngleAileron1;
 	}
 
 	public TextField getTextFieldWingInnerSpanwisePositionSpolier1() {
@@ -10490,6 +10796,82 @@ public class InputManagerController {
 		this.choiceBoxWingMaximumDeflectionAngleSlatUnitList = choiceBoxWingMaximumDeflectionAngleSlatUnitList;
 	}
 
+	public List<ChoiceBox<String>> getChoiceBoxWingAileronTypeList() {
+		return choiceBoxWingAileronTypeList;
+	}
+
+	public void setChoiceBoxWingAileronTypeList(List<ChoiceBox<String>> choiceBoxWingAileronTypeList) {
+		this.choiceBoxWingAileronTypeList = choiceBoxWingAileronTypeList;
+	}
+
+	public List<TextField> getTextFieldWingInnerPositionAileronList() {
+		return textFieldWingInnerPositionAileronList;
+	}
+
+	public void setTextFieldWingInnerPositionAileronList(List<TextField> textFieldWingInnerPositionAileronList) {
+		this.textFieldWingInnerPositionAileronList = textFieldWingInnerPositionAileronList;
+	}
+
+	public List<TextField> getTextFieldWingOuterPositionAileronList() {
+		return textFieldWingOuterPositionAileronList;
+	}
+
+	public void setTextFieldWingOuterPositionAileronList(List<TextField> textFieldWingOuterPositionAileronList) {
+		this.textFieldWingOuterPositionAileronList = textFieldWingOuterPositionAileronList;
+	}
+
+	public List<TextField> getTextFieldWingInnerChordRatioAileronList() {
+		return textFieldWingInnerChordRatioAileronList;
+	}
+
+	public void setTextFieldWingInnerChordRatioAileronList(List<TextField> textFieldWingInnerChordRatioAileronList) {
+		this.textFieldWingInnerChordRatioAileronList = textFieldWingInnerChordRatioAileronList;
+	}
+
+	public List<TextField> getTextFieldWingOuterChordRatioAileronList() {
+		return textFieldWingOuterChordRatioAileronList;
+	}
+
+	public void setTextFieldWingOuterChordRatioAileronList(List<TextField> textFieldWingOuterChordRatioAileronList) {
+		this.textFieldWingOuterChordRatioAileronList = textFieldWingOuterChordRatioAileronList;
+	}
+
+	public List<TextField> getTextFieldWingMinimumDeflectionAngleAileronList() {
+		return textFieldWingMinimumDeflectionAngleAileronList;
+	}
+
+	public void setTextFieldWingMinimumDeflectionAngleAileronList(
+			List<TextField> textFieldWingMinimumDeflectionAngleAileronList) {
+		this.textFieldWingMinimumDeflectionAngleAileronList = textFieldWingMinimumDeflectionAngleAileronList;
+	}
+
+	public List<TextField> getTextFieldWingMaximumDeflectionAngleAileronList() {
+		return textFieldWingMaximumDeflectionAngleAileronList;
+	}
+
+	public void setTextFieldWingMaximumDeflectionAngleAileronList(
+			List<TextField> textFieldWingMaximumDeflectionAngleAileronList) {
+		this.textFieldWingMaximumDeflectionAngleAileronList = textFieldWingMaximumDeflectionAngleAileronList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxWingMinimumDeflectionAngleAileronUnitList() {
+		return choiceBoxWingMinimumDeflectionAngleAileronUnitList;
+	}
+
+	public void setChoiceBoxWingMinimumDeflectionAngleAileronUnitList(
+			List<ChoiceBox<String>> choiceBoxWingMinimumDeflectionAngleAileronUnitList) {
+		this.choiceBoxWingMinimumDeflectionAngleAileronUnitList = choiceBoxWingMinimumDeflectionAngleAileronUnitList;
+	}
+
+	public List<ChoiceBox<String>> getChoiceBoxWingMaximumDeflectionAngleAileronUnitList() {
+		return choiceBoxWingMaximumDeflectionAngleAileronUnitList;
+	}
+
+	public void setChoiceBoxWingMaximumDeflectionAngleAileronUnitList(
+			List<ChoiceBox<String>> choiceBoxWingMaximumDeflectionAngleAileronUnitList) {
+		this.choiceBoxWingMaximumDeflectionAngleAileronUnitList = choiceBoxWingMaximumDeflectionAngleAileronUnitList;
+	}
+
 	public List<TextField> getTextFieldWingInnerSpanwisePositionSpoilerList() {
 		return textFieldWingInnerSpanwisePositionSpoilerList;
 	}
@@ -10704,40 +11086,22 @@ public class InputManagerController {
 		this.wingMaximumDeflectionAngleSlat1UnitChoiceBox = wingMaximumDeflectionAngleSlat1UnitChoiceBox;
 	}
 
-	public ChoiceBox<String> getWingMinimumDeflectionAngleAileronLeftUnitChoiceBox() {
-		return wingMinimumDeflectionAngleAileronLeftUnitChoiceBox;
+	public ChoiceBox<String> getWingMinimumDeflectionAngleAileron1UnitChoiceBox() {
+		return wingMinimumDeflectionAngleAileron1UnitChoiceBox;
 	}
 
-	public void setWingMinimumDeflectionAngleAileronLeftUnitChoiceBox(
-			ChoiceBox<String> wingMinimumDeflectionAngleAileronLeftUnitChoiceBox) {
-		this.wingMinimumDeflectionAngleAileronLeftUnitChoiceBox = wingMinimumDeflectionAngleAileronLeftUnitChoiceBox;
+	public void setWingMinimumDeflectionAngleAileron1UnitChoiceBox(
+			ChoiceBox<String> wingMinimumDeflectionAngleAileron1UnitChoiceBox) {
+		this.wingMinimumDeflectionAngleAileron1UnitChoiceBox = wingMinimumDeflectionAngleAileron1UnitChoiceBox;
 	}
 
-	public ChoiceBox<String> getWingMaximumDeflectionAngleAileronLeftUnitChoiceBox() {
-		return wingMaximumDeflectionAngleAileronLeftUnitChoiceBox;
+	public ChoiceBox<String> getWingMaximumDeflectionAngleAileron1UnitChoiceBox() {
+		return wingMaximumDeflectionAngleAileron1UnitChoiceBox;
 	}
 
-	public void setWingMaximumDeflectionAngleAileronLeftUnitChoiceBox(
-			ChoiceBox<String> wingMaximumDeflectionAngleAileronLeftUnitChoiceBox) {
-		this.wingMaximumDeflectionAngleAileronLeftUnitChoiceBox = wingMaximumDeflectionAngleAileronLeftUnitChoiceBox;
-	}
-
-	public ChoiceBox<String> getWingMinimumDeflectionAngleAileronRigthUnitChoiceBox() {
-		return wingMinimumDeflectionAngleAileronRightUnitChoiceBox;
-	}
-
-	public void setWingMinimumDeflectionAngleAileronRigthUnitChoiceBox(
-			ChoiceBox<String> wingMinimumDeflectionAngleAileronRigthUnitChoiceBox) {
-		this.wingMinimumDeflectionAngleAileronRightUnitChoiceBox = wingMinimumDeflectionAngleAileronRigthUnitChoiceBox;
-	}
-
-	public ChoiceBox<String> getWingMaximumDeflectionAngleAileronRightUnitChoiceBox() {
-		return wingMaximumDeflectionAngleAileronRightUnitChoiceBox;
-	}
-
-	public void setWingMaximumDeflectionAngleAileronRightUnitChoiceBox(
-			ChoiceBox<String> wingMaximumDeflectionAngleAileronRightUnitChoiceBox) {
-		this.wingMaximumDeflectionAngleAileronRightUnitChoiceBox = wingMaximumDeflectionAngleAileronRightUnitChoiceBox;
+	public void setWingMaximumDeflectionAngleAileron1UnitChoiceBox(
+			ChoiceBox<String> wingMaximumDeflectionAngleAileron1UnitChoiceBox) {
+		this.wingMaximumDeflectionAngleAileron1UnitChoiceBox = wingMaximumDeflectionAngleAileron1UnitChoiceBox;
 	}
 
 	public ChoiceBox<String> getWingMinimumDeflectionAngleSpoiler1UnitChoiceBox() {
@@ -13111,6 +13475,397 @@ public class InputManagerController {
 
 	public void setSystemsPrimaryElectricalTypeValue(String systemsPrimaryElectricalTypeValue) {
 		this.systemsPrimaryElectricalTypeValue = systemsPrimaryElectricalTypeValue;
-	};
+	}
 	
+	public SplitPane getCAD3DViewsAndDataLogSplitPane() {
+		return cad3DViewsAndDataLogSplitPane;
+	}
+	
+	public void setCAD3DViewsAndDataLogSplitPane(SplitPane cad3DViewsAndDataLogSplitPane) {
+		this.cad3DViewsAndDataLogSplitPane = cad3DViewsAndDataLogSplitPane;
+	}
+	
+	public Pane getCAD3DViewPane() {
+		return cad3DViewPane;
+	}
+	
+	public void setCAD3DViewPane(Pane cad3DViewPane) {
+		this.cad3DViewPane = cad3DViewPane;
+	}
+	
+	public TextArea getTextAreaCAD3DViewConsoleOutput() {
+		return textAreaCAD3DViewConsoleOutput;
+	}
+	
+	public void setTextAreaCAD3DViewConsoleOutput(TextArea textAreaCAD3DViewConsoleOutput) {
+		this.textAreaCAD3DViewConsoleOutput = textAreaCAD3DViewConsoleOutput;
+	}
+	
+	public TabPane getTabPaneCAD3DView() {
+		return tabPaneCAD3DView;
+	}
+	
+	public void setTabPaneCAD3DView(TabPane tabPaneCAD3DView) {
+		this.tabPaneCAD3DView = tabPaneCAD3DView;
+	}
+	
+	public Button getChooseCADConfigurationFileButton() {
+		return chooseCADConfigurationFileButton;
+	}
+	
+	public void setChooseCADConfigurationFileButton(Button chooseCADConfigurationFileButton) {
+		this.chooseCADConfigurationFileButton = chooseCADConfigurationFileButton;
+	}
+	
+	public TextField getCADConfigurationInputFileTextField() {
+		return cadConfigurationInputFileTextField;
+	}
+
+	public void setCADConfigurationInputFileTextField(TextField cadConfigurationInputFileTextField) {
+		this.cadConfigurationInputFileTextField = cadConfigurationInputFileTextField;
+	}
+
+	public Button getLoadCADConfigurationFileButton() {
+		return loadCADConfigurationFileButton;
+	}
+
+	public void setLoadCADConfigurationFileButton(Button loadCADConfigurationFileButton) {
+		this.loadCADConfigurationFileButton = loadCADConfigurationFileButton;
+	}
+
+	public Button getUpdateCAD3DViewButton() {
+		return updateCAD3DViewButton;
+	}
+	
+	public void setUpdateCAD3DViewButton(Button updateCAD3DViewButton) {
+		this.updateCAD3DViewButton = updateCAD3DViewButton;
+	}
+	
+	public Button getSaveCADToFileButton() {
+		return saveCADToFileButton;
+	}
+	
+	public void setSaveCADToFileButton(Button saveCADToFileButton) {
+		this.saveCADToFileButton = saveCADToFileButton;
+	}
+	
+	public FileChooser getCAD3DViewFileChooser() {
+		return cad3DViewFileChooser;
+	}
+	
+	public void setCAD3DViewFileChooser(FileChooser cad3DViewFileChooser) {
+		this.cad3DViewFileChooser = cad3DViewFileChooser;
+	}
+	
+	public FileChooser getSaveCADFileChooser() {
+		return saveCADFileChooser;
+	}
+	
+	public void setSaveCADFileChooser(FileChooser saveCADFileChooser) {
+		this.saveCADFileChooser = saveCADFileChooser;
+	}
+	
+	public ObservableList<String> getFuselageCADSpacingsList() {
+		return fuselageCADSpacingsList;
+	}
+	
+	public void setFuselageCADSpacingsList(ObservableList<String> fuselageCADSpacingsList) {
+		this.fuselageCADSpacingsList = fuselageCADSpacingsList;
+	}
+	
+	public ObservableList<String> getCADFileExtensionsList() {
+		return cadFileExtensionsList;
+	}
+	
+	public void setCADFileExtensionsList(ObservableList<String> cadFileExtensionsList) {
+		this.cadFileExtensionsList = cadFileExtensionsList;
+	}
+	
+	public ObservableList<String> getWingTipTypesList() {
+		return wingTipTypesList;
+	}
+	
+	public void setWingTipTypesList(ObservableList<String> wingTipTypesList) {
+		this.wingTipTypesList = wingTipTypesList;
+	}
+	
+	public ObservableList<String> getLiftingSurfaceTipTypesList() {
+		return liftingSurfaceTipTypesList;
+	}
+	
+	public void setLiftingSurfaceTipTypesList(ObservableList<String> liftingSurfaceTipTypesList) {
+		this.liftingSurfaceTipTypesList = liftingSurfaceTipTypesList;
+	}
+	
+	public ChoiceBox<String> getFileExtensionCADChoiceBox() {
+		return fileExtensionCADChoiceBox;
+	}
+	
+	public void setFileExtensionCADChoiceBox(ChoiceBox<String> fileExtensionCADChoiceBox) {
+		this.fileExtensionCADChoiceBox = fileExtensionCADChoiceBox;
+	}
+	
+	public CheckBox getExportCADWireframeCheckBox() {
+		return exportCADWireframeCheckBox;
+	}
+	
+	public void setExportCADWireframeCheckBox(CheckBox exportCADWireframeCheckBox) {
+		this.exportCADWireframeCheckBox = exportCADWireframeCheckBox;
+	}
+
+	public CheckBox getGenerateFuselageCADCheckBox() {
+		return generateFuselageCADCheckBox;
+	}
+	
+	public void setGenerateFuselageCADCheckBox(CheckBox generateFuselageCADCheckBox) {
+		this.generateFuselageCADCheckBox = generateFuselageCADCheckBox;
+	}
+
+	public TextField getFuselageCADNumberNoseSectionsTextField() {
+		return fuselageCADNumberNoseSectionsTextField;
+	}
+	
+	public void setFuselageCADNumberNoseSectionsTextField(TextField fuselageCADNumberNoseSectionsTextField) {
+		this.fuselageCADNumberNoseSectionsTextField = fuselageCADNumberNoseSectionsTextField;
+	}
+	
+	public ChoiceBox<String> getFuselageCADNoseSpacingChoiceBox() {
+		return fuselageCADNoseSpacingChoiceBox;
+	}
+	
+	public void setFuselageCADNoseSpacingChoiceBox(ChoiceBox<String> fuselageCADNoseSpacingChoiceBox) {
+		this.fuselageCADNoseSpacingChoiceBox = fuselageCADNoseSpacingChoiceBox;
+	}
+
+	public TextField getFuselageCADNumberTailSectionsTextField() {
+		return fuselageCADNumberTailSectionsTextField;
+	}
+	
+	public void setFuselageCADNumberTailSectionsTextField(TextField fuselageCADNumberTailSectionsTextField) {
+		this.fuselageCADNumberTailSectionsTextField = fuselageCADNumberTailSectionsTextField;
+	}
+
+	public ChoiceBox<String> getFuselageCADTailSpacingChoiceBox() {
+		return fuselageCADTailSpacingChoiceBox;
+	}
+	
+	public void setFuselageCADTailSpacingChoiceBox(ChoiceBox<String> fuselageCADTailSpacingChoiceBox) {
+		this.fuselageCADTailSpacingChoiceBox = fuselageCADTailSpacingChoiceBox;
+	}
+
+	public CheckBox getGenerateWingCADCheckBox() {
+		return generateWingCADCheckBox;
+	}
+	
+	public void setGenerateWingCADCheckBox(CheckBox generateWingCADCheckBox) {
+		this.generateWingCADCheckBox = generateWingCADCheckBox;
+	}
+
+	public ChoiceBox<String> getWingCADTipTypeChoiceBox() {
+		return wingCADTipTypeChoiceBox;
+	}
+	
+	public void setWingCADTipTypeChoiceBox(ChoiceBox<String> wingCADTipTypeChoiceBox) {
+		this.wingCADTipTypeChoiceBox = wingCADTipTypeChoiceBox;
+	}
+
+	public TextField getWingletCADYOffsetFactorTextField() {
+		return wingletCADYOffsetFactorTextField;
+	}
+	
+	public void setWingletCADYOffsetFactorTextField(TextField wingletCADYOffsetFactorTextField) {
+		this.wingletCADYOffsetFactorTextField = wingletCADYOffsetFactorTextField;
+	}
+
+	public TextField getWingletCADXOffsetFactorTextField() {
+		return wingletCADXOffsetFactorTextField;
+	}
+	
+	public void setWingletCADXOffsetFactorTextField(TextField wingletCADXOffsetFactorTextField) {
+		this.wingletCADXOffsetFactorTextField = wingletCADXOffsetFactorTextField;
+	}
+
+	public TextField getWingletCADTaperRatioTextField() {
+		return wingletCADTaperRatioTextField;
+	}
+	
+	public void setWingletCADTaperRatioTextField(TextField wingletCADTaperRatioTextField) {
+		this.wingletCADTaperRatioTextField = wingletCADTaperRatioTextField;
+	}
+
+	public CheckBox getGenerateHTailCADCheckBox() {
+		return generateHTailCADCheckBox;
+	}
+	
+	public void setGenerateHTailCADCheckBox(CheckBox generateHTailCADCheckBox) {
+		this.generateHTailCADCheckBox = generateHTailCADCheckBox;
+	}
+
+	public ChoiceBox<String> getHTailCADTipTypeChoiceBox() {
+		return hTailCADTipTypeChoiceBox;
+	}
+	
+	public void setHTailCADTipTypeChoiceBox(ChoiceBox<String> hTailCADTipTypeChoiceBox) {
+		this.hTailCADTipTypeChoiceBox = hTailCADTipTypeChoiceBox;
+	}
+
+	public CheckBox getGenerateVTailCADCheckBox() {
+		return generateVTailCADCheckBox;
+	}
+	
+	public void setGenerateVTailCADCheckBox(CheckBox generateVTailCADCheckBox) {
+		this.generateVTailCADCheckBox = generateVTailCADCheckBox;
+	}
+
+	public ChoiceBox<String> getVTailCADTipTypeChoiceBox() {
+		return vTailCADTipTypeChoiceBox;
+	}
+	
+	public void setVTailCADTipTypeChoiceBox(ChoiceBox<String> vTailCADTipTypeChoiceBox) {
+		this.vTailCADTipTypeChoiceBox = vTailCADTipTypeChoiceBox;
+	}
+
+	public CheckBox getGenerateCanardCADCheckBox() {
+		return generateCanardCADCheckBox;
+	}
+	
+	public void setGenerateCanardCADCheckBox(CheckBox generateCanardCADCheckBox) {
+		this.generateCanardCADCheckBox = generateCanardCADCheckBox;
+	}
+
+	public ChoiceBox<String> getCanardCADTipTypeChoiceBox() {
+		return canardCADTipTypeChoiceBox;
+	}
+	
+	public void setCanardCADTipTypeChoiceBox(ChoiceBox<String> canardCADTipTypeChoiceBox) {
+		this.canardCADTipTypeChoiceBox = canardCADTipTypeChoiceBox;
+	}
+
+	public CheckBox getGenerateWingFairingCADCheckBox() {
+		return generateWingFairingCADCheckBox;
+	}
+	
+	public void setGenerateWingFairingCADCheckBox(CheckBox generateWingFairingCADCheckBox) {
+		this.generateWingFairingCADCheckBox = generateWingFairingCADCheckBox;
+	}
+
+	public TextField getWingFairingCADFrontLengthFactorTextField() {
+		return wingFairingCADFrontLengthFactorTextField;
+	}
+	
+	public void setWingFairingCADFrontLengthFactorTextField(TextField wingFairingCADFrontLengthFactorTextField) {
+		this.wingFairingCADFrontLengthFactorTextField = wingFairingCADFrontLengthFactorTextField;
+	}
+
+	public TextField getWingFairingCADBackLengthFactorTextField() {
+		return wingFairingCADBackLengthFactorTextField;
+	}
+	
+	public void setWingFairingCADBackLengthFactorTextField(TextField wingFairingCADBackLengthFactorTextField) {
+		this.wingFairingCADBackLengthFactorTextField = wingFairingCADBackLengthFactorTextField;
+	}
+
+	public TextField getWingFairingCADWidthFactorTextField() {
+		return wingFairingCADWidthFactorTextField;
+	}
+	
+	public void setWingFairingCADWidthFactorTextField(TextField wingFairingCADWidthFactorTextField) {
+		this.wingFairingCADWidthFactorTextField = wingFairingCADWidthFactorTextField;
+	}
+
+	public TextField getWingFairingCADHeightFactorTextField() {
+		return wingFairingCADHeightFactorTextField;
+	}
+	
+	public void setWingFairingCADHeightFactorTextField(TextField wingFairingCADHeightFactorTextField) {
+		this.wingFairingCADHeightFactorTextField = wingFairingCADHeightFactorTextField;
+	}
+
+	public TextField getWingFairingCADHeightBelowReferenceFactorTextField() {
+		return wingFairingCADHeightBelowReferenceFactorTextField;
+	}
+	
+	public void setWingFairingCADHeightBelowReferenceFactorTextField(TextField wingFairingCADHeightBelowReferenceFactorTextField) {
+		this.wingFairingCADHeightBelowReferenceFactorTextField = wingFairingCADHeightBelowReferenceFactorTextField;
+	}
+
+	public TextField getWingFairingCADHeightAboveReferenceFactorTextField() {
+		return wingFairingCADHeightAboveReferenceFactorTextField;
+	}
+	
+	public void setWingFairingCADHeightAboveReferenceFactorTextField(TextField wingFairingCADHeightAboveReferenceFactorTextField) {
+		this.wingFairingCADHeightAboveReferenceFactorTextField = wingFairingCADHeightAboveReferenceFactorTextField;
+	}
+
+	public TextField getWingFairingCADFilletRadiusFactorTextField() {
+		return wingFairingCADFilletRadiusFactorTextField;
+	}
+	
+	public void setWingFairingCADFilletRadiusFactorTextField(TextField wingFairingCADFilletRadiusFactorTextField) {
+		this.wingFairingCADFilletRadiusFactorTextField = wingFairingCADFilletRadiusFactorTextField;
+	}
+
+	public CheckBox getGenerateCanardFairingCADCheckBox() {
+		return generateCanardFairingCADCheckBox;
+	}
+	
+	public void setGenerateCanardFairingCADCheckBox(CheckBox generateCanardFairingCADCheckBox) {
+		this.generateCanardFairingCADCheckBox = generateCanardFairingCADCheckBox;
+	}
+
+	public TextField getCanardFairingCADFrontLengthFactorTextField() {
+		return canardFairingCADFrontLengthFactorTextField;
+	}
+	
+	public void setCanardFairingCADFrontLengthFactorTextField(TextField canardFairingCADFrontLengthFactorTextField) {
+		this.canardFairingCADFrontLengthFactorTextField = canardFairingCADFrontLengthFactorTextField;
+	}
+
+	public TextField getCanardFairingCADBackLengthFactorTextField() {
+		return canardFairingCADBackLengthFactorTextField;
+	}
+	
+	public void setCanardFairingCADBackLengthFactorTextField(TextField canardFairingCADBackLengthFactorTextField) {
+		this.canardFairingCADBackLengthFactorTextField = canardFairingCADBackLengthFactorTextField;
+	}
+
+	public TextField getCanardFairingCADWidthFactorTextField() {
+		return canardFairingCADWidthFactorTextField;
+	}
+	
+	public void setCanardFairingCADWidthFactorTextField(TextField canardFairingCADWidthFactorTextField) {
+		this.canardFairingCADWidthFactorTextField = canardFairingCADWidthFactorTextField;
+	}
+
+	public TextField getCanardFairingCADHeightFactorTextField() {
+		return canardFairingCADHeightFactorTextField;
+	}
+	
+	public void setCanardFairingCADHeightFactorTextField(TextField canardFairingCADHeightFactorTextField) {
+		this.canardFairingCADHeightFactorTextField = canardFairingCADHeightFactorTextField;
+	}
+
+	public TextField getCanardFairingCADHeightBelowReferenceFactorTextField() {
+		return canardFairingCADHeightBelowReferenceFactorTextField;
+	}
+	
+	public void setCanardFairingCADHeightBelowReferenceFactorTextField(TextField canardFairingCADHeightBelowReferenceFactorTextField) {
+		this.canardFairingCADHeightBelowReferenceFactorTextField = canardFairingCADHeightBelowReferenceFactorTextField;
+	}
+
+	public TextField getCanardFairingCADHeightAboveReferenceFactorTextField() {
+		return canardFairingCADHeightAboveReferenceFactorTextField;
+	}
+	
+	public void setCanardFairingCADHeightAboveReferenceFactorTextField(TextField canardFairingCADHeightAboveReferenceFactorTextField) {
+		this.canardFairingCADHeightAboveReferenceFactorTextField = canardFairingCADHeightAboveReferenceFactorTextField;
+	}
+
+	public TextField getCanardFairingCADFilletRadiusFactorTextField() {
+		return canardFairingCADFilletRadiusFactorTextField;
+	}
+
+	public void setCanardFairingCADFilletRadiusFactorTextField(TextField canardFairingCADFilletRadiusFactorTextField) {
+		this.canardFairingCADFilletRadiusFactorTextField = canardFairingCADFilletRadiusFactorTextField;
+	}
 }

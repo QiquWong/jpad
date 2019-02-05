@@ -13,6 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.measure.quantity.Angle;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
@@ -37,12 +38,12 @@ import standaloneutils.atmosphere.AtmosphereCalc;
 
 public class Test26mds {
 	
-	public static final String workingFolderPath = "C:\\Users\\Mario\\Documents\\Tesi_Magistrale\\Test_Macro_Star";
-	public static final String jpadCADFolder = "C:\\Users\\Mario\\JPAD_PROJECT\\jpad\\JPADCADSandbox";
-	public static final String macroPath = "Users\\Mario\\eclipse-workspace\\STARCCM\\src\\test";
+	public static final String workingFolderPath = "C:\\Users\\giord\\Desktop\\STAR_WORKING_FOLDER";
+	public static final String jpadCADFolder = "D:\\JPAD\\jpad\\JPADCADSandbox";
+	public static final String macroPath = "D:\\eclipse\\STAR_MACRO\\src\\macro";
 	public static final String macroName = "Test_MultipleExecutes.java";
-	public static final String starExePath = "C:\\Program Files\\CD-adapco\\13.04.010-R8\\STAR-CCM+13.04.010-R8\\star\\bin\\starccm+.exe";
-	public static final String starOptions = "-cpubind -np 4 -rsh ssh";
+	public static final String starExePath = "C:\\Program Files\\CD-adapco\\12.04.011-R8\\STAR-CCM+12.04.011-R8\\star\\bin\\starccm+.exe";
+	public static final String starOptions = "-cpubind -power -podkey 2jHU+QkwqexqrAOdVZ6ZzQ -licpath 1999@flex.cd-adapco.com -np 4 -rsh ssh";
 
 	public static void main(String[] args) throws IOException {
 		System.out.println("-------------------");
@@ -155,21 +156,27 @@ public class Test26mds {
 			}
 			
 			customComponent.adjustDimensions(
-			originalComponent
-					.getAspectRatio()*1.2,
-			originalComponent.getEquivalentWing().getPanels().get(0)
-					.getChordRoot().doubleValue(SI.METER)*1.0,
-			originalComponent.getEquivalentWing().getPanels().get(0)
-					.getChordTip().doubleValue(SI.METER)*1.0, 
-//			originalComponent.getEquivalentWing().getPanels().get(0)
-//					.getSweepLeadingEdge(),
-			Amount.valueOf(25, NonSI.DEGREE_ANGLE).to(SI.RADIAN),
-			originalComponent.getEquivalentWing().getPanels().get(0)
-					.getDihedral(), 
-			originalComponent.getEquivalentWing().getPanels().get(0)
-					.getTwistGeometricAtTip(), 
-			WingAdjustCriteriaEnum.AR_ROOTCHORD_TIPCHORD
-			);
+					originalComponent
+						.getAspectRatio()*1.2,
+					originalComponent.getEquivalentWing().getPanels().get(0)
+						.getChordRoot().doubleValue(SI.METER)*1.0,
+					originalComponent.getEquivalentWing().getPanels().get(0)
+						.getChordTip().doubleValue(SI.METER)*1.0, 
+					originalComponent.getEquivalentWing().getPanels().get(0)
+						.getSweepLeadingEdge(),
+					originalComponent.getEquivalentWing().getPanels().get(0)
+						.getDihedral(), 
+					originalComponent.getEquivalentWing().getPanels().get(0)
+						.getTwistGeometricAtTip(), 
+					WingAdjustCriteriaEnum.AR_ROOTCHORD_TIPCHORD
+					);
+			
+			Amount<Angle> sweepLE = originalComponent.getPanels().get(0).getSweepLeadingEdge();
+			
+			List<Amount<Angle>> sweeps = new ArrayList<>();		
+			sweeps.add(Amount.valueOf(0, NonSI.DEGREE_ANGLE));
+			sweeps.add(sweepLE.to(NonSI.DEGREE_ANGLE));
+			sweeps.add(sweepLE.opposite().to(NonSI.DEGREE_ANGLE));
 			
 			customComponent.setAirfoilList(originalComponent.getAirfoilList());	
 			customComponent.setXApexConstructionAxes(originalComponent.getXApexConstructionAxes().plus(Amount.valueOf(1.0, SI.METER)));
@@ -205,18 +212,18 @@ public class Test26mds {
 			return;
 		}
 
-		GeometricData geometricData = new GeometricData(
-				new GeometricDataBuilder(
-						cadUnits, 
-						aeroComponents, 
-						componentsNumber, 
-						fuselageLength, 
-						wingMAC, 
-						wingS, 
-						wingSpan, 
-						momentPoleXCoord
-						)
-				);
+//		GeometricData geometricData = new GeometricData(
+//				new GeometricDataBuilder(
+//						cadUnits, 
+//						aeroComponents, 
+//						componentsNumber, 
+//						fuselageLength, 
+//						wingMAC, 
+//						wingS, 
+//						wingSpan, 
+//						momentPoleXCoord
+//						)
+//				);
 		
 		// Define operating conditions
 		double angleOfAttack = 2.0;
@@ -236,41 +243,41 @@ public class Test26mds {
 		double velocity = speedOfSound*machNumber;
 		double reynoldsNumber = density*velocity*wingMAC/dynamicViscosity;
 		
-		OperatingConditions operatingConditions = new OperatingConditions(
-				new OperatingConditionsBuilder(
-						angleOfAttack, 
-						sideslipAngle, 
-						machNumber, 
-						reynoldsNumber, 
-						altitude, 
-						pressure, 
-						density, 
-						temperature, 
-						speedOfSound, 
-						dynamicViscosity, 
-						velocity
-						)
-				);
+//		OperatingConditions operatingConditions = new OperatingConditions(
+//				new OperatingConditionsBuilder(
+//						angleOfAttack, 
+//						sideslipAngle, 
+//						machNumber, 
+//						reynoldsNumber, 
+//						altitude, 
+//						pressure, 
+//						density, 
+//						temperature, 
+//						speedOfSound, 
+//						dynamicViscosity, 
+//						velocity
+//						)
+//				);
 		
 		// Define simulation parameters
 		String simType = "EULER";
 		boolean symmetricalSim = true;
 		boolean executeAutomesh = false;
 		
-		SimulationParameters simulationParameters = new SimulationParameters(
-				new SimulationParametersBuilder(
-						simType, 
-						symmetricalSim, 
-						executeAutomesh
-						)
-				);
+//		SimulationParameters simulationParameters = new SimulationParameters(
+//				new SimulationParametersBuilder(
+//						simType, 
+//						symmetricalSim, 
+//						executeAutomesh
+//						)
+//				);
 
 		// Create the data file
-		DataWriter writer = new DataWriter(
-				operatingConditions, 
-				geometricData, 
-				simulationParameters			
-				);
+//		DataWriter writer = new DataWriter(
+//				operatingConditions, 
+//				geometricData, 
+//				simulationParameters			
+//				);
 		
 		// Create aircraft CAD files
 		List<String> cadNames = new ArrayList<>();
@@ -372,7 +379,7 @@ public class Test26mds {
 			}
 		});
 		
-		writer.write(workingFolderPath + "\\Data.xml");
+//		writer.write(workingFolderPath + "\\Data.xml");
 		
 		// Run STARCCM+ simulation using macro.java
 		try {

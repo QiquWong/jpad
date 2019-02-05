@@ -182,6 +182,7 @@ public class OCCShell extends OCCShape implements CADShell
 		if (cadWireList.size() > 0) {
 			
 			BRepOffsetAPI_ThruSections loft = new BRepOffsetAPI_ThruSections(solid, ruled, pres3d);
+			loft.CheckCompatibility(1);
 			
 			if (v0 != null)
 				loft.AddVertex(((OCCVertex) v0).getShape());

@@ -74,7 +74,6 @@ import opencascade.TopoDS_Compound;
 import opencascade.TopoDS_Edge;
 import opencascade.TopoDS_Shape;
 import opencascade.TopoDS_Shell;
-import opencascade.TopoDS_Solid;
 import opencascade.gp_Ax2;
 import opencascade.gp_Dir;
 import opencascade.gp_Pnt;
@@ -2657,29 +2656,31 @@ public static Aircraft importAircraft(String[] args) {
 		return allShapes;
 	}
 	
-	public static List<TopoDS_Solid> getAircraftSolid(List<OCCShape> allShapes) {
-		List<TopoDS_Solid> solids = new ArrayList<>();
+	public static List<OCCShape> getAircraftSolid(List<OCCShape> allShapes) {
+		List<OCCShape> solids = new ArrayList<>();
 		
 		allShapes.forEach(s -> {
 			TopoDS_Shape shape = s.getShape();
 			TopExp_Explorer exp = new TopExp_Explorer(shape, TopAbs_ShapeEnum.TopAbs_SOLID);
 			while(exp.More() > 0) {
-				solids.add(TopoDS.ToSolid(exp.Current()));
+				solids.add((OCCShape) OCCUtils.theFactory.newShape(TopoDS.ToSolid(exp.Current())));
 				exp.Next();
 			}
 		});
 		return solids;
 	} 
 	
-	public static void getAircraftSolidFile(
-			List<OCCShape> allShapes,
-			String fileName,
+	public static void getAircraftFile(
+			List<OCCShape> allShapes, 
+			String fileName, 
 			FileExtension fileExtension
 			) {
 		
-		// filter the shapes in order to obtain just the solids
-		List<TopoDS_Solid> tdsSolids = getAircraftSolid(allShapes);
-		System.out.println("Solids found: " + tdsSolids.size());
+		List<TopoDS_Shape> tdsShape = new ArrayList<>();
+		
+		tdsShape.addAll(allShapes.stream()
+				.map(s -> s.getShape())
+				.collect(Collectors.toList()));
 		
 		// choosing the file extension
 		switch(fileExtension) {
@@ -2691,7 +2692,7 @@ public static Aircraft importAircraft(String[] args) {
 			BRep_Builder compoundBrep = new BRep_Builder();
 			TopoDS_Compound solidsCompoundBrep = new TopoDS_Compound();
 			compoundBrep.MakeCompound(solidsCompoundBrep);
-			tdsSolids.forEach(s -> compoundBrep.Add(solidsCompoundBrep, s));
+			tdsShape.forEach(s -> compoundBrep.Add(solidsCompoundBrep, s));
 			
 			System.out.println(".brep file writing ...");
 			long result = BRepTools.Write(solidsCompoundBrep, fileNameBrep);
@@ -2710,7 +2711,7 @@ public static Aircraft importAircraft(String[] args) {
 			BRep_Builder compoundBuilder = new BRep_Builder();
 			TopoDS_Compound compSolid = new TopoDS_Compound();
 			compoundBuilder.MakeCompound(compSolid);
-			tdsSolids.forEach(s -> {
+			tdsShape.forEach(s -> {
 //				Interface_Static.SetCVal("write.step.product.name", "IRON " + s.hashCode());
 //				BRepTools.Clean(s);
 //				new BRepMesh_IncrementalMesh(s, 7E-3);
@@ -2721,8 +2722,9 @@ public static Aircraft importAircraft(String[] args) {
 //			tdsSolids.forEach(s -> stepWriter.Transfer(s, STEPControl_StepModelType.STEPControl_AsIs));
 			
 			System.out.println(".step file writing ...");
-			IFSelect_ReturnStatus statusStep = stepWriter.Write(fileNameStep);
-			System.out.println("========== [AircraftUtils::getAircraftSolidFile] file status: " + statusStep);
+			stepWriter.Write(fileNameStep);
+//			IFSelect_ReturnStatus statusStep = stepWriter.Write(fileNameStep);
+//			System.out.println("========== [AircraftUtils::getAircraftSolidFile] file status: " + statusStep);
 			
 			break;
 			
@@ -2732,7 +2734,7 @@ public static Aircraft importAircraft(String[] args) {
 			
 			if(IGESControl_Controller.Init() == 1) {
 				IGESControl_Writer igesWriter = new IGESControl_Writer("2HM");
-				tdsSolids.forEach(s -> { 
+				tdsShape.forEach(s -> { 
 					long res = igesWriter.AddShape(s);
 					System.out.println(res);
 				});
@@ -2758,7 +2760,7 @@ public static Aircraft importAircraft(String[] args) {
 			StlAPI_Writer stlWriter = new StlAPI_Writer();		
 			
 			// meshing each solid separately			
-			tdsSolids.forEach(s -> {
+			tdsShape.forEach(s -> {
 				solidMesh.SetShape(s);
 				solidMesh.Perform();
 				TopoDS_Shape tdsSolidMeshed = solidMesh.Shape();
@@ -2784,6 +2786,18 @@ public static Aircraft importAircraft(String[] args) {
 		default:
 			break;
 		}
+		
+	}
+	
+	public static void getAircraftSolidFile(
+			List<OCCShape> allShapes,
+			String fileName,
+			FileExtension fileExtension
+			) {
+		
+		List<OCCShape> solids = getAircraftSolid(allShapes);
+		
+		getAircraftFile(solids, fileName, fileExtension);
 	}
 	
 	public static List<double[]> populateCoordinateList(
@@ -2972,11 +2986,11 @@ public static Aircraft importAircraft(String[] args) {
 				PVector.mult(chordTipNVector, (tipAirfoilThickAtPnt[1].floatValue())*tipChordLength)
 				);
 
-		double[] tipAirfoilUppVtx = OCCUtils.pointProjectionOnCurve(
+		double[] tipAirfoilUppVtx = OCCUtils.pointProjectionOnCurve0(
 				OCCUtils.theFactory.newCurve3D(tipAirfoil.get(0)), 
 				new double[] {pntOnTipAirfoilUCrv.x, pntOnTipAirfoilUCrv.y, pntOnTipAirfoilUCrv.z}
 				).pnt();			
-		double[] tipAirfoilLowVtx = OCCUtils.pointProjectionOnCurve(
+		double[] tipAirfoilLowVtx = OCCUtils.pointProjectionOnCurve0(
 				OCCUtils.theFactory.newCurve3D(tipAirfoil.get(1)),
 				new double[] {pntOnTipAirfoilLCrv.x, pntOnTipAirfoilLCrv.y, pntOnTipAirfoilLCrv.z}
 				).pnt();
@@ -2998,11 +3012,11 @@ public static Aircraft importAircraft(String[] args) {
 				PVector.mult(chordPreTipNVector, (preTipAirfoilThickAtPnt[1].floatValue())*preTipChordLength)
 				);
 
-		double[] preTipAirfoilUppVtx = OCCUtils.pointProjectionOnCurve(
+		double[] preTipAirfoilUppVtx = OCCUtils.pointProjectionOnCurve0(
 				(OCCGeomCurve3D) OCCUtils.theFactory.newCurve3D(preTipAirfoil.get(0)),
 				new double[] {pntOnPreTipAirfoilUCrv.x, pntOnPreTipAirfoilUCrv.y, pntOnPreTipAirfoilUCrv.z}
 				).pnt();			
-		double[] preTipAirfoilLowVtx = OCCUtils.pointProjectionOnCurve(
+		double[] preTipAirfoilLowVtx = OCCUtils.pointProjectionOnCurve0(
 				(OCCGeomCurve3D) OCCUtils.theFactory.newCurve3D(preTipAirfoil.get(1)),
 				new double[] {pntOnPreTipAirfoilLCrv.x, pntOnPreTipAirfoilLCrv.y, pntOnPreTipAirfoilLCrv.z}
 				).pnt();

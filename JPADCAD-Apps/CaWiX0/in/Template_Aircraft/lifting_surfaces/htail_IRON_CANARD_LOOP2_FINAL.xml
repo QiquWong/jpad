@@ -1,0 +1,36 @@
+<jpad_config>
+    <horizontal_tail id="IRON Horizontal Tail" mirrored="TRUE">
+         <global_data>
+			<main_spar_non_dimensional_position type="PERCENT_CHORD" ref_to="LOCAL_CHORD">0.25</main_spar_non_dimensional_position>
+			<secondary_spar_non_dimensional_position type="PERCENT_CHORD" ref_to="LOCAL_CHORD">0.55</secondary_spar_non_dimensional_position>
+			<roughness unit="m">0.405e-5</roughness>
+		</global_data>
+		<panels>
+            <panel id="Horizontal tail panel">
+                <span unit="m">6.5</span>
+                <dihedral unit="deg">5.0</dihedral>
+                <sweep_leading_edge unit="deg">10.0</sweep_leading_edge>
+                <inner_section>
+                    <chord unit="m">3.64</chord>
+                    <airfoil file="naca0014.xml"/>
+                    <geometric_twist unit="deg">0.0</geometric_twist>
+                </inner_section>
+                <outer_section>
+                    <chord unit="m">2.272</chord>
+                    <airfoil file="naca0014.xml"/>
+                    <geometric_twist unit="deg">0.0</geometric_twist>
+                </outer_section>
+            </panel>
+        </panels>
+        <symmetric_flaps>
+            <symmetric_flap id="Elevator" type="PLAIN">
+                <inner_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.0</inner_station_spanwise_position>
+                <outer_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">1.0</outer_station_spanwise_position>
+                <inner_chord_ratio>0.30</inner_chord_ratio>
+				<outer_chord_ratio>0.30</outer_chord_ratio>
+                <min_deflection unit="deg">-25.0</min_deflection>
+				<max_deflection unit="deg">5.0</max_deflection>
+            </symmetric_flap>
+        </symmetric_flaps>
+    </horizontal_tail>
+</jpad_config>

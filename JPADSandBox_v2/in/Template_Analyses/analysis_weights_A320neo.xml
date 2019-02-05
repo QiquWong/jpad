@@ -25,7 +25,7 @@
 					<efficiency>17</efficiency> 
 				</alternate_phase>
 				<holding_phase>
-					<duration unit="min">20</duration> 
+					<duration unit="min">30</duration> 
 					<altitude unit="ft">1500</altitude>
 					<mach>0.3</mach>
 					<sfc>0.35</sfc> 
@@ -33,6 +33,7 @@
 				</holding_phase>
 			</mission_profile_data>
 			<calibration> <!-- IF LEFT BLANK, ALL CALIBRATION FACTORS ARE EQUAL TO 1.0 -->
+				<max_zero_fuel_mass_calibration_factor></max_zero_fuel_mass_calibration_factor>
 				<fuselage_calibration_factor></fuselage_calibration_factor>
 				<wing_calibration_factor></wing_calibration_factor>
 				<horizontal_tail_calibration_factor></horizontal_tail_calibration_factor>

@@ -21,10 +21,10 @@ public class RCMap extends PerformanceMap{
 
 	private Amount<Velocity> rcMax, rcMaxSpeed; 
 	private double rcMaxMach;
-	private Amount<Angle> theta;
+	private Amount<Angle> climbAngle;
 	private List<Amount<Power>> powerRequired, powerAvailable;
-	private List<Amount<Velocity>> rc, speed;
-	private List<Amount<Angle>> gamma;
+	private List<Amount<Velocity>> rcList, speedList;
+	private List<Amount<Angle>> climbAngleList;
 
 	public RCMap(Amount<Length> altitude, Amount<Temperature> deltaTemperature, double phi, List<Amount<Power>> powerRequired, List<Amount<Power>> powerAvailable,
 			List<Amount<Velocity>> rc, Amount<Velocity> rcMax, Amount<Mass> weight, EngineOperatingConditionEnum flightCondition,
@@ -35,17 +35,17 @@ public class RCMap extends PerformanceMap{
 		this.powerRequired = powerRequired;
 		this.powerAvailable = powerAvailable;
 		this.flightCondition = flightCondition;
-		this.rc = rc;
+		this.rcList = rc;
 		this.rcMax = rcMax;
 		this.weight = weight;
-		this.speed = speed;
+		this.speedList = speed;
 		this.rcMaxSpeed = rcMaxSpeed;
 		this.rcMaxMach = SpeedCalc.calculateMach(altitude, deltaTemperature, rcMaxSpeed);
 		
-		this.theta = Amount.valueOf(Math.asin(rcMax.doubleValue(SI.METERS_PER_SECOND)/rcMaxSpeed.doubleValue(SI.METERS_PER_SECOND)), SI.RADIAN).to(NonSI.DEGREE_ANGLE);
-		this.gamma = new ArrayList<>();
+		this.climbAngle = Amount.valueOf(Math.asin(rcMax.doubleValue(SI.METERS_PER_SECOND)/rcMaxSpeed.doubleValue(SI.METERS_PER_SECOND)), SI.RADIAN).to(NonSI.DEGREE_ANGLE);
+		this.climbAngleList = new ArrayList<>();
 		for (int i=0; i<rc.size(); i++) {
-			gamma.add(
+			climbAngleList.add(
 					Amount.valueOf(
 							Math.asin(rc.get(i).doubleValue(SI.METERS_PER_SECOND)/speed.get(i).doubleValue(SI.METERS_PER_SECOND)),
 							SI.RADIAN)
@@ -54,36 +54,36 @@ public class RCMap extends PerformanceMap{
 		}
 	}
 
-	public Amount<Velocity> getRcMax() {
+	public Amount<Velocity> getRCMax() {
 		return rcMax;
 	}
 
-	public void setRcMax(Amount<Velocity> rcMax) {
+	public void setRCMax(Amount<Velocity> rcMax) {
 		this.rcMax = rcMax;
 	}
 
-	public Amount<Velocity> getRcMaxSpeed() {
+	public Amount<Velocity> getRCMaxSpeed() {
 		return rcMaxSpeed;
 	}
 
-	public void setRcMaxSpeed(Amount<Velocity> rcMaxSpeed) {
+	public void setRCMaxSpeed(Amount<Velocity> rcMaxSpeed) {
 		this.rcMaxSpeed = rcMaxSpeed;
 	}
 
-	public double getRcMaxMach() {
+	public double getRCMaxMach() {
 		return rcMaxMach;
 	}
 
-	public void setRcMaxMach(double rcMaxMach) {
+	public void setRCMaxMach(double rcMaxMach) {
 		this.rcMaxMach = rcMaxMach;
 	}
 
-	public Amount<Angle> getTheta() {
-		return theta;
+	public Amount<Angle> getClimbAngle() {
+		return climbAngle;
 	}
 
-	public void setTheta(Amount<Angle> theta) {
-		this.theta = theta;
+	public void setClimbAngle(Amount<Angle> theta) {
+		this.climbAngle = theta;
 	}
 
 	public List<Amount<Power>> getPowerRequired() {
@@ -102,28 +102,28 @@ public class RCMap extends PerformanceMap{
 		this.powerAvailable = powerAvailable;
 	}
 
-	public List<Amount<Velocity>> getRc() {
-		return rc;
+	public List<Amount<Velocity>> getRCList() {
+		return rcList;
 	}
 
-	public void setRc(List<Amount<Velocity>> rc) {
-		this.rc = rc;
+	public void setRCList(List<Amount<Velocity>> rc) {
+		this.rcList = rc;
 	}
 
-	public List<Amount<Velocity>> getSpeed() {
-		return speed;
+	public List<Amount<Velocity>> getSpeedList() {
+		return speedList;
 	}
 
-	public void setSpeed(List<Amount<Velocity>> speed) {
-		this.speed = speed;
+	public void setSpeedList(List<Amount<Velocity>> speed) {
+		this.speedList = speed;
 	}
 
-	public List<Amount<Angle>> getGamma() {
-		return gamma;
+	public List<Amount<Angle>> getClimbAngleList() {
+		return climbAngleList;
 	}
 
-	public void setGamma(List<Amount<Angle>> gamma) {
-		this.gamma = gamma;
+	public void setClimbAngleList(List<Amount<Angle>> gamma) {
+		this.climbAngleList = gamma;
 	}
 
 }

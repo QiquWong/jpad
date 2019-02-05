@@ -2,9 +2,8 @@
 <jpad_config>
     <configuration id="AIRBUS A-320neo Cabin Configuration">
 		<global_data>
-			<actual_passengers_number>180</actual_passengers_number>
-			<maximum_passengers_number>195</maximum_passengers_number>
-			<flight_crew_number>4</flight_crew_number>
+			<design_passengers_number>180</design_passengers_number>
+			<flight_crew_number>2</flight_crew_number>
 			<classes_number>1</classes_number>
 			<classes_type>ECONOMY</classes_type>
 			<aisles_number>1</aisles_number>

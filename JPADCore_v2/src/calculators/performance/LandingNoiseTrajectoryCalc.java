@@ -14,6 +14,7 @@ import javax.measure.quantity.Duration;
 import javax.measure.quantity.Force;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
+import javax.measure.quantity.Temperature;
 import javax.measure.quantity.Velocity;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
@@ -30,9 +31,8 @@ import org.apache.commons.math3.ode.sampling.StepInterpolator;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.components.powerplant.PowerPlant;
-import calculators.aerodynamics.AerodynamicCalc;
 import calculators.aerodynamics.LiftCalc;
-import configuration.enumerations.UnitFormatEnum;
+import configuration.enumerations.EngineOperatingConditionEnum;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
 import standaloneutils.MyInterpolatingFunction;
@@ -43,14 +43,14 @@ import standaloneutils.atmosphere.SpeedCalc;
 import writers.JPADStaticWriteUtils;
 
 /**
- * This class have the purpose of calculating the landing trajectories for the noise certification
+ * This class have the purpose of calculating the landing trajectory for the noise certification
  * of a given aircraft assuming:
  *
- * - 3� of glide path
- * - V= 1.3*VsLND + 10kts
+ * - 3째 of glide path
+ * - V= 1.23*VsLND + 10kts
  * - full flaps configuration and landing gear down
  * - Maximum landing weight 
- * - ISA+10캜
+ * - ISA+10째C
  *
  * for each of them a step by step integration is used in solving the dynamic equation.
  *
@@ -62,35 +62,40 @@ public class LandingNoiseTrajectoryCalc {
 
 	//-------------------------------------------------------------------------------------
 	// VARIABLE DECLARATION
-	private Double aspectRatio;
+	private double aspectRatio;
 	private Amount<Area> surface; 
 	private Amount<Length> span;
 	private PowerPlant thePowerPlant;
-	private Double[] polarCLLanding;
-	private Double[] polarCDLanding;
+	private double[] polarCLLanding;
+	private double[] polarCDLanding;
 	private Amount<Duration> dtFlare, dtFreeRoll,
-	tObstacle = Amount.valueOf(10000.0, SI.SECOND),  // initialization to an impossible time
-	tTouchDown = Amount.valueOf(10000.0, SI.SECOND), // initialization to an impossible time
-	tZeroGamma = Amount.valueOf(10000.0, SI.SECOND); // initialization to an impossible time
+	tObstacle = Amount.valueOf(10000.0, SI.SECOND),  	  // initialization to an impossible time
+	tFlareAltitude = Amount.valueOf(10000.0, SI.SECOND),  // initialization to an impossible time
+	tTouchDown = Amount.valueOf(10000.0, SI.SECOND), 	  // initialization to an impossible time
+	tZeroGamma = Amount.valueOf(10000.0, SI.SECOND); 	  // initialization to an impossible time
 	private Amount<Mass> maxLandingMass; 
-	private Amount<Velocity> vSLanding, vApproach, vTouchDown, vWind, vDescent;
-	private Amount<Length> wingToGroundDistance, obstacle, intialAltitude, altitudeAtFlareEnding;
-	private Amount<Angle> gammaDescent, iw, alphaGround;
-	private Amount<Force> thrustAtFlareStart;
+	private Amount<Velocity> vSLanding, vApproach, vFlare, vTouchDown, vWind, vDescent, rateOfDescentAtFlareEnding;
+	private Amount<Length> wingToGroundDistance, obstacle, intialAltitude, altitudeAtFlareEnding, hFlare;
+	private Amount<Angle> gammaDescent, alphaGround;
+	private Amount<Force> thrustAtFlareStart, thrustAtDescentStart;
 	private List<Amount<Angle>> alpha;
-	private List<Double> gammaDot;
+	private List<Double> cL, cD;
 	private List<Amount<Duration>> time;
-	private List<Amount<Force>> thrust;
-	private List<Double> timeBreakPoints;
-	private Double alphaDotFlare, cL0LND, cLmaxLND, kGround;
+	private List<Amount<Acceleration>> acceleration;
+	private List<Amount<Force>> weight;
+	private List<Double> timeBreakPoints, loadFactor;
+	private double alphaDotFlare, cL0LND, cLmaxLND, kGround, phi, kCLmax, 
+	cruiseThrustCorrectionFactor, fidlThrustCorrectionFactor, gidlThrustCorrectionFactor, 
+	cruiseSfcCorrectionFactor, fidlSfcCorrectionFactor, gidlSfcCorrectionFactor;
 	private Amount<?> cLalphaLND;
-	private MyInterpolatingFunction mu, muBrake, phiGroundIdle, thrustFlareFunction;
+	private MyInterpolatingFunction mu, muBrake, thrustFlareFunction;
+	private boolean targetRDandAltitudeFlag, maximumFlareCLFlag;
 	private boolean createCSV;
 
 	private FirstOrderIntegrator theIntegrator;
 	private FirstOrderDifferentialEquations ode;
 
-	//OUTPUTS MAPS:
+	//OUTPUT:
 	private List<Amount<Velocity>> speedList, rateOfClimbList;
 	private List<Amount<Force>> thrustList, thrustHorizontalList, thrustVerticalList,
 	liftList, dragList, totalForceList, frictionList;
@@ -101,6 +106,15 @@ public class LandingNoiseTrajectoryCalc {
 	private List<Amount<Duration>> timeList;
 	private List<Amount<Mass>> fuelUsedList;
 	private List<Amount<Force>> weightList;
+	
+	private Amount<Length> certificationPointsGroundDistance;
+	private Amount<Length> certificationPointsAltitude;
+	private Amount<Velocity> certificationPointsSpeedTAS;
+	private Amount<Velocity> certificationPointsSpeedCAS;
+	private Amount<Angle> certificationPointsAlpha;
+	private Amount<Angle> certificationPointsGamma;
+	private Amount<Angle> certificationPointsTheta;	
+	private Amount<Force> certificationPointsThrust; 
 
 	private final PrintStream originalOut = System.out;
 	private PrintStream filterStream = new PrintStream(new OutputStream() {
@@ -117,20 +131,25 @@ public class LandingNoiseTrajectoryCalc {
 			Amount<Angle> gammaDescent,
 			Amount<Mass> maxLandingMass,
 			PowerPlant thePowerPlant,
-			Double[] polarCLLanding,
-			Double[] polarCDLanding,
-			Double aspectRatio,
+			double[] polarCLLanding,
+			double[] polarCDLanding,
+			double aspectRatio,
 			Amount<Area> surface,
-			Amount<Duration> dtFlare,
 			Amount<Duration> dtFreeRoll,
 			MyInterpolatingFunction mu,
 			MyInterpolatingFunction muBrake,
-			MyInterpolatingFunction phiGroundIdle,
 			Amount<Length> wingToGroundDistance,
-			Amount<Angle> iw,
+			double kCLmax,
 			double cLmaxLND,
 			double cLZeroLND,
 			Amount<?> cLalphaLND,
+			double phi,
+			double cruiseThrustCorrectionFactor,
+			double fidlThrustCorrectionFactor,
+			double gidlThrustCorrectionFactor,
+			double cruiseSfcCorrectionFactor,
+			double fidlSfcCorrectionFactor,
+			double gidlSfcCorrectionFactor,
 			boolean createCSV
 			) {
 
@@ -149,48 +168,64 @@ public class LandingNoiseTrajectoryCalc {
 		this.maxLandingMass = maxLandingMass;
 		this.intialAltitude = initialAltitude;
 		this.gammaDescent = gammaDescent;
-		this.dtFlare = dtFlare;
 		this.dtFreeRoll = dtFreeRoll;
 		this.mu = mu;
 		this.muBrake = muBrake;
-		this.phiGroundIdle = phiGroundIdle;
-		this.wingToGroundDistance = wingToGroundDistance;
 		this.obstacle = Amount.valueOf(50, NonSI.FOOT);
+		this.wingToGroundDistance = wingToGroundDistance;
 		this.vWind = Amount.valueOf(0.0, SI.METERS_PER_SECOND);
-		this.iw = iw;
 		this.alphaGround = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		this.kCLmax = kCLmax;
 		this.cLmaxLND = cLmaxLND;
 		this.cLalphaLND = cLalphaLND;
 		this.cL0LND = cLZeroLND;
+		this.phi = phi;
+		this.cruiseThrustCorrectionFactor = cruiseThrustCorrectionFactor;
+		this.fidlThrustCorrectionFactor = fidlThrustCorrectionFactor;
+		this.gidlThrustCorrectionFactor = gidlThrustCorrectionFactor;
+		this.cruiseSfcCorrectionFactor = cruiseSfcCorrectionFactor;
+		this.fidlSfcCorrectionFactor = fidlSfcCorrectionFactor;
+		this.gidlSfcCorrectionFactor = gidlSfcCorrectionFactor;
 
 		// Reference velocities definition
-		vSLanding = Amount.valueOf(
-				SpeedCalc.calculateSpeedStall(
-						0.0, // SEA LEVEL
-						maxLandingMass.to(SI.KILOGRAM).times(AtmosphereCalc.g0).getEstimatedValue(),
-						surface.doubleValue(SI.SQUARE_METRE),
-						cLmaxLND
-						),
-				SI.METERS_PER_SECOND);
+		vSLanding = SpeedCalc.calculateSpeedStall(
+				Amount.valueOf(0.0, SI.METER), // SEA LEVEL
+				Amount.valueOf(10, SI.CELSIUS), // ISA+10째C
+				maxLandingMass,
+				surface,
+				cLmaxLND
+				);
 		vApproach = vSLanding.times(1.23);
 		vDescent = vApproach.plus(Amount.valueOf(10, NonSI.KNOT).to(SI.METERS_PER_SECOND)); 
+		vFlare = vSLanding.times(1.2);
 		vTouchDown = vSLanding.times(1.15);
 
+		/*
+		 *  Averaged value of hFlare
+		 *  @see https://www.flightliteracy.com/normal-approach-and-landing-part-four-round-out-flare/ 
+		 */
+		hFlare = Amount.valueOf(20.0, NonSI.FOOT); 
+		
 		System.out.println("\n-----------------------------------------------------------");
 		System.out.println("CLmaxLND = " + cLmaxLND);
 		System.out.println("CL0 = " + cLZeroLND);
 		System.out.println("VsLND = " + vSLanding);
-		System.out.println("VTouchDown = " + vTouchDown);
 		System.out.println("VApproach = " + vApproach);
 		System.out.println("VDescent = " + vDescent);
+		System.out.println("Initial Descent Altitude = " + initialAltitude.to(NonSI.FOOT));
+		System.out.println("Approach Altitude = " + obstacle.to(NonSI.FOOT));
+		System.out.println("Flare Rotation Altitude = " + hFlare.to(NonSI.FOOT));
 		System.out.println("-----------------------------------------------------------\n");
 
 		// List initialization
 		this.time = new ArrayList<Amount<Duration>>();
 		this.alpha = new ArrayList<Amount<Angle>>();
 		this.timeBreakPoints = new ArrayList<Double>();
-		this.gammaDot = new ArrayList<Double>();
-		this.thrust = new ArrayList<Amount<Force>>();
+		this.cL = new ArrayList<>();
+		this.cD = new ArrayList<>();
+		this.weight = new ArrayList<>();
+		this.acceleration = new ArrayList<>();
+		this.loadFactor = new ArrayList<>();
 
 		// Output maps initialization
 		this.timeList = new ArrayList<>();
@@ -232,32 +267,67 @@ public class LandingNoiseTrajectoryCalc {
 		// lists cleaning
 		time.clear();
 		alpha.clear();
+		cL.clear();
+		cD.clear();
+		loadFactor.clear();
+		acceleration.clear();
+		weight.clear();
 		timeBreakPoints.clear();
-		gammaDot.clear();
-		thrust.clear();
 
 		// values initialization
 		double cLInitial = LiftCalc.calculateLiftCoeff(
-				maxLandingMass.to(SI.KILOGRAM).times(AtmosphereCalc.g0.to(SI.METERS_PER_SQUARE_SECOND)).getEstimatedValue()
-				*Math.cos(gammaDescent.doubleValue(SI.RADIAN)),
-				vDescent.doubleValue(SI.METERS_PER_SECOND),
-				LandingNoiseTrajectoryCalc.this.getSurface().doubleValue(SI.SQUARE_METRE),
-				intialAltitude.doubleValue(SI.METER)
+				Amount.valueOf(
+						maxLandingMass.doubleValue(SI.KILOGRAM)
+						*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND)
+						*Math.cos(gammaDescent.doubleValue(SI.RADIAN)),
+						SI.NEWTON
+						),
+				vDescent,
+				LandingNoiseTrajectoryCalc.this.getSurface(),
+				intialAltitude,
+				Amount.valueOf(10, SI.CELSIUS) // ISA+10째C
 				); 
+		double cDInitial = MyMathUtils.getInterpolatedValue1DLinear(polarCLLanding, polarCDLanding, cLInitial);
 		alpha.add(
 				Amount.valueOf(
 						((cLInitial - cL0LND)
-								/ cLalphaLND.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue())
-						+ iw.doubleValue(NonSI.DEGREE_ANGLE),
+								/ cLalphaLND.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()),
 						NonSI.DEGREE_ANGLE
 						)
 				);
-		gammaDot.add(0.0);
+		cL.add(cLInitial);
+		cD.add(cDInitial);
+		acceleration.add(Amount.valueOf(0.0, SI.METERS_PER_SQUARE_SECOND));
+		weight.add(
+				Amount.valueOf(
+						maxLandingMass.doubleValue(SI.KILOGRAM)*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
+						SI.NEWTON
+						)
+				);
+		loadFactor.add(1.0);
 		time.add(Amount.valueOf(0.0, SI.SECOND));
-
-		tObstacle = Amount.valueOf(10000.0, SI.SECOND);	// initialization to an impossible time
-		tTouchDown = Amount.valueOf(10000.0, SI.SECOND);	// initialization to an impossible time
-		tZeroGamma = Amount.valueOf(10000.0, SI.SECOND);	// initialization to an impossible time
+		
+		thrustAtDescentStart = Amount.valueOf( 
+				gammaDescent.doubleValue(SI.RADIAN)*(maxLandingMass.doubleValue(SI.KILOGRAM)*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND)) 
+				+ ((DynamicsEquationsLandingNoiseTrajectory)ode).drag(
+						LandingNoiseTrajectoryCalc.this.getvDescent(), 
+						alpha.get(0),
+						LandingNoiseTrajectoryCalc.this.getGammaDescent(),
+						LandingNoiseTrajectoryCalc.this.getIntialAltitude(),
+						Amount.valueOf(10, SI.CELSIUS)
+						).doubleValue(SI.NEWTON),
+				SI.NEWTON
+				);
+		
+		rateOfDescentAtFlareEnding = Amount.valueOf(10000.0, SI.METERS_PER_SECOND);  // Initialization at an impossible value
+		altitudeAtFlareEnding = Amount.valueOf(10000.0, SI.METER);                   // Initialization at an impossible value
+		
+		tObstacle = Amount.valueOf(10000.0, SI.SECOND);		        // initialization to an impossible time
+		tFlareAltitude = Amount.valueOf(10000.0, SI.SECOND);		// initialization to an impossible time
+		tTouchDown = Amount.valueOf(10000.0, SI.SECOND);	        // initialization to an impossible time
+		tZeroGamma = Amount.valueOf(10000.0, SI.SECOND);	        // initialization to an impossible time
+		
+		maximumFlareCLFlag = false;
 	}
 
 	/***************************************************************************************
@@ -274,292 +344,498 @@ public class LandingNoiseTrajectoryCalc {
 		System.out.println("NoiseTrajectoryCalc :: LANDING ODE integration\n\n");
 		System.out.println("\tRUNNING SIMULATION ...\n\n");
 
+		StepHandler continuousOutputModel = null;
 
-		//		int i=0;
-		//		Amount<Duration> newFlareDuration = Amount.valueOf(0.0, SI.SECOND);
-		//		dtFlare = Amount.valueOf(3.0, SI.SECOND); // First guess value
-		//		
-		//		altitudeAtFlareEnding = intialAltitude;  // Initialization at an impossible value
+		int i=0;
+		int maxIter = 200;
+		dtFlare = Amount.valueOf(4.0, SI.SECOND); // First guess value
+		alphaDotFlare = 1.0; /* deg/s - First guess value */
+		double newAlphaDotFlare = 0.0;
+		Amount<Velocity> targetRateOfDescent = Amount.valueOf(-100, MyUnits.FOOT_PER_MINUTE);
 
-		//		while (Math.abs(altitudeAtFlareEnding.doubleValue(SI.METER) - 0.0) >= 1e-1) {
-		//
-		//			if(i >= 1) 
-		//				dtFlare = newFlareDuration;
+		rateOfDescentAtFlareEnding = Amount.valueOf(10000.0, SI.METERS_PER_SECOND);  // Initialization at an impossible value
+		altitudeAtFlareEnding = Amount.valueOf(10000.0, SI.METER);  // Initialization at an impossible value
 
-		initialize();
+		while (Math.abs(altitudeAtFlareEnding.doubleValue(SI.METER) - 1e-2) >= 1.0 
+				|| Math.abs(rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE)) >= Math.abs(targetRateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE)) ) {
 
-		theIntegrator = new HighamHall54Integrator(
-				1e-10,
-				1,
-				1e-12,
-				1e-12
-				);
-		ode = new DynamicsEquationsLandingNoiseTrajectory();
+			if(i > 0) 
+				alphaDotFlare = newAlphaDotFlare;
+			
+			if(i > maxIter)
+				break;
+			
+			theIntegrator = new HighamHall54Integrator(
+					1e-10,
+					1,
+					1e-10,
+					1e-10
+					);
+			ode = new DynamicsEquationsLandingNoiseTrajectory();
+			
+			initialize();
 
-		EventHandler ehCheckStop = new EventHandler() {
+			EventHandler ehCheckStop = new EventHandler() {
 
-			@Override
-			public void init(double t0, double[] y0, double t) {
+				@Override
+				public void init(double t0, double[] y0, double t) {
 
-			}
+				}
 
-			@Override
-			public void resetState(double t, double[] y) {
+				@Override
+				public void resetState(double t, double[] y) {
 
-			}
+				}
 
-			// Discrete event, switching function
-			@Override
-			public double g(double t, double[] x) {
-				double speed = x[1];
-				return speed - 0.0;
-			}
+				// Discrete event, switching function
+				@Override
+				public double g(double t, double[] x) {
+					double speed = x[1];
+					return speed - 0.0;
+				}
 
-			@Override
-			public Action eventOccurred(double t, double[] x, boolean increasing) {
-				// Handle an event and choose what to do next.
-				System.out.println("\n\t\tEND OF GROUND ROLL PHASE");
-				System.out.println("\n\tswitching function changes sign at t = " + t);
-				System.out.println(
-						"\n\tx[0] = s = " + x[0] + " m" +
-								"\n\tx[1] = V = " + x[1] + " m/s" + 
-								"\n\tx[2] = gamma = " + x[2] + " �" +
-								"\n\tx[3] = altitude = " + x[3] + " m"
-						);
+				@Override
+				public Action eventOccurred(double t, double[] x, boolean increasing) {
+					// Handle an event and choose what to do next.
+					System.out.println("\n\t\tEND OF GROUND ROLL PHASE");
+					System.out.println("\n\tswitching function changes sign at t = " + t);
+					System.out.println(
+							"\n\tx[0] = s = " + x[0] + " m" +
+									"\n\tx[1] = V = " + x[1] + " m/s" + 
+									"\n\tx[2] = gamma = " + 0.0 + " 째" +
+									"\n\tx[3] = altitude = " + 0.0 + " m" +
+									"\n\tx[4] = fuel used = " + x[4] + " kg"
+							);
 
-				timeBreakPoints.add(t);
+					timeBreakPoints.add(t);
 
-				System.out.println("\n---------------------------DONE!-------------------------------");
-				return  Action.STOP;
-			}
-		};
-		EventHandler ehCheckObstacle = new EventHandler() {
+					System.out.println("\n---------------------------DONE!-------------------------------");
+					return  Action.STOP;
+				}
+			};
+			EventHandler ehCheckApproachCertificationPoint = new EventHandler() {
 
-			@Override
-			public void init(double t0, double[] y0, double t) {
+				@Override
+				public void init(double t0, double[] y0, double t) {
 
-			}
+				}
 
-			@Override
-			public void resetState(double t, double[] y) {
+				@Override
+				public void resetState(double t, double[] y) {
 
-			}
+				}
 
-			// Discrete event, switching function
-			@Override
-			public double g(double t, double[] x) {
-				return x[3] - obstacle.doubleValue(SI.METER);
-			}
+				// Discrete event, switching function
+				@Override
+				public double g(double t, double[] x) {
+					if(t < tObstacle.doubleValue(SI.SECOND))
+						return x[3] - 120.0; // certification point at 120m from ground 
+					else
+						return -10.0; /* Generic negative value to trigger the event only one time */
+				}
 
-			@Override
-			public Action eventOccurred(double t, double[] x, boolean increasing) {
-				// Handle an event and choose what to do next.
-				System.out.println("\n\t\tEND OF DESCENT PHASE :: FLARE ROTATION");
-				System.out.println("\n\tswitching function changes sign at t = " + t);
-				System.out.println(
-						"\n\tx[0] = s = " + x[0] + " m" +
-								"\n\tx[1] = V = " + x[1] + " m/s" + 
-								"\n\tx[2] = gamma = " + x[2] + " �" +
-								"\n\tx[3] = altitude = " + x[3] + " m" 
-						);
+				@Override
+				public Action eventOccurred(double t, double[] x, boolean increasing) {
+					// Handle an event and choose what to do next.
+					System.out.println("\n\t\tAPPROACH CERTIFICATION POINT REACHED :: COLLECTING RESULTS ");
+					System.out.println("\n\tswitching function changes sign at t = " + t);
+					System.out.println(
+							"\n\tx[0] = s = " + x[0] + " m" +
+									"\n\tx[1] = V = " + x[1] + " m/s" + 
+									"\n\tx[2] = gamma = " + x[2] + " 째" +
+									"\n\tx[3] = altitude = " + x[3] + " m" +
+									"\n\tx[4] = fuel used = " + x[4] + " kg"
+							);
 
-				tObstacle = Amount.valueOf(t, SI.SECOND);
-				timeBreakPoints.add(t);
-				thrustAtFlareStart = 
-						Amount.valueOf( 
-								((DynamicsEquationsLandingNoiseTrajectory)ode).thrust(
-										x[1],
-										((DynamicsEquationsLandingNoiseTrajectory)ode).alpha,
-										x[2],
-										tObstacle.doubleValue(SI.SECOND),
-										x[3]
-										),
-								SI.NEWTON
+					
+					Amount<Duration> time = Amount.valueOf(t, SI.SECOND);
+					Amount<Length> distance = Amount.valueOf(x[0], SI.METER);
+					Amount<Velocity> speed = Amount.valueOf(x[1], SI.METERS_PER_SECOND);
+					Amount<Angle> gamma = Amount.valueOf(x[2], NonSI.DEGREE_ANGLE);
+					Amount<Length> altitude = Amount.valueOf(x[3], SI.METER);
+					Amount<Force> weight = Amount.valueOf( 
+							(maxLandingMass.doubleValue(SI.KILOGRAM) - x[4])*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
+							SI.NEWTON
+							);
+					Amount<Angle> alpha = ((DynamicsEquationsLandingNoiseTrajectory)ode).alpha(
+							time, 
+							speed,
+							altitude, 
+							Amount.valueOf(10.0, SI.CELSIUS), 
+							gamma, 
+							weight
+							);
+					Amount<Force> thrust = Amount.valueOf( 
+							((DynamicsEquationsLandingNoiseTrajectory)ode).thrust(
+									speed, 
+									time,
+									alpha,
+									gamma, 
+									altitude,
+									Amount.valueOf(10.0, SI.CELSIUS), 
+									weight).stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum(),
+							SI.NEWTON
+							);
+					
+					certificationPointsGroundDistance = distance;
+					certificationPointsAltitude = altitude;
+					certificationPointsSpeedTAS = speed;
+					certificationPointsSpeedCAS = speed.times(AtmosphereCalc.getDensity(120.0, 10.0)/1.225);  // density at 120m and ISA+10째C
+					certificationPointsAlpha = alpha;
+					certificationPointsGamma = gamma;
+					certificationPointsTheta = alpha.to(NonSI.DEGREE_ANGLE).plus(gamma.to(NonSI.DEGREE_ANGLE));
+					certificationPointsThrust = thrust;
+					
+					System.out.println("\n---------------------------DONE!-------------------------------");
+					return Action.CONTINUE;
+				}
+			};
+			EventHandler ehCheckObstacle = new EventHandler() {
+
+				@Override
+				public void init(double t0, double[] y0, double t) {
+
+				}
+
+				@Override
+				public void resetState(double t, double[] y) {
+
+				}
+
+				// Discrete event, switching function
+				@Override
+				public double g(double t, double[] x) {
+					if(t < tObstacle.doubleValue(SI.SECOND))
+						return x[3] - obstacle.doubleValue(SI.METER);
+					else
+						return -10.0; /* Generic negative value to trigger the event only one time */
+
+				}
+
+				@Override
+				public Action eventOccurred(double t, double[] x, boolean increasing) {
+					// Handle an event and choose what to do next.
+					System.out.println("\n\t\tEND OF DESCENT PHASE :: APPROACH PHASE ");
+					System.out.println("\n\tswitching function changes sign at t = " + t);
+					System.out.println(
+							"\n\tx[0] = s = " + x[0] + " m" +
+									"\n\tx[1] = V = " + x[1] + " m/s" + 
+									"\n\tx[2] = gamma = " + x[2] + " 째" +
+									"\n\tx[3] = altitude = " + x[3] + " m" +
+									"\n\tx[4] = fuel used = " + x[4] + " kg"
+							);
+
+					tObstacle = Amount.valueOf(t, SI.SECOND);
+					timeBreakPoints.add(t);
+
+					System.out.println("\n---------------------------DONE!-------------------------------");
+					return  Action.CONTINUE;
+				}
+			};
+			EventHandler ehCheckFlareAltitude = new EventHandler() {
+
+				@Override
+				public void init(double t0, double[] y0, double t) {
+
+				}
+
+				@Override
+				public void resetState(double t, double[] y) {
+
+				}
+
+				// Discrete event, switching function
+				@Override
+				public double g(double t, double[] x) {
+					
+					if(t < tFlareAltitude.doubleValue(SI.SECOND))
+						return x[3] - hFlare.doubleValue(SI.METER);
+					else
+						return -10.0; /* Generic negative value to trigger the event only one time */
+
+				}
+
+				@Override
+				public Action eventOccurred(double t, double[] x, boolean increasing) {
+					// Handle an event and choose what to do next.
+					System.out.println("\n\t\tEND OF APPROACH PHASE :: FLARE ROTATION");
+					System.out.println("\n\tswitching function changes sign at t = " + t);
+					System.out.println(
+							"\n\tx[0] = s = " + x[0] + " m" +
+									"\n\tx[1] = V = " + x[1] + " m/s" + 
+									"\n\tx[2] = gamma = " + x[2] + " 째" +
+									"\n\tx[3] = altitude = " + x[3] + " m" +
+									"\n\tx[4] = fuel used = " + x[4] + " kg"
+							);
+
+					Amount<Temperature> deltaTemperature = Amount.valueOf(10, SI.CELSIUS); // ISA+10째C
+					Amount<Duration> time = Amount.valueOf(t, SI.SECOND);
+					Amount<Velocity> speed = Amount.valueOf(x[1], SI.METERS_PER_SECOND);
+					Amount<Angle> gamma = Amount.valueOf(x[2], NonSI.DEGREE_ANGLE);
+					Amount<Length> altitude = Amount.valueOf(x[3], SI.METER);
+					Amount<Force> weight = Amount.valueOf(
+							(maxLandingMass.doubleValue(SI.KILOGRAM) - x[4])*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
+							SI.NEWTON
+							);
+					Amount<Angle> alpha = ((DynamicsEquationsLandingNoiseTrajectory)ode).alpha(time, speed, altitude, deltaTemperature, gamma, weight);
+
+					tFlareAltitude = Amount.valueOf(t, SI.SECOND);
+					timeBreakPoints.add(t);
+					thrustAtFlareStart = 
+							Amount.valueOf( 
+									((DynamicsEquationsLandingNoiseTrajectory)ode).thrust(
+											speed,
+											time,
+											alpha,
+											gamma,
+											altitude,
+											deltaTemperature, 
+											weight
+											).stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum(),
+									SI.NEWTON
+									);
+					
+					List<Amount<Force>> thrustList = new ArrayList<>();
+					for (int i=0; i<LandingNoiseTrajectoryCalc.this.getThePowerPlant().getEngineNumber(); i++) 
+						thrustList.add(
+								ThrustCalc.calculateThrustDatabase(
+										thePowerPlant.getEngineList().get(i).getT0(),
+										thePowerPlant.getEngineDatabaseReaderList().get(i),
+										EngineOperatingConditionEnum.GIDL, 
+										Amount.valueOf(0.0, SI.METER), 
+										SpeedCalc.calculateMach(
+												Amount.valueOf(0.0, SI.METER),
+												deltaTemperature,
+												Amount.valueOf(
+														vTouchDown.doubleValue(SI.METERS_PER_SECOND) 
+														+ LandingNoiseTrajectoryCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+														SI.METERS_PER_SECOND
+														)
+												),
+										deltaTemperature, 
+										LandingNoiseTrajectoryCalc.this.getPhi(),
+										LandingNoiseTrajectoryCalc.this.getGidlThrustCorrectionFactor()
+										)
 								);
+					Amount<Force> thrustAtTouchDown = Amount.valueOf( 
+							thrustList.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum(),
+							SI.NEWTON
+							);
 
-				thrustFlareFunction = new MyInterpolatingFunction();
-				thrustFlareFunction.interpolateLinear(
-						new double[] {
-								tObstacle.doubleValue(SI.SECOND),
-								tObstacle.plus(dtFlare).doubleValue(SI.SECOND) 
-						},
-						new double[] {
-								thrustAtFlareStart.doubleValue(SI.NEWTON),
-								thePowerPlant.getEngineList().get(0).getT0().getEstimatedValue()
-								*((DynamicsEquationsLandingNoiseTrajectory)ode).throttleGroundIdle(vTouchDown.doubleValue(SI.METERS_PER_SECOND))
-								*thePowerPlant.getEngineNumber()
-						}
-						);
+					thrustFlareFunction = new MyInterpolatingFunction();
+					thrustFlareFunction.interpolateLinear(
+							new double[] {
+									tFlareAltitude.doubleValue(SI.SECOND),
+									tFlareAltitude.plus(dtFlare).doubleValue(SI.SECOND) 
+							},
+							new double[] {
+									thrustAtFlareStart.doubleValue(SI.NEWTON),
+									thrustAtTouchDown.doubleValue(SI.NEWTON)
+							}
+							);
 
-				// TODO: REMOVE
-				// alphaDotFlare = - ((DynamicsEquationsLandingNoiseTrajectory)ode).alpha
-				//		/ dtFlare.doubleValue(SI.SECOND);
+					System.out.println("\n---------------------------DONE!-------------------------------");
+					return  Action.CONTINUE;
+				}
+			};
+			EventHandler ehCheckTouchDown = new EventHandler() {
 
-				System.out.println("\n---------------------------DONE!-------------------------------");
-				return  Action.STOP;
+				@Override
+				public void init(double t0, double[] y0, double t) {
+
+				}
+
+				@Override
+				public void resetState(double t, double[] y) {
+
+				}
+
+				// Discrete event, switching function
+				@Override
+				public double g(double t, double[] x) {
+					if(t < tTouchDown.doubleValue(SI.SECOND))
+						return x[3] - 1e-2;
+					else
+						return -10.0; /* Generic negative value to trigger the event only one time */
+				}
+
+				@Override
+				public Action eventOccurred(double t, double[] x, boolean increasing) {
+					// Handle an event and choose what to do next.
+					System.out.println("\n\t\tEND OF FLARE PHASE :: TOUCH-DOWN");
+					System.out.println("\n\tswitching function changes sign at t = " + t);
+					System.out.println(
+							"\n\tx[0] = s = " + x[0] + " m" +
+									"\n\tx[1] = V = " + x[1] + " m/s" + 
+									"\n\tx[2] = gamma = " + x[2] + " 째" +
+									"\n\tx[3] = altitude = " + x[3] + " m" +
+									"\n\tx[4] = fuel used = " + x[4] + " kg"
+							);
+					
+					altitudeAtFlareEnding = Amount.valueOf(x[3], SI.METER);
+					rateOfDescentAtFlareEnding = Amount.valueOf(
+							x[1]*Math.sin(x[2]/57.3),
+							SI.METERS_PER_SECOND
+							);
+					System.out.println("\nAltitude @ Flare Ending = " + altitudeAtFlareEnding);
+					System.out.println("\nRate of Descent @ Flare Ending = " + rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE) + " ft/min");
+					System.out.println("\nFlare Angular Velocity = " + alphaDotFlare + " 째/s");
+						
+					tTouchDown = Amount.valueOf(t, SI.SECOND);
+					double temporaryCertificationPointsGroundDistance = certificationPointsGroundDistance.doubleValue(SI.METER);
+					certificationPointsGroundDistance = Amount.valueOf(
+							x[0] - temporaryCertificationPointsGroundDistance,
+							SI.METER
+							);
+					timeBreakPoints.add(t);
+					System.out.println("\n---------------------------DONE!-------------------------------");
+					Action action = Action.CONTINUE;
+					if ( Math.abs(altitudeAtFlareEnding.doubleValue(SI.METER) - 1.0) >= 1.0 
+							|| Math.abs(rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE)) >= Math.abs(targetRateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE))
+							)
+						action = Action.STOP;
+					return  action;
+				}
+			};
+
+			theIntegrator.addEventHandler(ehCheckApproachCertificationPoint, 1.0, 1e-3, 20);
+			theIntegrator.addEventHandler(ehCheckObstacle, 1.0, 1e-3, 20);
+			theIntegrator.addEventHandler(ehCheckFlareAltitude, 1.0, 1e-3, 20);
+			theIntegrator.addEventHandler(ehCheckTouchDown, 1.0, 1e-3, 20);
+			theIntegrator.addEventHandler(ehCheckStop, 1.0, 1e-10, 50);
+
+			// handle detailed info
+			StepHandler stepHandler = new StepHandler() {
+
+				public void init(double t0, double[] x0, double t) {
+				}
+
+				@Override
+				public void handleStep(StepInterpolator interpolator, boolean isLast) throws MaxCountExceededException {
+
+					double   t = interpolator.getCurrentTime();
+					double[] x = interpolator.getInterpolatedState();
+					double[] xDot = interpolator.getInterpolatedDerivatives();
+
+					Amount<Temperature> deltaTemperature = Amount.valueOf(10, SI.CELSIUS); // ISA+10째C
+					Amount<Duration> time = Amount.valueOf(t, SI.SECOND);
+					Amount<Velocity> speed = Amount.valueOf(x[1], SI.METERS_PER_SECOND);
+					Amount<Angle> gamma = Amount.valueOf(x[2], NonSI.DEGREE_ANGLE);
+					Amount<Length> altitude = Amount.valueOf(x[3], SI.METER);
+					Amount<Force> weight = Amount.valueOf(
+							(maxLandingMass.doubleValue(SI.KILOGRAM) - x[4])*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
+							SI.NEWTON
+							);
+					Amount<Angle> alpha = ((DynamicsEquationsLandingNoiseTrajectory)ode).alpha(time, speed, altitude, deltaTemperature, gamma, weight);
+
+					//----------------------------------------------------------------------------------------
+					// TIME:
+					LandingNoiseTrajectoryCalc.this.getTime().add(Amount.valueOf(t, SI.SECOND));
+					//----------------------------------------------------------------------------------------
+					// ALPHA:
+					LandingNoiseTrajectoryCalc.this.getAlpha().add(((DynamicsEquationsLandingNoiseTrajectory)ode).alpha(time, speed, altitude, deltaTemperature, gamma, weight));
+					//----------------------------------------------------------------------------------------
+					// CL:
+					LandingNoiseTrajectoryCalc.this.getcL().add(((DynamicsEquationsLandingNoiseTrajectory)ode).cL(alpha));
+					if(cL.get(cL.size()-1) > (kCLmax*cLmaxLND) ) 
+						maximumFlareCLFlag = true;
+					//----------------------------------------------------------------------------------------
+					// CD:
+					LandingNoiseTrajectoryCalc.this.getcD().add(
+							((DynamicsEquationsLandingNoiseTrajectory)ode).cD(
+									((DynamicsEquationsLandingNoiseTrajectory)ode).cL(alpha),
+									altitude
+									)
+							);
+					//----------------------------------------------------------------------------------------
+					// ACCELERATION:
+					LandingNoiseTrajectoryCalc.this.getAcceleration().add(
+							Amount.valueOf(xDot[1], SI.METERS_PER_SQUARE_SECOND)
+							);
+					//----------------------------------------------------------------------------------------
+					// WEIGHT:
+					LandingNoiseTrajectoryCalc.this.getWeight().add(weight);
+					//----------------------------------------------------------------------------------------
+					// LOAD FACTOR:
+					LandingNoiseTrajectoryCalc.this.getLoadFactor().add(
+							(  ((DynamicsEquationsLandingNoiseTrajectory)ode).lift(speed, alpha, gamma, altitude, deltaTemperature).doubleValue(SI.NEWTON)
+									+ (  ((DynamicsEquationsLandingNoiseTrajectory)ode).thrust(speed, time, alpha, gamma, altitude, deltaTemperature, weight)
+											.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
+											*Math.sin(alpha.doubleValue(SI.RADIAN))
+											)
+									)
+							/ ( weight.doubleValue(SI.NEWTON)*Math.cos(gamma.doubleValue(SI.RADIAN))	)
+							);
+
+				}
+			};
+			theIntegrator.addStepHandler(stepHandler);
+
+			//----------------------------------------------------------------------------------------------
+			// Use this handler for post-processing
+			System.out.println("=================================================");
+			System.out.println("Integration " + (i+1) + "\n\n");
+			continuousOutputModel = new ContinuousOutputModel();
+			theIntegrator.addStepHandler(continuousOutputModel);
+			//----------------------------------------------------------------------------------------------
+
+			// initial state
+			double[] xAt0 = new double[] {
+					0.0,
+					vDescent.doubleValue(SI.METERS_PER_SECOND),
+					gammaDescent.doubleValue(NonSI.DEGREE_ANGLE),
+					intialAltitude.doubleValue(SI.METER),
+					0.0
+			}; 
+			theIntegrator.integrate(ode, 0.0, xAt0, 10000, xAt0); // now xAt0 contains final state
+
+			if (maximumFlareCLFlag == true) {
+					System.err.println("ERROR: MAXIMUM ALLOWED CL DURING FLARE REACHED. THE LAST FLARE ANGULAR VELOCITY WILL BE CONSIDERED.");
+					break;
 			}
-		};
-		EventHandler ehCheckTouchDown = new EventHandler() {
+			
+			if(Math.abs(rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE)) > targetRateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE))
+				if(Math.abs(rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE) - targetRateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE)) < 50.0)
+					newAlphaDotFlare = alphaDotFlare + 0.02;
+				else
+					newAlphaDotFlare = alphaDotFlare + 0.1;
+			else
+				if(Math.abs(rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE) - targetRateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE)) < 50.0)
+					newAlphaDotFlare = alphaDotFlare - 0.02;
+				else
+					newAlphaDotFlare = alphaDotFlare - 0.1;
 
-			@Override
-			public void init(double t0, double[] y0, double t) {
-
+			if(Math.abs(altitudeAtFlareEnding.doubleValue(SI.METER) - 1e-2) < 1 
+					&& Math.abs(rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE)) < Math.abs(targetRateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE))
+					)
+				targetRDandAltitudeFlag = true;
+			
+			if(i > maxIter) {
+				break;
 			}
+			
+			i++;
+			
+			theIntegrator.clearEventHandlers();
+			theIntegrator.clearStepHandlers();
 
-			@Override
-			public void resetState(double t, double[] y) {
+		}
 
-			}
-
-			// Discrete event, switching function
-			@Override
-			public double g(double t, double[] x) {
-
-				return x[3] - 0.0;
-			}
-
-			@Override
-			public Action eventOccurred(double t, double[] x, boolean increasing) {
-				// Handle an event and choose what to do next.
-				System.out.println("\n\t\tEND OF FLARE PHASE :: TOUCH-DOWN");
-				System.out.println("\n\tswitching function changes sign at t = " + t);
-				System.out.println(
-						"\n\tx[0] = s = " + x[0] + " m" +
-								"\n\tx[1] = V = " + x[1] + " m/s" + 
-								"\n\tx[2] = gamma = " + x[2] + " �" +
-								"\n\tx[3] = altitude = " + x[3] + " m" 
-						);
-
-				tTouchDown = Amount.valueOf(t, SI.SECOND);
-				timeBreakPoints.add(t);
-
-				System.out.println("\n---------------------------DONE!-------------------------------");
-				return  Action.CONTINUE;
-			}
-		};
-		EventHandler ehCheckZeroGamma = new EventHandler() {
-
-			@Override
-			public void init(double t0, double[] y0, double t) {
-
-			}
-
-			@Override
-			public void resetState(double t, double[] y) {
-
-			}
-
-			// Discrete event, switching function
-			@Override
-			public double g(double t, double[] x) {
-
-				return x[2] - 0.0;
-			}
-
-			@Override
-			public Action eventOccurred(double t, double[] x, boolean increasing) {
-				// Handle an event and choose what to do next.
-				System.out.println("\n\t\tGAMMA = 0.0 DURING FLARE ROTATION");
-				System.out.println("\n\tswitching function changes sign at t = " + t);
-				System.out.println(
-						"\n\tx[0] = s = " + x[0] + " m" +
-								"\n\tx[1] = V = " + x[1] + " m/s" + 
-								"\n\tx[2] = gamma = " + x[2] + " �" +
-								"\n\tx[3] = altitude = " + x[3] + " m" 
-						);
-
-				tZeroGamma = Amount.valueOf(t, SI.SECOND);
-				timeBreakPoints.add(t);
-				altitudeAtFlareEnding = Amount.valueOf(x[3], SI.METER);
-				System.out.println("\nAltitude @ Flare Ending = " + altitudeAtFlareEnding);
-
-				System.out.println("\n---------------------------DONE!-------------------------------");
-				return  Action.STOP;
-			}
-		};
-
-		theIntegrator.addEventHandler(ehCheckObstacle, 1.0, 1e-3, 20);
-		theIntegrator.addEventHandler(ehCheckZeroGamma, 1.0, 1e-3, 20);
-		theIntegrator.addEventHandler(ehCheckTouchDown, 1.0, 1e-3, 20);
-		theIntegrator.addEventHandler(ehCheckStop, 1.0, 1e-3, 20);
-
-		// handle detailed info
-		StepHandler stepHandler = new StepHandler() {
-
-			public void init(double t0, double[] x0, double t) {
-			}
-
-			@Override
-			public void handleStep(StepInterpolator interpolator, boolean isLast) throws MaxCountExceededException {
-
-				double   t = interpolator.getCurrentTime();
-				double[] xDot = interpolator.getInterpolatedDerivatives();
-				double[] x = interpolator.getInterpolatedState();			
-
-				//----------------------------------------------------------------------------------------
-				// TIME:
-				LandingNoiseTrajectoryCalc.this.getTime().add(Amount.valueOf(t, SI.SECOND));
-				//----------------------------------------------------------------------------------------
-				// ALPHA:
-				LandingNoiseTrajectoryCalc.this.getAlpha().add(Amount.valueOf(
-						((DynamicsEquationsLandingNoiseTrajectory)ode).alpha,
-						NonSI.DEGREE_ANGLE)
-						);
-				//----------------------------------------------------------------------------------------
-				// GAMMA_DOT:
-				LandingNoiseTrajectoryCalc.this.getGammaDot().add(xDot[2]);
-				//----------------------------------------------------------------------------------------
-				// THRUST:
-				LandingNoiseTrajectoryCalc.this.getThrust().add(
-						Amount.valueOf(
-								((DynamicsEquationsLandingNoiseTrajectory)ode).thrust(
-										x[1],
-										((DynamicsEquationsLandingNoiseTrajectory)ode).alpha,
-										x[2],
-										t,
-										x[3]
-										), 
-								SI.NEWTON)
-						);
-			}
-		};
-		theIntegrator.addStepHandler(stepHandler);
-
-		//##############################################################################################
-		// Use this handler for post-processing
-		theIntegrator.addStepHandler(new ContinuousOutputModel());
-
-		//##############################################################################################
-
-		double[] xAt0 = new double[] {
-				0.0,
-				vDescent.doubleValue(SI.METERS_PER_SECOND),
-				gammaDescent.doubleValue(NonSI.DEGREE_ANGLE),
-				intialAltitude.doubleValue(SI.METER)
-		}; // initial state
-
-		theIntegrator.integrate(ode, 0.0, xAt0, 1000, xAt0); // now xAt0 contains final state
-
-		//			if(altitudeAtFlareEnding.doubleValue(SI.METER) > 0.0) {
-		//				if(altitudeAtFlareEnding.doubleValue(SI.METER) > 2.0)
-		//					newFlareDuration = dtFlare.plus(Amount.valueOf(1.0, SI.SECOND));
-		//				else if(altitudeAtFlareEnding.doubleValue(SI.METER) <= 2.0
-		//						&& altitudeAtFlareEnding.doubleValue(SI.METER) > 0.2)
-		//					newFlareDuration = dtFlare.plus(Amount.valueOf(1e-1, SI.SECOND));
-		//				else if(altitudeAtFlareEnding.doubleValue(SI.METER) <= 0.2
-		//						&& altitudeAtFlareEnding.doubleValue(SI.METER) > 0.1)
-		//					newFlareDuration = dtFlare.plus(Amount.valueOf(1e-3, SI.SECOND));
-		//			}
-		//
-		//			if(Math.abs(altitudeAtFlareEnding.doubleValue(SI.METER) - 0.0) < 1e-1) 
-		manageOutputData(1.0, timeHistories);
-		//				
-		//			theIntegrator.clearEventHandlers();
-		//			theIntegrator.clearStepHandlers();
-		//
-		//			i++;
-		//		}
-
+		if(targetRDandAltitudeFlag == true)
+			manageOutputData(2.0, timeHistories, continuousOutputModel);
+		else {
+			System.err.println("ERROR: TARGET RATE OF CLIMB AND/OR ALTITUDE ARE NOT REACHED " 
+					+ "\nRate of Descent current = "
+					+ rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE) + " ft/min"
+					+ "\nRate of Descent Target = "
+					+ targetRateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE) + " ft/min"
+					+ "\nAltuitude current = "
+					+ altitudeAtFlareEnding.to(SI.METER)
+					+ "\nAltitude Target = "
+					+ 0.01 + " m"
+					);
+		}
+		
 		System.out.println("\n---------------------------END!!-------------------------------\n\n");
 	}
 
@@ -570,318 +846,243 @@ public class LandingNoiseTrajectoryCalc {
 	 * @throws IllegalAccessException
 	 * @throws InstantiationException
 	 */
-	public void manageOutputData(double dt, boolean timeHistories) {
+	public void manageOutputData(double dt, boolean timeHistories, StepHandler handler) {
 
-		//#############################################################################
+		//-----------------------------------------------------------------------------
 		// Collect the array of times and associated state vector values according
 		// to the given dt and keeping the the discrete event-times (breakpoints)
 
 		List<double[]> states = new ArrayList<double[]>();
 		List<double[]> stateDerivatives = new ArrayList<double[]>();
-		for (  StepHandler handler : this.theIntegrator.getStepHandlers() ) {
+		
+		MyInterpolatingFunction alphaFunction = new MyInterpolatingFunction();
+		MyInterpolatingFunction loadFactorFunction = new MyInterpolatingFunction();
+		MyInterpolatingFunction accelerationFunction = new MyInterpolatingFunction();
+		MyInterpolatingFunction cLFunction = new MyInterpolatingFunction();
+		MyInterpolatingFunction cDFunction = new MyInterpolatingFunction();
+		MyInterpolatingFunction weightFunction = new MyInterpolatingFunction();
+		
+		alphaFunction.interpolateLinear(
+				MyArrayUtils.convertListOfAmountTodoubleArray(this.time), 
+				MyArrayUtils.convertListOfAmountTodoubleArray(this.alpha)
+				);
+		
+		if(timeHistories) {
+			loadFactorFunction.interpolateLinear(
+					MyArrayUtils.convertListOfAmountTodoubleArray(this.time), 
+					MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(this.loadFactor))
+					);
+			accelerationFunction.interpolateLinear(
+					MyArrayUtils.convertListOfAmountTodoubleArray(this.time), 
+					MyArrayUtils.convertListOfAmountTodoubleArray(this.acceleration)
+					);
+			cLFunction.interpolateLinear(
+					MyArrayUtils.convertListOfAmountTodoubleArray(this.time), 
+					MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(this.cL))
+					);
+			cDFunction.interpolateLinear(
+					MyArrayUtils.convertListOfAmountTodoubleArray(this.time), 
+					MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(this.cD))
+					);
+			weightFunction.interpolateLinear(
+					MyArrayUtils.convertListOfAmountTodoubleArray(this.time), 
+					MyArrayUtils.convertListOfAmountTodoubleArray(this.weight)
+					);
+		}
+		
+		// There is only ONE ContinuousOutputModel handler, get it
+		if (handler instanceof ContinuousOutputModel) {
+			System.out.println("Found handler instanceof ContinuousOutputModel");
+			System.out.println("=== Stored state variables ===");
+			ContinuousOutputModel cm = (ContinuousOutputModel) handler;
+			System.out.println("Initial time: " + cm.getInitialTime());
+			System.out.println("Final time: " + cm.getFinalTime());
 
-			// There is only ONE ContinuousOutputModel handler, get it
-			if (handler instanceof ContinuousOutputModel) {
-				System.out.println("Found handler instanceof ContinuousOutputModel");
-				System.out.println("=== Stored state variables ===");
-				ContinuousOutputModel cm = (ContinuousOutputModel) handler;
-				System.out.println("Initial time: " + cm.getInitialTime());
-				System.out.println("Final time: " + cm.getFinalTime());
+			// build time vector keeping event-times as breakpoints
+			double t = cm.getInitialTime();
+			do {
+				timeList.add(Amount.valueOf(t, SI.SECOND));
+				cm.setInterpolatedTime(t);
+				states.add(cm.getInterpolatedState());
+				stateDerivatives.add(cm.getInterpolatedDerivatives());
 
-				// build time vector keeping event-times as breakpoints
-				double t = cm.getInitialTime();
-				do {
-					timeList.add(Amount.valueOf(t, SI.SECOND));
-					cm.setInterpolatedTime(t);
-					states.add(cm.getInterpolatedState());
-					stateDerivatives.add(cm.getInterpolatedDerivatives());
-
-					t += dt;
-					// System.out.println("Current time: " + t);
-					// detect breakpoints adjusting time as appropriate
-					for(int i=0; i<timeBreakPoints.size(); i++) {
-						double t_ = timeBreakPoints.get(i);
-						//  bracketing
-						if ((t-dt < t_) && (t > t_)) {
-							// set back time to breakpoint-time
-							t = t_;
-						}
+				t += dt;
+				// System.out.println("Current time: " + t);
+				// detect breakpoints adjusting time as appropriate
+				for(int i=0; i<timeBreakPoints.size(); i++) {
+					double t_ = timeBreakPoints.get(i);
+					//  bracketing
+					if ((t-dt < t_) && (t > t_)) {
+						// set back time to breakpoint-time
+						t = t_;
 					}
+				}
 
-				} while (t <= cm.getFinalTime());
+			} while (t <= cm.getFinalTime());
 
+			//--------------------------------------------------------------------------------
+			// Reconstruct the auxiliary/derived variables
+			for(int i = 0; i < timeList.size(); i++) {
+
+				double[] x = states.get(i);
+				double[] xDot = stateDerivatives.get(i);
+
+				Amount<Temperature> deltaTemperature = Amount.valueOf(10, SI.CELSIUS); // ISA+10째C
+				Amount<Duration> time = timeList.get(i);
+				Amount<Velocity> speed = Amount.valueOf(x[1], SI.METERS_PER_SECOND);
+				Amount<Angle> gamma = Amount.valueOf(x[2], NonSI.DEGREE_ANGLE);
+				Amount<Length> altitude = Amount.valueOf(x[3], SI.METER);
+				Amount<Force> weight = Amount.valueOf(
+						weightFunction.value(timeList.get(i).doubleValue(SI.SECOND)),
+						SI.NEWTON
+						);
+				Amount<Angle> alpha = Amount.valueOf(
+						alphaFunction.value(timeList.get(i).doubleValue(SI.SECOND)),
+						NonSI.DEGREE_ANGLE
+						);
+
+				if(time.doubleValue(SI.SECOND) >= tTouchDown.doubleValue(SI.SECOND))
+					gamma = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+				
+				//========================================================================================
+				// PICKING UP ALL DATA AT EVERY STEP (RECOGNIZING IF THE TAKE-OFF IS CONTINUED OR ABORTED)
+				//----------------------------------------------------------------------------------------
+				// GROUND DISTANCE:
+				groundDistanceList.add(Amount.valueOf(
+						x[0],
+						SI.METER)
+						);
+				//----------------------------------------------------------------------------------------
+				// VERTICAL DISTANCE:
+				verticalDistanceList.add(Amount.valueOf(
+						x[3],
+						SI.METER)
+						);
+				//----------------------------------------------------------------------------------------
+				// THRUST:
+				thrustList.add(Amount.valueOf(
+						((DynamicsEquationsLandingNoiseTrajectory)ode).thrust(speed, time, alpha, gamma, altitude, deltaTemperature, weight)
+						.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum(),
+						SI.NEWTON)
+						);
 				//--------------------------------------------------------------------------------
-				// Reconstruct the auxiliary/derived variables
-				for(int i = 0; i < timeList.size(); i++) {
-
-					double[] x = states.get(i);
-					double[] xDot = stateDerivatives.get(i);
-
-					double alpha = ((DynamicsEquationsLandingNoiseTrajectory)ode).alpha(
-							timeList.get(i).doubleValue(SI.SECOND),
-							x[1],
-							x[3],
-							x[2]
-							);
-
-					//========================================================================================
-					// PICKING UP ALL DATA AT EVERY STEP (RECOGNIZING IF THE TAKE-OFF IS CONTINUED OR ABORTED)
+				// FUEL USED (kg):
+				fuelUsedList.add(Amount.valueOf(x[4], SI.KILOGRAM));
+				//----------------------------------------------------------------------------------------
+				if(timeHistories) {
 					//----------------------------------------------------------------------------------------
-					// GROUND DISTANCE:
-					groundDistanceList.add(Amount.valueOf(
-							x[0],
-							SI.METER)
+					// WEIGHT:
+					weightList.add(weight);
+					//----------------------------------------------------------------------------------------
+					// SPEED:
+					speedList.add(Amount.valueOf(x[1], SI.METERS_PER_SECOND));
+					//----------------------------------------------------------------------------------------
+					// THRUST HORIZONTAL:
+					thrustHorizontalList.add(Amount.valueOf(
+							((DynamicsEquationsLandingNoiseTrajectory)ode).thrust(speed, time, alpha, gamma, altitude, deltaTemperature, weight)
+							.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
+							*Math.cos(alpha.doubleValue(SI.RADIAN)),
+							SI.NEWTON)
 							);
 					//----------------------------------------------------------------------------------------
-					// VERTICAL DISTANCE:
-					verticalDistanceList.add(Amount.valueOf(
-							x[3],
-							SI.METER)
+					// THRUST VERTICAL:
+					thrustVerticalList.add(Amount.valueOf(
+							((DynamicsEquationsLandingNoiseTrajectory)ode).thrust(speed, time, alpha, gamma, altitude, deltaTemperature, weight)
+							.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
+							*Math.sin(alpha.doubleValue(SI.RADIAN)),
+							SI.NEWTON)
 							);
+					//--------------------------------------------------------------------------------
+					// FRICTION:
+					if(timeList.get(i).doubleValue(SI.SECOND) >= tTouchDown.doubleValue(SI.SECOND))
+						frictionList.add(Amount.valueOf(
+								((DynamicsEquationsLandingNoiseTrajectory)ode).mu(speed)
+								*(weight.doubleValue(SI.NEWTON)
+										- ((DynamicsEquationsLandingNoiseTrajectory)ode).lift(speed, alpha, gamma, altitude, deltaTemperature).doubleValue(SI.NEWTON)
+										),
+								SI.NEWTON)
+								);
+					else if(timeList.get(i).doubleValue(SI.SECOND) >= 
+							tTouchDown.to(SI.SECOND).plus(dtFreeRoll.to(SI.SECOND)).doubleValue(SI.SECOND)
+							)
+						frictionList.add(Amount.valueOf(
+								((DynamicsEquationsLandingNoiseTrajectory)ode).muBrake(speed)
+								*(weight.doubleValue(SI.NEWTON)
+										- ((DynamicsEquationsLandingNoiseTrajectory)ode).lift(speed, alpha, gamma, altitude, deltaTemperature).doubleValue(SI.NEWTON)
+										),
+								SI.NEWTON)
+								);
+					else
+						frictionList.add(Amount.valueOf(0.0, SI.NEWTON));
 					//----------------------------------------------------------------------------------------
-					// THRUST:
-					thrustList.add(Amount.valueOf(
-							((DynamicsEquationsLandingNoiseTrajectory)ode).thrust(
-									x[1],
-									alpha,
-									x[2],
-									timeList.get(i).doubleValue(SI.SECOND),
-									x[3]
+					// LIFT:
+					liftList.add(((DynamicsEquationsLandingNoiseTrajectory)ode).lift(speed, alpha, gamma, altitude, deltaTemperature));
+					//----------------------------------------------------------------------------------------
+					// DRAG:
+					dragList.add(((DynamicsEquationsLandingNoiseTrajectory)ode).drag(speed, alpha, gamma, altitude, deltaTemperature));
+					//----------------------------------------------------------------------------------------
+					// TOTAL FORCE:
+					totalForceList.add(Amount.valueOf(
+							(((DynamicsEquationsLandingNoiseTrajectory)ode).thrust(speed, time, alpha, gamma, altitude, deltaTemperature, weight)
+									.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
+									*Math.cos(alpha.doubleValue(SI.RADIAN))
+									)
+							- ((DynamicsEquationsLandingNoiseTrajectory)ode).drag(speed, alpha, gamma, altitude, deltaTemperature).doubleValue(SI.NEWTON)
+							- (((DynamicsEquationsLandingNoiseTrajectory)ode).mu(speed)
+									*(weight.doubleValue(SI.NEWTON)
+											- ((DynamicsEquationsLandingNoiseTrajectory)ode).lift(speed, alpha, gamma, altitude, deltaTemperature).doubleValue(SI.NEWTON)
+											)
+									)
+							- (weight.doubleValue(SI.NEWTON)*Math.sin(gamma.doubleValue(SI.RADIAN))
 									),
 							SI.NEWTON)
 							);
 					//----------------------------------------------------------------------------------------
-					if(timeHistories) {
-						//----------------------------------------------------------------------------------------
-						// WEIGHT:
-						weightList.add(
-								Amount.valueOf(
-										((DynamicsEquationsLandingNoiseTrajectory)ode).weight,
-										SI.NEWTON
-										)
-								);
-						//----------------------------------------------------------------------------------------
-						// SPEED:
-						speedList.add(Amount.valueOf(x[1], SI.METERS_PER_SECOND));
-						//----------------------------------------------------------------------------------------
-						// THRUST HORIZONTAL:
-						thrustHorizontalList.add(Amount.valueOf(
-								((DynamicsEquationsLandingNoiseTrajectory)ode).thrust(
-										x[1],
-										alpha,
-										x[2], 
-										timeList.get(i).doubleValue(SI.SECOND), 
-										x[3])
-								*Math.cos(
-										Amount.valueOf(
-												alpha,
-												NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
-										),
-								SI.NEWTON)
-								);
-						//----------------------------------------------------------------------------------------
-						// THRUST VERTICAL:
-						thrustVerticalList.add(Amount.valueOf(
-								((DynamicsEquationsLandingNoiseTrajectory)ode).thrust(
-										x[1],
-										alpha,
-										x[2],
-										timeList.get(i).doubleValue(SI.SECOND), 
-										x[3]
-										)*Math.sin(
-												Amount.valueOf(
-														alpha,
-														NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
-												),
-								SI.NEWTON)
-								);
-						//--------------------------------------------------------------------------------
-						// FRICTION:
-						if(timeList.get(i).doubleValue(SI.SECOND) >= tTouchDown.doubleValue(SI.SECOND))
-							frictionList.add(Amount.valueOf(
-									((DynamicsEquationsLandingNoiseTrajectory)ode).mu(x[1])
-									*(((DynamicsEquationsLandingNoiseTrajectory)ode).weight
-											- ((DynamicsEquationsLandingNoiseTrajectory)ode).lift(
-													x[1],
-													alpha,
-													x[2],
-													timeList.get(i).doubleValue(SI.SECOND),
-													x[3])),
-									SI.NEWTON)
-									);
-						else if(timeList.get(i).doubleValue(SI.SECOND) >= 
-								tTouchDown.to(SI.SECOND).plus(dtFreeRoll.to(SI.SECOND)).doubleValue(SI.SECOND)
-								)
-							frictionList.add(Amount.valueOf(
-									((DynamicsEquationsLandingNoiseTrajectory)ode).muBrake(x[1])
-									*(((DynamicsEquationsLandingNoiseTrajectory)ode).weight
-											- ((DynamicsEquationsLandingNoiseTrajectory)ode).lift(
-													x[1],
-													alpha,
-													x[2],
-													timeList.get(i).doubleValue(SI.SECOND),
-													x[3])),
-									SI.NEWTON)
-									);
-						else
-							frictionList.add(Amount.valueOf(0.0, SI.NEWTON));
-						//----------------------------------------------------------------------------------------
-						// LIFT:
-						liftList.add(Amount.valueOf(
-								((DynamicsEquationsLandingNoiseTrajectory)ode).lift(
-										x[1],
-										alpha,
-										x[2],
-										timeList.get(i).doubleValue(SI.SECOND),
-										x[3]),
-								SI.NEWTON)
-								);
-						//----------------------------------------------------------------------------------------
-						// DRAG:
-						dragList.add(Amount.valueOf(
-								((DynamicsEquationsLandingNoiseTrajectory)ode).drag(
-										x[1],
-										alpha,
-										x[2],
-										timeList.get(i).doubleValue(SI.SECOND),
-										x[3]),
-								SI.NEWTON)
-								);
-						//----------------------------------------------------------------------------------------
-						// TOTAL FORCE:
-						totalForceList.add(Amount.valueOf(
-								((DynamicsEquationsLandingNoiseTrajectory)ode).thrust(
-										x[1],
-										alpha,
-										x[2],
-										timeList.get(i).doubleValue(SI.SECOND), 
-										x[3]
-										)*Math.cos(
-												Amount.valueOf(
-														alpha,
-														NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
-												)
-								- ((DynamicsEquationsLandingNoiseTrajectory)ode).drag(
-										x[1],
-										alpha,
-										x[2],
-										timeList.get(i).doubleValue(SI.SECOND),
-										x[3])
-								- ((DynamicsEquationsLandingNoiseTrajectory)ode).mu(x[1])
-								*(((DynamicsEquationsLandingNoiseTrajectory)ode).weight
-										- ((DynamicsEquationsLandingNoiseTrajectory)ode).lift(
-												x[1],
-												alpha,
-												x[2],
-												timeList.get(i).doubleValue(SI.SECOND),
-												x[3]))
-								- ((DynamicsEquationsLandingNoiseTrajectory)ode).weight*Math.sin(
-										Amount.valueOf(
-												x[2],
-												NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()),
-								SI.NEWTON)
-								);
-						//----------------------------------------------------------------------------------------
-						// LOAD FACTOR:
-						loadFactorList.add(
-								(((DynamicsEquationsLandingNoiseTrajectory)ode).lift(
-										x[1],
-										alpha,
-										x[2],
-										timeList.get(i).doubleValue(SI.SECOND),
-										x[3])
-										+ (((DynamicsEquationsLandingNoiseTrajectory)ode).thrust(
-												x[1],
-												alpha,
-												x[2],
-												timeList.get(i).doubleValue(SI.SECOND),
-												x[3]
-												)*Math.sin(
-														Amount.valueOf(
-																alpha,
-																NonSI.DEGREE_ANGLE
-																).to(SI.RADIAN).getEstimatedValue())
-												)
-										)
-								/(((((DynamicsEquationsLandingNoiseTrajectory)ode).weight)*Math.cos(
-										Amount.valueOf(
-												x[2],
-												NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()))
-										)
-								);
-						//----------------------------------------------------------------------------------------
-						// RATE OF CLIMB:
-						rateOfClimbList.add(Amount.valueOf(
-								xDot[3],
-								SI.METERS_PER_SECOND)
-								);
-						//----------------------------------------------------------------------------------------
-						// ACCELERATION:
-						accelerationList.add(Amount.valueOf(xDot[1], SI.METERS_PER_SQUARE_SECOND));
-						//----------------------------------------------------------------------------------------
-						// ALPHA:
-						alphaList.add(Amount.valueOf(
-								alpha,
-								NonSI.DEGREE_ANGLE)
-								);
-						//----------------------------------------------------------------------------------------
-						// GAMMA:
-						gammaList.add(Amount.valueOf(
-								x[2],
-								NonSI.DEGREE_ANGLE)
-								);
-						//----------------------------------------------------------------------------------------
-						// ALPHA DOT:
-						if(timeList.get(i).doubleValue(SI.SECOND) > tObstacle.doubleValue(SI.SECOND)) {
-							double deltaAlpha = 
-									alphaList.get(i).doubleValue(NonSI.DEGREE_ANGLE)
-									- alphaList.get(i-1).doubleValue(NonSI.DEGREE_ANGLE);
-							double deltaTime = 
-									timeList.get(i).doubleValue(SI.SECOND)
-									- timeList.get(i-1).doubleValue(SI.SECOND);
-							alphaDotList.add(deltaAlpha/deltaTime);
-						}
-						else
-							alphaDotList.add(0.0);
-						//----------------------------------------------------------------------------------------
-						// GAMMA DOT:
-						gammaDotList.add(xDot[2]);
-						//----------------------------------------------------------------------------------------
-						// THETA:
-						thetaList.add(Amount.valueOf(
-								x[2] + alpha,
-								NonSI.DEGREE_ANGLE)
-								);
-						//----------------------------------------------------------------------------------------
-						// CL:				
-						cLList.add(
-								((DynamicsEquationsLandingNoiseTrajectory)ode).cL(
-										x[1],
-										alpha,
-										x[2],
-										timeList.get(i).doubleValue(SI.SECOND),
-										x[3]
-										)
-								);
-						//----------------------------------------------------------------------------------------
-						// CD:
-						cDList.add(
-								((DynamicsEquationsLandingNoiseTrajectory)ode).cD(
-										((DynamicsEquationsLandingNoiseTrajectory)ode).cL(
-												x[1],
-												alpha,
-												x[2],
-												timeList.get(i).doubleValue(SI.SECOND),
-												x[3]
-												),
-										timeList.get(i).doubleValue(SI.SECOND),
-										x[1],
-										x[3]
-										)
-								);
+					// LOAD FACTOR:
+					loadFactorList.add(loadFactorFunction.value(time.doubleValue(SI.SECOND)));
+					//----------------------------------------------------------------------------------------
+					// RATE OF CLIMB:
+					rateOfClimbList.add(Amount.valueOf(
+							xDot[3],
+							SI.METERS_PER_SECOND)
+							);
+					//----------------------------------------------------------------------------------------
+					// ACCELERATION:
+					accelerationList.add(Amount.valueOf(
+							accelerationFunction.value(time.doubleValue(SI.SECOND)),
+							SI.METERS_PER_SQUARE_SECOND)
+							);
+					//----------------------------------------------------------------------------------------
+					// ALPHA:
+					alphaList.add(alpha);
+					//----------------------------------------------------------------------------------------
+					// GAMMA:
+					gammaList.add(gamma);
+					//----------------------------------------------------------------------------------------
+					// ALPHA DOT:
+					if(timeList.get(i).doubleValue(SI.SECOND) > tFlareAltitude.doubleValue(SI.SECOND) 
+							&& timeList.get(i).doubleValue(SI.SECOND) <= tTouchDown.doubleValue(SI.SECOND)
+							) 
+						alphaDotList.add(alphaDotFlare);
+					else
+						alphaDotList.add(0.0);
+					//----------------------------------------------------------------------------------------
+					// GAMMA DOT:
+					gammaDotList.add(xDot[2]);
+					//----------------------------------------------------------------------------------------
+					// THETA:
+					thetaList.add(Amount.valueOf(
+							alpha.doubleValue(NonSI.DEGREE_ANGLE) + gamma.doubleValue(NonSI.DEGREE_ANGLE),
+							NonSI.DEGREE_ANGLE)
+							);
+					//----------------------------------------------------------------------------------------
+					// CL:				
+					cLList.add(cLFunction.value(time.doubleValue(SI.SECOND)));
+					//----------------------------------------------------------------------------------------
+					// CD:
+					cDList.add(cDFunction.value(time.doubleValue(SI.SECOND)));
 
-						//----------------------------------------------------------------------------------------
-					}
+					//----------------------------------------------------------------------------------------
 				}
 			}
 		}
@@ -966,17 +1167,6 @@ public class LandingNoiseTrajectoryCalc {
 					simulationDetailsOutputFolder, "Acceleration_evolution_SI",true);
 
 
-			MyChartToFileUtils.plotNoLegend(
-					MyArrayUtils.convertListOfAmountTodoubleArray(timeList),
-					MyArrayUtils.convertListOfAmountTodoubleArray(
-							accelerationList.stream()
-							.map(x -> x.to(MyUnits.FOOT_PER_SQUARE_MINUTE))
-							.collect(Collectors.toList())
-							),
-					0.0, null, -10.0, 10.0,
-					"Time", "Acceleration", "s", "ft/(min^2)",
-					simulationDetailsOutputFolder, "Acceleration_evolution_IMPERIAL",true);
-
 			//.................................................................................
 			// acceleration v.s. ground distance
 
@@ -994,13 +1184,9 @@ public class LandingNoiseTrajectoryCalc {
 							.map(x -> x.to(NonSI.FOOT))
 							.collect(Collectors.toList())
 							),
-					MyArrayUtils.convertListOfAmountTodoubleArray(
-							accelerationList.stream()
-							.map(x -> x.to(MyUnits.FOOT_PER_SQUARE_MINUTE))
-							.collect(Collectors.toList())
-							),
+					MyArrayUtils.convertListOfAmountTodoubleArray(accelerationList),
 					0.0, null, -10.0, 10.0,
-					"Ground Distance", "Acceleration", "ft", "ft/(min^2)",
+					"Ground Distance", "Acceleration", "ft", "m/(s^2)",
 					simulationDetailsOutputFolder, "Acceleration_vs_GroundDistance_IMPERIAL",true);
 
 			//.................................................................................
@@ -1547,7 +1733,7 @@ public class LandingNoiseTrajectoryCalc {
 
 			MyChartToFileUtils.plot(
 					xMatrix7, yMatrix7,
-					0.0, null, null, null,
+					0.0, null, -10.0, null,
 					"Time", "Angular Velocity", "s", "deg/s",
 					new String[] {"Alpha_dot", "Gamma_dot"},
 					simulationDetailsOutputFolder, "AngularVelocity_evolution",
@@ -1566,7 +1752,7 @@ public class LandingNoiseTrajectoryCalc {
 
 				MyChartToFileUtils.plot(
 						xMatrix8SI, yMatrix8SI,
-						0.0, null, null, null,
+						0.0, null, -10.0, null,
 						"Ground Distance", "Angular Velocity", "m", "deg/s",
 						new String[] {"Alpha_dot", "Gamma_dot"},
 						simulationDetailsOutputFolder, "AngularVelocity_vs_GroundDistance_SI",
@@ -1588,7 +1774,7 @@ public class LandingNoiseTrajectoryCalc {
 
 				MyChartToFileUtils.plot(
 						xMatrix8IMPERIAL, yMatrix8SIMPERIAL,
-						0.0, null, null, null,
+						0.0, null, -10.0, null,
 						"Ground Distance", "Angular Velocity", "ft", "deg/s",
 						new String[] {"Alpha_dot", "Gamma_dot"},
 						simulationDetailsOutputFolder, "AngularVelocity_vs_GroundDistance_SI",
@@ -1603,6 +1789,9 @@ public class LandingNoiseTrajectoryCalc {
 				);
 		String thrustOutputFolder = JPADStaticWriteUtils.createNewFolder(
 				outputFolderPath + "Thrust" + File.separator
+				);
+		String fuelUsedOutputFolder = JPADStaticWriteUtils.createNewFolder(
+				outputFolderPath + "FuelUsed" + File.separator
 				);
 
 		System.setOut(originalOut);
@@ -1663,11 +1852,18 @@ public class LandingNoiseTrajectoryCalc {
 
 		//.................................................................................
 		// thrust v.s. time
-
+		Double yMaxThrust = null;
+		Double yMinThrust = null;
+		if(MyArrayUtils.getMin(thrustList.stream().mapToDouble(ff -> ff.doubleValue(SI.NEWTON)).toArray()) == 0.0
+				&& MyArrayUtils.getMax(thrustList.stream().mapToDouble(ff -> ff.doubleValue(SI.NEWTON)).toArray()) == 0.0) {
+			yMaxThrust = 1.0; /* Generic positive value */
+			yMinThrust = -1.0; /* Generic positive value */
+		}
+		
 		MyChartToFileUtils.plotNoLegend(
 				MyArrayUtils.convertListOfAmountTodoubleArray(timeList),
 				MyArrayUtils.convertListOfAmountTodoubleArray(thrustList),
-				0.0, null, 0.0, null, 
+				0.0, null, yMinThrust, yMaxThrust, 
 				"Time", "Thrust",
 				"s", "N",
 				thrustOutputFolder, "Thrust_evolution_SI",true
@@ -1678,7 +1874,7 @@ public class LandingNoiseTrajectoryCalc {
 				MyArrayUtils.convertListOfAmountTodoubleArray(
 						thrustList.stream().map(x -> x.to(NonSI.POUND_FORCE)).collect(Collectors.toList())
 						),
-				0.0, null, 0.0, null, 
+				0.0, null, yMinThrust, yMaxThrust, 
 				"Time", "Thrust",
 				"s", "lbf",
 				thrustOutputFolder, "Thrust_evolution_IMPERIAL",true
@@ -1690,23 +1886,77 @@ public class LandingNoiseTrajectoryCalc {
 		MyChartToFileUtils.plotNoLegend(
 				MyArrayUtils.convertListOfAmountTodoubleArray(groundDistanceList),
 				MyArrayUtils.convertListOfAmountTodoubleArray(thrustList),
-				0.0, null, 0.0, null, 
+				0.0, null, yMinThrust, yMaxThrust, 
 				"Ground distance", "Thrust",
 				"m", "N",
 				thrustOutputFolder, "Thrust_vs_GroundDistance_SI",true
 				);
-
+		
 		MyChartToFileUtils.plotNoLegend(
 				MyArrayUtils.convertListOfAmountTodoubleArray(
-						groundDistanceList.stream().map(x -> x.to(NonSI.FOOT)).collect(Collectors.toList())
+						groundDistanceList.stream().map(dist -> dist.to(NonSI.FOOT))
+						.collect(Collectors.toList())
 						),
 				MyArrayUtils.convertListOfAmountTodoubleArray(
-						thrustList.stream().map(x -> x.to(NonSI.POUND_FORCE)).collect(Collectors.toList())
+						thrustList.stream().map(thr -> thr.to(NonSI.POUND_FORCE))
+						.collect(Collectors.toList())
 						),
-				0.0, null, 0.0, null, 
+				0.0, null, yMinThrust, yMaxThrust,
 				"Ground distance", "Thrust",
 				"ft", "lbf",
 				thrustOutputFolder, "Thrust_vs_GroundDistance_IMPERIAL",true
+				);
+
+		//.................................................................................
+		// fuelUsed v.s. time
+		Double yMaxFuel = null;
+		if(MyArrayUtils.getMin(fuelUsedList.stream().mapToDouble(ff -> ff.doubleValue(SI.KILOGRAM)).toArray()) == 0.0
+				&& MyArrayUtils.getMax(fuelUsedList.stream().mapToDouble(ff -> ff.doubleValue(SI.KILOGRAM)).toArray()) == 0.0) 
+			yMaxFuel = 10.0; /* Generic positive value */ 
+		
+		MyChartToFileUtils.plotNoLegend(
+				MyArrayUtils.convertListOfAmountTodoubleArray(timeList),
+				MyArrayUtils.convertListOfAmountTodoubleArray(fuelUsedList),
+				0.0, null, 0.0, yMaxFuel, 
+				"Time", "Fuel Used",
+				"s", "kg",
+				fuelUsedOutputFolder, "FuelUsed_evolution_SI",true
+				);
+
+		MyChartToFileUtils.plotNoLegend(
+				MyArrayUtils.convertListOfAmountTodoubleArray(timeList),
+				MyArrayUtils.convertListOfAmountTodoubleArray(
+						fuelUsedList.stream().map(x -> x.to(NonSI.POUND)).collect(Collectors.toList())
+						),
+				0.0, null, 0.0, yMaxFuel, 
+				"Time", "Fuel used",
+				"s", "lb",
+				fuelUsedOutputFolder, "FuelUsed_evolution_IMPERIAL",true
+				);
+
+		//.................................................................................
+		// fuelUsed v.s. ground distance
+		MyChartToFileUtils.plotNoLegend(
+				MyArrayUtils.convertListOfAmountTodoubleArray(groundDistanceList),
+				MyArrayUtils.convertListOfAmountTodoubleArray(fuelUsedList),
+				0.0, null, 0.0, yMaxFuel, 
+				"Ground distance", "Fuel Used",
+				"m", "kg",
+				fuelUsedOutputFolder, "FuelUsed_vs_GroundDistance_SI",true
+				);
+
+		MyChartToFileUtils.plotNoLegend(
+				MyArrayUtils.convertListOfAmountTodoubleArray(
+						groundDistanceList.stream().map(dist -> dist.to(NonSI.FOOT))
+						.collect(Collectors.toList())
+						),
+				MyArrayUtils.convertListOfAmountTodoubleArray(
+						fuelUsedList.stream().map(x -> x.to(NonSI.POUND)).collect(Collectors.toList())
+						),
+				0.0, null, 0.0, yMaxFuel, 
+				"Ground distance", "Fuel used",
+				"ft", "lb",
+				fuelUsedOutputFolder, "FuelUsed_vs_GroundDistance_IMPERIAL",true
 				);
 
 		System.setOut(originalOut);
@@ -1723,280 +1973,460 @@ public class LandingNoiseTrajectoryCalc {
 
 		double g0 = AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND);
 
-		// visible variables
-		public double alpha, gamma, weight;
-
 		public DynamicsEquationsLandingNoiseTrajectory() {
-			weight = (LandingNoiseTrajectoryCalc.this.getMaxLandingMass().doubleValue(SI.KILOGRAM))*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND);
+
 		}
 
 		@Override
 		public int getDimension() {
-			return 4;
+			return 5;
 		}
 
 		@Override
 		public void computeDerivatives(double t, double[] x, double[] xDot)
 				throws MaxCountExceededException, DimensionMismatchException {
 
-			gamma = x[2];
-			double altitude = x[3];
-			double speed = x[1];			
-			alpha = alpha(t, speed, altitude, gamma);
+			Amount<Temperature> deltaTemperature = Amount.valueOf(10.0, SI.CELSIUS); // ISA+10째C
+			Amount<Duration> time = Amount.valueOf(t, SI.SECOND);
+			Amount<Velocity> speed = Amount.valueOf(x[1], SI.METERS_PER_SECOND);
+			Amount<Angle> gamma = Amount.valueOf(x[2], NonSI.DEGREE_ANGLE);
+			Amount<Length> altitude = Amount.valueOf(x[3], SI.METER);
+			Amount<Force> weight = Amount.valueOf(
+					(maxLandingMass.doubleValue(SI.KILOGRAM) - x[4])*g0,
+					SI.NEWTON
+					);
+			Amount<Angle> alpha = alpha(time, speed, altitude, deltaTemperature, gamma, weight);
 
 			if( t < tTouchDown.doubleValue(SI.SECOND)) {
-				xDot[0] = speed;
-				xDot[1] = (g0/weight)*(
-						thrust(speed, alpha, gamma,t, altitude)*Math.cos(Amount.valueOf(alpha, NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()) 
-						- drag(speed, alpha, gamma, t, altitude) 
-						- weight*Math.sin(Amount.valueOf(gamma, NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue())); 
-				xDot[2] = 57.3*(g0/(weight*speed))*(
-						lift(speed, alpha, gamma, t, altitude) 
-						+ (thrust(speed, alpha, gamma, t, altitude)*Math.sin(Amount.valueOf(alpha, NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()))
-						- weight*Math.cos(Amount.valueOf(gamma, NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()));
-				xDot[3] = speed*Math.sin(Amount.valueOf(gamma, NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue());
+				xDot[0] = speed.doubleValue(SI.METERS_PER_SECOND);
+				xDot[1] = (g0/weight.doubleValue(SI.NEWTON))*(
+						(thrust(speed, time, alpha, gamma, altitude, deltaTemperature, weight).stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
+								*Math.cos(alpha.doubleValue(SI.RADIAN))
+								) 
+						- drag(speed, alpha, gamma, altitude, deltaTemperature).doubleValue(SI.NEWTON) 
+						- (weight.doubleValue(SI.NEWTON)*Math.sin(gamma.doubleValue(SI.RADIAN)))
+						); 
+				xDot[2] = 57.3*(g0/(weight.doubleValue(SI.NEWTON)*speed.doubleValue(SI.METERS_PER_SECOND)))*(
+						lift(speed, alpha, gamma, altitude, deltaTemperature).doubleValue(SI.NEWTON) 
+						+ (thrust(speed, time, alpha, gamma, altitude, deltaTemperature, weight).stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
+								*Math.sin(alpha.doubleValue(SI.RADIAN))
+								)
+						- (weight.doubleValue(SI.NEWTON)*Math.cos(gamma.doubleValue(SI.RADIAN)))
+						);
+				xDot[3] = speed.doubleValue(SI.METERS_PER_SECOND)*Math.sin(gamma.doubleValue(SI.RADIAN));
+				xDot[4] = fuelFlow(speed, time, alpha, gamma, altitude, deltaTemperature, weight);
 			}
 			else if( t >= tTouchDown.doubleValue(SI.SECOND)  
 					&&  t < tTouchDown.to(SI.SECOND).plus(dtFreeRoll.to(SI.SECOND)).doubleValue(SI.SECOND)) {
-				xDot[0] = speed;
-				xDot[1] = (g0/weight)*(thrust(speed, alpha, gamma, t, altitude) - drag(speed, alpha, gamma, t, altitude)
-						- (mu(speed)*(weight - lift(speed, alpha, gamma, t, altitude))));
+				
+				xDot[0] = speed.doubleValue(SI.METERS_PER_SECOND);
+				xDot[1] = (g0/weight.doubleValue(SI.NEWTON))
+						*(thrust(speed, time, alpha, gamma, altitude, deltaTemperature, weight).stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum() 
+								- drag(speed, alpha, gamma, altitude, deltaTemperature).doubleValue(SI.NEWTON)
+								- (mu(speed)*(weight.doubleValue(SI.NEWTON) - lift(speed, alpha, gamma, altitude, deltaTemperature).doubleValue(SI.NEWTON)))
+								);
 				xDot[2] = 0.0;
 				xDot[3] = 0.0;
+				xDot[4] = fuelFlow(speed, time, alpha, gamma, altitude, deltaTemperature, weight);
 			}
 			else if(t >= tTouchDown.to(SI.SECOND).plus(dtFreeRoll.to(SI.SECOND)).doubleValue(SI.SECOND)) {
-				xDot[0] = speed;
-				xDot[1] = (g0/weight)*(thrust(speed, alpha, gamma, t, altitude) - drag(speed, alpha, gamma, t, altitude)
-						- (muBrake(speed)*(weight - lift(speed, alpha, gamma, t, altitude))));
+				
+				xDot[0] = speed.doubleValue(SI.METERS_PER_SECOND);
+				xDot[1] = (g0/weight.doubleValue(SI.NEWTON))
+						*(thrust(speed, time, alpha, gamma, altitude, deltaTemperature, weight).stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum() 
+								- drag(speed, alpha, gamma, altitude, deltaTemperature).doubleValue(SI.NEWTON)
+								- (muBrake(speed)*(weight.doubleValue(SI.NEWTON) - lift(speed, alpha, gamma, altitude, deltaTemperature).doubleValue(SI.NEWTON)))
+								);
 				xDot[2] = 0.0;
 				xDot[3] = 0.0;
+				xDot[4] = fuelFlow(speed, time, alpha, gamma, altitude, deltaTemperature, weight);
 			}
 		}
 
-		public double thrust(double speed, double alpha, double gamma, double time, double altitude) {
+		public List<Amount<Force>> thrust(Amount<Velocity> speed, Amount<Duration> time, Amount<Angle> alpha, Amount<Angle> gamma, Amount<Length> altitude, Amount<Temperature> deltaTemperature, Amount<Force> weight) {
 
-			double theThrust = 0.0;
+			List<Amount<Force>> theThrustList = new ArrayList<>();
 
-			if(time <= tObstacle.doubleValue(SI.SECOND))
-				theThrust = gammaDescent.doubleValue(SI.RADIAN)*weight + drag(speed, alpha, gamma, time, altitude);
+			if (time.doubleValue(SI.SECOND) <= tFlareAltitude.doubleValue(SI.SECOND)) {
 
-			else if(time > tObstacle.doubleValue(SI.SECOND) && time <= tTouchDown.doubleValue(SI.SECOND)) 
-				theThrust = thrustFlareFunction.value(time);
+				Amount<Force> totalThrust = thrustAtDescentStart;
+				
+				for (int i=0; i<LandingNoiseTrajectoryCalc.this.getThePowerPlant().getEngineNumber(); i++) 
+					theThrustList.add(totalThrust.divide(LandingNoiseTrajectoryCalc.this.getThePowerPlant().getEngineNumber()));
+				
+			}
+			else if(time.doubleValue(SI.SECOND) > tFlareAltitude.doubleValue(SI.SECOND) && time.doubleValue(SI.SECOND) <= tTouchDown.doubleValue(SI.SECOND)) {
 
-			else if(time > tTouchDown.doubleValue(SI.SECOND))
-				theThrust =	LandingNoiseTrajectoryCalc.this.getThePowerPlant().getEngineList().get(0).getT0().getEstimatedValue()
-				*throttleGroundIdle(speed)
-				*LandingNoiseTrajectoryCalc.this.getThePowerPlant().getEngineNumber();
+				Amount<Force> totalThrust = Amount.valueOf(
+						thrustFlareFunction.value(time.doubleValue(SI.SECOND)),
+						SI.NEWTON
+						);
 
-			return theThrust;
-		}
+				for (int i=0; i<LandingNoiseTrajectoryCalc.this.getThePowerPlant().getEngineNumber(); i++) 
+					theThrustList.add(totalThrust.divide(LandingNoiseTrajectoryCalc.this.getThePowerPlant().getEngineNumber()));
 
-		public double cD(double cL, double time, double speed, double altitude) {
+			}
+			else if(time.doubleValue(SI.SECOND) > tTouchDown.doubleValue(SI.SECOND)) {
 
-			double cD = 0.0;
-			double cDi = Math.pow(cL, 2)
-					/(Math.PI
-							*LandingNoiseTrajectoryCalc.this.getAspectRatio()
-							*AerodynamicCalc.estimateOswaldFactorFormAircraftDragPolar(
-									LandingNoiseTrajectoryCalc.this.getPolarCLLanding(),
-									LandingNoiseTrajectoryCalc.this.getPolarCDLanding(),
-									LandingNoiseTrajectoryCalc.this.getAspectRatio())
+				for (int i=0; i<LandingNoiseTrajectoryCalc.this.getThePowerPlant().getEngineNumber(); i++) 
+					theThrustList.add(
+							ThrustCalc.calculateThrustDatabase(
+									thePowerPlant.getEngineList().get(i).getT0(),
+									thePowerPlant.getEngineDatabaseReaderList().get(i),
+									EngineOperatingConditionEnum.GIDL, 
+									Amount.valueOf(0.0, SI.METER), 
+									SpeedCalc.calculateMach(
+											Amount.valueOf(0.0, SI.METER),
+											deltaTemperature,
+											Amount.valueOf(
+													speed.doubleValue(SI.METERS_PER_SECOND) 
+													+ LandingNoiseTrajectoryCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+													SI.METERS_PER_SECOND
+													)
+											),
+									deltaTemperature, 
+									LandingNoiseTrajectoryCalc.this.getPhi(),
+									LandingNoiseTrajectoryCalc.this.getGidlThrustCorrectionFactor()
+									)
 							);
 
-			// Biot-Savart law for the kGround (see McCormick pag.420)
-			double hb = altitude/(LandingNoiseTrajectoryCalc.this.getSpan().times(Math.PI/4)).getEstimatedValue();
-			LandingNoiseTrajectoryCalc.this.setkGround((Math.pow(16*hb, 2))/(1+(Math.pow(16*hb, 2))));
+			}
 
-			cD = MyMathUtils
-					.getInterpolatedValue1DLinear(
-							MyArrayUtils.convertToDoublePrimitive(
-									LandingNoiseTrajectoryCalc.this.getPolarCLLanding()
-									),
-							MyArrayUtils.convertToDoublePrimitive(
-									LandingNoiseTrajectoryCalc.this.getPolarCDLanding()
-									),
-							cL
-							);
-
-			return cD - ((1 - LandingNoiseTrajectoryCalc.this.getkGround())*cDi);
+			return theThrustList;
 		}
 
-		public double drag(double speed, double alpha, double gamma, double time, double altitude) {
+		public double fuelFlow(Amount<Velocity> speed, Amount<Duration> time, Amount<Angle> alpha, Amount<Angle> gamma, Amount<Length> altitude, Amount<Temperature> deltaTemperature, Amount<Force> weight) {
 
-			if(altitude < 0.0)
-				altitude = 0.0;
+			double fuelFlow = 0.0;
+			List<Amount<Force>> thrustList = thrust(speed, time, alpha, gamma, altitude, deltaTemperature, weight); 
 
-			double cD = cD(cL(speed, alpha, gamma, time, altitude), time, speed, altitude);
-			double drag = 0.5
+			if (time.doubleValue(SI.SECOND) <= tTouchDown.doubleValue(SI.SECOND)) {
+				
+				Amount<Force> totalThrust = Amount.valueOf( 
+						thrustList.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum(),
+						SI.NEWTON
+						);
+				
+				List<Amount<Force>> cruiseThrustDatabaseTemp = new ArrayList<>();
+				List<Amount<Force>> flightIdleThrustDatabaseTemp = new ArrayList<>();
+				for(int ieng=0; ieng<LandingNoiseTrajectoryCalc.this.getThePowerPlant().getEngineNumber(); ieng++) {
+					
+					cruiseThrustDatabaseTemp.add(
+							ThrustCalc.calculateThrustDatabase(
+									LandingNoiseTrajectoryCalc.this.getThePowerPlant().getEngineList().get(ieng).getT0(),
+									LandingNoiseTrajectoryCalc.this.getThePowerPlant().getEngineDatabaseReaderList().get(ieng),
+									EngineOperatingConditionEnum.CRUISE, 
+									altitude, 
+									SpeedCalc.calculateMach(
+											altitude,
+											deltaTemperature,
+											Amount.valueOf(
+													speed.doubleValue(SI.METERS_PER_SECOND) 
+													+ LandingNoiseTrajectoryCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+													SI.METERS_PER_SECOND
+													)
+											), 
+									deltaTemperature, 
+									1.0, /* Throttle setting cruise */
+									LandingNoiseTrajectoryCalc.this.getCruiseThrustCorrectionFactor()
+									)
+							);
+
+					flightIdleThrustDatabaseTemp.add(
+							ThrustCalc.calculateThrustDatabase(
+									LandingNoiseTrajectoryCalc.this.getThePowerPlant().getEngineList().get(ieng).getT0(),
+									LandingNoiseTrajectoryCalc.this.getThePowerPlant().getEngineDatabaseReaderList().get(ieng),
+									EngineOperatingConditionEnum.FIDL, 
+									altitude, 
+									SpeedCalc.calculateMach(
+											altitude,
+											deltaTemperature,
+											Amount.valueOf(
+													speed.doubleValue(SI.METERS_PER_SECOND) 
+													+ LandingNoiseTrajectoryCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+													SI.METERS_PER_SECOND
+													)
+											), 
+									deltaTemperature, 
+									1.0, /* Throttle setting cruise */
+									LandingNoiseTrajectoryCalc.this.getFidlThrustCorrectionFactor()
+									)
+							);
+				}
+				
+				Amount<Force> cruiseThrustFromDatabase = Amount.valueOf(
+								cruiseThrustDatabaseTemp.stream().mapToDouble(cthr -> cthr.doubleValue(SI.NEWTON)).sum(),
+								SI.NEWTON
+								);
+				Amount<Force> flightIdleThrustFromDatabase = Amount.valueOf(
+								flightIdleThrustDatabaseTemp.stream().mapToDouble(cthr -> cthr.doubleValue(SI.NEWTON)).sum(),
+								SI.NEWTON
+								);
+				
+				// first guess values
+				double weightCruise = 0.5;
+				double weightFlightIdle = 0.5;
+
+				Amount<Force> interpolatedThrust = Amount.valueOf(
+								(cruiseThrustFromDatabase.doubleValue(SI.NEWTON)*weightCruise)
+								+ (flightIdleThrustFromDatabase.doubleValue(SI.NEWTON)*weightFlightIdle),
+								SI.NEWTON);
+				
+				int iter = 0;
+				int maxIter = 50;
+				// iterative loop for the definition of the cruise and flight idle weights
+				while (
+						(Math.abs(
+								(totalThrust.doubleValue(SI.NEWTON)
+										-interpolatedThrust.doubleValue(SI.NEWTON))
+								) 
+								/ totalThrust.doubleValue(SI.NEWTON)
+								)
+						> 0.01
+						) {
+					
+					if(iter > maxIter) 
+						break;
+					
+					double thrustRatio = interpolatedThrust.doubleValue(SI.NEWTON)/totalThrust.doubleValue(SI.NEWTON);
+					
+					/* Increase or decrease flight idle weight to make the interpolatedThrust similar to the target totalThrust */
+					double weightFlightIdleTemp = weightFlightIdle;
+					weightFlightIdle = weightFlightIdleTemp*thrustRatio;
+					weightCruise = 1-weightFlightIdle;
+					
+					/* Calculate new interpolatedThrust */
+					interpolatedThrust = Amount.valueOf(
+								(cruiseThrustFromDatabase.doubleValue(SI.NEWTON)*weightCruise)
+								+ (flightIdleThrustFromDatabase.doubleValue(SI.NEWTON)*weightFlightIdle),
+								SI.NEWTON);
+					
+					iter++;
+					
+				}
+				
+				List<Double> fuelFlowCruiseList = new ArrayList<>();
+				List<Double> fuelFlowFlightIdleList = new ArrayList<>();
+				for(int ieng=0; ieng<LandingNoiseTrajectoryCalc.this.getThePowerPlant().getEngineNumber(); ieng++) {
+					fuelFlowCruiseList.add(
+							LandingNoiseTrajectoryCalc.this.getThePowerPlant().getEngineDatabaseReaderList().get(ieng).getSfc(
+									SpeedCalc.calculateMach(
+											altitude,
+											deltaTemperature,
+											Amount.valueOf(
+													speed.doubleValue(SI.METERS_PER_SECOND) 
+													+ LandingNoiseTrajectoryCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+													SI.METERS_PER_SECOND
+													)
+											),
+									altitude,
+									deltaTemperature,
+									1.0, /* Throttle setting */
+									EngineOperatingConditionEnum.CRUISE,
+									cruiseSfcCorrectionFactor
+									)
+							*0.454
+							*0.224809
+							/60
+							*cruiseThrustFromDatabase.doubleValue(SI.NEWTON)
+							);
+					fuelFlowFlightIdleList.add(
+							LandingNoiseTrajectoryCalc.this.getThePowerPlant().getEngineDatabaseReaderList().get(ieng).getSfc(
+									SpeedCalc.calculateMach(
+											altitude,
+											deltaTemperature,
+											Amount.valueOf(
+													speed.doubleValue(SI.METERS_PER_SECOND) 
+													+ LandingNoiseTrajectoryCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+													SI.METERS_PER_SECOND
+													)
+											),
+									altitude,
+									deltaTemperature,
+									1.0, /* Throttle setting */
+									EngineOperatingConditionEnum.FIDL,
+									fidlSfcCorrectionFactor
+									)
+							*0.454
+							*0.224809
+							/60
+							*flightIdleThrustFromDatabase.doubleValue(SI.NEWTON)
+							);
+				}
+				
+				double fuelFlowCruise = fuelFlowCruiseList.stream().mapToDouble(s -> s).sum();
+				double fuelFlowFlightIdle = fuelFlowFlightIdleList.stream().mapToDouble(s -> s).sum();
+				
+				fuelFlow = (fuelFlowCruise*weightCruise)
+						+ (fuelFlowFlightIdle*weightFlightIdle);
+				
+			}
+			else if (time.doubleValue(SI.SECOND) > tTouchDown.doubleValue(SI.SECOND))  {
+				
+				List<Double> fuelFlowList = new ArrayList<>();
+				for (int i=0; i<LandingNoiseTrajectoryCalc.this.getThePowerPlant().getEngineNumber(); i++) 
+					fuelFlowList.add(
+							thePowerPlant.getEngineDatabaseReaderList().get(i).getSfc(
+									SpeedCalc.calculateMach(
+											altitude,
+											deltaTemperature,
+											Amount.valueOf(
+													speed.doubleValue(SI.METERS_PER_SECOND) 
+													+ LandingNoiseTrajectoryCalc.this.vWind.doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN)),
+													SI.METERS_PER_SECOND
+													)
+											),
+									altitude,
+									deltaTemperature,
+									LandingNoiseTrajectoryCalc.this.getPhi(),
+									EngineOperatingConditionEnum.GIDL,
+									LandingNoiseTrajectoryCalc.this.getGidlSfcCorrectionFactor()
+									)
+							*(0.224809)*(0.454/3600)
+							*thrustList.get(i).doubleValue(SI.NEWTON)
+							);
+
+				fuelFlow = fuelFlowList.stream().mapToDouble(ff -> ff).sum();
+			}
+
+			return fuelFlow;
+			
+		}
+
+		public double cD(double cL, Amount<Length> altitude) {
+
+			double hb = (LandingNoiseTrajectoryCalc.this.getWingToGroundDistance().doubleValue(SI.METER) / LandingNoiseTrajectoryCalc.this.getSpan().doubleValue(SI.METER)) + altitude.doubleValue(SI.METER);
+			// Aerodynamics For Naval Aviators: (Hurt)
+			double kGround = 1.0;
+			if(hb < 1.1)
+				kGround = 1- (-4.48276577 * Math.pow(hb, 5) 
+						+ 15.61174376 * Math.pow(hb, 4)
+						- 21.20171050 * Math.pow(hb, 3)
+						+ 14.39438721 * Math.pow(hb, 2)
+						- 5.20913465 * hb
+						+ 0.90793397);
+			
+			double cD = MyMathUtils.getInterpolatedValue1DLinear(
+					polarCLLanding,
+					polarCDLanding, 
+					cL);
+
+			double cD0 = MyArrayUtils.getMin(polarCDLanding);
+			double cDi = (cD-cD0)*kGround;
+
+			double cDnew = cD0 + cDi;
+
+			return cDnew;
+			
+		}
+
+		public Amount<Force> drag(Amount<Velocity> speed, Amount<Angle> alpha, Amount<Angle> gamma, Amount<Length> altitude, Amount<Temperature> deltaTemperature) {
+
+			if(altitude.doubleValue(SI.METER) < 0.0)
+				altitude = Amount.valueOf(0.0, SI.METER);
+
+			double cD = cD(cL(alpha), altitude);
+
+			return 	Amount.valueOf(
+					0.5
 					*surface.doubleValue(SI.SQUARE_METRE)
-					*AtmosphereCalc.getDensity(altitude)
-					*(Math.pow(speed 
-							+ (LandingNoiseTrajectoryCalc.this.getvWind().doubleValue(SI.METERS_PER_SECOND)
-									*Math.cos(Amount.valueOf(
-											gamma,
-											NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
-											)
-									),
-							2)
-							)
-					*cD;
-
-			return drag;
+					*AtmosphereCalc.getDensity(altitude.doubleValue(SI.METER), deltaTemperature.doubleValue(SI.CELSIUS))
+					*(Math.pow(speed.doubleValue(SI.METERS_PER_SECOND) + (LandingNoiseTrajectoryCalc.this.getvWind().doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN))), 2))
+					*cD,
+					SI.NEWTON
+					);
+			
 		}
 
-		public double cL(double speed, double alpha, double gamma ,double time, double altitude) {
-
-			double cL = 0.0;
+		public double cL(Amount<Angle> alpha) {
 
 			double cL0 = LandingNoiseTrajectoryCalc.this.cL0LND;
 			double cLalpha = LandingNoiseTrajectoryCalc.this.getcLalphaLND().to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue();
-			double alphaWing = alpha + LandingNoiseTrajectoryCalc.this.getIw().getEstimatedValue();
-			cL = cL0 + cLalpha*alphaWing;
+			double alphaBody = alpha.doubleValue(NonSI.DEGREE_ANGLE);
+			double cL = cL0 + cLalpha*alphaBody;
 
 			return cL;
 
 		}
 
-		public double lift(double speed, double alpha, double gamma, double time, double altitude) {
+		public Amount<Force> lift(Amount<Velocity> speed, Amount<Angle> alpha, Amount<Angle> gamma, Amount<Length> altitude, Amount<Temperature> deltaTemperature) {
 
-			if(altitude < 0.0)
-				altitude = 0.0;
+			if(altitude.doubleValue(SI.METER) < 0.0)
+				altitude = Amount.valueOf(0.0, SI.METER);
 
-			double cL = cL(speed, alpha, gamma, time, altitude);
-			double lift = 0.5
+			double cL = cL(alpha);
+			return 	Amount.valueOf(
+					0.5
 					*surface.doubleValue(SI.SQUARE_METRE)
-					*AtmosphereCalc.getDensity(altitude)
-					*(Math.pow(speed + 
-							(LandingNoiseTrajectoryCalc.this.getvWind().doubleValue(SI.METERS_PER_SECOND)*Math.cos(Amount.valueOf(
-									gamma,
-									NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
+					*AtmosphereCalc.getDensity(altitude.doubleValue(SI.METER), deltaTemperature.doubleValue(SI.CELSIUS))
+					*(Math.pow(speed.doubleValue(SI.METERS_PER_SECOND) + (LandingNoiseTrajectoryCalc.this.getvWind().doubleValue(SI.METERS_PER_SECOND)*Math.cos(gamma.doubleValue(SI.RADIAN))), 2))
+					*cL,
+					SI.NEWTON
+					);
+		}
+
+		public double mu(Amount<Velocity> speed) {
+			return mu.value(speed.doubleValue(SI.METERS_PER_SECOND));
+		}
+
+		public double muBrake(Amount<Velocity> speed) {
+			return muBrake.value(speed.doubleValue(SI.METERS_PER_SECOND));
+		}
+
+		public Amount<Angle> alpha(Amount<Duration> time, Amount<Velocity> speed, Amount<Length> altitude, Amount<Temperature> deltaTemperature, Amount<Angle> gamma, Amount<Force> weight) {
+
+			Amount<Angle> alpha = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+			
+			int maxIterAlpha = 200; /* max alpha excursion +-5째 */
+			if(time.doubleValue(SI.SECOND) <= tFlareAltitude.doubleValue(SI.SECOND)) {
+
+				int j=0;
+
+				alpha = LandingNoiseTrajectoryCalc.this.getAlpha().get(
+						LandingNoiseTrajectoryCalc.this.getAlpha().size()-1
+						).to(NonSI.DEGREE_ANGLE);
+				double gammaDot = 0.0;
+				
+				do {
+					
+					gammaDot = 57.3*(g0/(weight.doubleValue(SI.NEWTON)*speed.doubleValue(SI.METERS_PER_SECOND)))*(
+							lift(speed, alpha, gamma, altitude, deltaTemperature).doubleValue(SI.NEWTON) 
+							+ (thrust(speed, time, alpha, gamma, altitude, deltaTemperature, weight).stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
+									*Math.sin(alpha.doubleValue(SI.RADIAN))
 									)
-									),
-							2)
-							)
-					*cL;
+							- (weight.doubleValue(SI.NEWTON)*Math.cos(gamma.doubleValue(SI.RADIAN)))
+							);
 
-			return lift;
-		}
-
-		public double mu(double speed) {
-			return mu.value(speed);
-		}
-
-		public double muBrake(double speed) {
-			return muBrake.value(speed);
-		}
-
-		public double throttleGroundIdle(double speed) {
-			double phiGIDL = phiGroundIdle.value(speed);
-			return phiGIDL;
-		}
-
-		public double alpha(double time, double speed, double altitude, double gamma) {
-
-			double alpha = 0.0;
-
-			if(time <= tObstacle.doubleValue(SI.SECOND)) {
-
-				@SuppressWarnings("unused")
-				int j=0;
-
-				double gammaDot = LandingNoiseTrajectoryCalc.this.getGammaDot().get(
-						LandingNoiseTrajectoryCalc.this.getGammaDot().size()-1
-						);
-
-				alpha = LandingNoiseTrajectoryCalc.this.getAlpha().get(
-						LandingNoiseTrajectoryCalc.this.getAlpha().size()-1
-						).doubleValue(NonSI.DEGREE_ANGLE);
-
-
-				while (Math.abs(gammaDot - 0) >= 5e-3) {
-
-					gammaDot = 57.3*(g0/(weight*speed))*(
-							lift(speed, alpha, gamma, time, altitude) 
-							+ (thrust(speed, alpha, gamma, time, altitude)*Math.sin(Amount.valueOf(alpha, NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()))
-							- weight*Math.cos(Amount.valueOf(gamma, NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()));
-
-					if (gammaDot > 0) 
-						alpha = alpha - 0.01;
-					else
-						alpha = alpha + 0.01;
-
+					if(Math.abs(gammaDot) >= 1e-3) {
+						if (gammaDot > 0) 
+							alpha = Amount.valueOf(alpha.doubleValue(NonSI.DEGREE_ANGLE) - 0.01, NonSI.DEGREE_ANGLE);
+						else
+							alpha = Amount.valueOf(alpha.doubleValue(NonSI.DEGREE_ANGLE) + 0.01, NonSI.DEGREE_ANGLE);
+					}
+					
+					if(j > maxIterAlpha)
+						break;
+					
 					j++;
-
-				}
-
+					
+				} while (Math.abs(gammaDot) >= 1e-3);
+				
 			}
+			else if( time.doubleValue(SI.SECOND) > tFlareAltitude.doubleValue(SI.SECOND) && time.doubleValue(SI.SECOND) <= tTouchDown.doubleValue(SI.SECOND)) {
 
-			else if( time > tObstacle.doubleValue(SI.SECOND) && time <= tZeroGamma.doubleValue(SI.SECOND)) {
-
-				@SuppressWarnings("unused")
-				int j=0;
-
-				double gammaDot = LandingNoiseTrajectoryCalc.this.getGammaDot().get(
-						LandingNoiseTrajectoryCalc.this.getGammaDot().size()-1
+				alpha = Amount.valueOf(
+						LandingNoiseTrajectoryCalc.this.getAlpha().get(
+								LandingNoiseTrajectoryCalc.this.getAlpha().size()-1).doubleValue(NonSI.DEGREE_ANGLE)
+						+(alphaDotFlare*(LandingNoiseTrajectoryCalc.this.getTime().get(
+								LandingNoiseTrajectoryCalc.this.getTime().size()-1).doubleValue(SI.SECOND)
+								- LandingNoiseTrajectoryCalc.this.getTime().get(
+										LandingNoiseTrajectoryCalc.this.getTime().size()-2).doubleValue(SI.SECOND))),
+						NonSI.DEGREE_ANGLE
 						);
-
-				alpha = LandingNoiseTrajectoryCalc.this.getAlpha().get(
-						LandingNoiseTrajectoryCalc.this.getAlpha().size()-1
-						).doubleValue(NonSI.DEGREE_ANGLE);
-
-				double gammaDotTarget = 
-						(0 - LandingNoiseTrajectoryCalc.this.getGammaDescent().doubleValue(NonSI.DEGREE_ANGLE))
-						/ LandingNoiseTrajectoryCalc.this.getDtFlare().doubleValue(SI.SECOND);
-
-				while (Math.abs(gammaDot - gammaDotTarget) >= 5e-3) {
-
-					gammaDot = 57.3*(g0/(weight*speed))*(
-							lift(speed, alpha, gamma, time, altitude) 
-							+ (thrust(speed, alpha, gamma, time, altitude)*Math.sin(Amount.valueOf(alpha, NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()))
-							- weight*Math.cos(Amount.valueOf(gamma, NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()));
-
-					if (gammaDot > gammaDotTarget) 
-						alpha = alpha - 0.01;
-					else
-						alpha = alpha + 0.01;
-
-					j++;
-
-				}
-
+				
 			}
-
-			else if( time > tZeroGamma.doubleValue(SI.SECOND) ) {
-
-				@SuppressWarnings("unused")
-				int j=0;
-
-				double gammaDot = LandingNoiseTrajectoryCalc.this.getGammaDot().get(
-						LandingNoiseTrajectoryCalc.this.getGammaDot().size()-1
-						);
-
-				alpha = LandingNoiseTrajectoryCalc.this.getAlpha().get(
-						LandingNoiseTrajectoryCalc.this.getAlpha().size()-1
-						).doubleValue(NonSI.DEGREE_ANGLE);
-
-
-				while (Math.abs(gammaDot - 0) >= 5e-3) {
-
-					gammaDot = 57.3*(g0/(weight*speed))*(
-							lift(speed, alpha, gamma, time, altitude) 
-							+ (thrust(speed, alpha, gamma, time, altitude)*Math.sin(Amount.valueOf(alpha, NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()))
-							- weight*Math.cos(Amount.valueOf(gamma, NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()));
-
-					if (gammaDot > 0) 
-						alpha = alpha - 0.01;
-					else
-						alpha = alpha + 0.01;
-
-					j++;
-
-				}
-
-			}
-
-			else if( time > tTouchDown.doubleValue(SI.SECOND))
-				alpha = LandingNoiseTrajectoryCalc.this.getAlphaGround().doubleValue(NonSI.DEGREE_ANGLE);
+			else if( time.doubleValue(SI.SECOND) > tTouchDown.doubleValue(SI.SECOND))
+				alpha = LandingNoiseTrajectoryCalc.this.getAlphaGround().to(NonSI.DEGREE_ANGLE);
 
 			return alpha;
 		}
@@ -2025,11 +2455,11 @@ public class LandingNoiseTrajectoryCalc {
 		return thePowerPlant;
 	}
 
-	public Double[] getPolarCLLanding() {
+	public double[] getPolarCLLanding() {
 		return polarCLLanding;
 	}
 
-	public Double[] getPolarCDLanding() {
+	public double[] getPolarCDLanding() {
 		return polarCDLanding;
 	}
 
@@ -2073,10 +2503,6 @@ public class LandingNoiseTrajectoryCalc {
 		return vDescent;
 	}
 
-	public Amount<Length> getWingToGroundDistance() {
-		return wingToGroundDistance;
-	}
-
 	public Amount<Length> getObstacle() {
 		return obstacle;
 	}
@@ -2087,10 +2513,6 @@ public class LandingNoiseTrajectoryCalc {
 
 	public Amount<Angle> getGammaDescent() {
 		return gammaDescent;
-	}
-
-	public Amount<Angle> getIw() {
-		return iw;
 	}
 
 	public List<Amount<Angle>> getAlpha() {
@@ -2253,11 +2675,11 @@ public class LandingNoiseTrajectoryCalc {
 		this.thePowerPlant = thePowerPlant;
 	}
 
-	public void setPolarCLLanding(Double[] polarCLLanding) {
+	public void setPolarCLLanding(double[] polarCLLanding) {
 		this.polarCLLanding = polarCLLanding;
 	}
 
-	public void setPolarCDLanding(Double[] polarCDLanding) {
+	public void setPolarCDLanding(double[] polarCDLanding) {
 		this.polarCDLanding = polarCDLanding;
 	}
 
@@ -2301,10 +2723,6 @@ public class LandingNoiseTrajectoryCalc {
 		this.vDescent = vDescent;
 	}
 
-	public void setWingToGroundDistance(Amount<Length> wingToGroundDistance) {
-		this.wingToGroundDistance = wingToGroundDistance;
-	}
-
 	public void setObstacle(Amount<Length> obstacle) {
 		this.obstacle = obstacle;
 	}
@@ -2315,10 +2733,6 @@ public class LandingNoiseTrajectoryCalc {
 
 	public void setGammaDescent(Amount<Angle> gammaDescent) {
 		this.gammaDescent = gammaDescent;
-	}
-
-	public void setIw(Amount<Angle> iw) {
-		this.iw = iw;
 	}
 
 	public void setAlpha(List<Amount<Angle>> alpha) {
@@ -2477,14 +2891,6 @@ public class LandingNoiseTrajectoryCalc {
 		this.kGround = kGround;
 	}
 
-	public MyInterpolatingFunction getPhiGroundIdle() {
-		return phiGroundIdle;
-	}
-
-	public void setPhiGroundIdle(MyInterpolatingFunction phiGroundIdle) {
-		this.phiGroundIdle = phiGroundIdle;
-	}
-
 	public Amount<Force> getThrustAtFlareStart() {
 		return thrustAtFlareStart;
 	}
@@ -2493,28 +2899,12 @@ public class LandingNoiseTrajectoryCalc {
 		this.thrustAtFlareStart = thrustAtFlareStart;
 	}
 
-	public List<Double> getGammaDot() {
-		return gammaDot;
-	}
-
-	public void setGammaDot(List<Double> gammaDot) {
-		this.gammaDot = gammaDot;
-	}
-
 	public Amount<Duration> gettZeroGamma() {
 		return tZeroGamma;
 	}
 
 	public void settZeroGamma(Amount<Duration> tZeroGamma) {
 		this.tZeroGamma = tZeroGamma;
-	}
-
-	public List<Amount<Force>> getThrust() {
-		return thrust;
-	}
-
-	public void setThrust(List<Amount<Force>> thrust) {
-		this.thrust = thrust;
 	}
 
 	public Amount<Length> getAltitudeAtFlareEnding() {
@@ -2539,6 +2929,238 @@ public class LandingNoiseTrajectoryCalc {
 
 	public void setCreateCSV(boolean createCSV) {
 		this.createCSV = createCSV;
+	}
+
+	public double getPhi() {
+		return phi;
+	}
+
+	public void setPhi(double phi) {
+		this.phi = phi;
+	}
+
+	public Amount<Length> getWingToGroundDistance() {
+		return wingToGroundDistance;
+	}
+
+	public void setWingToGroundDistance(Amount<Length> wingToGroundDistance) {
+		this.wingToGroundDistance = wingToGroundDistance;
+	}
+
+	public double getCruiseThrustCorrectionFactor() {
+		return cruiseThrustCorrectionFactor;
+	}
+
+	public void setCruiseThrustCorrectionFactor(double cruiseThrustCorrectionFactor) {
+		this.cruiseThrustCorrectionFactor = cruiseThrustCorrectionFactor;
+	}
+
+	public double getCruiseSfcCorrectionFactor() {
+		return cruiseSfcCorrectionFactor;
+	}
+
+	public void setCruiseSfcCorrectionFactor(double cruiseSfcCorrectionFactor) {
+		this.cruiseSfcCorrectionFactor = cruiseSfcCorrectionFactor;
+	}
+
+	public double getFidlThrustCorrectionFactor() {
+		return fidlThrustCorrectionFactor;
+	}
+
+	public void setFidlThrustCorrectionFactor(double fidlThrustCorrectionFactor) {
+		this.fidlThrustCorrectionFactor = fidlThrustCorrectionFactor;
+	}
+
+	public double getFidlSfcCorrectionFactor() {
+		return fidlSfcCorrectionFactor;
+	}
+
+	public void setFidlSfcCorrectionFactor(double fidlSfcCorrectionFactor) {
+		this.fidlSfcCorrectionFactor = fidlSfcCorrectionFactor;
+	}
+
+	public double getGidlThrustCorrectionFactor() {
+		return gidlThrustCorrectionFactor;
+	}
+
+	public void setGidlThrustCorrectionFactor(double gidlThrustCorrectionFactor) {
+		this.gidlThrustCorrectionFactor = gidlThrustCorrectionFactor;
+	}
+
+	public double getGidlSfcCorrectionFactor() {
+		return gidlSfcCorrectionFactor;
+	}
+
+	public void setGidlSfcCorrectionFactor(double gidlSfcCorrectionFactor) {
+		this.gidlSfcCorrectionFactor = gidlSfcCorrectionFactor;
+	}
+
+	public Amount<Velocity> getRateOfDescentAtFlareEnding() {
+		return rateOfDescentAtFlareEnding;
+	}
+
+	public void setRateOfDescentAtFlareEnding(Amount<Velocity> rateOfDescentAtFlareEnding) {
+		this.rateOfDescentAtFlareEnding = rateOfDescentAtFlareEnding;
+	}
+
+	public boolean isTargetRDandAltitudeFlag() {
+		return targetRDandAltitudeFlag;
+	}
+
+	public void setTargetRDandAltitudeFlag(boolean targetRDandAltitudeFlag) {
+		this.targetRDandAltitudeFlag = targetRDandAltitudeFlag;
+	}
+
+	public Amount<Velocity> getvFlare() {
+		return vFlare;
+	}
+
+	public void setvFlare(Amount<Velocity> vFlare) {
+		this.vFlare = vFlare;
+	}
+
+	public Amount<Duration> gettFlareAltitude() {
+		return tFlareAltitude;
+	}
+
+	public void settFlareAltitude(Amount<Duration> tFlareAltitude) {
+		this.tFlareAltitude = tFlareAltitude;
+	}
+
+	public Amount<Length> gethFlare() {
+		return hFlare;
+	}
+
+	public void sethFlare(Amount<Length> hFlare) {
+		this.hFlare = hFlare;
+	}
+
+	public double getkCLmax() {
+		return kCLmax;
+	}
+
+	public void setkCLmax(double kCLmax) {
+		this.kCLmax = kCLmax;
+	}
+
+	public boolean isMaximumFlareCLFlag() {
+		return maximumFlareCLFlag;
+	}
+
+	public void setMaximumFlareCLFlag(boolean maximumFlareCLFlag) {
+		this.maximumFlareCLFlag = maximumFlareCLFlag;
+	}
+
+	public List<Double> getcL() {
+		return cL;
+	}
+
+	public void setcL(List<Double> cL) {
+		this.cL = cL;
+	}
+
+	public Amount<Force> getThrustAtDescentStart() {
+		return thrustAtDescentStart;
+	}
+
+	public void setThrustAtDescentStart(Amount<Force> thrustAtDescentStart) {
+		this.thrustAtDescentStart = thrustAtDescentStart;
+	}
+
+	public List<Amount<Acceleration>> getAcceleration() {
+		return acceleration;
+	}
+
+	public void setAcceleration(List<Amount<Acceleration>> acceleration) {
+		this.acceleration = acceleration;
+	}
+
+	public List<Amount<Force>> getWeight() {
+		return weight;
+	}
+
+	public void setWeight(List<Amount<Force>> weight) {
+		this.weight = weight;
+	}
+
+	public List<Double> getLoadFactor() {
+		return loadFactor;
+	}
+
+	public void setLoadFactor(List<Double> loadFactor) {
+		this.loadFactor = loadFactor;
+	}
+
+	public List<Double> getcD() {
+		return cD;
+	}
+
+	public void setcD(List<Double> cD) {
+		this.cD = cD;
+	}
+
+	public Amount<Length> getCertificationPointsGroundDistance() {
+		return certificationPointsGroundDistance;
+	}
+
+	public void setCertificationPointsGroundDistance(Amount<Length> certificationPointsGroundDistance) {
+		this.certificationPointsGroundDistance = certificationPointsGroundDistance;
+	}
+
+	public Amount<Length> getCertificationPointsAltitude() {
+		return certificationPointsAltitude;
+	}
+
+	public void setCertificationPointsAltitude(Amount<Length> certificationPointsAltitude) {
+		this.certificationPointsAltitude = certificationPointsAltitude;
+	}
+
+	public Amount<Velocity> getCertificationPointsSpeedTAS() {
+		return certificationPointsSpeedTAS;
+	}
+
+	public void setCertificationPointsSpeedTAS(Amount<Velocity> certificationPointsSpeedTAS) {
+		this.certificationPointsSpeedTAS = certificationPointsSpeedTAS;
+	}
+
+	public Amount<Velocity> getCertificationPointsSpeedCAS() {
+		return certificationPointsSpeedCAS;
+	}
+
+	public void setCertificationPointsSpeedCAS(Amount<Velocity> certificationPointsSpeedCAS) {
+		this.certificationPointsSpeedCAS = certificationPointsSpeedCAS;
+	}
+
+	public Amount<Angle> getCertificationPointsAlpha() {
+		return certificationPointsAlpha;
+	}
+
+	public void setCertificationPointsAlpha(Amount<Angle> certificationPointsAlpha) {
+		this.certificationPointsAlpha = certificationPointsAlpha;
+	}
+
+	public Amount<Angle> getCertificationPointsGamma() {
+		return certificationPointsGamma;
+	}
+
+	public void setCertificationPointsGamma(Amount<Angle> certificationPointsGamma) {
+		this.certificationPointsGamma = certificationPointsGamma;
+	}
+
+	public Amount<Angle> getCertificationPointsTheta() {
+		return certificationPointsTheta;
+	}
+
+	public void setCertificationPointsTheta(Amount<Angle> certificationPointsTheta) {
+		this.certificationPointsTheta = certificationPointsTheta;
+	}
+
+	public Amount<Force> getCertificationPointsThrust() {
+		return certificationPointsThrust;
+	}
+
+	public void setCertificationPointsThrust(Amount<Force> certificationPointsThrust) {
+		this.certificationPointsThrust = certificationPointsThrust;
 	}
 
 }

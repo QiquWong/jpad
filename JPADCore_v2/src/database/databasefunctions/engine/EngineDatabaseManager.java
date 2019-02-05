@@ -428,31 +428,31 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 	
 	@Override
 	public double getThrustRatio(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting, EngineOperatingConditionEnum flightCondition) {
+			double throttleSetting, EngineOperatingConditionEnum flightCondition, double correctionFactor) {
 
 		double thrustRatio = 0.0;
 		
 		switch (flightCondition) {
 		case TAKE_OFF:
-			thrustRatio = getThrustRatioTakeOff(mach, altitude, deltaTemperature, throttleSetting);
+			thrustRatio = getThrustRatioTakeOff(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case APR:
-			thrustRatio = getThrustRatioAPR(mach, altitude, deltaTemperature, throttleSetting);
+			thrustRatio = getThrustRatioAPR(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case CLIMB:
-			thrustRatio = getThrustRatioClimb(mach, altitude, deltaTemperature, throttleSetting);
+			thrustRatio = getThrustRatioClimb(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case CONTINUOUS:
-			thrustRatio = getThrustRatioContinuous(mach, altitude, deltaTemperature, throttleSetting);
+			thrustRatio = getThrustRatioContinuous(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case CRUISE:
-			thrustRatio = getThrustRatioCruise(mach, altitude, deltaTemperature, throttleSetting);
+			thrustRatio = getThrustRatioCruise(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case FIDL:
-			thrustRatio = getThrustRatioFlightIdle(mach, altitude, deltaTemperature, throttleSetting);
+			thrustRatio = getThrustRatioFlightIdle(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case GIDL:
-			thrustRatio = getThrustRatioGroundIdle(mach, altitude, deltaTemperature, throttleSetting);
+			thrustRatio = getThrustRatioGroundIdle(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		default:
 			break;
@@ -464,7 +464,7 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getThrustRatioTakeOff(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 
 		double thrustRatio = 0.0;
 		double[] inputArray = new double[] {
@@ -507,23 +507,23 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				thrustRatio = super.takeOffThrustRatioFunction.value(inputArray[indexList.get(0)]);
+				thrustRatio = super.takeOffThrustRatioFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				thrustRatio = super.takeOffThrustRatioFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				thrustRatio = super.takeOffThrustRatioFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3)  
-				thrustRatio = super.takeOffThrustRatioFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				thrustRatio = super.takeOffThrustRatioFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4)  
 				thrustRatio = super.takeOffThrustRatioFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
 		
-		return thrustRatio;
+		return thrustRatio*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getThrustRatioAPR(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 		
 		double thrustRatio = 0.0;
 		double[] inputArray = new double[] {
@@ -566,22 +566,22 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				thrustRatio = super.aprThrustRatioFunction.value(inputArray[indexList.get(0)]);
+				thrustRatio = super.aprThrustRatioFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				thrustRatio = super.aprThrustRatioFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				thrustRatio = super.aprThrustRatioFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				thrustRatio = super.aprThrustRatioFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				thrustRatio = super.aprThrustRatioFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				thrustRatio = super.aprThrustRatioFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 		}
 		
-		return thrustRatio;
+		return thrustRatio*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getThrustRatioClimb(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 
 		double thrustRatio = 0.0;
 		double[] inputArray = new double[] {
@@ -624,23 +624,23 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				thrustRatio = super.climbThrustRatioFunction.value(inputArray[indexList.get(0)]);
+				thrustRatio = super.climbThrustRatioFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				thrustRatio = super.climbThrustRatioFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				thrustRatio = super.climbThrustRatioFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				thrustRatio = super.climbThrustRatioFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				thrustRatio = super.climbThrustRatioFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				thrustRatio = super.climbThrustRatioFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
 
-		return thrustRatio;
+		return thrustRatio*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getThrustRatioContinuous(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 
 		double thrustRatio = 0.0;
 		double[] inputArray = new double[] {
@@ -683,23 +683,23 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				thrustRatio = super.continuousThrustRatioFunction.value(inputArray[indexList.get(0)]);
+				thrustRatio = super.continuousThrustRatioFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				thrustRatio = super.continuousThrustRatioFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				thrustRatio = super.continuousThrustRatioFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				thrustRatio = super.continuousThrustRatioFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				thrustRatio = super.continuousThrustRatioFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				thrustRatio = super.continuousThrustRatioFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
 
-		return thrustRatio;
+		return thrustRatio*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getThrustRatioCruise(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 
 		double thrustRatio = 0.0;
 		double[] inputArray = new double[] {
@@ -742,24 +742,24 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				thrustRatio = super.cruiseThrustRatioFunction.value(inputArray[indexList.get(0)]);
+				thrustRatio = super.cruiseThrustRatioFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				thrustRatio = super.cruiseThrustRatioFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				thrustRatio = super.cruiseThrustRatioFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				thrustRatio = super.cruiseThrustRatioFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				thrustRatio = super.cruiseThrustRatioFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				thrustRatio = super.cruiseThrustRatioFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
 
-		return thrustRatio;
+		return thrustRatio*correctionFactor;
 		
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getThrustRatioFlightIdle(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 
 		double thrustRatio = 0.0;
 		double[] inputArray = new double[] {
@@ -802,23 +802,23 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				thrustRatio = super.flightIdleThrustRatioFunction.value(inputArray[indexList.get(0)]);
+				thrustRatio = super.flightIdleThrustRatioFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				thrustRatio = super.flightIdleThrustRatioFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				thrustRatio = super.flightIdleThrustRatioFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				thrustRatio = super.flightIdleThrustRatioFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				thrustRatio = super.flightIdleThrustRatioFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				thrustRatio = super.flightIdleThrustRatioFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
 
-		return thrustRatio;
+		return thrustRatio*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getThrustRatioGroundIdle(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 
 		double thrustRatio = 0.0;
 		double[] inputArray = new double[] {
@@ -861,46 +861,46 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				thrustRatio = super.groundIdleThrustRatioFunction.value(inputArray[indexList.get(0)]);
+				thrustRatio = super.groundIdleThrustRatioFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				thrustRatio = super.groundIdleThrustRatioFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				thrustRatio = super.groundIdleThrustRatioFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				thrustRatio = super.groundIdleThrustRatioFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				thrustRatio = super.groundIdleThrustRatioFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				thrustRatio = super.groundIdleThrustRatioFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
 		
-		return thrustRatio;
+		return thrustRatio*correctionFactor;
 	}
 
 	@Override
 	public double getSfc(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting, EngineOperatingConditionEnum flightCondition) {
+			double throttleSetting, EngineOperatingConditionEnum flightCondition, double correctionFactor) {
 		
 		double sfc = 0.0;
 		
 		switch (flightCondition) {
 		case TAKE_OFF:
-			sfc = getSfcTakeOff(mach, altitude, deltaTemperature, throttleSetting);
+			sfc = getSfcTakeOff(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case APR:
-			sfc = getSfcAPR(mach, altitude, deltaTemperature, throttleSetting);
+			sfc = getSfcAPR(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case CLIMB:
-			sfc = getSfcClimb(mach, altitude, deltaTemperature, throttleSetting);
+			sfc = getSfcClimb(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case CONTINUOUS:
-			sfc = getSfcContinuous(mach, altitude, deltaTemperature, throttleSetting);
+			sfc = getSfcContinuous(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case CRUISE:
-			sfc = getSfcCruise(mach, altitude, deltaTemperature, throttleSetting);
+			sfc = getSfcCruise(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case FIDL:
-			sfc = getSfcFlightIdle(mach, altitude, deltaTemperature, throttleSetting);
+			sfc = getSfcFlightIdle(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case GIDL:
-			sfc = getSfcGroundIdle(mach, altitude, deltaTemperature, throttleSetting);
+			sfc = getSfcGroundIdle(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		default:
 			break;
@@ -912,7 +912,7 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getSfcTakeOff(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 
 		double sfc = 0.0;
 		double[] inputArray = new double[] {
@@ -955,23 +955,23 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				sfc = super.takeOffSFCFunction.value(inputArray[indexList.get(0)]);
+				sfc = super.takeOffSFCFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				sfc = super.takeOffSFCFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				sfc = super.takeOffSFCFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				sfc = super.takeOffSFCFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				sfc = super.takeOffSFCFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				sfc = super.takeOffSFCFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
 		
-		return sfc;
+		return sfc*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getSfcAPR(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 
 		double sfc = 0.0;
 		double[] inputArray = new double[] {
@@ -1014,23 +1014,23 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 		
 			if(numberOfReducedInput == 1) 
-				sfc = super.aprSFCFunction.value(inputArray[indexList.get(0)]);
+				sfc = super.aprSFCFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				sfc = super.aprSFCFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				sfc = super.aprSFCFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				sfc = super.aprSFCFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				sfc = super.aprSFCFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				sfc = super.aprSFCFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
 
-		return sfc;
+		return sfc*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getSfcClimb(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 
 		double sfc = 0.0;
 		double[] inputArray = new double[] {
@@ -1073,23 +1073,23 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				sfc = super.climbSFCFunction.value(inputArray[indexList.get(0)]);
+				sfc = super.climbSFCFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				sfc = super.climbSFCFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				sfc = super.climbSFCFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				sfc = super.climbSFCFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				sfc = super.climbSFCFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				sfc = super.climbSFCFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
 		
-		return sfc;
+		return sfc*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getSfcContinuous(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 
 		double sfc = 0.0;
 		double[] inputArray = new double[] {
@@ -1132,23 +1132,23 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 		
 			if(numberOfReducedInput == 1) 
-				sfc = super.continuousSFCFunction.value(inputArray[indexList.get(0)]);
+				sfc = super.continuousSFCFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				sfc = super.continuousSFCFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				sfc = super.continuousSFCFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				sfc = super.continuousSFCFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				sfc = super.continuousSFCFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				sfc = super.continuousSFCFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
 
-		return sfc;
+		return sfc*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getSfcCruise(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 
 		double sfc = 0.0;
 		double[] inputArray = new double[] {
@@ -1191,23 +1191,23 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 		
 			if(numberOfReducedInput == 1) 
-				sfc = super.cruiseSFCFunction.value(inputArray[indexList.get(0)]);
+				sfc = super.cruiseSFCFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				sfc = super.cruiseSFCFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				sfc = super.cruiseSFCFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				sfc = super.cruiseSFCFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				sfc = super.cruiseSFCFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				sfc = super.cruiseSFCFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
 
-		return sfc;
+		return sfc*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getSfcFlightIdle(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 
 		double sfc = 0.0;
 		double[] inputArray = new double[] {
@@ -1250,23 +1250,23 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				sfc = super.flightIdleSFCFunction.value(inputArray[indexList.get(0)]);
+				sfc = super.flightIdleSFCFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				sfc = super.flightIdleSFCFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				sfc = super.flightIdleSFCFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				sfc = super.flightIdleSFCFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				sfc = super.flightIdleSFCFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				sfc = super.flightIdleSFCFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
 		
-		return sfc;
+		return sfc*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getSfcGroundIdle(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 
 		double sfc = 0.0;
 		double[] inputArray = new double[] {
@@ -1310,46 +1310,46 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 		
 			if(numberOfReducedInput == 1) 
-				sfc = super.groundIdleSFCFunction.value(inputArray[indexList.get(0)]);
+				sfc = super.groundIdleSFCFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				sfc = super.groundIdleSFCFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				sfc = super.groundIdleSFCFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				sfc = super.groundIdleSFCFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				sfc = super.groundIdleSFCFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				sfc = super.groundIdleSFCFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
 
-		return sfc;
+		return sfc*correctionFactor;
 	}
 
 	@Override
 	public double getNOxEmissionIndex(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting, EngineOperatingConditionEnum flightCondition) {
+			double throttleSetting, EngineOperatingConditionEnum flightCondition, double correctionFactor) {
 
 		double emissionIndexNOx = 0.0;
 		
 		switch (flightCondition) {
 		case TAKE_OFF:
-			emissionIndexNOx = getNOxEmissionIndexTakeOff(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexNOx = getNOxEmissionIndexTakeOff(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case APR:
-			emissionIndexNOx = getNOxEmissionIndexAPR(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexNOx = getNOxEmissionIndexAPR(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case CLIMB:
-			emissionIndexNOx = getNOxEmissionIndexClimb(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexNOx = getNOxEmissionIndexClimb(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case CONTINUOUS:
-			emissionIndexNOx = getNOxEmissionIndexContinuous(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexNOx = getNOxEmissionIndexContinuous(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case CRUISE:
-			emissionIndexNOx = getNOxEmissionIndexCruise(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexNOx = getNOxEmissionIndexCruise(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case FIDL:
-			emissionIndexNOx = getNOxEmissionIndexFlightIdle(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexNOx = getNOxEmissionIndexFlightIdle(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case GIDL:
-			emissionIndexNOx = getNOxEmissionIndexGroundIdle(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexNOx = getNOxEmissionIndexGroundIdle(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		default:
 			break;
@@ -1361,7 +1361,7 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getNOxEmissionIndexTakeOff(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 
 		double emissionIndexNOx = 0.0;
 		double[] inputArray = new double[] {
@@ -1404,23 +1404,23 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexNOx = super.takeOffNOxEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexNOx = super.takeOffNOxEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexNOx = super.takeOffNOxEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexNOx = super.takeOffNOxEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexNOx = super.takeOffNOxEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexNOx = super.takeOffNOxEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexNOx = super.takeOffNOxEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
 		
-		return emissionIndexNOx;
+		return emissionIndexNOx*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getNOxEmissionIndexAPR(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 
 		double emissionIndexNOx = 0.0;
 		double[] inputArray = new double[] {
@@ -1463,23 +1463,23 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexNOx = super.aprNOxEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexNOx = super.aprNOxEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexNOx = super.aprNOxEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexNOx = super.aprNOxEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexNOx = super.aprNOxEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexNOx = super.aprNOxEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexNOx = super.aprNOxEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
 		
-		return emissionIndexNOx;
+		return emissionIndexNOx*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getNOxEmissionIndexClimb(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 		
 		double emissionIndexNOx = 0.0;
 		double[] inputArray = new double[] {
@@ -1522,23 +1522,23 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 		
 			if(numberOfReducedInput == 1) 
-				emissionIndexNOx = super.climbNOxEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexNOx = super.climbNOxEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexNOx = super.climbNOxEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexNOx = super.climbNOxEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexNOx = super.climbNOxEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexNOx = super.climbNOxEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexNOx = super.climbNOxEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
 
-		return emissionIndexNOx;
+		return emissionIndexNOx*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getNOxEmissionIndexContinuous(double mach, Amount<Length> altitude,
-			Amount<Temperature> deltaTemperature, double throttleSetting) {
+			Amount<Temperature> deltaTemperature, double throttleSetting, double correctionFactor) {
 
 		double emissionIndexNOx = 0.0;
 		double[] inputArray = new double[] {
@@ -1581,23 +1581,23 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 		
 			if(numberOfReducedInput == 1) 
-				emissionIndexNOx = super.continuousNOxEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexNOx = super.continuousNOxEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexNOx = super.continuousNOxEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexNOx = super.continuousNOxEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexNOx = super.continuousNOxEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexNOx = super.continuousNOxEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexNOx = super.continuousNOxEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
 		
-		return emissionIndexNOx;
+		return emissionIndexNOx*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getNOxEmissionIndexCruise(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 
 		double emissionIndexNOx = 0.0;
 		double[] inputArray = new double[] {
@@ -1640,23 +1640,23 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 		
 			if(numberOfReducedInput == 1) 
-				emissionIndexNOx = super.cruiseNOxEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexNOx = super.cruiseNOxEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexNOx = super.cruiseNOxEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexNOx = super.cruiseNOxEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexNOx = super.cruiseNOxEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexNOx = super.cruiseNOxEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexNOx = super.cruiseNOxEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
 		
-		return emissionIndexNOx;
+		return emissionIndexNOx*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getNOxEmissionIndexFlightIdle(double mach, Amount<Length> altitude,
-			Amount<Temperature> deltaTemperature, double throttleSetting) {
+			Amount<Temperature> deltaTemperature, double throttleSetting, double correctionFactor) {
 
 		double emissionIndexNOx = 0.0;
 		double[] inputArray = new double[] {
@@ -1699,23 +1699,23 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexNOx = super.flightIdleNOxEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexNOx = super.flightIdleNOxEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexNOx = super.flightIdleNOxEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexNOx = super.flightIdleNOxEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexNOx = super.flightIdleNOxEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexNOx = super.flightIdleNOxEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexNOx = super.flightIdleNOxEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
 
-		return emissionIndexNOx;
+		return emissionIndexNOx*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getNOxEmissionIndexGroundIdle(double mach, Amount<Length> altitude,
-			Amount<Temperature> deltaTemperature, double throttleSetting) {
+			Amount<Temperature> deltaTemperature, double throttleSetting, double correctionFactor) {
 
 		double emissionIndexNOx = 0.0;
 		double[] inputArray = new double[] {
@@ -1758,46 +1758,46 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexNOx = super.groundIdleNOxEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexNOx = super.groundIdleNOxEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexNOx = super.groundIdleNOxEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexNOx = super.groundIdleNOxEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexNOx = super.groundIdleNOxEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexNOx = super.groundIdleNOxEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexNOx = super.groundIdleNOxEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
 		
-		return emissionIndexNOx;
+		return emissionIndexNOx*correctionFactor;
 	}
 
 	@Override
 	public double getCOEmissionIndex(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting, EngineOperatingConditionEnum flightCondition) {
+			double throttleSetting, EngineOperatingConditionEnum flightCondition, double correctionFactor) {
 
 		double emissionIndexCO = 0.0;
 		
 		switch (flightCondition) {
 		case TAKE_OFF:
-			emissionIndexCO = getCOEmissionIndexTakeOff(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexCO = getCOEmissionIndexTakeOff(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case APR:
-			emissionIndexCO = getCOEmissionIndexAPR(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexCO = getCOEmissionIndexAPR(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case CLIMB:
-			emissionIndexCO = getCOEmissionIndexClimb(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexCO = getCOEmissionIndexClimb(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case CONTINUOUS:
-			emissionIndexCO = getCOEmissionIndexContinuous(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexCO = getCOEmissionIndexContinuous(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case CRUISE:
-			emissionIndexCO = getCOEmissionIndexCruise(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexCO = getCOEmissionIndexCruise(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case FIDL:
-			emissionIndexCO = getCOEmissionIndexFlightIdle(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexCO = getCOEmissionIndexFlightIdle(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case GIDL:
-			emissionIndexCO = getCOEmissionIndexGroundIdle(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexCO = getCOEmissionIndexGroundIdle(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		default:
 			break;
@@ -1809,7 +1809,7 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getCOEmissionIndexTakeOff(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 
 		double emissionIndexCO = 0.0;
 		double[] inputArray = new double[] {
@@ -1852,23 +1852,23 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexCO = super.takeOffCOEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexCO = super.takeOffCOEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexCO = super.takeOffCOEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexCO = super.takeOffCOEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexCO = super.takeOffCOEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexCO = super.takeOffCOEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexCO = super.takeOffCOEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
 		
-		return emissionIndexCO;
+		return emissionIndexCO*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getCOEmissionIndexAPR(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 
 		double emissionIndexCO = 0.0;
 		double[] inputArray = new double[] {
@@ -1911,23 +1911,23 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexCO = super.aprCOEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexCO = super.aprCOEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexCO = super.aprCOEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexCO = super.aprCOEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexCO = super.aprCOEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexCO = super.aprCOEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexCO = super.aprCOEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
 		
-		return emissionIndexCO;
+		return emissionIndexCO*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getCOEmissionIndexClimb(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 
 		double emissionIndexCO = 0.0;
 		double[] inputArray = new double[] {
@@ -1970,23 +1970,23 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 			
 			if(numberOfReducedInput == 1) 
-				emissionIndexCO = super.climbCOEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexCO = super.climbCOEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexCO = super.climbCOEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexCO = super.climbCOEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexCO = super.climbCOEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexCO = super.climbCOEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexCO = super.climbCOEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 		
 		}
 		
-		return emissionIndexCO;
+		return emissionIndexCO*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getCOEmissionIndexContinuous(double mach, Amount<Length> altitude,
-			Amount<Temperature> deltaTemperature, double throttleSetting) {
+			Amount<Temperature> deltaTemperature, double throttleSetting, double correctionFactor) {
 
 		double emissionIndexCO = 0.0;
 		double[] inputArray = new double[] {
@@ -2029,23 +2029,23 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 			
 			if(numberOfReducedInput == 1) 
-				emissionIndexCO = super.continuousCOEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexCO = super.continuousCOEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexCO = super.continuousCOEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexCO = super.continuousCOEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexCO = super.continuousCOEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexCO = super.continuousCOEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexCO = super.continuousCOEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
 		
-		return emissionIndexCO;
+		return emissionIndexCO*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getCOEmissionIndexCruise(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 
 		double emissionIndexCO = 0.0;
 		double[] inputArray = new double[] {
@@ -2088,23 +2088,23 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexCO = super.cruiseCOEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexCO = super.cruiseCOEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexCO = super.cruiseCOEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexCO = super.cruiseCOEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexCO = super.cruiseCOEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexCO = super.cruiseCOEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexCO = super.cruiseCOEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
 
-		return emissionIndexCO;
+		return emissionIndexCO*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getCOEmissionIndexFlightIdle(double mach, Amount<Length> altitude,
-			Amount<Temperature> deltaTemperature, double throttleSetting) {
+			Amount<Temperature> deltaTemperature, double throttleSetting, double correctionFactor) {
 
 		double emissionIndexCO = 0.0;
 		double[] inputArray = new double[] {
@@ -2147,23 +2147,23 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexCO = super.flightIdleCOEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexCO = super.flightIdleCOEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexCO = super.flightIdleCOEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexCO = super.flightIdleCOEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexCO = super.flightIdleCOEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexCO = super.flightIdleCOEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexCO = super.flightIdleCOEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
 
-		return emissionIndexCO;
+		return emissionIndexCO*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getCOEmissionIndexGroundIdle(double mach, Amount<Length> altitude,
-			Amount<Temperature> deltaTemperature, double throttleSetting) {
+			Amount<Temperature> deltaTemperature, double throttleSetting, double correctionFactor) {
 
 		double emissionIndexCO = 0.0;
 		double[] inputArray = new double[] {
@@ -2206,46 +2206,46 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 			
 			if(numberOfReducedInput == 1) 
-				emissionIndexCO = super.groundIdleCOEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexCO = super.groundIdleCOEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexCO = super.groundIdleCOEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexCO = super.groundIdleCOEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexCO = super.groundIdleCOEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexCO = super.groundIdleCOEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexCO = super.groundIdleCOEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
 
-		return emissionIndexCO;
+		return emissionIndexCO*correctionFactor;
 	}
 
 	@Override
 	public double getHCEmissionIndex(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting, EngineOperatingConditionEnum flightCondition) {
+			double throttleSetting, EngineOperatingConditionEnum flightCondition, double correctionFactor) {
 
 		double emissionIndexHC = 0.0;
 		
 		switch (flightCondition) {
 		case TAKE_OFF:
-			emissionIndexHC = getHCEmissionIndexTakeOff(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexHC = getHCEmissionIndexTakeOff(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case APR:
-			emissionIndexHC = getHCEmissionIndexAPR(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexHC = getHCEmissionIndexAPR(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case CLIMB:
-			emissionIndexHC = getHCEmissionIndexClimb(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexHC = getHCEmissionIndexClimb(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case CONTINUOUS:
-			emissionIndexHC = getHCEmissionIndexContinuous(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexHC = getHCEmissionIndexContinuous(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case CRUISE:
-			emissionIndexHC = getHCEmissionIndexCruise(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexHC = getHCEmissionIndexCruise(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case FIDL:
-			emissionIndexHC = getHCEmissionIndexFlightIdle(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexHC = getHCEmissionIndexFlightIdle(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case GIDL:
-			emissionIndexHC = getHCEmissionIndexGroundIdle(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexHC = getHCEmissionIndexGroundIdle(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		default:
 			break;
@@ -2257,7 +2257,7 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getHCEmissionIndexTakeOff(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 
 		double emissionIndexHC = 0.0;
 		double[] inputArray = new double[] {
@@ -2300,11 +2300,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 			
 			if(numberOfReducedInput == 1) 
-				emissionIndexHC = super.takeOffHCEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexHC = super.takeOffHCEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexHC = super.takeOffHCEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexHC = super.takeOffHCEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexHC = super.takeOffHCEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexHC = super.takeOffHCEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexHC = super.takeOffHCEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -2316,7 +2316,7 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getHCEmissionIndexAPR(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 		
 		double emissionIndexHC = 0.0;
 		double[] inputArray = new double[] {
@@ -2359,23 +2359,23 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 			
 			if(numberOfReducedInput == 1) 
-				emissionIndexHC = super.aprHCEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexHC = super.aprHCEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexHC = super.aprHCEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexHC = super.aprHCEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexHC = super.aprHCEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexHC = super.aprHCEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexHC = super.aprHCEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
 
-		return emissionIndexHC;
+		return emissionIndexHC*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getHCEmissionIndexClimb(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 
 		double emissionIndexHC = 0.0;
 		double[] inputArray = new double[] {
@@ -2418,23 +2418,23 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 			
 			if(numberOfReducedInput == 1) 
-				emissionIndexHC = super.climbHCEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexHC = super.climbHCEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexHC = super.climbHCEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexHC = super.climbHCEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexHC = super.climbHCEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexHC = super.climbHCEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexHC = super.climbHCEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
 
-		return emissionIndexHC;
+		return emissionIndexHC*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getHCEmissionIndexContinuous(double mach, Amount<Length> altitude,
-			Amount<Temperature> deltaTemperature, double throttleSetting) {
+			Amount<Temperature> deltaTemperature, double throttleSetting, double correctionFactor) {
 
 		double emissionIndexHC = 0.0;
 		double[] inputArray = new double[] {
@@ -2477,23 +2477,23 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexHC = super.continuousHCEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexHC = super.continuousHCEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexHC = super.continuousHCEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexHC = super.continuousHCEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexHC = super.continuousHCEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexHC = super.continuousHCEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexHC = super.continuousHCEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
 		
-		return emissionIndexHC;
+		return emissionIndexHC*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getHCEmissionIndexCruise(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 
 		double emissionIndexHC = 0.0;
 		double[] inputArray = new double[] {
@@ -2536,11 +2536,11 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexHC = super.cruiseHCEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexHC = super.cruiseHCEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexHC = super.cruiseHCEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexHC = super.cruiseHCEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexHC = super.cruiseHCEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexHC = super.cruiseHCEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexHC = super.cruiseHCEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
@@ -2552,7 +2552,7 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getHCEmissionIndexFlightIdle(double mach, Amount<Length> altitude,
-			Amount<Temperature> deltaTemperature, double throttleSetting) {
+			Amount<Temperature> deltaTemperature, double throttleSetting, double correctionFactor) {
 
 		double emissionIndexHC = 0.0;
 		double[] inputArray = new double[] {
@@ -2595,22 +2595,22 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexHC = super.flightIdleHCEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexHC = super.flightIdleHCEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexHC = super.flightIdleHCEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexHC = super.flightIdleHCEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexHC = super.flightIdleHCEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexHC = super.flightIdleHCEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexHC = super.flightIdleHCEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
-		return emissionIndexHC;
+		return emissionIndexHC*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getHCEmissionIndexGroundIdle(double mach, Amount<Length> altitude,
-			Amount<Temperature> deltaTemperature, double throttleSetting) {
+			Amount<Temperature> deltaTemperature, double throttleSetting, double correctionFactor) {
 		
 		double emissionIndexHC = 0.0;
 		double[] inputArray = new double[] {
@@ -2653,46 +2653,46 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexHC = super.groundIdleHCEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexHC = super.groundIdleHCEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexHC = super.groundIdleHCEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexHC = super.groundIdleHCEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexHC = super.groundIdleHCEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexHC = super.groundIdleHCEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexHC = super.groundIdleHCEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
 
-		return emissionIndexHC;
+		return emissionIndexHC*correctionFactor;
 	}
 
 	@Override
 	public double getSootEmissionIndex(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting, EngineOperatingConditionEnum flightCondition) {
+			double throttleSetting, EngineOperatingConditionEnum flightCondition, double correctionFactor) {
 
 		double emissionIndexSoot = 0.0;
 		
 		switch (flightCondition) {
 		case TAKE_OFF:
-			emissionIndexSoot = getSootEmissionIndexTakeOff(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexSoot = getSootEmissionIndexTakeOff(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case APR:
-			emissionIndexSoot = getSootEmissionIndexAPR(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexSoot = getSootEmissionIndexAPR(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case CLIMB:
-			emissionIndexSoot = getSootEmissionIndexClimb(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexSoot = getSootEmissionIndexClimb(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case CONTINUOUS:
-			emissionIndexSoot = getSootEmissionIndexContinuous(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexSoot = getSootEmissionIndexContinuous(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case CRUISE:
-			emissionIndexSoot = getSootEmissionIndexCruise(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexSoot = getSootEmissionIndexCruise(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case FIDL:
-			emissionIndexSoot = getSootEmissionIndexFlightIdle(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexSoot = getSootEmissionIndexFlightIdle(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case GIDL:
-			emissionIndexSoot = getSootEmissionIndexGroundIdle(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexSoot = getSootEmissionIndexGroundIdle(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		default:
 			break;
@@ -2704,7 +2704,7 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getSootEmissionIndexTakeOff(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 
 		double emissionIndexSoot = 0.0;
 		double[] inputArray = new double[] {
@@ -2747,23 +2747,23 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 			
 			if(numberOfReducedInput == 1) 
-				emissionIndexSoot = super.takeOffSootEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexSoot = super.takeOffSootEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexSoot = super.takeOffSootEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexSoot = super.takeOffSootEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexSoot = super.takeOffSootEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexSoot = super.takeOffSootEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexSoot = super.takeOffSootEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
 
-		return emissionIndexSoot;
+		return emissionIndexSoot*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getSootEmissionIndexAPR(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 		
 		double emissionIndexSoot = 0.0;
 		double[] inputArray = new double[] {
@@ -2806,23 +2806,23 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 			
 			if(numberOfReducedInput == 1) 
-				emissionIndexSoot = super.aprSootEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexSoot = super.aprSootEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexSoot = super.aprSootEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexSoot = super.aprSootEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexSoot = super.aprSootEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexSoot = super.aprSootEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexSoot = super.aprSootEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
 
-		return emissionIndexSoot;
+		return emissionIndexSoot*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getSootEmissionIndexClimb(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 
 		double emissionIndexSoot = 0.0;
 		double[] inputArray = new double[] {
@@ -2865,23 +2865,23 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 			
 			if(numberOfReducedInput == 1) 
-				emissionIndexSoot = super.climbSootEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexSoot = super.climbSootEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexSoot = super.climbSootEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexSoot = super.climbSootEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexSoot = super.climbSootEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexSoot = super.climbSootEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexSoot = super.climbSootEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
 
-		return emissionIndexSoot;
+		return emissionIndexSoot*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getSootEmissionIndexContinuous(double mach, Amount<Length> altitude,
-			Amount<Temperature> deltaTemperature, double throttleSetting) {
+			Amount<Temperature> deltaTemperature, double throttleSetting, double correctionFactor) {
 
 		double emissionIndexSoot = 0.0;
 		double[] inputArray = new double[] {
@@ -2924,23 +2924,23 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexSoot = super.continuousSootEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexSoot = super.continuousSootEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexSoot = super.continuousSootEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexSoot = super.continuousSootEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexSoot = super.continuousSootEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexSoot = super.continuousSootEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexSoot = super.continuousSootEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
 		
-		return emissionIndexSoot;
+		return emissionIndexSoot*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getSootEmissionIndexCruise(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 
 		double emissionIndexSoot = 0.0;
 		double[] inputArray = new double[] {
@@ -2983,23 +2983,23 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexSoot = super.cruiseSootEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexSoot = super.cruiseSootEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexSoot = super.cruiseSootEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexSoot = super.cruiseSootEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexSoot = super.cruiseSootEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexSoot = super.cruiseSootEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexSoot = super.cruiseSootEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
 
-		return emissionIndexSoot;
+		return emissionIndexSoot*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getSootEmissionIndexFlightIdle(double mach, Amount<Length> altitude,
-			Amount<Temperature> deltaTemperature, double throttleSetting) {
+			Amount<Temperature> deltaTemperature, double throttleSetting, double correctionFactor) {
 
 		double emissionIndexSoot = 0.0;
 		double[] inputArray = new double[] {
@@ -3042,22 +3042,22 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexSoot = super.flightIdleSootEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexSoot = super.flightIdleSootEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexSoot = super.flightIdleSootEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexSoot = super.flightIdleSootEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexSoot = super.flightIdleSootEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexSoot = super.flightIdleSootEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexSoot = super.flightIdleSootEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
-		return emissionIndexSoot;
+		return emissionIndexSoot*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getSootEmissionIndexGroundIdle(double mach, Amount<Length> altitude,
-			Amount<Temperature> deltaTemperature, double throttleSetting) {
+			Amount<Temperature> deltaTemperature, double throttleSetting, double correctionFactor) {
 		
 		double emissionIndexSoot = 0.0;
 		double[] inputArray = new double[] {
@@ -3100,46 +3100,46 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexSoot = super.groundIdleSootEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexSoot = super.groundIdleSootEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexSoot = super.groundIdleSootEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexSoot = super.groundIdleSootEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexSoot = super.groundIdleSootEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexSoot = super.groundIdleSootEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexSoot = super.groundIdleSootEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
 
-		return emissionIndexSoot;
+		return emissionIndexSoot*correctionFactor;
 	}
 	
 	@Override
 	public double getCO2EmissionIndex(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting, EngineOperatingConditionEnum flightCondition) {
+			double throttleSetting, EngineOperatingConditionEnum flightCondition, double correctionFactor) {
 
 		double emissionIndexCO2 = 0.0;
 		
 		switch (flightCondition) {
 		case TAKE_OFF:
-			emissionIndexCO2 = getCO2EmissionIndexTakeOff(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexCO2 = getCO2EmissionIndexTakeOff(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case APR:
-			emissionIndexCO2 = getCO2EmissionIndexAPR(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexCO2 = getCO2EmissionIndexAPR(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case CLIMB:
-			emissionIndexCO2 = getCO2EmissionIndexClimb(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexCO2 = getCO2EmissionIndexClimb(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case CONTINUOUS:
-			emissionIndexCO2 = getCO2EmissionIndexContinuous(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexCO2 = getCO2EmissionIndexContinuous(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case CRUISE:
-			emissionIndexCO2 = getCO2EmissionIndexCruise(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexCO2 = getCO2EmissionIndexCruise(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case FIDL:
-			emissionIndexCO2 = getCO2EmissionIndexFlightIdle(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexCO2 = getCO2EmissionIndexFlightIdle(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case GIDL:
-			emissionIndexCO2 = getCO2EmissionIndexGroundIdle(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexCO2 = getCO2EmissionIndexGroundIdle(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		default:
 			break;
@@ -3152,7 +3152,7 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getCO2EmissionIndexTakeOff(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 		
 		double emissionIndexCO2 = 0.0;
 		double[] inputArray = new double[] {
@@ -3195,23 +3195,23 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexCO2 = super.takeOffCO2EmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexCO2 = super.takeOffCO2EmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexCO2 = super.takeOffCO2EmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexCO2 = super.takeOffCO2EmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexCO2 = super.takeOffCO2EmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexCO2 = super.takeOffCO2EmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexCO2 = super.takeOffCO2EmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
 
-		return emissionIndexCO2;
+		return emissionIndexCO2*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getCO2EmissionIndexAPR(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 
 		double emissionIndexCO2 = 0.0;
 		double[] inputArray = new double[] {
@@ -3255,23 +3255,23 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexCO2 = super.aprCO2EmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexCO2 = super.aprCO2EmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexCO2 = super.aprCO2EmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexCO2 = super.aprCO2EmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexCO2 = super.aprCO2EmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexCO2 = super.aprCO2EmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexCO2 = super.aprCO2EmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
 
-		return emissionIndexCO2;
+		return emissionIndexCO2*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getCO2EmissionIndexClimb(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 
 		double emissionIndexCO2 = 0.0;
 		double[] inputArray = new double[] {
@@ -3314,23 +3314,23 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 		
 			if(numberOfReducedInput == 1) 
-				emissionIndexCO2 = super.climbCO2EmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexCO2 = super.climbCO2EmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexCO2 = super.climbCO2EmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexCO2 = super.climbCO2EmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexCO2 = super.climbCO2EmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexCO2 = super.climbCO2EmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexCO2 = super.climbCO2EmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
 
-		return emissionIndexCO2;
+		return emissionIndexCO2*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getCO2EmissionIndexContinuous(double mach, Amount<Length> altitude,
-			Amount<Temperature> deltaTemperature, double throttleSetting) {
+			Amount<Temperature> deltaTemperature, double throttleSetting, double correctionFactor) {
 		
 		double emissionIndexCO2 = 0.0;
 		double[] inputArray = new double[] {
@@ -3373,23 +3373,23 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexCO2 = super.continuousCO2EmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexCO2 = super.continuousCO2EmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexCO2 = super.continuousCO2EmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexCO2 = super.continuousCO2EmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexCO2 = super.continuousCO2EmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexCO2 = super.continuousCO2EmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexCO2 = super.continuousCO2EmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
 
-		return emissionIndexCO2;
+		return emissionIndexCO2*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getCO2EmissionIndexCruise(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 		
 		double emissionIndexCO2 = 0.0;
 		double[] inputArray = new double[] {
@@ -3432,23 +3432,23 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexCO2 = super.cruiseCO2EmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexCO2 = super.cruiseCO2EmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexCO2 = super.cruiseCO2EmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexCO2 = super.cruiseCO2EmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexCO2 = super.cruiseCO2EmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexCO2 = super.cruiseCO2EmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexCO2 = super.cruiseCO2EmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
 		
-		return emissionIndexCO2;
+		return emissionIndexCO2*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getCO2EmissionIndexFlightIdle(double mach, Amount<Length> altitude,
-			Amount<Temperature> deltaTemperature, double throttleSetting) {
+			Amount<Temperature> deltaTemperature, double throttleSetting, double correctionFactor) {
 		
 		double emissionIndexCO2 = 0.0;
 		double[] inputArray = new double[] {
@@ -3491,23 +3491,23 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexCO2 = super.flightIdleCO2EmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexCO2 = super.flightIdleCO2EmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexCO2 = super.flightIdleCO2EmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexCO2 = super.flightIdleCO2EmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexCO2 = super.flightIdleCO2EmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexCO2 = super.flightIdleCO2EmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexCO2 = super.flightIdleCO2EmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
 
-		return emissionIndexCO2;
+		return emissionIndexCO2*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getCO2EmissionIndexGroundIdle(double mach, Amount<Length> altitude,
-			Amount<Temperature> deltaTemperature, double throttleSetting) {
+			Amount<Temperature> deltaTemperature, double throttleSetting, double correctionFactor) {
 		
 		double emissionIndexCO2 = 0.0;
 		double[] inputArray = new double[] {
@@ -3550,46 +3550,46 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexCO2 = super.groundIdleCO2EmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexCO2 = super.groundIdleCO2EmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexCO2 = super.groundIdleCO2EmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexCO2 = super.groundIdleCO2EmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexCO2 = super.groundIdleCO2EmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexCO2 = super.groundIdleCO2EmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexCO2 = super.groundIdleCO2EmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
 
-		return emissionIndexCO2;
+		return emissionIndexCO2*correctionFactor;
 	}
 
 	@Override
 	public double getH2OEmissionIndex(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting, EngineOperatingConditionEnum flightCondition) {
+			double throttleSetting, EngineOperatingConditionEnum flightCondition, double correctionFactor) {
 
 		double emissionIndexH2O = 0.0;
 		
 		switch (flightCondition) {
 		case TAKE_OFF:
-			emissionIndexH2O = getH2OEmissionIndexTakeOff(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexH2O = getH2OEmissionIndexTakeOff(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case APR:
-			emissionIndexH2O = getH2OEmissionIndexAPR(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexH2O = getH2OEmissionIndexAPR(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case CLIMB:
-			emissionIndexH2O = getH2OEmissionIndexClimb(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexH2O = getH2OEmissionIndexClimb(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case CONTINUOUS:
-			emissionIndexH2O = getH2OEmissionIndexContinuous(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexH2O = getH2OEmissionIndexContinuous(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case CRUISE:
-			emissionIndexH2O = getH2OEmissionIndexCruise(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexH2O = getH2OEmissionIndexCruise(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case FIDL:
-			emissionIndexH2O = getH2OEmissionIndexFlightIdle(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexH2O = getH2OEmissionIndexFlightIdle(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case GIDL:
-			emissionIndexH2O = getH2OEmissionIndexGroundIdle(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexH2O = getH2OEmissionIndexGroundIdle(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		default:
 			break;
@@ -3601,7 +3601,7 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getH2OEmissionIndexTakeOff(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 		
 		double emissionIndexH2O = 0.0;
 		double[] inputArray = new double[] {
@@ -3644,23 +3644,23 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexH2O = super.takeOffH2OEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexH2O = super.takeOffH2OEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexH2O = super.takeOffH2OEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexH2O = super.takeOffH2OEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexH2O = super.takeOffH2OEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexH2O = super.takeOffH2OEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexH2O = super.takeOffH2OEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
 
-		return emissionIndexH2O;
+		return emissionIndexH2O*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getH2OEmissionIndexAPR(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 		
 		double emissionIndexH2O = 0.0;
 		double[] inputArray = new double[] {
@@ -3703,23 +3703,23 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexH2O = super.aprH2OEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexH2O = super.aprH2OEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexH2O = super.aprH2OEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexH2O = super.aprH2OEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexH2O = super.aprH2OEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexH2O = super.aprH2OEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexH2O = super.aprH2OEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
 
-		return emissionIndexH2O;
+		return emissionIndexH2O*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getH2OEmissionIndexClimb(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 		
 		double emissionIndexH2O = 0.0;
 		double[] inputArray = new double[] {
@@ -3762,23 +3762,23 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexH2O = super.climbH2OEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexH2O = super.climbH2OEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexH2O = super.climbH2OEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexH2O = super.climbH2OEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexH2O = super.climbH2OEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexH2O = super.climbH2OEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexH2O = super.climbH2OEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
 		
-		return emissionIndexH2O;
+		return emissionIndexH2O*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getH2OEmissionIndexContinuous(double mach, Amount<Length> altitude,
-			Amount<Temperature> deltaTemperature, double throttleSetting) {
+			Amount<Temperature> deltaTemperature, double throttleSetting, double correctionFactor) {
 	
 		double emissionIndexH2O = 0.0;
 		double[] inputArray = new double[] {
@@ -3821,23 +3821,23 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexH2O = super.continuousH2OEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexH2O = super.continuousH2OEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexH2O = super.continuousH2OEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexH2O = super.continuousH2OEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexH2O = super.continuousH2OEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexH2O = super.continuousH2OEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexH2O = super.continuousH2OEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
 
-		return emissionIndexH2O;
+		return emissionIndexH2O*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getH2OEmissionIndexCruise(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 		
 		double emissionIndexH2O = 0.0;
 		double[] inputArray = new double[] {
@@ -3880,23 +3880,23 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexH2O = super.cruiseH2OEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexH2O = super.cruiseH2OEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexH2O = super.cruiseH2OEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexH2O = super.cruiseH2OEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexH2O = super.cruiseH2OEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexH2O = super.cruiseH2OEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexH2O = super.cruiseH2OEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
 
-		return emissionIndexH2O;
+		return emissionIndexH2O*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getH2OEmissionIndexFlightIdle(double mach, Amount<Length> altitude,
-			Amount<Temperature> deltaTemperature, double throttleSetting) {
+			Amount<Temperature> deltaTemperature, double throttleSetting, double correctionFactor) {
 		
 		double emissionIndexH2O = 0.0;
 		double[] inputArray = new double[] {
@@ -3939,23 +3939,23 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexH2O = super.flightIdleH2OEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexH2O = super.flightIdleH2OEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexH2O = super.flightIdleH2OEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexH2O = super.flightIdleH2OEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexH2O = super.flightIdleH2OEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexH2O = super.flightIdleH2OEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexH2O = super.flightIdleH2OEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
 
-		return emissionIndexH2O;
+		return emissionIndexH2O*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getH2OEmissionIndexGroundIdle(double mach, Amount<Length> altitude,
-			Amount<Temperature> deltaTemperature, double throttleSetting) {
+			Amount<Temperature> deltaTemperature, double throttleSetting, double correctionFactor) {
 		
 		double emissionIndexH2O = 0.0;
 		double[] inputArray = new double[] {
@@ -3998,46 +3998,46 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexH2O = super.groundIdleH2OEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexH2O = super.groundIdleH2OEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexH2O = super.groundIdleH2OEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexH2O = super.groundIdleH2OEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexH2O = super.groundIdleH2OEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexH2O = super.groundIdleH2OEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexH2O = super.groundIdleH2OEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
 
-		return emissionIndexH2O;
+		return emissionIndexH2O*correctionFactor;
 	}
 
 	@Override
 	public double getSOxEmissionIndex(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting, EngineOperatingConditionEnum flightCondition) {
+			double throttleSetting, EngineOperatingConditionEnum flightCondition, double correctionFactor) {
 
 		double emissionIndexSOx = 0.0;
 		
 		switch (flightCondition) {
 		case TAKE_OFF:
-			emissionIndexSOx = getSOxEmissionIndexTakeOff(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexSOx = getSOxEmissionIndexTakeOff(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case APR:
-			emissionIndexSOx = getSOxEmissionIndexAPR(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexSOx = getSOxEmissionIndexAPR(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case CLIMB:
-			emissionIndexSOx = getSOxEmissionIndexClimb(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexSOx = getSOxEmissionIndexClimb(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case CONTINUOUS:
-			emissionIndexSOx = getSOxEmissionIndexContinuous(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexSOx = getSOxEmissionIndexContinuous(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case CRUISE:
-			emissionIndexSOx = getSOxEmissionIndexCruise(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexSOx = getSOxEmissionIndexCruise(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case FIDL:
-			emissionIndexSOx = getSOxEmissionIndexFlightIdle(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexSOx = getSOxEmissionIndexFlightIdle(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		case GIDL:
-			emissionIndexSOx = getSOxEmissionIndexGroundIdle(mach, altitude, deltaTemperature, throttleSetting);
+			emissionIndexSOx = getSOxEmissionIndexGroundIdle(mach, altitude, deltaTemperature, throttleSetting, correctionFactor);
 			break;
 		default:
 			break;
@@ -4049,7 +4049,7 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getSOxEmissionIndexTakeOff(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 		
 		double emissionIndexSOx = 0.0;
 		double[] inputArray = new double[] {
@@ -4092,23 +4092,23 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexSOx = super.takeOffSOxEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexSOx = super.takeOffSOxEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexSOx = super.takeOffSOxEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexSOx = super.takeOffSOxEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexSOx = super.takeOffSOxEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexSOx = super.takeOffSOxEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexSOx = super.takeOffSOxEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
 
-		return emissionIndexSOx;
+		return emissionIndexSOx*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getSOxEmissionIndexAPR(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 		
 		double emissionIndexSOx = 0.0;
 		double[] inputArray = new double[] {
@@ -4151,23 +4151,23 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexSOx = super.aprSOxEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexSOx = super.aprSOxEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexSOx = super.aprSOxEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexSOx = super.aprSOxEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexSOx = super.aprSOxEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexSOx = super.aprSOxEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexSOx = super.aprSOxEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
 
-		return emissionIndexSOx;
+		return emissionIndexSOx*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getSOxEmissionIndexClimb(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 		
 		double emissionIndexSOx = 0.0;
 		double[] inputArray = new double[] {
@@ -4210,23 +4210,23 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexSOx = super.climbSOxEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexSOx = super.climbSOxEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexSOx = super.climbSOxEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexSOx = super.climbSOxEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexSOx = super.climbSOxEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexSOx = super.climbSOxEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexSOx = super.climbSOxEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
 		
-		return emissionIndexSOx;
+		return emissionIndexSOx*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getSOxEmissionIndexContinuous(double mach, Amount<Length> altitude,
-			Amount<Temperature> deltaTemperature, double throttleSetting) {
+			Amount<Temperature> deltaTemperature, double throttleSetting, double correctionFactor) {
 	
 		double emissionIndexSOx = 0.0;
 		double[] inputArray = new double[] {
@@ -4269,23 +4269,23 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexSOx = super.continuousSOxEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexSOx = super.continuousSOxEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexSOx = super.continuousSOxEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexSOx = super.continuousSOxEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexSOx = super.continuousSOxEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexSOx = super.continuousSOxEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexSOx = super.continuousSOxEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
 
-		return emissionIndexSOx;
+		return emissionIndexSOx*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getSOxEmissionIndexCruise(double mach, Amount<Length> altitude, Amount<Temperature> deltaTemperature,
-			double throttleSetting) {
+			double throttleSetting, double correctionFactor) {
 		
 		double emissionIndexSOx = 0.0;
 		double[] inputArray = new double[] {
@@ -4328,23 +4328,23 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexSOx = super.cruiseSOxEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexSOx = super.cruiseSOxEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexSOx = super.cruiseSOxEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexSOx = super.cruiseSOxEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexSOx = super.cruiseSOxEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexSOx = super.cruiseSOxEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexSOx = super.cruiseSOxEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
 
-		return emissionIndexSOx;
+		return emissionIndexSOx*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getSOxEmissionIndexFlightIdle(double mach, Amount<Length> altitude,
-			Amount<Temperature> deltaTemperature, double throttleSetting) {
+			Amount<Temperature> deltaTemperature, double throttleSetting, double correctionFactor) {
 		
 		double emissionIndexSOx = 0.0;
 		double[] inputArray = new double[] {
@@ -4387,23 +4387,23 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexSOx = super.flightIdleSOxEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexSOx = super.flightIdleSOxEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexSOx = super.flightIdleSOxEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexSOx = super.flightIdleSOxEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexSOx = super.flightIdleSOxEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexSOx = super.flightIdleSOxEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexSOx = super.flightIdleSOxEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
 
-		return emissionIndexSOx;
+		return emissionIndexSOx*correctionFactor;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public double getSOxEmissionIndexGroundIdle(double mach, Amount<Length> altitude,
-			Amount<Temperature> deltaTemperature, double throttleSetting) {
+			Amount<Temperature> deltaTemperature, double throttleSetting, double correctionFactor) {
 		
 		double emissionIndexSOx = 0.0;
 		double[] inputArray = new double[] {
@@ -4446,17 +4446,17 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 						&& inputArray[3] <= interpolatingFunctionVariableUpperBounds[3] )  ) {
 
 			if(numberOfReducedInput == 1) 
-				emissionIndexSOx = super.groundIdleSOxEmissionIndexFunction.value(inputArray[indexList.get(0)]);
+				emissionIndexSOx = super.groundIdleSOxEmissionIndexFunction.valueAtIndex(inputArray[indexList.get(0)], indexList.get(0));
 			else if(numberOfReducedInput == 2) 
-				emissionIndexSOx = super.groundIdleSOxEmissionIndexFunction.valueBilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)]);
+				emissionIndexSOx = super.groundIdleSOxEmissionIndexFunction.valueBilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], indexList.get(0), indexList.get(1));
 			else if(numberOfReducedInput == 3) 
-				emissionIndexSOx = super.groundIdleSOxEmissionIndexFunction.valueTrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)]);
+				emissionIndexSOx = super.groundIdleSOxEmissionIndexFunction.valueTrilinearAtIndex(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], indexList.get(0), indexList.get(1), indexList.get(2));
 			else if(numberOfReducedInput == 4) 
 				emissionIndexSOx = super.groundIdleSOxEmissionIndexFunction.valueQuadrilinear(inputArray[indexList.get(0)], inputArray[indexList.get(1)], inputArray[indexList.get(2)], inputArray[indexList.get(3)]);
 
 		}
 
-		return emissionIndexSOx;
+		return emissionIndexSOx*correctionFactor;
 	}
 	
 	public double getByPassRatio() {

@@ -16,6 +16,7 @@ import javax.measure.quantity.Angle;
 import javax.measure.quantity.Area;
 import javax.measure.quantity.Force;
 import javax.measure.quantity.Length;
+import javax.measure.quantity.Mass;
 import javax.measure.quantity.Temperature;
 import javax.measure.quantity.Velocity;
 import javax.measure.unit.NonSI;
@@ -24,7 +25,6 @@ import javax.measure.unit.SI;
 import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.util.MathArrays;
-import org.apache.poi.ss.formula.functions.Delta;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.components.liftingSurface.creator.SlatCreator;
@@ -1136,7 +1136,7 @@ public class LiftCalc {
 			System.err.println("ERROR THE SLAT DEFLECTIONS MUST BE EQUAL TO THE NUMBER OF SLATS!");
 			return null;
 		}
-		
+
 		//--------------------------------------------
 		// Managing flaps types:
 		List<Double> flapTypeIndex = new ArrayList<Double>();
@@ -1168,6 +1168,7 @@ public class LiftCalc {
 				deltaFlapRef.add(40.0);
 			}
 		}
+		
 		//--------------------------------------------
 		// Creating lists of flaps geometric parameters:
 		List<Double> etaInFlap = new ArrayList<Double>();
@@ -1207,7 +1208,7 @@ public class LiftCalc {
 		double [] leadingEdgeRadiusSlatStations = new double [2*slatList.size()];
 		double [] maxTicknessSlatStations = new double [2*slatList.size()];
 		double [] chordSlatStations = new double [2*slatList.size()];
-		
+
 		double [] influenceFactor = new double [2];
 		
 		for ( int i=0; i< flapList.size(); i++){
@@ -1286,7 +1287,8 @@ public class LiftCalc {
 			maxTicknessMeanFlap[i] = maxTicknessFlapStations[kk]* influenceFactor[0] + maxTicknessFlapStations[kk+1]*influenceFactor[1];
 		}
 		
-		if(!slatList.isEmpty()) 
+		//slat 
+		if(!slatList.isEmpty()) {
 			for ( int i=0; i< slatList.size(); i++){
 				int kk = i*2;
 
@@ -1368,6 +1370,8 @@ public class LiftCalc {
 				maxTicknessMeanSlat[i] = maxTicknessSlatStations[kk] * influenceFactor[0] + maxTicknessSlatStations[kk+1]*influenceFactor[1];
 
 			}
+		}
+		
 
 		//---------------------------------------------
 		// deltaCl0 (flap)
@@ -2729,4 +2733,28 @@ public class LiftCalc {
 
 	}	
 
+	/**
+	 * @author Vittorio Trifari
+	 * 
+	 * @param weight
+	 * @param altitude
+	 * @param surface
+	 * @param speed
+	 * @param cL
+	 * @return
+	 */
+	public static Amount<Force> calculateLiftAtSpeed(
+			Amount<Length> altitude, Amount<Temperature> deltaTemperature,
+			Amount<Area> surface, Amount<Velocity> speed,
+			double cL) {
+		return Amount.valueOf(
+				0.5
+				*AtmosphereCalc.getDensity(altitude.doubleValue(SI.METER), deltaTemperature.doubleValue(SI.CELSIUS))
+				*Math.pow(speed.doubleValue(SI.METERS_PER_SECOND), 2)
+				*surface.doubleValue(SI.SQUARE_METRE)
+				*cL,
+				SI.NEWTON
+				);
+	}
+	
 }

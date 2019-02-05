@@ -449,8 +449,8 @@ public class OperatingConditions {
 				.setThrottleLanding(throttleLanding)
 				.addAllLandingSlatDefletctionList(deltaFlapListLanding)
 				.addAllLandingSlatDefletctionList(deltaSlatListLanding)
-				.addAllTakeOffCanardDefletction(deltaCanardTakeOff)
-				.addAllLandingCanardDefletction(deltaCanardLanding)
+				.addAllTakeOffCanardDefletctionList(deltaCanardTakeOff)
+				.addAllLandingCanardDefletctionist(deltaCanardLanding)
 				.build()
 				);
 		
@@ -1364,6 +1364,18 @@ public class OperatingConditions {
 				.addAllTakeOffSlatDefletctionList(takeOffSlatDefletctionList)
 				.build());
 	}
+	
+	public List<Amount<Angle>> getTakeOffCanardDefletctionList() {
+		return theOperatingConditionsInterface.getTakeOffCanardDefletctionList();
+	}
+
+	public void setTakeOffCanardDefletctionList(List<Amount<Angle>> takeOffCanardDeflectionList) {
+		setTheOperatingConditionsInterface(IOperatingConditions.Builder.from(theOperatingConditionsInterface)
+				.clearTakeOffCanardDefletctionList()
+				.addAllTakeOffCanardDefletctionList(takeOffCanardDeflectionList)
+				.build());
+	}
+
 
 	public Amount<Angle> getAlphaLanding() {
 		return theOperatingConditionsInterface.getAlphaLanding();
@@ -1435,4 +1447,15 @@ public class OperatingConditions {
 				.build());
 	}
 
+	
+	public List<Amount<Angle>> getLandingCanardDefletctionList() {
+		return theOperatingConditionsInterface.getLandingCanardDefletctionist();
+	}
+
+	public void setLandingCanardDefletctionList(List<Amount<Angle>> landingCanardDefletctionList) {
+		setTheOperatingConditionsInterface(IOperatingConditions.Builder.from(theOperatingConditionsInterface)
+				.clearLandingCanardDefletctionist()
+				.addAllLandingCanardDefletctionist(landingCanardDefletctionList)
+				.build());
+	}
 } 

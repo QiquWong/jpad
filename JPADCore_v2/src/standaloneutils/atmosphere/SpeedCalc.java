@@ -31,6 +31,16 @@ public class SpeedCalc {
 				);
 	}
 
+	public static Amount<Velocity> calculateSpeedAtCL(
+			Amount<Length> altitude, Amount<Temperature> deltaTemperature, Amount<Mass> weight,
+			Amount<Area> surface, double CL) {
+		return Amount.valueOf(
+				sqrt((2*weight.doubleValue(SI.KILOGRAM)*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND))
+						/(surface.doubleValue(SI.SQUARE_METRE)*CL*AtmosphereCalc.getDensity(altitude.doubleValue(SI.METER), deltaTemperature.doubleValue(SI.CELSIUS)))),
+				SI.METERS_PER_SECOND
+				);
+	}
+	
 	/**
 	 * @see Sforza 2014, page 447 (473 pdf)
 	 * @param pt stagnation pressure
@@ -51,8 +61,8 @@ public class SpeedCalc {
 				);
 	}
 
-	public static Amount<Velocity> calculateTAS(Amount<Velocity> VTAS, Amount<Length> altitude, Amount<Temperature> deltaTemperature) {
-		return VTAS.to(SI.METERS_PER_SECOND).divide(Math.sqrt(AtmosphereCalc.getAtmosphere(altitude.doubleValue(SI.METER), deltaTemperature.doubleValue(SI.CELSIUS)).getDensityRatio()));
+	public static Amount<Velocity> calculateTAS(Amount<Velocity> VCAS, Amount<Length> altitude, Amount<Temperature> deltaTemperature) {
+		return VCAS.to(SI.METERS_PER_SECOND).divide(Math.sqrt(AtmosphereCalc.getAtmosphere(altitude.doubleValue(SI.METER), deltaTemperature.doubleValue(SI.CELSIUS)).getDensityRatio()));
 	}
 	
 	/**

@@ -7,7 +7,6 @@ import java.io.PrintStream;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import aircraft.Aircraft;
-import analyses.ACAerodynamicAndStabilityManager;
 import analyses.ACAnalysisManager;
 import analyses.OperatingConditions;
 import configuration.MyConfiguration;

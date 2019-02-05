@@ -12,6 +12,8 @@ import javax.measure.quantity.Velocity;
 import org.inferred.freebuilder.FreeBuilder;
 import org.jscience.physics.amount.Amount;
 
+import com.sun.istack.internal.Nullable;
+
 import aircraft.Aircraft;
 import configuration.enumerations.PerformanceEnum;
 import configuration.enumerations.PerformancePlotEnum;
@@ -48,14 +50,14 @@ public interface IACPerformanceManager {
 	Map<Double, Double> getDeltaCD0FlapTakeOff();
 	Map<Double, Double> getDeltaCD0FlapLanding();
 	Map<Double, Double> getDeltaCD0LandingGears();
-	Map<Double, Double[]> getPolarCLCruise();
-	Map<Double, Double[]> getPolarCDCruise();
-	Map<Double, Double[]> getPolarCLClimb();
-	Map<Double, Double[]> getPolarCDClimb();
-	Map<Double, Double[]> getPolarCLTakeOff();
-	Map<Double, Double[]> getPolarCDTakeOff();
-	Map<Double, Double[]> getPolarCLLanding();
-	Map<Double, Double[]> getPolarCDLanding();
+	Map<Double, double[]> getPolarCLCruise();
+	Map<Double, double[]> getPolarCDCruise();
+	Map<Double, double[]> getPolarCLClimb();
+	Map<Double, double[]> getPolarCDClimb();
+	Map<Double, double[]> getPolarCLTakeOff();
+	Map<Double, double[]> getPolarCDTakeOff();
+	Map<Double, double[]> getPolarCLLanding();
+	Map<Double, double[]> getPolarCDLanding();
 	//..............................................................................
 	// Take-off & Landing
 	Amount<Velocity> getWindSpeed();
@@ -67,13 +69,15 @@ public interface IACPerformanceManager {
 	Amount<Length> getObstacleTakeOff();
 	Double getKRotation();
 	Double getAlphaDotRotation();
-	Double getKCLmax();
+	Double getKCLmaxTakeOff();
 	Double getDragDueToEngineFailure();
 	Double getKAlphaDot();
 
 	Double getKLandingWeight();
+	Amount<Length> getInitialALtitudeLanding();
 	Amount<Length> getObstacleLanding();
-	Amount<Angle> getThetaApproach();
+	Amount<Angle> getApproachAngle();
+	Double getKCLmaxLanding();
 	Double getKApproach();
 	Double getKFlare();
 	Double getKTouchDown();
@@ -118,14 +122,8 @@ public interface IACPerformanceManager {
 	double getHoldingMachNumber();
 	double getFuelReserve();
 	Amount<Length> getFirstGuessCruiseLength();
-	boolean getCalculateSFCCruise();
-	boolean getCalculateSFCAlternateCruise();
-	boolean getCalculateSFCHolding();
-	MyInterpolatingFunction getSfcFunctionCruise();
-	MyInterpolatingFunction getSfcFunctionAlternateCruise();
-	MyInterpolatingFunction getSfcFunctionHolding();
+	@Nullable
 	Amount<Mass> getFirstGuessInitialMissionFuelMass();
-	Amount<Length> getTakeOffMissionAltitude();
 	//..............................................................................
 	// Calibration factors:
 	

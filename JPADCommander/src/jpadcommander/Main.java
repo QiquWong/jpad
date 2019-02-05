@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.controlsfx.control.StatusBar;
 
 import aircraft.Aircraft;
+import it.unina.daf.jpadcad.CADManager;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -32,6 +33,7 @@ public class Main extends Application {
 	private static String _outputDirectoryPath;
 	private static String _databaseDirectoryPath;
 	private static String _inputFileAbsolutePath;
+	private static String _cadConfigurationFileAbsolutePath;
 	//...........................................................................................
 	// LAYOUTS:
 	private static Stage _primaryStage;
@@ -47,6 +49,9 @@ public class Main extends Application {
 	private static Aircraft _theAircraft;
 	private static Boolean _aircraftSaved;
 	private static Boolean _aircraftUpdated;
+	//...........................................................................................
+	// CAD MANAGER
+	private static CADManager _theCADManager;
 	
 	//-------------------------------------------------------------------------------------------
 	// METHODS
@@ -279,6 +284,14 @@ public class Main extends Application {
 	public static void setInputFileAbsolutePath(String inputFileAbsolutePath) {
 		Main._inputFileAbsolutePath = inputFileAbsolutePath;
 	}
+	
+	public static String getCADConfigurationFileAbsolutePath() {
+		return _cadConfigurationFileAbsolutePath;
+	}
+	
+	public static void setCADConfigurationFileAbsolutePath(String cadConfigurationFileAbsolutePath) {
+		Main._cadConfigurationFileAbsolutePath = cadConfigurationFileAbsolutePath;
+	}
 
 	public static StatusBar getTaskPercentage() {
 		return _taskPercentage;
@@ -302,6 +315,14 @@ public class Main extends Application {
 
 	public static void setAircraftUpdated(Boolean _aircraftUpdated) {
 		Main._aircraftUpdated = _aircraftUpdated;
+	}
+	
+	public static CADManager getTheCADManager() {
+		return _theCADManager;
+	}
+	
+	public static void setTheCADManager(CADManager _theCADManager) {
+		Main._theCADManager = _theCADManager;
 	}
 
 }

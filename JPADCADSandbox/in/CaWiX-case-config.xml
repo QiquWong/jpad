@@ -1,0 +1,19 @@
+<cawix_config>
+	<working_folder_path value="C:\\Users\\giord\\Desktop\\STAR_WORKING_FOLDER" />
+	<jpad_CAD_folder_path value="D:\\JPAD\\jpad\\JPADCADSandbox" />
+	<star_temp_folder_path value="C:\\Users\\giord\\Desktop\\STAR_TEMP_FOLDER" />
+	<macro_path value="D:\\eclipse\\STAR_MACRO\\src\\macro" />
+	<macro_name value="Create_Sim.java" />
+	<star_exe_path value="C:\\Program Files\\CD-adapco\\12.04.011-R8\\STAR-CCM+12.04.011-R8\\star\\bin\\starccm+.exe" />
+	<star_options value="-cpubind -power -podkey 2jHU+QkwqexqrAOdVZ6ZzQ -licpath 1999@flex.cd-adapco.com -np 8 -rsh ssh" />
+	<cases>
+		<mach>[0.2]</mach>
+		<alpha unit="°">[-2.0,0.0,4.0]</alpha>
+		<x_canard_pos_pct_var>[0.0]</x_canard_pos_pct_var>
+		<z_canard_pos unit="m">[0.0]</z_canard_pos>
+		<span_canard_pct_var>[0.0]</span_canard_pct_var>
+		<sweep_canard_angle unit="°">[0.0]</sweep_canard_angle>
+		<dihedral_canard_angle unit="°">[0.0]</dihedral_canard_angle>
+		<rigging_canard_angle unit="°">[0.0]</rigging_canard_angle>
+	</cases>
+</cawix_config>

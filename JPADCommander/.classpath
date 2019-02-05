@@ -19,5 +19,6 @@
 	<classpathentry kind="var" path="LIBRARY_FOLDER/fxgraphics2d/fxgraphics2d-1.3.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/javaslang/javaslang-2.0.4.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/JPADCAD"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

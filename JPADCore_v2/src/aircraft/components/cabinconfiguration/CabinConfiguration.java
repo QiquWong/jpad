@@ -112,8 +112,7 @@ public class CabinConfiguration {
 		
 		//------------------------------------------------------------------
 		// GLOBAL DATA
-		int actualPassengerNumber = 0;
-		int maximumPassengerNumber = 0; 
+		int designPassengerNumber = 0;
 		int flightCrewNumber = 0;
 		int classesNumber = 0; 
 		List<ClassTypeEnum> classesType = new ArrayList<>();
@@ -121,13 +120,9 @@ public class CabinConfiguration {
 		Amount<Length> xCoordinatesFirstRow = Amount.valueOf(0.0, SI.METER); 
 		
 		//..................................................................		
-		String actualPassengerNumberProperty =  reader.getXMLPropertyByPath("//global_data/actual_passengers_number");
-		if(actualPassengerNumberProperty != null) 
-			actualPassengerNumber = Integer.valueOf(actualPassengerNumberProperty);
-		//..................................................................
-		String maximumPassengerNumberProperty =  reader.getXMLPropertyByPath("//global_data/maximum_passengers_number");
-		if(actualPassengerNumberProperty != null) 
-			maximumPassengerNumber = Integer.valueOf(maximumPassengerNumberProperty);
+		String designPassengerNumberProperty =  reader.getXMLPropertyByPath("//global_data/design_passengers_number");
+		if(designPassengerNumberProperty != null) 
+			designPassengerNumber = Integer.valueOf(designPassengerNumberProperty);
 		//..................................................................
 		String flightCrewNumberProperty =  reader.getXMLPropertyByPath("//global_data/flight_crew_number");
 		if(flightCrewNumberProperty != null)
@@ -297,8 +292,7 @@ public class CabinConfiguration {
 		CabinConfiguration aircraftConfiguration = new CabinConfiguration(
 				new ICabinConfiguration.Builder()
 				.setId(id)
-				.setActualPassengerNumber(actualPassengerNumber)
-				.setMaximumPassengerNumber(maximumPassengerNumber)
+				.setDesignPassengerNumber(designPassengerNumber)
 				.setFlightCrewNumber(flightCrewNumber)
 				.setClassesNumber(classesNumber)
 				.addAllClassesType(classesType)
@@ -364,7 +358,7 @@ public class CabinConfiguration {
 
 	public void calculateDependentVariables() {
 
-		setCabinCrewNumber((int) Math.ceil(getTheCabinConfigurationBuilder().getActualPassengerNumber()/35));
+		setCabinCrewNumber((int) Math.ceil(getTheCabinConfigurationBuilder().getDesignPassengerNumber()/35));
 		setTotalCrewNumber(getCabinCrewNumber() + getTheCabinConfigurationBuilder().getFlightCrewNumber());
 		updateConfiguration();
 
@@ -481,8 +475,7 @@ public class CabinConfiguration {
 				.append("\t-------------------------------------\n")
 				.append("\tID: '" + getTheCabinConfigurationBuilder().getId() + "'\n")
 				.append("\t.....................................\n")
-				.append("\tActual number of passengers: " + getTheCabinConfigurationBuilder().getActualPassengerNumber() + "\n")
-				.append("\tMaximum number of passengers: " + getTheCabinConfigurationBuilder().getMaximumPassengerNumber() + "\n")
+				.append("\tDesign number of passengers: " + getTheCabinConfigurationBuilder().getDesignPassengerNumber() + "\n")
 				.append("\tFlight crew number: " + getTheCabinConfigurationBuilder().getFlightCrewNumber() + "\n")
 				.append("\tCabin crew number: " + getCabinCrewNumber() + "\n")
 				.append("\tTotal crew number: " + getTotalCrewNumber() + "\n")
@@ -542,20 +535,12 @@ public class CabinConfiguration {
 		setTheCabinConfigurationBuilder(ICabinConfiguration.Builder.from(_theCabinConfigurationBuilder).setId(id).build());
 	}
 	
-	public int getActualPassengerNumber() {
-		return _theCabinConfigurationBuilder.getActualPassengerNumber();
+	public int getDesignPassengerNumber() {
+		return _theCabinConfigurationBuilder.getDesignPassengerNumber();
 	}
 	
-	public void setActualPassengerNumber (int actualPassengerNumber) {
-		setTheCabinConfigurationBuilder(ICabinConfiguration.Builder.from(_theCabinConfigurationBuilder).setActualPassengerNumber(actualPassengerNumber).build());
-	}
-	
-	public int getMaximumPassengerNumber(){
-		return _theCabinConfigurationBuilder.getMaximumPassengerNumber();
-	}
-	
-	public void setMaximumPassengerNumber (int maxPassengerNumber) {
-		setTheCabinConfigurationBuilder(ICabinConfiguration.Builder.from(_theCabinConfigurationBuilder).setMaximumPassengerNumber(maxPassengerNumber).build());
+	public void setDesignPassengerNumber (int designPassengerNumber) {
+		setTheCabinConfigurationBuilder(ICabinConfiguration.Builder.from(_theCabinConfigurationBuilder).setDesignPassengerNumber(designPassengerNumber).build());
 	}
 	
 	public int getFlightCrewNumber(){

@@ -1,11 +1,13 @@
 package it.unina.daf.jpadcad.occ;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import opencascade.Adaptor3d_Curve;
 import opencascade.Adaptor3d_HCurve;
@@ -15,6 +17,8 @@ import opencascade.BRepAdaptor_Curve;
 import opencascade.BRepBuilderAPI_MakeEdge;
 import opencascade.BRepBuilderAPI_MakeVertex;
 import opencascade.BRepBuilderAPI_Transform;
+import opencascade.BRepFilletAPI_MakeFillet;
+import opencascade.BRepMesh_IncrementalMesh;
 import opencascade.BRepOffsetAPI_MakeFilling;
 import opencascade.BRepTools;
 import opencascade.BRep_Builder;
@@ -30,6 +34,13 @@ import opencascade.Geom_BSplineCurve;
 import opencascade.Geom_Curve;
 import opencascade.Geom_Geometry;
 import opencascade.Geom_TrimmedCurve;
+import opencascade.IGESControl_Controller;
+import opencascade.IGESControl_Writer;
+import opencascade.Interface_Static;
+import opencascade.STEPControl_StepModelType;
+import opencascade.STEPControl_Writer;
+import opencascade.ShapeAnalysis_FreeBounds;
+import opencascade.StlAPI_Writer;
 import opencascade.TopAbs_ShapeEnum;
 import opencascade.TopExp_Explorer;
 import opencascade.TopTools_ListOfShape;
@@ -38,12 +49,16 @@ import opencascade.TopoDS_CompSolid;
 import opencascade.TopoDS_Compound;
 import opencascade.TopoDS_Edge;
 import opencascade.TopoDS_Shape;
+import opencascade.TopoDS_Shell;
 import opencascade.TopoDS_Vertex;
+import opencascade.gp_Ax1;
 import opencascade.gp_Ax2;
 import opencascade.gp_Dir;
 import opencascade.gp_Pnt;
 import opencascade.gp_Trsf;
+import opencascade.gp_Vec;
 import processing.core.PVector;
+import standaloneutils.MyArrayUtils;
 
 public final class OCCUtils {
 
@@ -56,7 +71,7 @@ public final class OCCUtils {
 		}
 	}
 	
-	// Example: write("test.brep", occshape1, occsape2, occshape3)	
+	// Example: write("test.brep", occshape1, occshape2, occshape3)	
 	public static boolean write(String fileName, OCCShape ... shapes) {
 		
 		if (shapes.length == 0)
@@ -78,7 +93,8 @@ public final class OCCUtils {
 		return (result == 1);
 	}
 	
-	// Example: write("test.brep", occshape1, occsape2, listOfOccshapes, occshape3)
+	// Example: write("test.brep", occshape1, occshape2, listOfOccshapes, occshape3)
+	@SuppressWarnings("unchecked")
 	public static boolean write(String fileName, Object ... objects) {
 		
 		if (objects.length == 0)
@@ -117,6 +133,60 @@ public final class OCCUtils {
 		long result = BRepTools.Write(compound, fileName);
 		
 		return (result == 1);
+	}
+	
+	public static void write(String fileName, FileExtension fileExtension, List<OCCShape> shapes) {
+		
+		String fileNameComplete = fileName.concat("." + fileExtension.toString().toLowerCase());
+		
+		// Generate a compound, holding all the shapes that have been passed to the method
+		BRep_Builder builder = new BRep_Builder();
+		TopoDS_Compound compound = new TopoDS_Compound();
+		builder.MakeCompound(compound);
+		
+		// Invoke different OCCT writing utilities depending on the selected file extension
+		switch (fileExtension) {
+		
+		case BREP:
+			shapes.forEach(s -> builder.Add(compound, s.getShape()));
+			BRepTools.Write(compound, fileNameComplete);
+			
+			break;
+			
+		case STEP:
+			shapes.forEach(s -> builder.Add(compound, s.getShape()));
+			STEPControl_Writer stepWriter = new STEPControl_Writer();
+			Interface_Static.SetCVal("write.step.unit", "M");
+			stepWriter.Transfer(compound, STEPControl_StepModelType.STEPControl_AsIs);
+			stepWriter.Write(fileNameComplete);	
+			
+			break;
+			 
+		case IGES:
+			if (IGESControl_Controller.Init() == 1) {
+				IGESControl_Writer igesWriter = new IGESControl_Writer("2HM");
+				shapes.forEach(s -> igesWriter.AddShape(s.getShape()));
+				igesWriter.ComputeModel();
+				igesWriter.Write(fileNameComplete);
+			} else
+				System.exit(1);
+			
+			break;
+			
+		case STL:
+			StlAPI_Writer stlWriter = new StlAPI_Writer();
+			BRepMesh_IncrementalMesh incrementalMesh = new BRepMesh_IncrementalMesh();
+			
+			shapes.forEach(s -> {
+				incrementalMesh.SetShape(s.getShape());
+				incrementalMesh.Perform();
+				builder.Add(compound, incrementalMesh.Shape().Reversed());
+			});
+			
+			stlWriter.Write(compound, fileNameComplete);
+			
+			break;
+		}
 	}
 	
 	public static OCCShape makePatchThruSections(
@@ -459,7 +529,7 @@ public final class OCCUtils {
 	public static List<OCCEdge> splitEdge(CADGeomCurve3D cadCurve, double[] pnt) {
 		List<OCCEdge> result = new ArrayList<>();
 		
-		CADVertex projection = pointProjectionOnCurve0(cadCurve, pnt);
+		CADVertex projection = OCCUtils.pointProjectionOnCurve0(cadCurve, pnt);
 		
 		TopoDS_Vertex vtx_1 = null;
 		
@@ -596,6 +666,28 @@ public final class OCCUtils {
 		return result;
 	}
 	
+	public static List<OCCWire> getClosedWireFromShell(OCCShell occShell) {
+		
+		ShapeAnalysis_FreeBounds shapeAnalyzer = new ShapeAnalysis_FreeBounds(occShell.getShape());
+		TopoDS_Compound wires = shapeAnalyzer.GetClosedWires();
+		
+		// Explore the compound of wires
+		List<OCCWire> expWires = new ArrayList<>();
+		
+		TopExp_Explorer explorer = new TopExp_Explorer(wires, TopAbs_ShapeEnum.TopAbs_WIRE);
+		while (explorer.More() > 0) {
+			OCCWire wire = (OCCWire) OCCUtils.theFactory.newShape(TopoDS.ToWire(explorer.Current()));
+			expWires.add(wire);
+			explorer.Next();			
+		}
+		
+		if (expWires.size() < 1) 
+		 	System.err.println("[OCCUtils.getClosedWireFromShell] " + 
+							   "Warning: the number of found free wires is incorrect. Returning a null value ...");
+	
+		return expWires;
+	}
+	
 	/**
 	 * Mirrors the provided shape with respect to a plane
 	 * @param shape - The shape to mirror.
@@ -675,4 +767,98 @@ public final class OCCUtils {
 
 		return pars;		
 	}
+	
+	public static OCCShell applyFilletOnShell(OCCShell shell, int[] edgeIndexes, double radius) {
+		
+		BRepFilletAPI_MakeFillet filletMaker = new BRepFilletAPI_MakeFillet(shell.getShape());
+		
+		List<CADEdge> shellEdges = new ArrayList<>();
+		OCCExplorer exp = new OCCExplorer();
+		exp.init(shell, CADShapeTypes.EDGE);
+		while (exp.more()) {
+			shellEdges.add((CADEdge) exp.current());
+			exp.next();
+		}
+		
+		Arrays.stream(edgeIndexes).forEach(i -> filletMaker.Add(radius, ((OCCEdge) shellEdges.get(i)).getShape()));
+		
+		List<TopoDS_Shell> filletShells = new ArrayList<>();
+		TopExp_Explorer filletShellExplorer = new TopExp_Explorer(filletMaker.Shape(), TopAbs_ShapeEnum.TopAbs_SHELL);
+		while(filletShellExplorer.More() > 0) {
+			filletShells.add(TopoDS.ToShell(filletShellExplorer.Current()));
+			filletShellExplorer.Next();
+		}
+		
+		return (OCCShell) OCCUtils.theFactory.newShape(filletShells.get(0));
+	}
+	
+	public static List<CADWire> revolveWireAroundGuideCurve(
+			CADWire wire, double[] cgWire, CADGeomCurve3D guideCurve,
+			double scaling, int nRevolvedWires) {
+		
+		List<CADWire> revolvedWires = new ArrayList<>();
+		
+		guideCurve.discretize(nRevolvedWires);
+		
+		double[] guideCurveParams = ((OCCGeomCurve3D) guideCurve).getDiscretizedCurve().getParams();
+		List<gp_Pnt> guideCurvePts = ((OCCGeomCurve3D) guideCurve).getDiscretizedCurve().getPoints();
+		
+		double[] scaleFactors = MyArrayUtils.linspace(1.0, scaling, guideCurvePts.size());
+		
+		revolvedWires.add(wire);
+		for (int i = 1; i < guideCurvePts.size(); i++) {
+			
+			gp_Trsf translate = new gp_Trsf();
+			gp_Trsf scale = new gp_Trsf();
+			gp_Trsf rotate = new gp_Trsf();
+			
+			// SCALING		
+			scale.SetScale(new gp_Pnt(cgWire[0], cgWire[1], cgWire[2]), scaleFactors[i]);
+			
+			CADWire scaledWire = (CADWire) OCCUtils.theFactory.newShape(TopoDS.ToWire(
+					new BRepBuilderAPI_Transform(
+							((OCCWire) wire).getShape(), scale, 0).Shape()));
+			
+			// ROTATION
+			gp_Ax1 rotAxis = new gp_Ax1(
+					new gp_Pnt(0.0, 0.0, 0.0), 
+					new gp_Dir(new gp_Vec(1.0, 0.0, 0.0)));
+			
+			gp_Vec guideCrvTang = new gp_Vec();
+			((OCCGeomCurve3D) guideCurve).getAdaptorCurve().D1(guideCurveParams[i], new gp_Pnt(), guideCrvTang);
+			
+			gp_Vec bNormal = new gp_Vec(0.0, 1.0, 0.0);
+			gp_Vec iNormal = new gp_Vec(0.0, guideCrvTang.Y(), guideCrvTang.Z());
+			
+			double rotAngle = bNormal.AngleWithRef(iNormal, new gp_Vec(1.0, 0.0, 0.0));
+			
+			rotate.SetRotation(rotAxis, rotAngle);
+			
+			CADWire rotatedWire = (CADWire) OCCUtils.theFactory.newShape(TopoDS.ToWire(
+					new BRepBuilderAPI_Transform(
+							((OCCWire) scaledWire).getShape(), rotate, 0).Shape()));
+			
+			// TRANSLATION
+			translate.SetTranslation(
+					BRep_Tool.Pnt(
+							((OCCVertex) rotatedWire.vertices().get(0)).getShape()), 
+					guideCurvePts.get(i));
+			
+			CADWire translatedWire = (CADWire) OCCUtils.theFactory.newShape(TopoDS.ToWire(
+					new BRepBuilderAPI_Transform(
+							((OCCWire) rotatedWire).getShape(), translate, 0).Shape()));
+					
+			revolvedWires.add(translatedWire);		
+		}
+		
+		return revolvedWires;
+	}
+	
+	public enum FileExtension {
+		BREP,
+		STEP, 
+		IGES,
+		STL;
+	}
 }
+
