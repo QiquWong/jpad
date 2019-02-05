@@ -3,6 +3,8 @@ package it.unina.daf.jpadcadsandbox;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,13 +29,20 @@ import it.unina.daf.jpadcad.utils.AircraftCADUtils;
 import it.unina.daf.jpadcad.utils.AircraftUtils;
 import it.unina.daf.jpadcad.utils.AircraftCADUtils.WingTipType;
 import it.unina.daf.jpadcad.occ.OCCWire;
+import opencascade.BRepAlgoAPI_Cut;
+import opencascade.BRepBndLib;
 import opencascade.BRepBuilderAPI_GTransform;
+import opencascade.BRepBuilderAPI_MakeFace;
 import opencascade.BRepBuilderAPI_Transform;
 import opencascade.BRepGProp;
+import opencascade.BRepMesh_IncrementalMesh;
+import opencascade.BRepOffsetAPI_MakeFilling;
+import opencascade.BRepPrimAPI_MakeBox;
 import opencascade.BRepPrimAPI_MakePrism;
 import opencascade.BRepTools;
 import opencascade.BRep_Builder;
 import opencascade.BRep_Tool;
+import opencascade.Bnd_Box;
 import opencascade.GProp_GProps;
 import opencascade.GeomLProp_SLProps;
 import opencascade.Geom_Surface;
@@ -119,7 +128,6 @@ public class Test37mds {
 		// Explore the NACELLE shapes
 		// ----------------------------
 		List<OCCShape> nacelleShells = new ArrayList<>();
-		List<OCCShape> nacelleSolids = new ArrayList<>();
 		
 		OCCExplorer nacelleExp = new OCCExplorer();
 		nacelleExp.init(OCCUtils.theFactory.newShape(nacelleShapes), CADShapeTypes.SHELL);
@@ -128,28 +136,12 @@ public class Test37mds {
 			nacelleExp.next();
 		}
 		System.out.println("Number of shell elements found for the nacelle: " + nacelleShells.size());
-		OCCShell intakeShell = (OCCShell) nacelleShells.get(1);
-		nacelleShells.remove(1);
-		
-		exportShapes.addAll(nacelleShells);
 		
 		OCCShell nacelleShell = (OCCShell) OCCUtils.theFactory.newShellFromAdjacentShapes(
 				1.0e-03, nacelleShells.stream().map(s -> (CADShape) s).collect(Collectors.toList()));	
 		
-		OCCSolid nacelleSolid = (OCCSolid) OCCUtils.theFactory.newSolidFromAdjacentShells(nacelleShell);
-		OCCSolid intakeSolid = (OCCSolid) OCCUtils.theFactory.newSolidFromAdjacentShells(intakeShell);
-		
-		nacelleSolids.add(nacelleShell);
-		nacelleSolids.add(intakeShell);
-		
-		BRep_Builder nacelleCompoundBuilder = new BRep_Builder();
-		TopoDS_Compound nacelleCompound = new TopoDS_Compound();
-		nacelleCompoundBuilder.MakeCompound(nacelleCompound);
-		
-		nacelleSolids.forEach(s -> nacelleCompoundBuilder.Add(nacelleCompound, s.getShape()));
-		
 		// Get the NACELLE right orientation in space
-		gp_Pnt nacelleCG = getCG(nacelleCompound);
+		gp_Pnt nacelleCG = getCG(nacelleShell.getShape());
 		
 		double nacelleRotAngle = 1.5708;
 
@@ -158,8 +150,8 @@ public class Test37mds {
 		nacelleRotation.SetRotation(nacelleRotAxis, nacelleRotAngle);
 		
 		OCCShape rotatedNacelle = (OCCShape) OCCUtils.theFactory.newShape(
-				TopoDS.ToCompound(
-						new BRepBuilderAPI_Transform(nacelleCompound, nacelleRotation, 0).Shape()
+				TopoDS.ToShell(
+						new BRepBuilderAPI_Transform(nacelleShell.getShape(), nacelleRotation, 0).Shape()
 						));	
 		
 		// ------------------------------------------------------------
@@ -167,63 +159,86 @@ public class Test37mds {
 		// ------------------------------------------------------------
 		
 		// Get the free boundary at the tip
-		ShapeAnalysis_FreeBounds nacelleAnalyzer0 = new ShapeAnalysis_FreeBounds(rotatedNacelle.getShape());
+		ShapeAnalysis_FreeBounds nacelleFBAnalyzer0 = new ShapeAnalysis_FreeBounds(rotatedNacelle.getShape());
 		TopExp_Explorer nacelleFreeWiresExp0 = new TopExp_Explorer(
-				nacelleAnalyzer0.GetClosedWires(), TopAbs_ShapeEnum.TopAbs_WIRE);
+				nacelleFBAnalyzer0.GetClosedWires(), TopAbs_ShapeEnum.TopAbs_WIRE);
 		
-		List<OCCWire> nacelleFreeWires = new ArrayList<>();
+		List<OCCWire> nacelleFreeWires0 = new ArrayList<>();
 		while (nacelleFreeWiresExp0.More() > 0) {
-			nacelleFreeWires.add((OCCWire) OCCUtils.theFactory.newShape(TopoDS.ToWire(nacelleFreeWiresExp0.Current())));
+			nacelleFreeWires0.add((OCCWire) OCCUtils.theFactory.newShape(TopoDS.ToWire(nacelleFreeWiresExp0.Current())));
 			nacelleFreeWiresExp0.Next();
 		}
-		System.out.println("Number of free boundary closed wires found for the nacelle: " + nacelleFreeWires.size());
+		System.out.println("Number of free boundary closed wires found for the nacelle: " + nacelleFreeWires0.size());
 		
-		OCCWire nacelleTipWire0 = nacelleFreeWires.get(0);
+		List<OCCWire> sortedNacelleFreeWires0 = nacelleFreeWires0.stream()
+				.sorted(Comparator.comparing(w -> w.vertices().get(0).pnt()[0]))
+				.collect(Collectors.toList());		
+		
+		OCCWire nacelleTipWire0 = sortedNacelleFreeWires0.get(0);
 		gp_Pnt nacelleTipWireCG0 = getCG(nacelleTipWire0.getShape());
 		
 		// Translate the NACELLE
 		gp_Trsf nacelleTranslate = new gp_Trsf();
 		nacelleTranslate.SetTranslation(nacelleTipWireCG0, new gp_Pnt(0.0, 0.0, 0.0));
 		
-		OCCShape nacelle = (OCCShape) OCCUtils.theFactory.newShape(
-				TopoDS.ToCompound(
+		OCCShape translatedNacelle = (OCCShape) OCCUtils.theFactory.newShape(
+				TopoDS.ToShell(
 						new BRepBuilderAPI_Transform(rotatedNacelle.getShape(), nacelleTranslate, 0).Shape()
 						));
 		
 		// ----------------------------------------------------
 		// Get NACELLE reference dimensions, points, and edges
 		// ----------------------------------------------------
-		double[] nacelleBoundBox = rotatedNacelle.boundingBox();
-		double refNacelleLength = nacelleBoundBox[3] - nacelleBoundBox[0];
-		double refNacelleWidth = nacelleBoundBox[4] - nacelleBoundBox[1];
-		double refNacelleHeight = nacelleBoundBox[5] - nacelleBoundBox[2];
+		
+		// Get NACELLE max dimensions
+		Bnd_Box nacelleBB = new Bnd_Box();
+		new BRepMesh_IncrementalMesh(translatedNacelle.getShape(), 7.0e-03);
+		BRepBndLib.Add(translatedNacelle.getShape(), nacelleBB, 1);
+		nacelleBB.SetGap(0.0);
+		double[] xMin = new double[1];
+		double[] yMin = new double[1]; 
+		double[] zMin = new double[1];
+		double[] xMax = new double[1];
+		double[] yMax = new double[1];
+		double[] zMax = new double[1];
+		nacelleBB.Get(xMin, yMin, zMin, xMax, yMax, zMax);
+		
+		System.out.println("Nacelle bounding box coordinates:");
+		System.out.println("X min = " + xMin[0] + ", X max = " + xMax[0]);
+		System.out.println("Y min = " + yMin[0] + ", Y max = " + yMax[0]);
+		System.out.println("Z min = " + zMin[0] + ", Z max = " + zMax[0]);
+		
+		double refNacelleLength = xMax[0] - xMin[0];
+		double refNacelleWidth = yMax[0] - yMin[0];
+		double refNacelleHeight = zMax[0] - zMin[0];
 		
 		System.out.println("Nacelle reference dimensions:");
 		System.out.println("Lenght = " + refNacelleLength);
 		System.out.println("Width = " + refNacelleWidth);
 		System.out.println("Height = " + refNacelleHeight);
 		
-		ShapeAnalysis_FreeBounds nacelleAnalyzer = new ShapeAnalysis_FreeBounds(nacelle.getShape());
+		// Get NACELLE reference free bounds	
+		ShapeAnalysis_FreeBounds nacelleFBAnalyzer = new ShapeAnalysis_FreeBounds(translatedNacelle.getShape());
 		TopExp_Explorer nacelleFreeWiresExp = new TopExp_Explorer(
-				nacelleAnalyzer.GetClosedWires(), TopAbs_ShapeEnum.TopAbs_WIRE);
+				nacelleFBAnalyzer.GetClosedWires(), TopAbs_ShapeEnum.TopAbs_WIRE);
 		
-		OCCWire nacelleTipWire = (OCCWire) OCCUtils.theFactory.newShape(TopoDS.ToWire(nacelleFreeWiresExp.Current()));
-		nacelleFreeWiresExp.Next();
-		OCCWire nacelleIntakeWire = (OCCWire) OCCUtils.theFactory.newShape(TopoDS.ToWire(nacelleFreeWiresExp.Current()));
-		nacelleFreeWiresExp.Next();
-		OCCWire nacelleRearWire = (OCCWire) OCCUtils.theFactory.newShape(TopoDS.ToWire(nacelleFreeWiresExp.Current()));
+		List<OCCWire> nacelleFreeWires = new ArrayList<>();
+		while (nacelleFreeWiresExp.More() > 0) {
+			nacelleFreeWires.add((OCCWire) OCCUtils.theFactory.newShape(TopoDS.ToWire(nacelleFreeWiresExp.Current())));
+			nacelleFreeWiresExp.Next();
+		}
+		
+		List<OCCWire> sortedNacelleFreeWires = nacelleFreeWires.stream()
+				.sorted(Comparator.comparing(w -> w.vertices().get(0).pnt()[0]))
+				.collect(Collectors.toList());		
+		
+		OCCWire nacelleTipWire = sortedNacelleFreeWires.get(0);		
+		OCCWire nacelleIntakeWire = sortedNacelleFreeWires.get(1);	
+		OCCWire nacelleRearWire = sortedNacelleFreeWires.get(2);	
 		
 		gp_Pnt nacelleTipWireCG = getCG(nacelleTipWire.getShape()); 
+		gp_Pnt nacelleIntakeWireCG = getCG(nacelleIntakeWire.getShape());
 		gp_Pnt nacelleRearWireCG = getCG(nacelleRearWire.getShape()); 
-		
-		TopExp_Explorer nacelleFreeWiresExp1 = new TopExp_Explorer(
-				nacelleAnalyzer.GetOpenWires(), TopAbs_ShapeEnum.TopAbs_EDGE);
-		
-		List<OCCShape> freeEdges = new ArrayList<>();
-		while (nacelleFreeWiresExp1.More() > 0) {
-			freeEdges.add((OCCShape) OCCUtils.theFactory.newShape(TopoDS.ToEdge(nacelleFreeWiresExp1.Current())));
-			nacelleFreeWiresExp1.Next();
-		}
 		
 		// ----------------------------
 		// Generate the propeller hub
@@ -279,7 +294,7 @@ public class Test37mds {
 		// ---------------------------------
 		// Generate the NACELLE outlet cap
 		// ---------------------------------
-		double outletCapLength = refNacelleLength / 15;
+		double outletCapLength = refNacelleLength / 10;
 		
 		// Translate scaled shapes in order to generate the supporting shapes for the cap
 		gp_Trsf outletWireTrans = new gp_Trsf();
@@ -295,12 +310,12 @@ public class Test37mds {
 						new BRepBuilderAPI_Transform(outletCapScaledSuppWire1.getShape(), outletWireTrans, 0).Shape()
 						));
 		
-		outletWireTrans.SetScale(hubLastWireCG, 0.60);	
+		outletWireTrans.SetScale(nacelleRearWireCG, 0.60);	
 		OCCWire outletCapScaledSuppWire2 = (OCCWire) OCCUtils.theFactory.newShape(
 				TopoDS.ToWire(
 						new BRepBuilderAPI_Transform(nacelleRearWire.getShape(), outletWireTrans, 0).Shape()
 						));	
-		outletWireTrans.SetTranslation(nacelleRearWireCG, new gp_Pnt(nacelleRearWireCG.X() + propCapLength*6/10, 0.0, nacelleRearWireCG.Z()));
+		outletWireTrans.SetTranslation(nacelleRearWireCG, new gp_Pnt(nacelleRearWireCG.X() + outletCapLength*6/10, 0.0, nacelleRearWireCG.Z()));
 		OCCWire outletCapSuppWire2 = (OCCWire) OCCUtils.theFactory.newShape(
 				TopoDS.ToWire(
 						new BRepBuilderAPI_Transform(outletCapScaledSuppWire2.getShape(), outletWireTrans, 0).Shape()
@@ -310,9 +325,155 @@ public class Test37mds {
 				nacelleRearWireCG.X() + outletCapLength, 0.0, nacelleRearWireCG.Z()});	
 		
 		// Generate the shell for the cap
-		List<CADWire> outletCapWires = new ArrayList<>();		
+		List<CADWire> outletCapWires = new ArrayList<>();	
+		outletCapWires.add(nacelleRearWire);
+		outletCapWires.add(outletCapSuppWire1);
+		outletCapWires.add(outletCapSuppWire2);
+		OCCShape outletShell = OCCUtils.makePatchThruSections(outletCapWires, outletCapTipVtx);
 		
-//		exportShapes.add(nacelle);
+		// -------------------
+		// Close the NACELLE 
+		// -------------------
+		OCCShape nacelleIntakeFace = (OCCFace) OCCUtils.makeFilledFace(nacelleIntakeWire.edges(), new ArrayList<>());
+		
+		OCCShape nacelleShellNoDuct = (OCCShape) OCCUtils.theFactory.newShellFromAdjacentShapes(1.0e-05,
+				(CADShape) translatedNacelle,
+				(CADShape) hubShell,
+				(CADShape) capShell,
+				(CADShape) outletShell,
+				(CADShape) nacelleIntakeFace
+				);
+		
+		OCCShape nacelleSolidNoDuct = (OCCShape) OCCUtils.theFactory.newSolidFromAdjacentShells((CADShell) nacelleShellNoDuct);
+		
+		// -------------------------
+		// Generate the inner duct
+		// -------------------------
+		
+		// Generate the inner intake wire
+		System.out.println("Number of vertices found for the intake wire: " + nacelleIntakeWire.vertices().size());
+		
+		List<CADVertex> zSortedIntakeWireVtx = nacelleIntakeWire.vertices().stream()
+				.sorted(Comparator.comparing(v -> v.pnt()[2]))
+				.collect(Collectors.toList());		
+		List<CADVertex> ySortedIntakeWireVtx = nacelleIntakeWire.vertices().stream()
+				.sorted(Comparator.comparing(v -> v.pnt()[1]))
+				.collect(Collectors.toList());
+		
+		double intakeWireWidth = ySortedIntakeWireVtx.get(nacelleIntakeWire.vertices().size() - 1).pnt()[1] - 
+								 ySortedIntakeWireVtx.get(0).pnt()[1];
+		double intakeWireHeight = zSortedIntakeWireVtx.get(nacelleIntakeWire.vertices().size() - 1).pnt()[2] - 
+				 				  zSortedIntakeWireVtx.get(0).pnt()[2];
+		
+		System.out.println("Intake wire width: " + intakeWireWidth);
+		System.out.println("Intake wire width: " + intakeWireHeight);
+		
+		//TODO: scale the intake wire in the y and z directions according to these values (use gp_GTrsf())
+		
+		// Translate scaled shapes in order to generate the supporting shapes for the inner duct
+		gp_Trsf innerDuctWireTrans = new gp_Trsf();
+		
+		innerDuctWireTrans.SetScale(nacelleIntakeWireCG, 0.85);
+		OCCWire innerDuctScaledSuppWire0 = (OCCWire) OCCUtils.theFactory.newShape(
+				TopoDS.ToWire(
+						new BRepBuilderAPI_Transform(nacelleIntakeWire.getShape(), innerDuctWireTrans, 0).Shape()
+						));
+		innerDuctWireTrans.SetTranslation(nacelleIntakeWireCG, 
+				new gp_Pnt(nacelleIntakeWireCG.X() - refNacelleLength/20, 0.0, nacelleIntakeWireCG.Z()));
+		OCCWire innerDuctSuppWire0 = (OCCWire) OCCUtils.theFactory.newShape(
+				TopoDS.ToWire(
+						new BRepBuilderAPI_Transform(innerDuctScaledSuppWire0.getShape(), innerDuctWireTrans, 0).Shape()
+						));
+		
+		innerDuctWireTrans.SetScale(nacelleIntakeWireCG, 0.85);
+		OCCWire innerDuctSuppWire1 = (OCCWire) OCCUtils.theFactory.newShape(
+				TopoDS.ToWire(
+						new BRepBuilderAPI_Transform(nacelleIntakeWire.getShape(), innerDuctWireTrans, 0).Shape()
+						));
+		
+		innerDuctWireTrans.SetScale(nacelleIntakeWireCG, 0.85);
+		OCCWire innerDuctScaledSuppWire2 = (OCCWire) OCCUtils.theFactory.newShape(
+				TopoDS.ToWire(
+						new BRepBuilderAPI_Transform(nacelleIntakeWire.getShape(), innerDuctWireTrans, 0).Shape()
+						));
+		innerDuctWireTrans.SetTranslation(nacelleIntakeWireCG, 
+				new gp_Pnt(nacelleIntakeWireCG.X() + 2*refNacelleLength/5, 0.0, nacelleIntakeWireCG.Z()));
+		OCCWire innerDuctSuppWire2 = (OCCWire) OCCUtils.theFactory.newShape(
+				TopoDS.ToWire(
+						new BRepBuilderAPI_Transform(innerDuctScaledSuppWire2.getShape(), innerDuctWireTrans, 0).Shape()
+						));
+		
+		innerDuctWireTrans.SetScale(nacelleIntakeWireCG, 1.00);
+		OCCWire innerDuctScaledSuppWire3 = (OCCWire) OCCUtils.theFactory.newShape(
+				TopoDS.ToWire(
+						new BRepBuilderAPI_Transform(nacelleIntakeWire.getShape(), innerDuctWireTrans, 0).Shape()
+						));
+		innerDuctWireTrans.SetTranslation(nacelleIntakeWireCG, 
+				new gp_Pnt(nacelleIntakeWireCG.X() + 3*refNacelleLength/5, 0.0, nacelleIntakeWireCG.Z() - refNacelleHeight/20));
+		OCCWire innerDuctSuppWire3 = (OCCWire) OCCUtils.theFactory.newShape(
+				TopoDS.ToWire(
+						new BRepBuilderAPI_Transform(innerDuctScaledSuppWire3.getShape(), innerDuctWireTrans, 0).Shape()
+						));
+		
+		innerDuctWireTrans.SetScale(nacelleIntakeWireCG, 1.15);
+		OCCWire innerDuctScaledSuppWire4 = (OCCWire) OCCUtils.theFactory.newShape(
+				TopoDS.ToWire(
+						new BRepBuilderAPI_Transform(nacelleIntakeWire.getShape(), innerDuctWireTrans, 0).Shape()
+						));
+		innerDuctWireTrans.SetTranslation(nacelleIntakeWireCG, 
+				new gp_Pnt(nacelleIntakeWireCG.X() + 4*refNacelleLength/5, 0.0, nacelleIntakeWireCG.Z() - refNacelleHeight/7));
+		OCCWire innerDuctSuppWire4 = (OCCWire) OCCUtils.theFactory.newShape(
+				TopoDS.ToWire(
+						new BRepBuilderAPI_Transform(innerDuctScaledSuppWire4.getShape(), innerDuctWireTrans, 0).Shape()
+						));
+		
+		innerDuctWireTrans.SetScale(nacelleIntakeWireCG, 1.30);
+		OCCWire innerDuctScaledSuppWire5 = (OCCWire) OCCUtils.theFactory.newShape(
+				TopoDS.ToWire(
+						new BRepBuilderAPI_Transform(nacelleIntakeWire.getShape(), innerDuctWireTrans, 0).Shape()
+						));
+		innerDuctWireTrans.SetTranslation(nacelleIntakeWireCG, 
+				new gp_Pnt(nacelleIntakeWireCG.X() + refNacelleLength, 0.0, nacelleIntakeWireCG.Z() - refNacelleHeight/3));
+		OCCWire innerDuctSuppWire5 = (OCCWire) OCCUtils.theFactory.newShape(
+				TopoDS.ToWire(
+						new BRepBuilderAPI_Transform(innerDuctScaledSuppWire5.getShape(), innerDuctWireTrans, 0).Shape()
+						));
+		
+		// Generate the shell for the inner duct
+		List<CADWire> innerDuctWires = new ArrayList<>();	
+		innerDuctWires.add(innerDuctSuppWire0);
+		innerDuctWires.add(innerDuctSuppWire1);
+		innerDuctWires.add(innerDuctSuppWire2);
+		innerDuctWires.add(innerDuctSuppWire3);
+		innerDuctWires.add(innerDuctSuppWire4);
+		innerDuctWires.add(innerDuctSuppWire5);
+		OCCShape innerDuctShell = OCCUtils.makePatchThruSections(innerDuctWires);
+		
+		// ---------------------------
+		// Close the inner duct shell
+		// ---------------------------
+		OCCShape frontInnerDuctFace = (OCCShape) OCCUtils.makeFilledFace(innerDuctSuppWire0.edges(), new ArrayList<>());		 
+		OCCShape rearInnerDuctFace = (OCCShape) OCCUtils.makeFilledFace(innerDuctSuppWire5.edges(), new ArrayList<>());
+		
+		OCCShape innerDuctClosedShell = (OCCShape) OCCUtils.theFactory.newShellFromAdjacentShapes(1.0e-06,
+				(CADShape) innerDuctShell,
+				(CADShape) frontInnerDuctFace,
+				(CADShape) rearInnerDuctFace
+				);
+		
+		OCCShape innerDuctClosedSolid = (OCCShape) OCCUtils.theFactory.newSolidFromAdjacentShells((CADShell) innerDuctClosedShell);
+		
+		// -----------------------------------------------------------
+		// Generate the final NACELLE by means of a boolean operation
+		// -----------------------------------------------------------
+		BRepAlgoAPI_Cut cutter = new BRepAlgoAPI_Cut(
+				innerDuctClosedSolid.getShape(),
+				nacelleSolidNoDuct.getShape()		
+				);
+		
+		OCCShape cutResult = (OCCShape) OCCUtils.theFactory.newShape(cutter.Shape());
+		
+//		exportShapes.add(translatedNacelle);
 //		exportShapes.add(hubShell);
 //		exportShapes.add(hubLastWire);
 //		exportShapes.add(propCapSuppWire1);
@@ -323,117 +484,130 @@ public class Test37mds {
 //		exportShapes.add(outletCapSuppWire1);
 //		exportShapes.add(outletCapSuppWire2);
 //		exportShapes.add((OCCShape) outletCapTipVtx);
+//		exportShapes.add(outletShell);
+//		exportShapes.add(nacelleShellNoDuct);
+//		exportShapes.add(innerDuctSuppWire0);
+//		exportShapes.add(innerDuctSuppWire1);
+//		exportShapes.add(innerDuctSuppWire2);
+//		exportShapes.add(innerDuctSuppWire3);
+//		exportShapes.add(innerDuctSuppWire4);
+//		exportShapes.add(innerDuctSuppWire5);
+//		exportShapes.add(innerDuctShell);
+//		exportShapes.add(frontInnerDuctFace);
+//		exportShapes.add(rearInnerDuctFace);
+//		exportShapes.add(innerDuctClosedShell);
+		exportShapes.add(cutResult);	
 		
-		// ----------------------------
-		// Explore the BLADE shapes
-		// ----------------------------
-		List<OCCShape> bladeShells = new ArrayList<>();
-		List<OCCSolid> bladeSolids = new ArrayList<>();
-		
-		OCCExplorer bladeExp = new OCCExplorer();
-		bladeExp.init(OCCUtils.theFactory.newShape(bladeShapes), CADShapeTypes.SHELL);
-		while (bladeExp.more()) {
-			bladeShells.add((OCCShape) bladeExp.current());
-			bladeExp.next();
-		}
-		System.out.println("Number of shell elements found for the blade: " + bladeShells.size());
-		
-		List<OCCWire> bladeTipFreeWires = new ArrayList<>();
-		TopoDS_Compound bladeTipFBs = new ShapeAnalysis_FreeBounds(bladeShells.get(4).getShape()).GetClosedWires();
-		TopExp_Explorer bladeTipFBExp = new TopExp_Explorer();
-		bladeTipFBExp.Init(bladeTipFBs, TopAbs_ShapeEnum.TopAbs_WIRE);
-		while (bladeTipFBExp.More() > 0) {
-			bladeTipFreeWires.add((OCCWire) OCCUtils.theFactory.newShape(TopoDS.ToWire(bladeTipFBExp.Current())));
-			bladeTipFBExp.Next();
-		}
-		System.out.println("Number of closed free wires found for the blade tip element: " + bladeTipFreeWires.size());
-		
-		OCCShape bladeTipClosingFace = (OCCShape) OCCUtils.theFactory.newFacePlanar(bladeTipFreeWires.get(1));
-		OCCShape bladeTipClosed = (OCCShape) OCCUtils.theFactory.newShellFromAdjacentShapes(
-				1.0e-06, bladeTipClosingFace, bladeShells.get(4));
-		
-		bladeShells.remove(4);
-		bladeShells.add(bladeTipClosed);
-		
-		OCCShell openBladeShell = (OCCShell) OCCUtils.theFactory.newShellFromAdjacentShapes(
-				1.0e-03, bladeShells.stream().map(s -> (CADShape) s).collect(Collectors.toList()));
-		
-		List<OCCWire> bladeFreeWires = new ArrayList<>();
-		TopoDS_Compound bladeFBs = new ShapeAnalysis_FreeBounds(openBladeShell.getShape()).GetClosedWires();
-		TopExp_Explorer bladeFBExp = new TopExp_Explorer();
-		bladeFBExp.Init(bladeFBs, TopAbs_ShapeEnum.TopAbs_WIRE);
-		while (bladeFBExp.More() > 0) {
-			bladeFreeWires.add((OCCWire) OCCUtils.theFactory.newShape(TopoDS.ToWire(bladeFBExp.Current())));
-			bladeFBExp.Next();
-		}
-		System.out.println("Number of closed free wires found for the blade element: " + bladeFreeWires.size());
-		
-		OCCShape bladeClosingFace = (OCCShape) OCCUtils.theFactory.newFacePlanar(bladeFreeWires.get(0));
-		OCCShape bladeShell = (OCCShape) OCCUtils.theFactory.newShellFromAdjacentShapes(
-				1.0e-06, bladeClosingFace, openBladeShell);
-		
-		OCCSolid bladeSolid = (OCCSolid) OCCUtils.theFactory.newSolidFromAdjacentShells((CADShell) bladeShell);
-		
-		bladeSolids.add(bladeSolid);
-		
-		// Get the BLADE correct orientation in space
-		gp_Pnt bladeClosingFaceCG = getCG(bladeClosingFace.getShape());
-		
-		double[] uMin = new double[1];
-		double[] uMax = new double[1];
-		double[] vMin = new double[1];
-		double[] vMax = new double[1];	
-		BRepTools.UVBounds(TopoDS.ToFace(bladeClosingFace.getShape()), uMin, uMax, vMin, vMax);
-		
-		Geom_Surface bladeClosingSurface = BRep_Tool.Surface(TopoDS.ToFace(bladeClosingFace.getShape()));
-		GeomLProp_SLProps bladeClosingSurfaceProps = new GeomLProp_SLProps(
-				bladeClosingSurface,
-				(uMax[0] - uMin[0])/2,
-				(vMax[0] - vMin[0])/2,
-				1, 0.01);
-		gp_Dir bladeClosingSurfaceNormal = bladeClosingSurfaceProps.Normal();
-		
-		System.out.println("Blade base orientation: [ " + 
-				bladeClosingSurfaceNormal.X() + ", " + 
-				bladeClosingSurfaceNormal.Y() + ", " + 
-				bladeClosingSurfaceNormal.Z() + "]"
-				);	
-		
-		double bladeRotAngle1 = bladeClosingSurfaceNormal.Angle(zDir);
-		System.out.println("Blade first rotation angle (deg): " + bladeRotAngle1 * 57.3);
-		
-		gp_Trsf bladeRotation1 = new gp_Trsf();
-		gp_Ax1 bladeRotAxis1 = new gp_Ax1(bladeClosingFaceCG, yDir);
-		bladeRotation1.SetRotation(bladeRotAxis1, bladeRotAngle1);
-		
-		OCCShape rotatedBlade1 = (OCCShape) OCCUtils.theFactory.newShape(
-				TopoDS.ToSolid(
-						new BRepBuilderAPI_Transform(bladeSolid.getShape(), bladeRotation1, 0).Shape()
-						));	
-		
-		double bladeRotAngle2 = 1.5708;
-		
-		gp_Trsf bladeRotation2 = new gp_Trsf();
-		gp_Ax1 bladeRotAxis2 = new gp_Ax1(bladeClosingFaceCG, zDir);
-		bladeRotation2.SetRotation(bladeRotAxis2, bladeRotAngle2);
-		
-		OCCShape rotatedBlade2 = (OCCShape) OCCUtils.theFactory.newShape(
-				TopoDS.ToSolid(
-						new BRepBuilderAPI_Transform(rotatedBlade1.getShape(), bladeRotation2, 0).Shape()
-						));	
-		
-		// ----------------------------------------------------
-		// Get BLADE reference dimensions, points, and edges
-		// ----------------------------------------------------
-		double[] bladeBoundBox = rotatedBlade2.boundingBox();
-		double refBladeLength = bladeBoundBox[3] - bladeBoundBox[0];
-		double refBladeWidth = bladeBoundBox[4] - bladeBoundBox[1];
-		double refBladeHeight = bladeBoundBox[5] - bladeBoundBox[2];
-		
-		System.out.println("Blade reference dimensions:");
-		System.out.println("Lenght = " + refBladeLength);
-		System.out.println("Width = " + refBladeWidth);
-		System.out.println("Height = " + refBladeHeight);
+//		// ----------------------------
+//		// Explore the BLADE shapes
+//		// ----------------------------
+//		List<OCCShape> bladeShells = new ArrayList<>();
+//		List<OCCSolid> bladeSolids = new ArrayList<>();
+//		
+//		OCCExplorer bladeExp = new OCCExplorer();
+//		bladeExp.init(OCCUtils.theFactory.newShape(bladeShapes), CADShapeTypes.SHELL);
+//		while (bladeExp.more()) {
+//			bladeShells.add((OCCShape) bladeExp.current());
+//			bladeExp.next();
+//		}
+//		System.out.println("Number of shell elements found for the blade: " + bladeShells.size());
+//		
+//		List<OCCWire> bladeTipFreeWires = new ArrayList<>();
+//		TopoDS_Compound bladeTipFBs = new ShapeAnalysis_FreeBounds(bladeShells.get(4).getShape()).GetClosedWires();
+//		TopExp_Explorer bladeTipFBExp = new TopExp_Explorer();
+//		bladeTipFBExp.Init(bladeTipFBs, TopAbs_ShapeEnum.TopAbs_WIRE);
+//		while (bladeTipFBExp.More() > 0) {
+//			bladeTipFreeWires.add((OCCWire) OCCUtils.theFactory.newShape(TopoDS.ToWire(bladeTipFBExp.Current())));
+//			bladeTipFBExp.Next();
+//		}
+//		System.out.println("Number of closed free wires found for the blade tip element: " + bladeTipFreeWires.size());
+//		
+//		OCCShape bladeTipClosingFace = (OCCShape) OCCUtils.theFactory.newFacePlanar(bladeTipFreeWires.get(1));
+//		OCCShape bladeTipClosed = (OCCShape) OCCUtils.theFactory.newShellFromAdjacentShapes(
+//				1.0e-06, bladeTipClosingFace, bladeShells.get(4));
+//		
+//		bladeShells.remove(4);
+//		bladeShells.add(bladeTipClosed);
+//		
+//		OCCShell openBladeShell = (OCCShell) OCCUtils.theFactory.newShellFromAdjacentShapes(
+//				1.0e-03, bladeShells.stream().map(s -> (CADShape) s).collect(Collectors.toList()));
+//		
+//		List<OCCWire> bladeFreeWires = new ArrayList<>();
+//		TopoDS_Compound bladeFBs = new ShapeAnalysis_FreeBounds(openBladeShell.getShape()).GetClosedWires();
+//		TopExp_Explorer bladeFBExp = new TopExp_Explorer();
+//		bladeFBExp.Init(bladeFBs, TopAbs_ShapeEnum.TopAbs_WIRE);
+//		while (bladeFBExp.More() > 0) {
+//			bladeFreeWires.add((OCCWire) OCCUtils.theFactory.newShape(TopoDS.ToWire(bladeFBExp.Current())));
+//			bladeFBExp.Next();
+//		}
+//		System.out.println("Number of closed free wires found for the blade element: " + bladeFreeWires.size());
+//		
+//		OCCShape bladeClosingFace = (OCCShape) OCCUtils.theFactory.newFacePlanar(bladeFreeWires.get(0));
+//		OCCShape bladeShell = (OCCShape) OCCUtils.theFactory.newShellFromAdjacentShapes(
+//				1.0e-06, bladeClosingFace, openBladeShell);
+//		
+//		OCCSolid bladeSolid = (OCCSolid) OCCUtils.theFactory.newSolidFromAdjacentShells((CADShell) bladeShell);
+//		
+//		bladeSolids.add(bladeSolid);
+//		
+//		// Get the BLADE correct orientation in space
+//		gp_Pnt bladeClosingFaceCG = getCG(bladeClosingFace.getShape());
+//		
+//		double[] uMin = new double[1];
+//		double[] uMax = new double[1];
+//		double[] vMin = new double[1];
+//		double[] vMax = new double[1];	
+//		BRepTools.UVBounds(TopoDS.ToFace(bladeClosingFace.getShape()), uMin, uMax, vMin, vMax);
+//		
+//		Geom_Surface bladeClosingSurface = BRep_Tool.Surface(TopoDS.ToFace(bladeClosingFace.getShape()));
+//		GeomLProp_SLProps bladeClosingSurfaceProps = new GeomLProp_SLProps(
+//				bladeClosingSurface,
+//				(uMax[0] - uMin[0])/2,
+//				(vMax[0] - vMin[0])/2,
+//				1, 0.01);
+//		gp_Dir bladeClosingSurfaceNormal = bladeClosingSurfaceProps.Normal();
+//		
+//		System.out.println("Blade base orientation: [ " + 
+//				bladeClosingSurfaceNormal.X() + ", " + 
+//				bladeClosingSurfaceNormal.Y() + ", " + 
+//				bladeClosingSurfaceNormal.Z() + "]"
+//				);	
+//		
+//		double bladeRotAngle1 = bladeClosingSurfaceNormal.Angle(zDir);
+//		System.out.println("Blade first rotation angle (deg): " + bladeRotAngle1 * 57.3);
+//		
+//		gp_Trsf bladeRotation1 = new gp_Trsf();
+//		gp_Ax1 bladeRotAxis1 = new gp_Ax1(bladeClosingFaceCG, yDir);
+//		bladeRotation1.SetRotation(bladeRotAxis1, bladeRotAngle1);
+//		
+//		OCCShape rotatedBlade1 = (OCCShape) OCCUtils.theFactory.newShape(
+//				TopoDS.ToSolid(
+//						new BRepBuilderAPI_Transform(bladeSolid.getShape(), bladeRotation1, 0).Shape()
+//						));	
+//		
+//		double bladeRotAngle2 = 1.5708;
+//		
+//		gp_Trsf bladeRotation2 = new gp_Trsf();
+//		gp_Ax1 bladeRotAxis2 = new gp_Ax1(bladeClosingFaceCG, zDir);
+//		bladeRotation2.SetRotation(bladeRotAxis2, bladeRotAngle2);
+//		
+//		OCCShape rotatedBlade2 = (OCCShape) OCCUtils.theFactory.newShape(
+//				TopoDS.ToSolid(
+//						new BRepBuilderAPI_Transform(rotatedBlade1.getShape(), bladeRotation2, 0).Shape()
+//						));	
+//		
+//		// ----------------------------------------------------
+//		// Get BLADE reference dimensions, points, and edges
+//		// ----------------------------------------------------
+//		double[] bladeBoundBox = rotatedBlade2.boundingBox();
+//		double refBladeLength = bladeBoundBox[3] - bladeBoundBox[0];
+//		double refBladeWidth = bladeBoundBox[4] - bladeBoundBox[1];
+//		double refBladeHeight = bladeBoundBox[5] - bladeBoundBox[2];
+//		
+//		System.out.println("Blade reference dimensions:");
+//		System.out.println("Lenght = " + refBladeLength);
+//		System.out.println("Width = " + refBladeWidth);
+//		System.out.println("Height = " + refBladeHeight);
 		
 		
 		
