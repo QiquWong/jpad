@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="150.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.Views.Controllers">
+   <center>
+      <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <children>
+            <ImageView fitHeight="59.0" fitWidth="52.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../../img/Icon_Warning.png" />
+               </image>
+               <HBox.margin>
+                  <Insets left="10.0" top="48.0" />
+               </HBox.margin>
+            </ImageView>
+            <VBox focusTraversable="true">
+               <HBox.margin>
+                  <Insets left="10.0" top="40.0" />
+               </HBox.margin>
+               <children>
+                  <TextField alignment="CENTER" editable="false" prefWidth="300.0" style="-fx-background-color: 100;" text="Are you sure to start a new analysis?">
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font>
+                  </TextField>
+                  <TextField alignment="CENTER" editable="false" style="-fx-background-color: 10;" text="Input data, if not saved, will be lost ">
+                     <font>
+                        <Font size="11.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets top="-10.0" />
+                     </VBox.margin>
+                  </TextField>
+                  <HBox alignment="CENTER" spacing="30.0">
+                     <children>
+                        <Button mnemonicParsing="false" onAction="#goHome" text="Yes" />
+                        <Button mnemonicParsing="false" onAction="#remainHere" text="No" />
+                        <Button mnemonicParsing="false" onAction="#saveAndExit" text="Save input data" />
+                     </children>
+                     <padding>
+                        <Insets top="15.0" />
+                     </padding>
+                  </HBox>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+   </center>
+</BorderPane>

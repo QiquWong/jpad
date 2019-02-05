@@ -36,6 +36,7 @@ import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager;
 import analyses.nacelles.NacelleAerodynamicsManager;
 import calculators.aerodynamics.AerodynamicCalc;
 import calculators.aerodynamics.LiftCalc;
+import calculators.plots.AerodynamicPlots;
 import configuration.MyConfiguration;
 import configuration.enumerations.AerodynamicAndStabilityEnum;
 import configuration.enumerations.AerodynamicAndStabilityPlotEnum;
@@ -214,6 +215,16 @@ public class ACAerodynamicAndStabilityManager_v2 {
 	private Map<Amount<Angle>, List<Tuple2<Double, List<Double>>>> _cNDueToDeltaRudder; // dr, xcg, CN_total_vs_Beta
 	private Map<Double, List<Tuple2<Amount<Angle>, Amount<Angle>>>> _betaOfEquilibrium; // xcg, beta_eq, dr_eq
 	private Map<Double, Amount<Angle>> _betaMaxOfEquilibrium; // xcg, beta_max_eq
+	
+	//output path
+	
+	private String wingPlotFolderPath = new String();
+	private String horizontalTailPlotFolderPath = new String();
+	private String canardPlotFolderPath = new String();
+	private String verticalTailPlotFolderPath = new String();
+	private String fuselagePlotFolderPath = new String();
+	private String nacellePlotFolderPath = new String();
+	private String aircraftPlotFolderPath = new String();
 
 	//------------------------------------------------------------------------------
 	// METHODS:
@@ -2648,12 +2659,116 @@ public class ACAerodynamicAndStabilityManager_v2 {
 		 *  - 'CALCULATE DEPENDENT DATA'
 		 *  - 'CALCULATE COMPONENTS DATA'
 		 */
+		
+		if(_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getPlotAerodynamicAndStability()) {
+
+			if(_theAerodynamicBuilderInterface.getPlotList().containsKey(ComponentEnum.WING)) {
+				wingPlotFolderPath = JPADStaticWriteUtils.createNewFolder(
+						aerodynamicAndStabilityFolderPath 
+						+ "WING"
+						+ File.separator
+						);
+			}
+
+
+			if(_theAerodynamicBuilderInterface.getPlotList().containsKey(ComponentEnum.HORIZONTAL_TAIL)) {
+				horizontalTailPlotFolderPath = JPADStaticWriteUtils.createNewFolder(
+						aerodynamicAndStabilityFolderPath 
+						+ "HORIZONTAL_TAIL"
+						+ File.separator
+						);
+			}
+
+			if(_theAerodynamicBuilderInterface.getPlotList().containsKey(ComponentEnum.VERTICAL_TAIL)) {
+				verticalTailPlotFolderPath = JPADStaticWriteUtils.createNewFolder(
+						aerodynamicAndStabilityFolderPath 
+						+ "VERTICAL_TAIL"
+						+ File.separator
+						);
+			}
+
+			if(_theAerodynamicBuilderInterface.getPlotList().containsKey(ComponentEnum.CANARD)) {
+				canardPlotFolderPath = JPADStaticWriteUtils.createNewFolder(
+						aerodynamicAndStabilityFolderPath 
+						+ "CANARD"
+						+ File.separator
+						);
+			}
+			
+			if(_theAerodynamicBuilderInterface.getPlotList().containsKey(ComponentEnum.FUSELAGE)) {
+				fuselagePlotFolderPath = JPADStaticWriteUtils.createNewFolder(
+						aerodynamicAndStabilityFolderPath 
+						+ "FUSELAGE"
+						+ File.separator
+						);
+			}
+
+			if(_theAerodynamicBuilderInterface.getPlotList().containsKey(ComponentEnum.NACELLE)) {
+				nacellePlotFolderPath = JPADStaticWriteUtils.createNewFolder(
+						aerodynamicAndStabilityFolderPath 
+						+ "NACELLE"
+						+ File.separator
+						);
+			}
+
+			if(_theAerodynamicBuilderInterface.getPlotList().containsKey(ComponentEnum.AIRCRAFT)) {
+				aircraftPlotFolderPath = JPADStaticWriteUtils.createNewFolder(
+						aerodynamicAndStabilityFolderPath 
+						+ "AIRCRAFT"
+						+ File.separator
+						);
+			}
+
+			plotAllCharts();
+
+		}
 
 	}
 
 	public void plotAllCharts() {
 
-		// TODO --> TAKE FROM PREVIOUS MANAGER
+//		// TODO --> TAKE FROM PREVIOUS MANAGER
+//		AerodynamicPlots theAerodynamicPlot = new AerodynamicPlots();
+//		theAerodynamicPlot.plotAllCharts(
+//				_theAerodynamicBuilderInterface,
+//				_liftingSurfaceAerodynamicManagers,
+//				wingPlotFolderPath,
+//				horizontalTailPlotFolderPath,
+//				canardPlotFolderPath,
+//				verticalTailPlotFolderPath,
+//				fuselagePlotFolderPath,
+//				nacellePlotFolderPath,
+//				aircraftPlotFolderPath
+//				, _current3DHorizontalTailLiftCurve,
+//				_current3DHorizontalTailMomentCurve,
+//				_current3DVerticalTailLiftCurve, 
+//				_alphaBodyList,
+//				_nacelleAerodynamicManagers,
+//				_fuselageAerodynamicManagers,
+//				_downwashAngleMap,
+//				_downwashGradientMap,
+//				_totalMomentCoefficient, 
+//				_totalLiftCoefficient,
+//				_totalDragCoefficient, 
+//				_horizontalTailEquilibriumLiftCoefficient,
+//				_horizontalTailEquilibriumDragCoefficient,
+//				_totalEquilibriumLiftCoefficient,
+//				_totalEquilibriumDragCoefficient,
+//				_deltaEEquilibrium,
+//				_totalMomentCoefficientBreakDown,
+//				_totalEquilibriumEfficiencyMap,
+//				_totalEquilibriumMaximumEfficiencyMap,
+//				_neutralPointPositionMap,
+//				_staticStabilityMarginMap, 
+//				_deltaEForEquilibrium,
+//				_betaList,
+//				_betaOfEquilibrium, 
+//				_cNDueToDeltaRudder, 
+//				_cNTotal, 
+//				_cNFuselage, 
+//				_cNVertical,
+//				_cNWing
+//				);
 
 	}
 

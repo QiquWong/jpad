@@ -456,7 +456,7 @@ public class NasaBlackwell {
 
 		for(int i=0; i < nPointsSemispanWise+1; i++) {
 			_gammaDistribution.add(
-					4 * Math.PI * SpeedCalc.calculateTAS(mach, altitude)
+					4 * Math.PI * SpeedCalc.calculateTAS(mach, Amount.valueOf(altitude,SI.METER),Amount.valueOf(0.0, SI.CELSIUS)).doubleValue(SI.METERS_PER_SECOND)
 					* _gammaSignedDistribution.get(i));
 
 			_ccLDistribution.add(
