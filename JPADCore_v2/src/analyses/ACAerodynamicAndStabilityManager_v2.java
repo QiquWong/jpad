@@ -2728,47 +2728,47 @@ public class ACAerodynamicAndStabilityManager_v2 {
 	public void plotAllCharts() {
 
 //		// TODO --> TAKE FROM PREVIOUS MANAGER
-//		AerodynamicPlots theAerodynamicPlot = new AerodynamicPlots();
-//		theAerodynamicPlot.plotAllCharts(
-//				_theAerodynamicBuilderInterface,
-//				_liftingSurfaceAerodynamicManagers,
-//				wingPlotFolderPath,
-//				horizontalTailPlotFolderPath,
-//				canardPlotFolderPath,
-//				verticalTailPlotFolderPath,
-//				fuselagePlotFolderPath,
-//				nacellePlotFolderPath,
-//				aircraftPlotFolderPath
-//				, _current3DHorizontalTailLiftCurve,
-//				_current3DHorizontalTailMomentCurve,
-//				_current3DVerticalTailLiftCurve, 
-//				_alphaBodyList,
-//				_nacelleAerodynamicManagers,
-//				_fuselageAerodynamicManagers,
-//				_downwashAngleMap,
-//				_downwashGradientMap,
-//				_totalMomentCoefficient, 
-//				_totalLiftCoefficient,
-//				_totalDragCoefficient, 
-//				_horizontalTailEquilibriumLiftCoefficient,
-//				_horizontalTailEquilibriumDragCoefficient,
-//				_totalEquilibriumLiftCoefficient,
-//				_totalEquilibriumDragCoefficient,
-//				_deltaEEquilibrium,
-//				_totalMomentCoefficientBreakDown,
-//				_totalEquilibriumEfficiencyMap,
-//				_totalEquilibriumMaximumEfficiencyMap,
-//				_neutralPointPositionMap,
-//				_staticStabilityMarginMap, 
-//				_deltaEForEquilibrium,
-//				_betaList,
-//				_betaOfEquilibrium, 
-//				_cNDueToDeltaRudder, 
-//				_cNTotal, 
-//				_cNFuselage, 
-//				_cNVertical,
-//				_cNWing
-//				);
+		AerodynamicPlots theAerodynamicPlot = new AerodynamicPlots();
+		theAerodynamicPlot.plotAllCharts(
+				_theAerodynamicBuilderInterface,
+				_liftingSurfaceAerodynamicManagers,
+				wingPlotFolderPath,
+				horizontalTailPlotFolderPath,
+				canardPlotFolderPath,
+				verticalTailPlotFolderPath,
+				fuselagePlotFolderPath,
+				nacellePlotFolderPath,
+				aircraftPlotFolderPath
+				, _current3DHorizontalTailLiftCurve,
+				_current3DHorizontalTailMomentCurve,
+				_current3DVerticalTailLiftCurve, 
+				_alphaBodyList,
+				_nacelleAerodynamicManagers,
+				_fuselageAerodynamicManagers,
+				_downwashAngleMap,
+				_downwashGradientMap,
+				_totalMomentCoefficient, 
+				_totalLiftCoefficient,
+				_totalDragCoefficient, 
+				_horizontalTailEquilibriumLiftCoefficient,
+				_horizontalTailEquilibriumDragCoefficient,
+				_totalEquilibriumLiftCoefficient,
+				_totalEquilibriumDragCoefficient,
+				_deltaEEquilibrium,
+				_totalMomentCoefficientBreakDown,
+				_totalEquilibriumEfficiencyMap,
+				_totalEquilibriumMaximumEfficiencyMap,
+				_neutralPointPositionMap,
+				_staticStabilityMarginMap, 
+				_deltaEForEquilibrium,
+				_betaList,
+				_betaOfEquilibrium, 
+				_cNDueToDeltaRudder, 
+				_cNTotal, 
+				_cNFuselage, 
+				_cNVertical,
+				_cNWing
+				);
 
 	}
 
