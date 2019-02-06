@@ -213,6 +213,10 @@ public class LiftingSurfaceAerodynamicsManager {
 	//------------------------------------------------------------------------------
 	private void initializeData(ConditionEnum theCondition) {
 		
+		/* 
+		 * FIXME: (MANUELA) INSERT 'currentDeltaTemperature' FIELD AND FILL IT WITH THE RELATED INPUT FROM OperatingConditions. 
+		 * USE IT IN ALL AERODYNAMIC CALCULATIONS.
+		 */
 		
 		switch (theCondition) {
 		case TAKE_OFF:

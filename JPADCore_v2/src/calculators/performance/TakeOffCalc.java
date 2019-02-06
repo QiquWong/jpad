@@ -1403,7 +1403,7 @@ public class TakeOffCalc {
 					MyArrayUtils.convertListOfAmountTodoubleArray(verticalDistance),
 					0.0, null, 0.0, null,
 					"Ground Distance", "Altitude", "m", "m",
-					takeOffFolderPath, "TakeOff_Trajectory_SI",true);
+					takeOffFolderPath, "TakeOff_Trajectory_SI", createCSV);
 			
 			MyChartToFileUtils.plotNoLegend(
 					MyArrayUtils.convertListOfAmountTodoubleArray(
@@ -1418,7 +1418,7 @@ public class TakeOffCalc {
 							),
 					0.0, null, 0.0, null,
 					"Ground Distance", "Altitude", "ft", "ft",
-					takeOffFolderPath, "TakeOff_Trajectory_IMPERIAL",true);
+					takeOffFolderPath, "TakeOff_Trajectory_IMPERIAL", createCSV);
 
 			//.................................................................................
 			// vertical distance v.s. time
@@ -1427,7 +1427,7 @@ public class TakeOffCalc {
 					MyArrayUtils.convertListOfAmountTodoubleArray(verticalDistance),
 					0.0, null, 0.0, null,
 					"Time", "Altitude", "s", "m",
-					takeOffFolderPath, "Altitude_evolution_SI",true);
+					takeOffFolderPath, "Altitude_evolution_SI", createCSV);
 			
 			MyChartToFileUtils.plotNoLegend(
 					MyArrayUtils.convertListOfAmountTodoubleArray(time),
@@ -1438,7 +1438,7 @@ public class TakeOffCalc {
 							),
 					0.0, null, 0.0, null,
 					"Time", "Altitude", "s", "ft",
-					takeOffFolderPath, "Altitude_evolution_IMPERIAL",true);
+					takeOffFolderPath, "Altitude_evolution_IMPERIAL", createCSV);
 			
 		}
 		
@@ -1449,7 +1449,7 @@ public class TakeOffCalc {
 				MyArrayUtils.convertListOfAmountTodoubleArray(speedTAS),
 				0.0, null, 0.0, null,
 				"Time", "Speed", "s", "m/s",
-				takeOffFolderPath, "Speed_TAS_evolution_SI",true);
+				takeOffFolderPath, "Speed_TAS_evolution_SI", createCSV);
 		
 		
 		MyChartToFileUtils.plotNoLegend(
@@ -1461,7 +1461,7 @@ public class TakeOffCalc {
 						),
 				0.0, null, 0.0, null,
 				"Time", "Speed", "s", "kn",
-				takeOffFolderPath, "Speed_TAS_evolution_IMPERIAL",true);
+				takeOffFolderPath, "Speed_TAS_evolution_IMPERIAL", createCSV);
 		
 		//.................................................................................
 		// speed TAS v.s. ground distance
@@ -1470,7 +1470,7 @@ public class TakeOffCalc {
 				MyArrayUtils.convertListOfAmountTodoubleArray(speedTAS),
 				0.0, null, 0.0, null,
 				"Ground Distance", "Speed", "m", "m/s",
-				takeOffFolderPath, "Speed_TAS_vs_GroundDistance_SI",true);
+				takeOffFolderPath, "Speed_TAS_vs_GroundDistance_SI", createCSV);
 		
 		MyChartToFileUtils.plotNoLegend(
 				MyArrayUtils.convertListOfAmountTodoubleArray(
@@ -1485,7 +1485,7 @@ public class TakeOffCalc {
 						),
 				0.0, null, 0.0, null,
 				"Ground Distance", "Speed", "ft", "kn",
-				takeOffFolderPath, "Speed_TAS_vs_GroundDistance_IMPERIAL",true);
+				takeOffFolderPath, "Speed_TAS_vs_GroundDistance_IMPERIAL", createCSV);
 
 		//.................................................................................
 		// speed CAS v.s. time
@@ -1494,7 +1494,7 @@ public class TakeOffCalc {
 				MyArrayUtils.convertListOfAmountTodoubleArray(speedCAS),
 				0.0, null, 0.0, null,
 				"Time", "Speed", "s", "m/s",
-				takeOffFolderPath, "Speed_CAS_evolution_SI",true);
+				takeOffFolderPath, "Speed_CAS_evolution_SI", createCSV);
 		
 		
 		MyChartToFileUtils.plotNoLegend(
@@ -1506,7 +1506,7 @@ public class TakeOffCalc {
 						),
 				0.0, null, 0.0, null,
 				"Time", "Speed", "s", "kn",
-				takeOffFolderPath, "Speed_CAS_evolution_IMPERIAL",true);
+				takeOffFolderPath, "Speed_CAS_evolution_IMPERIAL", createCSV);
 		
 		//.................................................................................
 		// speed CAS v.s. ground distance
@@ -1515,7 +1515,7 @@ public class TakeOffCalc {
 				MyArrayUtils.convertListOfAmountTodoubleArray(speedCAS),
 				0.0, null, 0.0, null,
 				"Ground Distance", "Speed", "m", "m/s",
-				takeOffFolderPath, "Speed_CAS_vs_GroundDistance_SI",true);
+				takeOffFolderPath, "Speed_CAS_vs_GroundDistance_SI", createCSV);
 		
 		MyChartToFileUtils.plotNoLegend(
 				MyArrayUtils.convertListOfAmountTodoubleArray(
@@ -1530,7 +1530,7 @@ public class TakeOffCalc {
 						),
 				0.0, null, 0.0, null,
 				"Ground Distance", "Speed", "ft", "kn",
-				takeOffFolderPath, "Speed_CAS_vs_GroundDistance_IMPERIAL",true);
+				takeOffFolderPath, "Speed_CAS_vs_GroundDistance_IMPERIAL", createCSV);
 		
 		//.................................................................................
 		// mach v.s. time
@@ -1539,7 +1539,7 @@ public class TakeOffCalc {
 				MyArrayUtils.convertToDoublePrimitive(mach),
 				0.0, null, 0.0, null,
 				"Time", "Mach number", "s", "",
-				takeOffFolderPath, "Mach_evolution_SI",true);
+				takeOffFolderPath, "Mach_evolution_SI", createCSV);
 		
 		
 		//.................................................................................
@@ -1549,7 +1549,7 @@ public class TakeOffCalc {
 				MyArrayUtils.convertToDoublePrimitive(mach),
 				0.0, null, 0.0, null,
 				"Ground Distance", "Mach number", "m", "",
-				takeOffFolderPath, "Mach_vs_GroundDistance_SI", true);
+				takeOffFolderPath, "Mach_vs_GroundDistance_SI", createCSV);
 		
 		MyChartToFileUtils.plotNoLegend(
 				MyArrayUtils.convertListOfAmountTodoubleArray(
@@ -1560,7 +1560,7 @@ public class TakeOffCalc {
 				MyArrayUtils.convertToDoublePrimitive(mach),
 				0.0, null, 0.0, null,
 				"Ground Distance", "Mach number", "ft", "",
-				takeOffFolderPath, "Mach_vs_GroundDistance_IMPERIAL",true);
+				takeOffFolderPath, "Mach_vs_GroundDistance_IMPERIAL", createCSV);
 		
 		//.................................................................................
 		// Emission NOx v.s. time
@@ -1577,7 +1577,7 @@ public class TakeOffCalc {
 				MyArrayUtils.convertListOfAmountTodoubleArray(emissionsNOx),
 				0.0, null, yMinNOx, yMaxNOx,
 				"Time", "Emission NOx", "s", "g",
-				takeOffFolderPath, "Emission_NOx_evolution_SI",true);
+				takeOffFolderPath, "Emission_NOx_evolution_SI", createCSV);
 		
 		//.................................................................................
 		// Emission NOx v.s. ground distance
@@ -1586,7 +1586,7 @@ public class TakeOffCalc {
 				MyArrayUtils.convertListOfAmountTodoubleArray(emissionsNOx),
 				0.0, null, yMinNOx, yMaxNOx,
 				"Ground Distance", "Emission NOx", "m", "g",
-				takeOffFolderPath, "Emission_NOx_vs_GroundDistance_SI", true);
+				takeOffFolderPath, "Emission_NOx_vs_GroundDistance_SI", createCSV);
 		
 		//.................................................................................
 		// Emission CO v.s. time
@@ -1603,7 +1603,7 @@ public class TakeOffCalc {
 				MyArrayUtils.convertListOfAmountTodoubleArray(emissionsCO),
 				0.0, null, yMinCO, yMaxCO,
 				"Time", "Emission CO", "s", "g",
-				takeOffFolderPath, "Emission_CO_evolution_SI",true);
+				takeOffFolderPath, "Emission_CO_evolution_SI", createCSV);
 		
 		//.................................................................................
 		// Emission CO v.s. ground distance
@@ -1612,7 +1612,7 @@ public class TakeOffCalc {
 				MyArrayUtils.convertListOfAmountTodoubleArray(emissionsCO),
 				0.0, null, yMinCO, yMaxCO,
 				"Ground Distance", "Emission CO", "m", "g",
-				takeOffFolderPath, "Emission_CO_vs_GroundDistance_SI", true);
+				takeOffFolderPath, "Emission_CO_vs_GroundDistance_SI", createCSV);
 		
 		//.................................................................................
 		// Emission HC v.s. time
@@ -1629,7 +1629,7 @@ public class TakeOffCalc {
 				MyArrayUtils.convertListOfAmountTodoubleArray(emissionsHC),
 				0.0, null, yMinHC, yMaxHC,
 				"Time", "Emission HC", "s", "g",
-				takeOffFolderPath, "Emission_HC_evolution_SI",true);
+				takeOffFolderPath, "Emission_HC_evolution_SI", createCSV);
 		
 		//.................................................................................
 		// Emission HC v.s. ground distance
@@ -1638,7 +1638,7 @@ public class TakeOffCalc {
 				MyArrayUtils.convertListOfAmountTodoubleArray(emissionsHC),
 				0.0, null, yMinHC, yMaxHC,
 				"Ground Distance", "Emission HC", "m", "g",
-				takeOffFolderPath, "Emission_HC_vs_GroundDistance_SI", true);
+				takeOffFolderPath, "Emission_HC_vs_GroundDistance_SI", createCSV);
 		
 		//.................................................................................
 		// Emission Soot v.s. time
@@ -1655,7 +1655,7 @@ public class TakeOffCalc {
 				MyArrayUtils.convertListOfAmountTodoubleArray(emissionsSoot),
 				0.0, null, yMinSoot, yMaxSoot,
 				"Time", "Emission Soot", "s", "g",
-				takeOffFolderPath, "Emission_Soot_evolution_SI",true);
+				takeOffFolderPath, "Emission_Soot_evolution_SI", createCSV);
 		
 		//.................................................................................
 		// Emission Soot v.s. ground distance
@@ -1664,7 +1664,7 @@ public class TakeOffCalc {
 				MyArrayUtils.convertListOfAmountTodoubleArray(emissionsSoot),
 				0.0, null, yMinSoot, yMaxSoot,
 				"Ground Distance", "Emission Soot", "m", "g",
-				takeOffFolderPath, "Emission_Soot_vs_GroundDistance_SI", true);
+				takeOffFolderPath, "Emission_Soot_vs_GroundDistance_SI", createCSV);
 		
 		//.................................................................................
 		// Emission CO2 v.s. time
@@ -1681,7 +1681,7 @@ public class TakeOffCalc {
 				MyArrayUtils.convertListOfAmountTodoubleArray(emissionsCO2),
 				0.0, null, yMinCO2, yMaxCO2,
 				"Time", "Emission CO2", "s", "g",
-				takeOffFolderPath, "Emission_CO2_evolution_SI",true);
+				takeOffFolderPath, "Emission_CO2_evolution_SI", createCSV);
 		
 		//.................................................................................
 		// Emission CO2 v.s. ground distance
@@ -1690,7 +1690,7 @@ public class TakeOffCalc {
 				MyArrayUtils.convertListOfAmountTodoubleArray(emissionsCO2),
 				0.0, null, yMinCO2, yMaxCO2,
 				"Ground Distance", "Emission CO2", "m", "g",
-				takeOffFolderPath, "Emission_CO2_vs_GroundDistance_SI", true);
+				takeOffFolderPath, "Emission_CO2_vs_GroundDistance_SI", createCSV);
 		
 		//.................................................................................
 		// Emission SOx v.s. time
@@ -1707,7 +1707,7 @@ public class TakeOffCalc {
 				MyArrayUtils.convertListOfAmountTodoubleArray(emissionsSOx),
 				0.0, null, yMinSOx, yMaxSOx,
 				"Time", "Emission SOx", "s", "g",
-				takeOffFolderPath, "Emission_SOx_evolution_SI",true);
+				takeOffFolderPath, "Emission_SOx_evolution_SI", createCSV);
 		
 		//.................................................................................
 		// Emission SOx v.s. ground distance
@@ -1716,7 +1716,7 @@ public class TakeOffCalc {
 				MyArrayUtils.convertListOfAmountTodoubleArray(emissionsSOx),
 				0.0, null, yMinSOx, yMaxSOx,
 				"Ground Distance", "Emission SOx", "m", "g",
-				takeOffFolderPath, "Emission_SOx_vs_GroundDistance_SI", true);
+				takeOffFolderPath, "Emission_SOx_vs_GroundDistance_SI", createCSV);
 		
 		//.................................................................................
 		// Emission H2O v.s. time
@@ -1733,7 +1733,7 @@ public class TakeOffCalc {
 				MyArrayUtils.convertListOfAmountTodoubleArray(emissionsH2O),
 				0.0, null, yMinH2O, yMaxH2O,
 				"Time", "Emission H2O", "s", "g",
-				takeOffFolderPath, "Emission_H2O_evolution_SI",true);
+				takeOffFolderPath, "Emission_H2O_evolution_SI", createCSV);
 		
 		//.................................................................................
 		// Emission H2O v.s. ground distance
@@ -1742,7 +1742,7 @@ public class TakeOffCalc {
 				MyArrayUtils.convertListOfAmountTodoubleArray(emissionsH2O),
 				0.0, null, yMinH2O, yMaxH2O,
 				"Ground Distance", "Emission H2O", "m", "g",
-				takeOffFolderPath, "Emission_H2O_vs_GroundDistance_SI", true);
+				takeOffFolderPath, "Emission_H2O_vs_GroundDistance_SI", createCSV);
 		
 		//.................................................................................
 		// acceleration v.s. time
@@ -1751,7 +1751,7 @@ public class TakeOffCalc {
 				MyArrayUtils.convertListOfAmountTodoubleArray(acceleration),
 				0.0, null, null, null,
 				"Time", "Acceleration", "s", "m/(s^2)",
-				takeOffFolderPath, "Acceleration_evolution_SI",true);
+				takeOffFolderPath, "Acceleration_evolution_SI", createCSV);
 		
 		MyChartToFileUtils.plotNoLegend(
 				MyArrayUtils.convertListOfAmountTodoubleArray(time),
@@ -1762,7 +1762,7 @@ public class TakeOffCalc {
 						),
 				0.0, null, null, null,
 				"Time", "Acceleration", "s", "ft/(min^2)",
-				takeOffFolderPath, "Acceleration_evolution_IMPERIAL",true);
+				takeOffFolderPath, "Acceleration_evolution_IMPERIAL", createCSV);
 		
 		//.................................................................................
 		// acceleration v.s. time
@@ -1771,7 +1771,7 @@ public class TakeOffCalc {
 				MyArrayUtils.convertListOfAmountTodoubleArray(acceleration),
 				0.0, null, null, null,
 				"Ground Distance", "Acceleration", "m", "m/(s^2)",
-				takeOffFolderPath, "Acceleration_vs_GroundDistance_SI",true);
+				takeOffFolderPath, "Acceleration_vs_GroundDistance_SI", createCSV);
 		
 		MyChartToFileUtils.plotNoLegend(
 				MyArrayUtils.convertListOfAmountTodoubleArray(
@@ -1786,7 +1786,7 @@ public class TakeOffCalc {
 						),
 				0.0, null, null, null,
 				"Ground Distance", "Acceleration", "ft", "ft/(min^2)",
-				takeOffFolderPath, "Acceleration_vs_GroundDistance_IMPERIAL",true);
+				takeOffFolderPath, "Acceleration_vs_GroundDistance_IMPERIAL", createCSV);
 
 		//.................................................................................
 		// load factor v.s. time
@@ -1795,7 +1795,7 @@ public class TakeOffCalc {
 				MyArrayUtils.convertToDoublePrimitive(loadFactor),
 				0.0, null, 0.0, null,
 				"Time", "Load Factor", "s", "",
-				takeOffFolderPath, "LoadFactor_evolution",true);
+				takeOffFolderPath, "LoadFactor_evolution", createCSV);
 
 		//.................................................................................
 		// load factor v.s. ground distance
@@ -1804,7 +1804,7 @@ public class TakeOffCalc {
 				MyArrayUtils.convertToDoublePrimitive(loadFactor),
 				0.0, null, 0.0, null,
 				"Ground distance", "Load Factor", "m", "",
-				takeOffFolderPath, "LoadFactor_vs_GroundDistance_SI",true);
+				takeOffFolderPath, "LoadFactor_vs_GroundDistance_SI", createCSV);
 		
 		MyChartToFileUtils.plotNoLegend(
 				MyArrayUtils.convertListOfAmountTodoubleArray(
@@ -1815,7 +1815,7 @@ public class TakeOffCalc {
 				MyArrayUtils.convertToDoublePrimitive(loadFactor),
 				0.0, null, 0.0, null,
 				"Ground distance", "Load Factor", "m", "",
-				takeOffFolderPath, "LoadFactor_vs_GroundDistance_IMPERIAL",true);
+				takeOffFolderPath, "LoadFactor_vs_GroundDistance_IMPERIAL", createCSV);
 
 		if(isAborted == false) {
 			//.................................................................................
@@ -1825,7 +1825,7 @@ public class TakeOffCalc {
 					MyArrayUtils.convertListOfAmountTodoubleArray(rateOfClimb),
 					0.0, null, 0.0, null,
 					"Time", "Rate of Climb", "s", "m/s",
-					takeOffFolderPath, "RateOfClimb_evolution_SI",true);
+					takeOffFolderPath, "RateOfClimb_evolution_SI", createCSV);
 			
 			MyChartToFileUtils.plotNoLegend(
 					MyArrayUtils.convertListOfAmountTodoubleArray(time),
@@ -1836,7 +1836,7 @@ public class TakeOffCalc {
 							),
 					0.0, null, 0.0, null,
 					"Time", "Rate of Climb", "s", "ft/min",
-					takeOffFolderPath, "RateOfClimb_evolution_IMPERIAL",true);
+					takeOffFolderPath, "RateOfClimb_evolution_IMPERIAL", createCSV);
 
 			//.................................................................................
 			// Rate of Climb v.s. Ground distance
@@ -1845,7 +1845,7 @@ public class TakeOffCalc {
 					MyArrayUtils.convertListOfAmountTodoubleArray(rateOfClimb),
 					0.0, null, 0.0, null,
 					"Ground distance", "Rate of Climb", "m", "m/s",
-					takeOffFolderPath, "RateOfClimb_vs_GroundDistance_SI",true);
+					takeOffFolderPath, "RateOfClimb_vs_GroundDistance_SI", createCSV);
 			
 			MyChartToFileUtils.plotNoLegend(
 					MyArrayUtils.convertListOfAmountTodoubleArray(
@@ -1860,7 +1860,7 @@ public class TakeOffCalc {
 							),
 					0.0, null, 0.0, null,
 					"Ground distance", "Rate of Climb", "ft", "ft/min",
-					takeOffFolderPath, "RateOfClimb_vs_GroundDistance_IMPERIAL",true);
+					takeOffFolderPath, "RateOfClimb_vs_GroundDistance_IMPERIAL", createCSV);
 		}
 		
 		//.................................................................................
@@ -1870,7 +1870,7 @@ public class TakeOffCalc {
 				MyArrayUtils.convertToDoublePrimitive(cL),
 				0.0, null, 0.0, null,
 				"Time", "CL", "s", "",
-				takeOffFolderPath, "CL_evolution",true);
+				takeOffFolderPath, "CL_evolution", createCSV);
 
 		//.................................................................................
 		// CL v.s. Ground distance
@@ -1879,7 +1879,7 @@ public class TakeOffCalc {
 				MyArrayUtils.convertToDoublePrimitive(cL),
 				0.0, null, 0.0, null,
 				"Ground distance", "CL", "m", "",
-				takeOffFolderPath, "CL_vs_GroundDistance_SI",true);
+				takeOffFolderPath, "CL_vs_GroundDistance_SI", createCSV);
 
 		MyChartToFileUtils.plotNoLegend(
 				MyArrayUtils.convertListOfAmountTodoubleArray(
@@ -1890,7 +1890,7 @@ public class TakeOffCalc {
 				MyArrayUtils.convertToDoublePrimitive(cL),
 				0.0, null, 0.0, null,
 				"Ground distance", "CL", "ft", "",
-				takeOffFolderPath, "CL_vs_GroundDistance_IMPERIAL",true);
+				takeOffFolderPath, "CL_vs_GroundDistance_IMPERIAL", createCSV);
 		
 		//.................................................................................
 		// Horizontal Forces v.s. Time

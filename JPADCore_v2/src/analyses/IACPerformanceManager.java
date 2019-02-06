@@ -119,7 +119,6 @@ public interface IACPerformanceManager {
 	Amount<Length> getAlternateCruiseAltitude();
 	Amount<Duration> getHoldingDuration();
 	Amount<Length> getHoldingAltitude();
-	double getHoldingMachNumber();
 	double getFuelReserve();
 	Amount<Length> getFirstGuessCruiseLength();
 	@Nullable

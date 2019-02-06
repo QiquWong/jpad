@@ -136,7 +136,7 @@
 					<trajectory_angle unti="deg"></trajectory_angle> <!-- (default = -3deg -->
 				</landing>
 			</noise_trajectories>
-			<mission_profile_and_payload_range compute_emissions="TRUE" use_customized_operating_conditions="FALSE">
+			<mission_profile_and_payload_range>
 				<!-- if alternate and holding phases have not to be taken into account, leave their tags empty -->
 				<mission_range unit="nmi">1600</mission_range> 
 				<alternate_cruise_range unit="nmi">100</alternate_cruise_range> <!-- (default = 0.0) -->
@@ -160,7 +160,6 @@
 				<take_off_calibration_factor></take_off_calibration_factor>
 				<apr_calibration_factor></apr_calibration_factor>
 				<climb_calibration_factor></climb_calibration_factor>
-				<continuous_calibration_factor></continuous_calibration_factor>
 				<cruise_calibration_factor></cruise_calibration_factor>
 				<flight_idle_calibration_factor></flight_idle_calibration_factor>
 				<ground_idle_calibration_factor></ground_idle_calibration_factor>
@@ -169,7 +168,6 @@
 				<take_off_calibration_factor></take_off_calibration_factor>
 				<apr_calibration_factor></apr_calibration_factor>
 				<climb_calibration_factor></climb_calibration_factor>
-				<continuous_calibration_factor></continuous_calibration_factor>
 				<cruise_calibration_factor></cruise_calibration_factor>
 				<flight_idle_calibration_factor></flight_idle_calibration_factor>
 				<ground_idle_calibration_factor></ground_idle_calibration_factor>
@@ -178,7 +176,6 @@
 				<take_off_calibration_factor></take_off_calibration_factor>
 				<apr_calibration_factor></apr_calibration_factor>
 				<climb_calibration_factor></climb_calibration_factor>
-				<continuous_calibration_factor></continuous_calibration_factor>
 				<cruise_calibration_factor></cruise_calibration_factor>
 				<flight_idle_calibration_factor></flight_idle_calibration_factor>
 				<ground_idle_calibration_factor></ground_idle_calibration_factor>
@@ -187,7 +184,6 @@
 				<take_off_calibration_factor></take_off_calibration_factor>
 				<apr_calibration_factor></apr_calibration_factor>
 				<climb_calibration_factor></climb_calibration_factor>
-				<continuous_calibration_factor></continuous_calibration_factor>
 				<cruise_calibration_factor></cruise_calibration_factor>
 				<flight_idle_calibration_factor></flight_idle_calibration_factor>
 				<ground_idle_calibration_factor></ground_idle_calibration_factor>
@@ -196,7 +192,6 @@
 				<take_off_calibration_factor></take_off_calibration_factor>
 				<apr_calibration_factor></apr_calibration_factor>
 				<climb_calibration_factor></climb_calibration_factor>
-				<continuous_calibration_factor></continuous_calibration_factor>
 				<cruise_calibration_factor></cruise_calibration_factor>
 				<flight_idle_calibration_factor></flight_idle_calibration_factor>
 				<ground_idle_calibration_factor></ground_idle_calibration_factor>
@@ -205,7 +200,6 @@
 				<take_off_calibration_factor></take_off_calibration_factor>
 				<apr_calibration_factor></apr_calibration_factor>
 				<climb_calibration_factor></climb_calibration_factor>
-				<continuous_calibration_factor></continuous_calibration_factor>
 				<cruise_calibration_factor></cruise_calibration_factor>
 				<flight_idle_calibration_factor></flight_idle_calibration_factor>
 				<ground_idle_calibration_factor></ground_idle_calibration_factor>
@@ -214,7 +208,6 @@
 				<take_off_calibration_factor></take_off_calibration_factor>
 				<apr_calibration_factor></apr_calibration_factor>
 				<climb_calibration_factor></climb_calibration_factor>
-				<continuous_calibration_factor></continuous_calibration_factor>
 				<cruise_calibration_factor></cruise_calibration_factor>
 				<flight_idle_calibration_factor></flight_idle_calibration_factor>
 				<ground_idle_calibration_factor></ground_idle_calibration_factor>
@@ -223,7 +216,6 @@
 				<take_off_calibration_factor></take_off_calibration_factor>
 				<apr_calibration_factor></apr_calibration_factor>
 				<climb_calibration_factor></climb_calibration_factor>
-				<continuous_calibration_factor></continuous_calibration_factor>
 				<cruise_calibration_factor></cruise_calibration_factor>
 				<flight_idle_calibration_factor></flight_idle_calibration_factor>
 				<ground_idle_calibration_factor></ground_idle_calibration_factor>

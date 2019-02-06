@@ -1130,7 +1130,9 @@ public class LandingCalc {
 				MyArrayUtils.convertListOfAmountTodoubleArray(speedTASList),
 				0.0, null, 0.0, null,
 				"Time", "Speed", "s", "m/s",
-				simulationDetailsOutputFolder, "Speed_evolution_SI",true);
+				simulationDetailsOutputFolder, "Speed_evolution_SI",
+				createCSV
+				);
 
 
 
@@ -1143,7 +1145,9 @@ public class LandingCalc {
 						),
 				0.0, null, 0.0, null,
 				"Time", "Speed", "s", "kn",
-				simulationDetailsOutputFolder, "Speed_evolution_IMPERIAL",true);
+				simulationDetailsOutputFolder, "Speed_evolution_IMPERIAL",
+				createCSV
+				);
 
 		//.................................................................................
 		// speed v.s. ground distance
@@ -1153,7 +1157,9 @@ public class LandingCalc {
 				MyArrayUtils.convertListOfAmountTodoubleArray(speedTASList),
 				0.0, null, 0.0, null,
 				"Ground Distance", "Speed", "m", "m/s",
-				simulationDetailsOutputFolder, "Speed_vs_GroundDistance_SI",true);
+				simulationDetailsOutputFolder, "Speed_vs_GroundDistance_SI",
+				createCSV
+				);
 
 
 		MyChartToFileUtils.plotNoLegend(
@@ -1169,7 +1175,9 @@ public class LandingCalc {
 						),
 				0.0, null, 0.0, null,
 				"Ground Distance", "Speed", "ft", "kn",
-				simulationDetailsOutputFolder, "Speed_vs_GroundDistance_IMPERIAL",true);
+				simulationDetailsOutputFolder, "Speed_vs_GroundDistance_IMPERIAL",
+				createCSV
+				);
 
 		//.................................................................................
 		// acceleration v.s. time
@@ -1179,7 +1187,9 @@ public class LandingCalc {
 				MyArrayUtils.convertListOfAmountTodoubleArray(accelerationList),
 				0.0, null, -10.0, 10.0,
 				"Time", "Acceleration", "s", "m/(s^2)",
-				simulationDetailsOutputFolder, "Acceleration_evolution_SI",true);
+				simulationDetailsOutputFolder, "Acceleration_evolution_SI",
+				createCSV
+				);
 
 
 		//.................................................................................
@@ -1190,7 +1200,9 @@ public class LandingCalc {
 				MyArrayUtils.convertListOfAmountTodoubleArray(accelerationList),
 				0.0, null, -10.0, 10.0,
 				"Ground Distance", "Acceleration", "m", "m/(s^2)",
-				simulationDetailsOutputFolder, "Acceleration_vs_GroundDistance_SI",true);
+				simulationDetailsOutputFolder, "Acceleration_vs_GroundDistance_SI",
+				createCSV
+				);
 
 
 		MyChartToFileUtils.plotNoLegend(
@@ -1202,7 +1214,9 @@ public class LandingCalc {
 				MyArrayUtils.convertListOfAmountTodoubleArray(accelerationList),
 				0.0, null, -10.0, 10.0,
 				"Ground Distance", "Acceleration", "ft", "m/(s^2)",
-				simulationDetailsOutputFolder, "Acceleration_vs_GroundDistance_IMPERIAL",true);
+				simulationDetailsOutputFolder, "Acceleration_vs_GroundDistance_IMPERIAL",
+				createCSV
+				);
 
 		//.................................................................................
 		// load factor v.s. time
@@ -1211,7 +1225,9 @@ public class LandingCalc {
 				MyArrayUtils.convertToDoublePrimitive(loadFactorList),
 				0.0, null, 0.0, null,
 				"Time", "Load Factor", "s", "",
-				simulationDetailsOutputFolder, "LoadFactor_evolution",true);
+				simulationDetailsOutputFolder, "LoadFactor_evolution",
+				createCSV
+				);
 
 		//.................................................................................
 		// load factor v.s. ground distance
@@ -1221,7 +1237,9 @@ public class LandingCalc {
 				MyArrayUtils.convertToDoublePrimitive(loadFactorList),
 				0.0, null, 0.0, null,
 				"Ground distance", "Load Factor", "m", "",
-				simulationDetailsOutputFolder, "LoadFactor_vs_GroundDistance_SI",true);
+				simulationDetailsOutputFolder, "LoadFactor_vs_GroundDistance_SI",
+				createCSV
+				);
 
 
 		MyChartToFileUtils.plotNoLegend(
@@ -1233,7 +1251,9 @@ public class LandingCalc {
 				MyArrayUtils.convertToDoublePrimitive(loadFactorList),
 				0.0, null, 0.0, null,
 				"Ground distance", "Load Factor", "ft", "",
-				simulationDetailsOutputFolder, "LoadFactor_vs_GroundDistance_IMPERIAL",true);
+				simulationDetailsOutputFolder, "LoadFactor_vs_GroundDistance_IMPERIAL",
+				createCSV
+				);
 
 		//.................................................................................
 		// Rate of Climb v.s. Time
@@ -1243,7 +1263,9 @@ public class LandingCalc {
 				MyArrayUtils.convertListOfAmountTodoubleArray(rateOfClimbList),
 				0.0, null, null, 0.0,
 				"Time", "Rate of Climb", "s", "m/s",
-				simulationDetailsOutputFolder, "RateOfClimb_evolution_SI",true);
+				simulationDetailsOutputFolder, "RateOfClimb_evolution_SI",
+				createCSV
+				);
 
 
 		MyChartToFileUtils.plotNoLegend(
@@ -1255,7 +1277,9 @@ public class LandingCalc {
 						),
 				0.0, null, null, 0.0,
 				"Time", "Rate of Climb", "s", "ft/min",
-				simulationDetailsOutputFolder, "RateOfClimb_evolution_IMPERIAL",true);
+				simulationDetailsOutputFolder, "RateOfClimb_evolution_IMPERIAL",
+				createCSV
+				);
 
 		//.................................................................................
 		// Rate of Climb v.s. Ground distance
@@ -1265,7 +1289,9 @@ public class LandingCalc {
 				MyArrayUtils.convertListOfAmountTodoubleArray(rateOfClimbList),
 				0.0, null, null, 0.0,
 				"Ground distance", "Rate of Climb", "m", "m/s",
-				simulationDetailsOutputFolder, "RateOfClimb_vs_GroundDistance_SI",true);
+				simulationDetailsOutputFolder, "RateOfClimb_vs_GroundDistance_SI",
+				createCSV
+				);
 
 
 		MyChartToFileUtils.plotNoLegend(
@@ -1281,7 +1307,9 @@ public class LandingCalc {
 						),
 				0.0, null, null, 0.0,
 				"Ground distance", "Rate of Climb", "ft", "ft/min",
-				simulationDetailsOutputFolder, "RateOfClimb_vs_GroundDistance_IMPERIAL",true);
+				simulationDetailsOutputFolder, "RateOfClimb_vs_GroundDistance_IMPERIAL",
+				createCSV
+				);
 
 		//.................................................................................
 		// CL v.s. Time
@@ -1290,7 +1318,9 @@ public class LandingCalc {
 				MyArrayUtils.convertToDoublePrimitive(cLList),
 				0.0, null, 0.0, null,
 				"Time", "CL", "s", "",
-				simulationDetailsOutputFolder, "CL_evolution",true);
+				simulationDetailsOutputFolder, "CL_evolution",
+				createCSV
+				);
 
 		//.................................................................................
 		// CL v.s. Ground distance
@@ -1300,7 +1330,9 @@ public class LandingCalc {
 				MyArrayUtils.convertToDoublePrimitive(cLList),
 				0.0, null, 0.0, null,
 				"Ground distance", "CL", "m", "",
-				simulationDetailsOutputFolder, "CL_vs_GroundDistance_SI",true);
+				simulationDetailsOutputFolder, "CL_vs_GroundDistance_SI",
+				createCSV
+				);
 
 
 		MyChartToFileUtils.plotNoLegend(
@@ -1312,7 +1344,9 @@ public class LandingCalc {
 				MyArrayUtils.convertToDoublePrimitive(cLList),
 				0.0, null, 0.0, null,
 				"Ground distance", "CL", "ft", "",
-				simulationDetailsOutputFolder, "CL_vs_GroundDistance_IMPERIAL",true);
+				simulationDetailsOutputFolder, "CL_vs_GroundDistance_IMPERIAL",
+				createCSV
+				);
 
 		//.................................................................................
 		// CD v.s. Time
@@ -1321,7 +1355,9 @@ public class LandingCalc {
 				MyArrayUtils.convertToDoublePrimitive(cDList),
 				0.0, null, 0.0, null,
 				"Time", "CD", "s", "",
-				simulationDetailsOutputFolder, "CD_evolution",true);
+				simulationDetailsOutputFolder, "CD_evolution",
+				createCSV
+				);
 
 		//.................................................................................
 		// CD v.s. Ground distance
@@ -1331,7 +1367,9 @@ public class LandingCalc {
 				MyArrayUtils.convertToDoublePrimitive(cDList),
 				0.0, null, 0.0, null,
 				"Ground distance", "CD", "m", "",
-				simulationDetailsOutputFolder, "CD_vs_GroundDistance_SI",true);
+				simulationDetailsOutputFolder, "CD_vs_GroundDistance_SI",
+				createCSV
+				);
 
 
 		MyChartToFileUtils.plotNoLegend(
@@ -1343,7 +1381,9 @@ public class LandingCalc {
 				MyArrayUtils.convertToDoublePrimitive(cDList),
 				0.0, null, 0.0, null,
 				"Ground distance", "CD", "ft", "",
-				simulationDetailsOutputFolder, "CD_vs_GroundDistance_IMPERIAL",true);
+				simulationDetailsOutputFolder, "CD_vs_GroundDistance_IMPERIAL",
+				createCSV
+				);
 
 		//.................................................................................
 		// Horizontal Forces v.s. Time
@@ -1824,7 +1864,7 @@ public class LandingCalc {
 				0.0, null, 0.0, null, 
 				"Ground distance", "Altitude",
 				"m", "m",
-				trajectoryOutputFolder, "Total_Trajectory_SI",true
+				trajectoryOutputFolder, "Total_Trajectory_SI", createCSV
 				);
 		MyChartToFileUtils.plotNoLegend(
 				MyArrayUtils.convertListOfAmountTodoubleArray(landingGroundDistance),
@@ -1832,7 +1872,7 @@ public class LandingCalc {
 				0.0, null, null, obstacle.doubleValue(SI.METER), 
 				"Ground distance", "Altitude",
 				"m", "m",
-				trajectoryOutputFolder, "Landing_Trajectory_SI",true
+				trajectoryOutputFolder, "Landing_Trajectory_SI", createCSV
 				);
 
 		MyChartToFileUtils.plotNoLegend(
@@ -1845,7 +1885,7 @@ public class LandingCalc {
 				0.0, null, 0.0, null, 
 				"Ground distance", "Altitude",
 				"ft", "ft",
-				trajectoryOutputFolder, "Total_Trajectory_IMPERIAL",true
+				trajectoryOutputFolder, "Total_Trajectory_IMPERIAL", createCSV
 				);
 		MyChartToFileUtils.plotNoLegend(
 				MyArrayUtils.convertListOfAmountTodoubleArray(
@@ -1857,7 +1897,7 @@ public class LandingCalc {
 				0.0, null, null, obstacle.doubleValue(NonSI.FOOT), 
 				"Ground distance", "Altitude",
 				"ft", "ft",
-				trajectoryOutputFolder, "Landing_Trajectory_IMPERIAL",true
+				trajectoryOutputFolder, "Landing_Trajectory_IMPERIAL", createCSV
 				);
 
 		//.................................................................................
@@ -1872,7 +1912,7 @@ public class LandingCalc {
 				0.0, null, 0.0, null, 
 				"Time", "Altitude",
 				"s", "m",
-				trajectoryOutputFolder, "Total_Altitude_evolution_SI",true
+				trajectoryOutputFolder, "Total_Altitude_evolution_SI", createCSV
 				);
 		MyChartToFileUtils.plotNoLegend(
 				MyArrayUtils.convertListOfAmountTodoubleArray(landingTime),
@@ -1880,7 +1920,7 @@ public class LandingCalc {
 				0.0, null, null, obstacle.doubleValue(SI.METER), 
 				"Time", "Altitude",
 				"s", "m",
-				trajectoryOutputFolder, "Landing_Altitude_evolution_SI",true
+				trajectoryOutputFolder, "Landing_Altitude_evolution_SI", createCSV
 				);
 
 		MyChartToFileUtils.plotNoLegend(
@@ -1891,7 +1931,7 @@ public class LandingCalc {
 				0.0, null, 0.0, null, 
 				"Time", "Altitude",
 				"s", "ft",
-				trajectoryOutputFolder, "Total_Altitude_evolution_IMPERIAL",true
+				trajectoryOutputFolder, "Total_Altitude_evolution_IMPERIAL", createCSV
 				);
 		MyChartToFileUtils.plotNoLegend(
 				MyArrayUtils.convertListOfAmountTodoubleArray(landingTime),
@@ -1901,7 +1941,7 @@ public class LandingCalc {
 				0.0, null, null, obstacle.doubleValue(NonSI.FOOT),  
 				"Time", "Altitude",
 				"s", "ft",
-				trajectoryOutputFolder, "Landing_Altitude_evolution_IMPERIAL",true
+				trajectoryOutputFolder, "Landing_Altitude_evolution_IMPERIAL", createCSV
 				);
 
 		System.setOut(originalOut);
@@ -1924,7 +1964,7 @@ public class LandingCalc {
 				0.0, null, yMinThrust, yMaxThrust, 
 				"Time", "Thrust",
 				"s", "N",
-				thrustOutputFolder, "Thrust_evolution_SI",true
+				thrustOutputFolder, "Thrust_evolution_SI", createCSV
 				);
 
 		MyChartToFileUtils.plotNoLegend(
@@ -1935,7 +1975,7 @@ public class LandingCalc {
 				0.0, null, yMinThrust, yMaxThrust, 
 				"Time", "Thrust",
 				"s", "lbf",
-				thrustOutputFolder, "Thrust_evolution_IMPERIAL",true
+				thrustOutputFolder, "Thrust_evolution_IMPERIAL", createCSV
 				);
 
 		//.................................................................................
@@ -1947,7 +1987,7 @@ public class LandingCalc {
 				0.0, null, yMinThrust, yMaxThrust, 
 				"Ground distance", "Thrust",
 				"m", "N",
-				thrustOutputFolder, "Thrust_vs_GroundDistance_SI",true
+				thrustOutputFolder, "Thrust_vs_GroundDistance_SI", createCSV
 				);
 		
 		MyChartToFileUtils.plotNoLegend(
@@ -1962,7 +2002,7 @@ public class LandingCalc {
 				0.0, null, yMinThrust, yMaxThrust,
 				"Ground distance", "Thrust",
 				"ft", "lbf",
-				thrustOutputFolder, "Thrust_vs_GroundDistance_IMPERIAL",true
+				thrustOutputFolder, "Thrust_vs_GroundDistance_IMPERIAL", createCSV
 				);
 
 		//.................................................................................
@@ -1978,7 +2018,7 @@ public class LandingCalc {
 				0.0, null, 0.0, yMaxFuel, 
 				"Time", "Fuel Used",
 				"s", "kg",
-				fuelUsedOutputFolder, "FuelUsed_evolution_SI",true
+				fuelUsedOutputFolder, "FuelUsed_evolution_SI", createCSV
 				);
 
 		MyChartToFileUtils.plotNoLegend(
@@ -1989,7 +2029,7 @@ public class LandingCalc {
 				0.0, null, 0.0, yMaxFuel, 
 				"Time", "Fuel used",
 				"s", "lb",
-				fuelUsedOutputFolder, "FuelUsed_evolution_IMPERIAL",true
+				fuelUsedOutputFolder, "FuelUsed_evolution_IMPERIAL", createCSV
 				);
 
 		//.................................................................................
@@ -2000,7 +2040,7 @@ public class LandingCalc {
 				0.0, null, 0.0, yMaxFuel, 
 				"Ground distance", "Fuel Used",
 				"m", "kg",
-				fuelUsedOutputFolder, "FuelUsed_vs_GroundDistance_SI",true
+				fuelUsedOutputFolder, "FuelUsed_vs_GroundDistance_SI", createCSV
 				);
 
 		MyChartToFileUtils.plotNoLegend(
@@ -2014,7 +2054,7 @@ public class LandingCalc {
 				0.0, null, 0.0, yMaxFuel, 
 				"Ground distance", "Fuel used",
 				"ft", "lb",
-				fuelUsedOutputFolder, "FuelUsed_vs_GroundDistance_IMPERIAL",true
+				fuelUsedOutputFolder, "FuelUsed_vs_GroundDistance_IMPERIAL", createCSV
 				);
 
 		System.setOut(originalOut);
