@@ -338,6 +338,7 @@ public class MissionProfileCalc {
 			) {
 		
 		this.theAircraft = theAircraft;
+		this.theOperatingConditions = theOperatingConditions;
 		this.missionRange = missionRange;
 		this.alternateCruiseRange = alternateCruiseRange;
 		this.holdingDuration = holdingDuration;
@@ -844,6 +845,7 @@ public class MissionProfileCalc {
 			theTakeOffCalculator = new TakeOffCalc(
 					theAircraft.getWing().getAspectRatio(),
 					theAircraft.getWing().getSurfacePlanform(),
+					theAircraft.getFuselage().getUpsweepAngle(),
 					theAircraft.getPowerPlant(),
 					polarCLTakeOff,
 					polarCDTakeOff,

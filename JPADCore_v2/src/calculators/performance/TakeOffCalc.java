@@ -81,15 +81,14 @@ public class TakeOffCalc {
 	private Amount<Length> wingToGroundDistance, altitude, obstacle, balancedFieldLength;
 	private Amount<Temperature> deltaTemperature;
 	private Amount<Angle> alphaGround;
-	private List<Double> alphaDot, gammaDot, cL, cD, loadFactor, fuelFlow, timeBreakPoints, mach;
-	private List<Amount<Angle>> alpha, theta, gamma;
-	private List<Amount<Duration>> time;
-	private List<Amount<Mass>> fuelUsed, emissionsNOx, emissionsCO, emissionsHC, emissionsSoot, emissionsCO2, emissionsSOx, emissionsH2O;
-	private List<Amount<Velocity>> speedTAS, speedCAS, rateOfClimb;
-	private List<Amount<Acceleration>> acceleration;
-	private List<Amount<Force>> thrust, thrustHorizontal, thrustVertical, lift, drag, friction, totalForce;
-	private List<Amount<Length>> groundDistance, verticalDistance;
-	private List<Amount<Force>> weight;
+	private List<Double> cLStepHandler, cDStepHandler, loadFactorStepHandler, alphaDotStepHandler, timeBreakPoints;
+	private List<Amount<Angle>> alphaStepHandler, gammaStepHandler, thetaStepHandler;
+	private List<Amount<Duration>> timeStepHandler;
+	private List<Amount<Acceleration>> accelerationStepHandler;
+	private List<Amount<Force>> weightStepHandler;
+	private List<Amount<Velocity>> speedTASStepHandler;
+	private List<Amount<Length>> groundDistanceStepHandler;
+	private List<Amount<Length>> verticalDistanceStepHandler;
 	private double kAlphaDot, kcLMax, kRot, phi, cLmaxTO, kGround, alphaDotInitial, 
 	alphaRed, cL0, cLground, kFailure, takeOffThrustCorrectionFactor, aprThrustCorrectionFactor, gidlThrustCorrectionFactor, 
 	takeOffSfcCorrectionFactor, aprSfcCorrectionFactor, gidlSfcCorrectionFactor, takeOffCalibrationFactorEmissionIndexNOx,
@@ -103,9 +102,19 @@ public class TakeOffCalc {
 	private Amount<Velocity> vFailure;
 	private boolean isAborted;
 	private boolean isTailStrike;
-	
 	private double cLalphaFlap;
 
+	// output lists
+	private List<Double> alphaDot, gammaDot, cL, cD, loadFactor, fuelFlow, mach;
+	private List<Amount<Angle>> alpha, theta, gamma;
+	private List<Amount<Duration>> time;
+	private List<Amount<Mass>> fuelUsed, emissionsNOx, emissionsCO, emissionsHC, emissionsSoot, emissionsCO2, emissionsSOx, emissionsH2O;
+	private List<Amount<Velocity>> speedTAS, speedCAS, rateOfClimb;
+	private List<Amount<Acceleration>> acceleration;
+	private List<Amount<Force>> thrust, thrustHorizontal, thrustVertical, lift, drag, friction, totalForce;
+	private List<Amount<Length>> groundDistance, verticalDistance;
+	private List<Amount<Force>> weight;
+	
 	// Statistics to be collected at every phase: (initialization of the lists through the builder
 	private TakeOffResultsMap takeOffResults = new TakeOffResultsMap();
 	private ContinuousOutputModel continuousOutputModel;
@@ -133,6 +142,7 @@ public class TakeOffCalc {
 	public TakeOffCalc(
 			double aspectRatio,
 			Amount<Area> surface,
+			Amount<Angle> fuselageUpsweepAngle,
 			PowerPlant thePowerPlant,
 			double[] polarCLTakeOff,
 			double[] polarCDTakeOff,
@@ -186,6 +196,7 @@ public class TakeOffCalc {
 
 		// Required data
 		this.aspectRatio = aspectRatio;
+		this.fuselageUpsweepAngle = fuselageUpsweepAngle;
 		this.surface = surface;
 		this.span = Amount.valueOf(
 				Math.sqrt(aspectRatio*surface.doubleValue(SI.SQUARE_METRE)),
@@ -254,11 +265,25 @@ public class TakeOffCalc {
 		System.out.println("\n-----------------------------------------------------------");
 		System.out.println("CLmaxTO = " + cLmaxTO);
 		System.out.println("CL0 = " + cLZeroTO);
-		System.out.println("CLground = " + cLground);
 		System.out.println("VsTO = " + vSTakeOff);
 		System.out.println("-----------------------------------------------------------\n");
 
 		// List initialization
+		this.timeStepHandler = new ArrayList<Amount<Duration>>();
+		this.alphaStepHandler = new ArrayList<Amount<Angle>>();
+		this.gammaStepHandler = new ArrayList<Amount<Angle>>();
+		this.thetaStepHandler = new ArrayList<Amount<Angle>>();
+		this.alphaDotStepHandler = new ArrayList<Double>();
+		this.accelerationStepHandler = new ArrayList<Amount<Acceleration>>();
+		this.loadFactorStepHandler = new ArrayList<Double>();
+		this.cLStepHandler = new ArrayList<Double>();
+		this.cDStepHandler = new ArrayList<Double>();
+		this.weightStepHandler = new ArrayList<Amount<Force>>();
+		this.speedTASStepHandler = new ArrayList<Amount<Velocity>>();
+		this.groundDistanceStepHandler = new ArrayList<Amount<Length>>();
+		this.verticalDistanceStepHandler = new ArrayList<Amount<Length>>();
+		this.timeBreakPoints = new ArrayList<Double>();
+		
 		this.time = new ArrayList<Amount<Duration>>();
 		this.speedTAS = new ArrayList<Amount<Velocity>>();
 		this.speedCAS = new ArrayList<Amount<Velocity>>();
@@ -283,8 +308,8 @@ public class TakeOffCalc {
 		this.groundDistance = new ArrayList<Amount<Length>>();
 		this.verticalDistance = new ArrayList<Amount<Length>>();
 		this.fuelFlow = new ArrayList<Double>();
+		this.fuelUsed = new ArrayList<>();
 		this.weight = new ArrayList<Amount<Force>>();
-		this.timeBreakPoints = new ArrayList<Double>();
 		this.emissionsNOx = new ArrayList<Amount<Mass>>();
 		this.emissionsCO = new ArrayList<Amount<Mass>>();
 		this.emissionsHC = new ArrayList<Amount<Mass>>();
@@ -307,6 +332,21 @@ public class TakeOffCalc {
 	public void initialize() {
 
 		// lists cleaning
+		timeStepHandler.clear();
+		alphaStepHandler.clear();
+		gammaStepHandler.clear();
+		thetaStepHandler.clear();
+		alphaDotStepHandler.clear();
+		speedTASStepHandler.clear();
+		accelerationStepHandler.clear();
+		loadFactorStepHandler.clear();
+		cLStepHandler.clear();
+		cDStepHandler.clear();
+		weightStepHandler.clear();
+		groundDistanceStepHandler.clear();
+		verticalDistanceStepHandler.clear();
+		timeBreakPoints.clear();
+		
 		time.clear();
 		speedTAS.clear();
 		speedCAS.clear();
@@ -332,7 +372,7 @@ public class TakeOffCalc {
 		verticalDistance.clear();
 		fuelFlow.clear();
 		weight.clear();
-		timeBreakPoints.clear();
+		fuelUsed.clear();
 		emissionsNOx.clear();
 		emissionsCO.clear();
 		emissionsHC.clear();
@@ -370,10 +410,10 @@ public class TakeOffCalc {
 		System.out.println("CalcTakeOff :: ODE integration\n\n");
 
 		if(vMC != null) {
-			if(1.06*vMC.doubleValue(SI.METERS_PER_SECOND) > (kRot*vSTakeOff.doubleValue(SI.METERS_PER_SECOND))
+			if(1.05*vMC.doubleValue(SI.METERS_PER_SECOND) > (kRot*vSTakeOff.doubleValue(SI.METERS_PER_SECOND))
 					) {
 				System.err.println("WARNING: (SIMULATION - TAKE-OFF) THE CHOSEN VRot IS LESS THAN 1.05*VMC. THIS LATTER WILL BE USED ...");
-				vRot = vMC.to(SI.METERS_PER_SECOND).times(1.06);
+				vRot = vMC.to(SI.METERS_PER_SECOND).times(1.05);
 			}
 			else
 				vRot = vSTakeOff.to(SI.METERS_PER_SECOND).times(kRot);
@@ -412,10 +452,10 @@ public class TakeOffCalc {
 				this.vFailure = vFailure;
 
 			theIntegrator = new HighamHall54Integrator(
-					1e-16,
+					1e-20,
 					1,
-					1e-16,
-					1e-16
+					1e-13,
+					1e-13
 					);
 			ode = new DynamicsEquationsTakeOff();
 
@@ -488,7 +528,8 @@ public class TakeOffCalc {
 							"\n\tx[0] = s = " + x[0] + " m" +
 									"\n\tx[1] = V = " + x[1] + " m/s" + 
 									"\n\tx[2] = gamma = " + x[2] + " °" +
-									"\n\tx[3] = altitude = " + x[3] + " m"
+									"\n\tx[3] = altitude = " + x[3] + " m"+
+									"\n\tx[4] = fuel used = " + x[4] + " kg"
 							);
 
 					tRot = Amount.valueOf(t, SI.SECOND);
@@ -497,13 +538,13 @@ public class TakeOffCalc {
 					// COLLECTING DATA IN TakeOffResultsMap
 					System.out.println("\n\tCOLLECTING DATA AT THE END OF GROUND ROLL PHASE ...");
 					takeOffResults.collectResults(
-							time.get(time.size()-1),
-							speedTAS.get(speedTAS.size()-1),
-							groundDistance.get(groundDistance.size()-1),
-							verticalDistance.get(verticalDistance.size()-1),
-							alpha.get(alpha.size()-1),
-							gamma.get(gamma.size()-1),
-							theta.get(theta.size()-1)
+							timeStepHandler.get(timeStepHandler.size()-1),
+							speedTASStepHandler.get(speedTASStepHandler.size()-1),
+							groundDistanceStepHandler.get(groundDistanceStepHandler.size()-1),
+							verticalDistanceStepHandler.get(verticalDistanceStepHandler.size()-1),
+							alphaStepHandler.get(alphaStepHandler.size()-1),
+							gammaStepHandler.get(gammaStepHandler.size()-1),
+							thetaStepHandler.get(thetaStepHandler.size()-1)
 							);
 					System.out.println("\n---------------------------DONE!-------------------------------");
 					return  Action.CONTINUE;
@@ -570,19 +611,20 @@ public class TakeOffCalc {
 							"\n\tx[0] = s = " + x[0] + " m" +
 									"\n\tx[1] = V = " + x[1] + " m/s" + 
 									"\n\tx[2] = gamma = " + x[2] + " °" +
-									"\n\tx[3] = altitude = " + x[3] + " m"
+									"\n\tx[3] = altitude = " + x[3] + " m"+
+									"\n\tx[4] = fuel used = " + x[4] + " kg"
 							);
 
 					// COLLECTING DATA IN TakeOffResultsMap
 					System.out.println("\n\tCOLLECTING DATA AT THE END OF AIRBORNE PHASE ...");
 					takeOffResults.collectResults(
-							time.get(time.size()-1),
-							speedTAS.get(speedTAS.size()-1),
-							groundDistance.get(groundDistance.size()-1),
-							verticalDistance.get(verticalDistance.size()-1),
-							alpha.get(alpha.size()-1),
-							gamma.get(gamma.size()-1),
-							theta.get(theta.size()-1)
+							timeStepHandler.get(timeStepHandler.size()-1),
+							speedTASStepHandler.get(speedTASStepHandler.size()-1),
+							groundDistanceStepHandler.get(groundDistanceStepHandler.size()-1),
+							verticalDistanceStepHandler.get(verticalDistanceStepHandler.size()-1),
+							alphaStepHandler.get(alphaStepHandler.size()-1),
+							gammaStepHandler.get(gammaStepHandler.size()-1),
+							thetaStepHandler.get(thetaStepHandler.size()-1)
 							);
 					
 					v2 = Amount.valueOf(x[1], SI.METERS_PER_SECOND);
@@ -652,7 +694,18 @@ public class TakeOffCalc {
 							"\n\tx[0] = s = " + x[0] + " m" +
 									"\n\tx[1] = V = " + x[1] + " m/s"
 							);
-
+					// COLLECTING DATA IN TakeOffResultsMap
+					System.out.println("\n\tCOLLECTING DATA AT THE AIRCRAFT STOP ...");
+					takeOffResults.collectResults(
+							timeStepHandler.get(timeStepHandler.size()-1),
+							speedTASStepHandler.get(speedTASStepHandler.size()-1),
+							groundDistanceStepHandler.get(groundDistanceStepHandler.size()-1),
+							verticalDistanceStepHandler.get(verticalDistanceStepHandler.size()-1),
+							alphaStepHandler.get(alphaStepHandler.size()-1),
+							gammaStepHandler.get(gammaStepHandler.size()-1),
+							thetaStepHandler.get(thetaStepHandler.size()-1)
+							);
+					System.out.println("\n---------------------------DONE!-------------------------------");
 					timeBreakPoints.add(t);
 					
 					System.out.println("\n---------------------------DONE!-------------------------------");
@@ -664,13 +717,13 @@ public class TakeOffCalc {
 				theIntegrator.addEventHandler(ehCheckVRot, 1.0, 1e-3, 20);
 				theIntegrator.addEventHandler(ehCheckFailure, 1.0, 1e-3, 20);
 				theIntegrator.addEventHandler(ehEndConstantCL, 1.0, 1e-3, 20);
-				theIntegrator.addEventHandler(ehCheckObstacle, 1.0, 1e-7, 50);
+				theIntegrator.addEventHandler(ehCheckObstacle, 1.0, 1e-3, 20);
 			}
 			else {
 				theIntegrator.addEventHandler(ehCheckVRot, 1.0, 1e-3, 20);
 				theIntegrator.addEventHandler(ehCheckFailure, 1.0, 1e-3, 20);
 				theIntegrator.addEventHandler(ehCheckBrakes, 1.0, 1e-3, 20);
-				theIntegrator.addEventHandler(ehCheckStop, 1.0, 1e-7, 50);
+				theIntegrator.addEventHandler(ehCheckStop, 1.0, 1e-10, 50);
 			}
 
 			// handle detailed info
@@ -684,7 +737,8 @@ public class TakeOffCalc {
 
 					double   t = interpolator.getCurrentTime();
 					double[] x = interpolator.getInterpolatedState();
-
+					double[] xDot = interpolator.getInterpolatedDerivatives();
+					
 					//========================================================================================
 					// PICKING UP ALL VARIABLES AT EVERY STEP (RECOGNIZING IF THE TAKE-OFF IS CONTINUED OR ABORTED)
 					//----------------------------------------------------------------------------------------
@@ -693,107 +747,96 @@ public class TakeOffCalc {
 					Amount<Velocity> currentSpeed = Amount.valueOf(x[1], SI.METERS_PER_SECOND);
 					Amount<Angle> currentGamma = Amount.valueOf(x[2], NonSI.DEGREE_ANGLE);
 					Amount<Length> currentAltitude = Amount.valueOf(x[3], SI.METER);
-					
-					// CHECK TO BE DONE ONLY IF isAborted IS FALSE!!
-					if(isAborted == false) {
+					Amount<Force> currentWeight = Amount.valueOf( 
+							(maxTakeOffMass.doubleValue(SI.KILOGRAM) - x[4])*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
+							SI.NEWTON
+							);
+					Amount<Angle> currentAlpha = ((DynamicsEquationsTakeOff)ode).alpha(currentTime);
+					double currentAlphaDot = ((DynamicsEquationsTakeOff)ode).alphaDot(currentTime);
 
-						// PICKING UP ALL DATA AT EVERY STEP (RECOGNIZING IF THE TAKE-OFF IS CONTINUED OR ABORTED)
-						//----------------------------------------------------------------------------------------
-						// TIME:
-						TakeOffCalc.this.getTime().add(Amount.valueOf(t, SI.SECOND));
-						//----------------------------------------------------------------------------------------
-						// SPEED:
-						TakeOffCalc.this.getSpeedTAS().add(Amount.valueOf(x[1], SI.METERS_PER_SECOND));
-						//----------------------------------------------------------------------------------------
-						// GROUND DISTANCE:
-						TakeOffCalc.this.getGroundDistance().add(currentGroundDistance);
-						//----------------------------------------------------------------------------------------
-						// VERTICAL DISTANCE:
-						TakeOffCalc.this.getVerticalDistance().add(currentAltitude);
-						//----------------------------------------------------------------------------------------
-						// ALPHA:
-						TakeOffCalc.this.getAlpha().add(((DynamicsEquationsTakeOff)ode).alpha(currentTime));
-						//----------------------------------------------------------------------------------------
-						// GAMMA:
-						TakeOffCalc.this.getGamma().add(currentGamma);
-						//----------------------------------------------------------------------------------------
-						// THETA:
-						TakeOffCalc.this.getTheta().add(
-								Amount.valueOf(
-										currentGamma.doubleValue(NonSI.DEGREE_ANGLE) 
-										+ ((DynamicsEquationsTakeOff)ode).alpha(currentTime).doubleValue(NonSI.DEGREE_ANGLE),
-										NonSI.DEGREE_ANGLE)
-								);
-						//----------------------------------------------------------------------------------------
-						// CL:				
-						TakeOffCalc.this.getcL().add(
-								((DynamicsEquationsTakeOff)ode).cL(
-										currentSpeed,
-										((DynamicsEquationsTakeOff)ode).alpha(currentTime),
-										currentGamma,
-										currentTime,
-										Amount.valueOf(
-												(maxTakeOffMass.doubleValue(SI.KILOGRAM) - x[4])
-												*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
-												SI.NEWTON
-												),
-										currentAltitude,
-										deltaTemperature
-										)
-								);
-						//----------------------------------------------------------------------------------------
-						// CD:
-						TakeOffCalc.this.getcD().add(
-								((DynamicsEquationsTakeOff)ode).cD(
-										TakeOffCalc.this.getcL().get(
-												TakeOffCalc.this.getcL().size()-1),
-										currentAltitude
-										)
-								);
-						//----------------------------------------------------------------------------------------
-						// LOAD FACTOR:
-						TakeOffCalc.this.getLoadFactor().add(
-								((DynamicsEquationsTakeOff)ode).lift(
-										currentSpeed,
-										((DynamicsEquationsTakeOff)ode).alpha(currentTime), 
-										currentGamma,
-										currentTime, 
-										currentAltitude,
-										deltaTemperature,
-										Amount.valueOf(
-												(maxTakeOffMass.doubleValue(SI.KILOGRAM) - x[4])
-												*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
-												SI.NEWTON
-												)
-										).doubleValue(SI.NEWTON)
-								/((maxTakeOffMass.doubleValue(SI.KILOGRAM) - x[4])
-										*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND)
-										*Math.sin(currentGamma.doubleValue(SI.RADIAN))
-										)
-								);
-						
+					// PICKING UP ALL DATA AT EVERY STEP (RECOGNIZING IF THE TAKE-OFF IS CONTINUED OR ABORTED)
+					//----------------------------------------------------------------------------------------
+					// TIME:
+					TakeOffCalc.this.getTimeStepHandler().add(currentTime);
+					//----------------------------------------------------------------------------------------
+					// ALPHA:
+					TakeOffCalc.this.getAlphaStepHandler().add(currentAlpha);
+					//----------------------------------------------------------------------------------------
+					// ALPHA DOT:
+					TakeOffCalc.this.getAlphaDotStepHandler().add(currentAlphaDot);
+					//----------------------------------------------------------------------------------------
+					// GAMMA:
+					TakeOffCalc.this.getGammaStepHandler().add(currentGamma);
+					//----------------------------------------------------------------------------------------
+					// THETA:
+					TakeOffCalc.this.getThetaStepHandler().add(currentAlpha.to(NonSI.DEGREE_ANGLE).plus(currentGamma.to(NonSI.DEGREE_ANGLE)));
+					//----------------------------------------------------------------------------------------
+					// SPEED TAS:
+					TakeOffCalc.this.getSpeedTASStepHandler().add(currentSpeed);
+					//----------------------------------------------------------------------------------------
+					// GROUND DISTANCE:
+					TakeOffCalc.this.getGroundDistanceStepHandler().add(currentGroundDistance);
+					//----------------------------------------------------------------------------------------
+					// VERTICAL DISTANCE:
+					TakeOffCalc.this.getVerticalDistanceStepHandler().add(currentAltitude);
+					//----------------------------------------------------------------------------------------
+					// LOAD FACTOR:
+					TakeOffCalc.this.getLoadFactorStepHandler().add(
+							(  ((DynamicsEquationsTakeOff)ode).lift(currentSpeed, currentAlpha, currentGamma, currentTime, currentAltitude, deltaTemperature, currentWeight).doubleValue(SI.NEWTON)
+									+ (  ((DynamicsEquationsTakeOff)ode).thrust(currentSpeed, currentTime, currentGamma, currentAltitude, deltaTemperature)
+											.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
+											*Math.sin(currentAlpha.doubleValue(SI.RADIAN))
+											)
+									)
+							/ ( currentWeight.doubleValue(SI.NEWTON)*Math.cos(currentGamma.doubleValue(SI.RADIAN))	)
+							);
+					//----------------------------------------------------------------------------------------
+					// CL:				
+					TakeOffCalc.this.getCLStepHandler().add(
+							((DynamicsEquationsTakeOff)ode).cL(currentSpeed, currentAlpha, currentGamma, currentTime, currentWeight, currentAltitude, deltaTemperature)
+							);
+					//----------------------------------------------------------------------------------------
+					// CD:				
+					TakeOffCalc.this.getCDStepHandler().add(
+							((DynamicsEquationsTakeOff)ode).cD(
+									((DynamicsEquationsTakeOff)ode).cL(currentSpeed, currentAlpha, currentGamma, currentTime, currentWeight, currentAltitude, deltaTemperature),
+									currentAltitude
+									)
+							);
+					//----------------------------------------------------------------------------------------
+					// ACCELERATION:
+					TakeOffCalc.this.getAccelerationStepHandler().add(
+							Amount.valueOf(xDot[1], SI.METERS_PER_SQUARE_SECOND)
+							);
+					//----------------------------------------------------------------------------------------
+					// WEIGHT:
+					TakeOffCalc.this.getWeightStepHandler().add(currentWeight);
+
+					// CHECK TO BE DONE ONLY IF isAborted IS FALSE!!
+					if(isAborted == false) {						
 						// CHECK ON LOAD FACTOR --> END ROTATION WHEN n=1
 						if((t > tRot.doubleValue(SI.SECOND)) && (tEndRot.doubleValue(SI.SECOND) == 10000.0) &&
-								(TakeOffCalc.this.getLoadFactor().get(TakeOffCalc.this.getLoadFactor().size()-1) > 1) &&
-								(TakeOffCalc.this.getLoadFactor().get(TakeOffCalc.this.getLoadFactor().size()-2) < 1)) {
+								(TakeOffCalc.this.getLoadFactorStepHandler().get(TakeOffCalc.this.getLoadFactorStepHandler().size()-1) > 1.0) &&
+								(TakeOffCalc.this.getLoadFactorStepHandler().get(TakeOffCalc.this.getLoadFactorStepHandler().size()-2) < 1.0)) {
 							System.out.println("\n\t\tEND OF ROTATION PHASE");
 							System.out.println(
 									"\n\tx[0] = s = " + x[0] + " m" +
 											"\n\tx[1] = V = " + x[1] + " m/s" + 
 											"\n\tx[2] = gamma = " + x[2] + " °" +
 											"\n\tx[3] = altitude = " + x[3] + " m"+
+											"\n\tx[4] = fuel used = " + x[4] + " kg" +
 											"\n\tt = " + t + " s"
 									);
 							// COLLECTING DATA IN TakeOffResultsMap
 							System.out.println("\n\tCOLLECTING DATA AT THE END OF ROTATION PHASE ...");
 							takeOffResults.collectResults(
-									time.get(time.size()-1),
-									speedTAS.get(speedTAS.size()-1),
-									groundDistance.get(groundDistance.size()-1),
-									verticalDistance.get(verticalDistance.size()-1),
-									alpha.get(alpha.size()-1),
-									gamma.get(gamma.size()-1),
-									theta.get(theta.size()-1)
+									timeStepHandler.get(timeStepHandler.size()-1),
+									speedTASStepHandler.get(speedTASStepHandler.size()-1),
+									groundDistanceStepHandler.get(groundDistanceStepHandler.size()-1),
+									verticalDistanceStepHandler.get(verticalDistanceStepHandler.size()-1),
+									alphaStepHandler.get(alphaStepHandler.size()-1),
+									gammaStepHandler.get(gammaStepHandler.size()-1),
+									thetaStepHandler.get(thetaStepHandler.size()-1)
 									);
 							System.out.println("\n---------------------------DONE!-------------------------------");
 
@@ -802,9 +845,9 @@ public class TakeOffCalc {
 							vLO = Amount.valueOf(x[1], SI.METERS_PER_SECOND);
 						}
 						// CHECK IF THE THRESHOLD CL IS REACHED --> FROM THIS POINT ON THE BAR IS LOCKED
-						if((t > tEndRot.doubleValue(SI.SECOND)) && 
-								(TakeOffCalc.this.getcL().get(TakeOffCalc.this.getcL().size()-1) - (kcLMax*cLmaxTO) >= 0.0) &&
-								((TakeOffCalc.this.getcL().get(TakeOffCalc.this.getcL().size()-2) - (kcLMax*cLmaxTO)) < 0.0)) {
+						if((t > tRot.doubleValue(SI.SECOND)) && 
+								(TakeOffCalc.this.getCLStepHandler().get(TakeOffCalc.this.getCLStepHandler().size()-1) - (kcLMax*cLmaxTO) >= 0.0) &&
+								((TakeOffCalc.this.getCLStepHandler().get(TakeOffCalc.this.getCLStepHandler().size()-2) - (kcLMax*cLmaxTO)) < 0.0)) {
 							System.out.println("\n\t\tBEGIN BAR HOLDING");
 							System.out.println(
 									"\n\tCL = " + ((DynamicsEquationsTakeOff)ode).cL(
@@ -830,8 +873,8 @@ public class TakeOffCalc {
 						}
 						// CHECK ON LOAD FACTOR TO ENSTABLISH WHEN n=1 WHILE DECREASING ALPHA AND CL
 						if((t > tEndHold.doubleValue(SI.SECOND)) && (tClimb.doubleValue(SI.SECOND) == 10000.0) &&
-								(TakeOffCalc.this.getLoadFactor().get(TakeOffCalc.this.getLoadFactor().size()-1) < 1) &&
-								(TakeOffCalc.this.getLoadFactor().get(TakeOffCalc.this.getLoadFactor().size()-2) > 1)) {
+								(TakeOffCalc.this.getLoadFactorStepHandler().get(TakeOffCalc.this.getLoadFactorStepHandler().size()-1) < 1) &&
+								(TakeOffCalc.this.getLoadFactorStepHandler().get(TakeOffCalc.this.getLoadFactorStepHandler().size()-2) > 1)) {
 							System.out.println("\n\t\tLOAD FACTOR = 1 IN CLIMB");
 							System.out.println( 
 									"\n\tt = " + t + " s"
@@ -855,7 +898,7 @@ public class TakeOffCalc {
 			theIntegrator.clearEventHandlers();
 			theIntegrator.clearStepHandlers();
 
-			if(isAborted == true || iterativeLoopOverV2 == false) 
+			if( (isAborted == true && iterativeLoopOverV2 == false) )
 				break;
 			
 			//--------------------------------------------------------------------------------
@@ -868,7 +911,12 @@ public class TakeOffCalc {
 			i++;
 		}
 		
-		manageOutputData(1.0, continuousOutputModel);
+		if(isTailStrike)
+			System.err.println("WARNING: (SIMULATION - TAKE-OFF) TAIL STRIKE !! ");
+		
+		if(vFailure == null)
+			manageOutputData(0.75, continuousOutputModel);
+		
 		
 		System.out.println("\n---------------------------END!!-------------------------------");
 	}
@@ -899,15 +947,17 @@ public class TakeOffCalc {
 		// iterative take-off distance calculation for both conditions
 		for(int i=0; i<failureSpeedArray.length; i++) {
 			calculateTakeOffDistanceODE(Amount.valueOf(failureSpeedArray[i], SI.METERS_PER_SECOND), false, true, vMC);
-			if(!getGroundDistance().isEmpty())
-				continuedTakeOffArray[i] = getGroundDistance().get(groundDistance.size()-1).doubleValue(SI.METER);
+			if(!getTakeOffResults().getGroundDistance().isEmpty())
+				continuedTakeOffArray[i] = getTakeOffResults().getGroundDistance().get(getTakeOffResults().getGroundDistance().size()-1).doubleValue(SI.METER);
 			else {
 				failureSpeedArray[i] = 0.0;
 				continuedTakeOffArray[i] = 0.0;
 			}
+			
 			calculateTakeOffDistanceODE(Amount.valueOf(failureSpeedArray[i], SI.METERS_PER_SECOND), true, false, vMC);
-			if(!getGroundDistance().isEmpty() && groundDistance.get(groundDistance.size()-1).doubleValue(SI.METER) >= 0.0)
-				abortedTakeOffArray[i] = getGroundDistance().get(groundDistance.size()-1).doubleValue(SI.METER);
+			if(!getTakeOffResults().getGroundDistance().isEmpty() 
+					&& getTakeOffResults().getGroundDistance().get(getTakeOffResults().getGroundDistance().size()-1).doubleValue(SI.METER) >= 0.0)
+				abortedTakeOffArray[i] = getTakeOffResults().getGroundDistance().get(getTakeOffResults().getGroundDistance().size()-1).doubleValue(SI.METER);
 			else {
 				failureSpeedArray[i] = 0.0;
 				abortedTakeOffArray[i] = 0.0;
@@ -968,30 +1018,35 @@ public class TakeOffCalc {
 	public void manageOutputData(double dt, StepHandler handler) {
 
 		MyInterpolatingFunction alphaFunction = new MyInterpolatingFunction();
+		MyInterpolatingFunction alphaDotFunction = new MyInterpolatingFunction();
 		MyInterpolatingFunction loadFactorFunction = new MyInterpolatingFunction();
 		MyInterpolatingFunction accelerationFunction = new MyInterpolatingFunction();
 		MyInterpolatingFunction cLFunction = new MyInterpolatingFunction();
 		MyInterpolatingFunction weightFunction = new MyInterpolatingFunction();
 
 		alphaFunction.interpolateLinear(
-				MyArrayUtils.convertListOfAmountTodoubleArray(this.time), 
-				MyArrayUtils.convertListOfAmountTodoubleArray(this.alpha)
+				MyArrayUtils.convertListOfAmountTodoubleArray(this.timeStepHandler), 
+				MyArrayUtils.convertListOfAmountTodoubleArray(this.alphaStepHandler)
+				);
+		alphaDotFunction.interpolateLinear(
+				MyArrayUtils.convertListOfAmountTodoubleArray(this.timeStepHandler), 
+				MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(this.alphaDotStepHandler))
 				);
 		loadFactorFunction.interpolateLinear(
-				MyArrayUtils.convertListOfAmountTodoubleArray(this.time), 
-				MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(this.loadFactor))
+				MyArrayUtils.convertListOfAmountTodoubleArray(this.timeStepHandler), 
+				MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(this.loadFactorStepHandler))
 				);
 		accelerationFunction.interpolateLinear(
-				MyArrayUtils.convertListOfAmountTodoubleArray(this.time), 
-				MyArrayUtils.convertListOfAmountTodoubleArray(this.acceleration)
+				MyArrayUtils.convertListOfAmountTodoubleArray(this.timeStepHandler), 
+				MyArrayUtils.convertListOfAmountTodoubleArray(this.accelerationStepHandler)
 				);
 		cLFunction.interpolateLinear(
-				MyArrayUtils.convertListOfAmountTodoubleArray(this.time), 
-				MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(this.cL))
+				MyArrayUtils.convertListOfAmountTodoubleArray(this.timeStepHandler), 
+				MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(this.cLStepHandler))
 				);
 		weightFunction.interpolateLinear(
-				MyArrayUtils.convertListOfAmountTodoubleArray(this.time), 
-				MyArrayUtils.convertListOfAmountTodoubleArray(this.weight)
+				MyArrayUtils.convertListOfAmountTodoubleArray(this.timeStepHandler), 
+				MyArrayUtils.convertListOfAmountTodoubleArray(this.weightStepHandler)
 				);
 
 		//#############################################################################
@@ -1041,7 +1096,7 @@ public class TakeOffCalc {
 				//========================================================================================
 				// PICKING UP ALL VARIABLES AT EVERY STEP (RECOGNIZING IF THE TAKE-OFF IS CONTINUED OR ABORTED)
 				//----------------------------------------------------------------------------------------
-				Amount<Duration> time = Amount.valueOf(t, SI.SECOND);
+				Amount<Duration> time = times.get(i);
 				Amount<Length> groundDistance = Amount.valueOf(x[0], SI.METER);
 				Amount<Velocity> speed = Amount.valueOf(x[1], SI.METERS_PER_SECOND);
 				Amount<Angle> gamma = Amount.valueOf(x[2], NonSI.DEGREE_ANGLE);
@@ -1049,6 +1104,9 @@ public class TakeOffCalc {
 				
 				//========================================================================================
 				// PICKING UP ALL DATA AT EVERY STEP (RECOGNIZING IF THE TAKE-OFF IS CONTINUED OR ABORTED)
+				//----------------------------------------------------------------------------------------
+				// TIME:
+				this.time.add(time);
 				//----------------------------------------------------------------------------------------
 				// GROUND DISTANCE:
 				this.groundDistance.add(groundDistance);
@@ -1323,7 +1381,7 @@ public class TakeOffCalc {
 				this.gamma.add(gamma);
 				//----------------------------------------------------------------------------------------
 				// ALPHA DOT:
-				this.alphaDot.add(((DynamicsEquationsTakeOff)ode).alphaDot(time));
+				this.alphaDot.add(alphaDotFunction.value(times.get(i).doubleValue(SI.SECOND)));
 				//----------------------------------------------------------------------------------------
 				// GAMMA DOT:
 				this.gammaDot.add(xDot[2]);
@@ -1353,31 +1411,26 @@ public class TakeOffCalc {
 								)
 						);
 				//----------------------------------------------------------------------------------------
-				// EMISSIONS:
-				for(int iEng=0; iEng < thePowerPlant.getEngineNumber(); i++) {
-					
-					//----------------------------------------------------------------------------------------
-					// EMISSIONS NOx:
-					this.emissionsNOx.add(((DynamicsEquationsTakeOff)ode).emissionNOx(speed, time, gamma, altitude, deltaTemperature, fuelUsed.get(i)));
-					//----------------------------------------------------------------------------------------
-					// EMISSIONS CO:
-					this.emissionsCO.add(((DynamicsEquationsTakeOff)ode).emissionCO(speed, time, gamma, altitude, deltaTemperature, fuelUsed.get(i)));
-					//----------------------------------------------------------------------------------------
-					// EMISSIONS HC:
-					this.emissionsHC.add(((DynamicsEquationsTakeOff)ode).emissionHC(speed, time, gamma, altitude, deltaTemperature, fuelUsed.get(i)));
-					//----------------------------------------------------------------------------------------
-					// EMISSIONS Soot:
-					this.emissionsSoot.add(((DynamicsEquationsTakeOff)ode).emissionSoot(speed, time, gamma, altitude, deltaTemperature, fuelUsed.get(i)));
-					//----------------------------------------------------------------------------------------
-					// EMISSIONS CO2:
-					this.emissionsCO2.add(((DynamicsEquationsTakeOff)ode).emissionCO2(speed, time, gamma, altitude, deltaTemperature, fuelUsed.get(i)));
-					//----------------------------------------------------------------------------------------
-					// EMISSIONS SOx:
-					this.emissionsSOx.add(((DynamicsEquationsTakeOff)ode).emissionSOx(speed, time, gamma, altitude, deltaTemperature, fuelUsed.get(i)));
-					//----------------------------------------------------------------------------------------
-					// EMISSIONS H2O:
-					this.emissionsH2O.add(((DynamicsEquationsTakeOff)ode).emissionH2O(speed, time, gamma, altitude, deltaTemperature, fuelUsed.get(i)));
-				}
+				// EMISSIONS NOx:
+				this.emissionsNOx.add(((DynamicsEquationsTakeOff)ode).emissionNOx(speed, time, gamma, altitude, deltaTemperature, fuelUsed.get(i)));
+				//----------------------------------------------------------------------------------------
+				// EMISSIONS CO:
+				this.emissionsCO.add(((DynamicsEquationsTakeOff)ode).emissionCO(speed, time, gamma, altitude, deltaTemperature, fuelUsed.get(i)));
+				//----------------------------------------------------------------------------------------
+				// EMISSIONS HC:
+				this.emissionsHC.add(((DynamicsEquationsTakeOff)ode).emissionHC(speed, time, gamma, altitude, deltaTemperature, fuelUsed.get(i)));
+				//----------------------------------------------------------------------------------------
+				// EMISSIONS Soot:
+				this.emissionsSoot.add(((DynamicsEquationsTakeOff)ode).emissionSoot(speed, time, gamma, altitude, deltaTemperature, fuelUsed.get(i)));
+				//----------------------------------------------------------------------------------------
+				// EMISSIONS CO2:
+				this.emissionsCO2.add(((DynamicsEquationsTakeOff)ode).emissionCO2(speed, time, gamma, altitude, deltaTemperature, fuelUsed.get(i)));
+				//----------------------------------------------------------------------------------------
+				// EMISSIONS SOx:
+				this.emissionsSOx.add(((DynamicsEquationsTakeOff)ode).emissionSOx(speed, time, gamma, altitude, deltaTemperature, fuelUsed.get(i)));
+				//----------------------------------------------------------------------------------------
+				// EMISSIONS H2O:
+				this.emissionsH2O.add(((DynamicsEquationsTakeOff)ode).emissionH2O(speed, time, gamma, altitude, deltaTemperature, fuelUsed.get(i)));
 			}
 		}
 	}
@@ -2369,6 +2422,25 @@ public class TakeOffCalc {
 					SI.NEWTON
 					);
 			
+//			if(time.doubleValue(SI.SECOND) > tEndHold.doubleValue(SI.SECOND)) {
+//				System.out.println("\n\tTime: " + time);
+//				System.out.println("\tDistance: " + x[0] + " m");
+//				System.out.println("\tSpeed: " + speed);
+//				System.out.println("\tGamma: " + gamma);
+//				System.out.println("\tAltitude: " + altitude);
+//				System.out.println("\tAlpha: " + alpha);
+//				System.out.println("\tCL: " + cL(speed, alpha, gamma, time, weight, altitude, deltaTemperature));
+//				System.out.println("\tLoad Factor: " + 
+//						(  ((DynamicsEquationsTakeOff)ode).lift(speed, alpha, gamma, time, altitude, deltaTemperature, weight).doubleValue(SI.NEWTON)
+//								+ (  ((DynamicsEquationsTakeOff)ode).thrust(speed, time, gamma, altitude, deltaTemperature)
+//										.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
+//										*Math.sin(alpha.doubleValue(SI.RADIAN))
+//										)
+//								)
+//						/ ( weight.doubleValue(SI.NEWTON)*Math.cos(gamma.doubleValue(SI.RADIAN))	)
+//						);
+//			}
+			
 			if(isAborted == false) {
 				if( time.doubleValue(SI.SECOND) < tEndRot.doubleValue(SI.SECOND)) {
 					xDot[0] = speed.doubleValue(SI.METERS_PER_SECOND);
@@ -2453,7 +2525,8 @@ public class TakeOffCalc {
 							);
 			else {
 				if(isAborted == false) {
-					if (time.doubleValue(SI.SECOND) <= tFaiulre.doubleValue(SI.SECOND) + 1)
+					if ( (time.doubleValue(SI.SECOND) > tFaiulre.doubleValue(SI.SECOND)) 
+							&& (time.doubleValue(SI.SECOND) > tFaiulre.doubleValue(SI.SECOND)+1) )
 						for (int i=0; i<TakeOffCalc.this.getThePowerPlant().getEngineNumber()-1; i++) 
 							theThrustList.add(
 									ThrustCalc.calculateThrustDatabase(
@@ -2579,7 +2652,8 @@ public class TakeOffCalc {
 							);
 			else {
 				if(isAborted == false) {
-					if (time.doubleValue(SI.SECOND) <= tFaiulre.doubleValue(SI.SECOND) + 1)
+					if ( (time.doubleValue(SI.SECOND) > tFaiulre.doubleValue(SI.SECOND)) 
+							&& (time.doubleValue(SI.SECOND) > tFaiulre.doubleValue(SI.SECOND)+1) )
 						for (int i=0; i<TakeOffCalc.this.getThePowerPlant().getEngineNumber()-1; i++) 
 							fuelFlowList.add(
 									thePowerPlant.getEngineDatabaseReaderList().get(i).getSfc(
@@ -2704,7 +2778,8 @@ public class TakeOffCalc {
 							);
 			else {
 				if(isAborted == false) {
-					if (time.doubleValue(SI.SECOND) <= tFaiulre.doubleValue(SI.SECOND) + 1)
+					if ( (time.doubleValue(SI.SECOND) > tFaiulre.doubleValue(SI.SECOND)) 
+							&& (time.doubleValue(SI.SECOND) > tFaiulre.doubleValue(SI.SECOND)+1) )
 						for (int i=0; i<TakeOffCalc.this.getThePowerPlant().getEngineNumber()-1; i++) 
 							emissionIndexNOxList.add(
 									thePowerPlant.getEngineDatabaseReaderList().get(i).getNOxEmissionIndex(
@@ -2824,7 +2899,8 @@ public class TakeOffCalc {
 							);
 			else {
 				if(isAborted == false) {
-					if (time.doubleValue(SI.SECOND) <= tFaiulre.doubleValue(SI.SECOND) + 1)
+					if ( (time.doubleValue(SI.SECOND) > tFaiulre.doubleValue(SI.SECOND)) 
+							&& (time.doubleValue(SI.SECOND) > tFaiulre.doubleValue(SI.SECOND)+1) )
 						for (int i=0; i<TakeOffCalc.this.getThePowerPlant().getEngineNumber()-1; i++) 
 							emissionIndexCOList.add(
 									thePowerPlant.getEngineDatabaseReaderList().get(i).getCOEmissionIndex(
@@ -2944,7 +3020,8 @@ public class TakeOffCalc {
 							);
 			else {
 				if(isAborted == false) {
-					if (time.doubleValue(SI.SECOND) <= tFaiulre.doubleValue(SI.SECOND) + 1)
+					if ( (time.doubleValue(SI.SECOND) > tFaiulre.doubleValue(SI.SECOND)) 
+							&& (time.doubleValue(SI.SECOND) > tFaiulre.doubleValue(SI.SECOND)+1) )
 						for (int i=0; i<TakeOffCalc.this.getThePowerPlant().getEngineNumber()-1; i++) 
 							emissionIndexHCList.add(
 									thePowerPlant.getEngineDatabaseReaderList().get(i).getHCEmissionIndex(
@@ -3064,7 +3141,8 @@ public class TakeOffCalc {
 							);
 			else {
 				if(isAborted == false) {
-					if (time.doubleValue(SI.SECOND) <= tFaiulre.doubleValue(SI.SECOND) + 1)
+					if ( (time.doubleValue(SI.SECOND) > tFaiulre.doubleValue(SI.SECOND)) 
+							&& (time.doubleValue(SI.SECOND) > tFaiulre.doubleValue(SI.SECOND)+1) )
 						for (int i=0; i<TakeOffCalc.this.getThePowerPlant().getEngineNumber()-1; i++) 
 							emissionIndexSootList.add(
 									thePowerPlant.getEngineDatabaseReaderList().get(i).getSootEmissionIndex(
@@ -3184,7 +3262,8 @@ public class TakeOffCalc {
 							);
 			else {
 				if(isAborted == false) {
-					if (time.doubleValue(SI.SECOND) <= tFaiulre.doubleValue(SI.SECOND) + 1)
+					if ( (time.doubleValue(SI.SECOND) > tFaiulre.doubleValue(SI.SECOND)) 
+							&& (time.doubleValue(SI.SECOND) > tFaiulre.doubleValue(SI.SECOND)+1) )
 						for (int i=0; i<TakeOffCalc.this.getThePowerPlant().getEngineNumber()-1; i++) 
 							emissionIndexCO2List.add(
 									thePowerPlant.getEngineDatabaseReaderList().get(i).getCO2EmissionIndex(
@@ -3304,7 +3383,8 @@ public class TakeOffCalc {
 							);
 			else {
 				if(isAborted == false) {
-					if (time.doubleValue(SI.SECOND) <= tFaiulre.doubleValue(SI.SECOND) + 1)
+					if ( (time.doubleValue(SI.SECOND) > tFaiulre.doubleValue(SI.SECOND)) 
+							&& (time.doubleValue(SI.SECOND) > tFaiulre.doubleValue(SI.SECOND)+1) )
 						for (int i=0; i<TakeOffCalc.this.getThePowerPlant().getEngineNumber()-1; i++) 
 							emissionIndexSOxList.add(
 									thePowerPlant.getEngineDatabaseReaderList().get(i).getSOxEmissionIndex(
@@ -3424,7 +3504,8 @@ public class TakeOffCalc {
 							);
 			else {
 				if(isAborted == false) {
-					if (time.doubleValue(SI.SECOND) <= tFaiulre.doubleValue(SI.SECOND) + 1)
+					if ( (time.doubleValue(SI.SECOND) > tFaiulre.doubleValue(SI.SECOND)) 
+							&& (time.doubleValue(SI.SECOND) > tFaiulre.doubleValue(SI.SECOND)+1) )
 						for (int i=0; i<TakeOffCalc.this.getThePowerPlant().getEngineNumber()-1; i++) 
 							emissionIndexH2OList.add(
 									thePowerPlant.getEngineDatabaseReaderList().get(i).getH2OEmissionIndex(
@@ -3609,8 +3690,8 @@ public class TakeOffCalc {
 				alphaDot = 0.0;
 			else {
 				if((time.doubleValue(SI.SECOND) > tRot.doubleValue(SI.SECOND)) && (time.doubleValue(SI.SECOND) < tHold.doubleValue(SI.SECOND))) {
-					alphaDot = alphaDotInitial*(1-(TakeOffCalc.this.getkAlphaDot()*(TakeOffCalc.this.getAlpha().get(
-							TakeOffCalc.this.getAlpha().size()-1).doubleValue(NonSI.DEGREE_ANGLE)))
+					alphaDot = alphaDotInitial*(1-(TakeOffCalc.this.getkAlphaDot()*(TakeOffCalc.this.getAlphaStepHandler().get(
+							TakeOffCalc.this.getAlphaStepHandler().size()-1).doubleValue(NonSI.DEGREE_ANGLE)))
 							);
 				}
 				else if((time.doubleValue(SI.SECOND) > tEndHold.doubleValue(SI.SECOND)) && (time.doubleValue(SI.SECOND) < tClimb.doubleValue(SI.SECOND))) {
@@ -3626,17 +3707,16 @@ public class TakeOffCalc {
 
 			if(time.doubleValue(SI.SECOND) > tRot.doubleValue(SI.SECOND))
 				alpha = Amount.valueOf( 
-						TakeOffCalc.this.getAlpha().get(
-								TakeOffCalc.this.getAlpha().size()-1).doubleValue(NonSI.DEGREE_ANGLE)
-						+(alphaDot(time)*(TakeOffCalc.this.getTime().get(
-								TakeOffCalc.this.getTime().size()-1).doubleValue(SI.SECOND)
-								- TakeOffCalc.this.getTime().get(
-										TakeOffCalc.this.getTime().size()-2).doubleValue(SI.SECOND))),
+						TakeOffCalc.this.getAlphaStepHandler().get(
+								TakeOffCalc.this.getAlphaStepHandler().size()-1).doubleValue(NonSI.DEGREE_ANGLE)
+						+(alphaDot(time)*(TakeOffCalc.this.getTimeStepHandler().get(
+								TakeOffCalc.this.getTimeStepHandler().size()-1).doubleValue(SI.SECOND)
+								- TakeOffCalc.this.getTimeStepHandler().get(
+										TakeOffCalc.this.getTimeStepHandler().size()-2).doubleValue(SI.SECOND))),
 						NonSI.DEGREE_ANGLE
 						);
 
 			if(alpha.doubleValue(NonSI.DEGREE_ANGLE) >= fuselageUpsweepAngle.doubleValue(NonSI.DEGREE_ANGLE)) {
-				System.err.println("WARNING: (SIMULATION - TAKE-OFF) TAIL STRIKE !! ");
 				isTailStrike = true;
 			}
 			
@@ -4605,6 +4685,110 @@ public class TakeOffCalc {
 
 	public void setSpeedCAS(List<Amount<Velocity>> speedCAS) {
 		this.speedCAS = speedCAS;
+	}
+
+	public List<Double> getCLStepHandler() {
+		return cLStepHandler;
+	}
+
+	public void setCLStepHandler(List<Double> cLStepHandler) {
+		this.cLStepHandler = cLStepHandler;
+	}
+
+	public List<Double> getCDStepHandler() {
+		return cDStepHandler;
+	}
+
+	public void setCDStepHandler(List<Double> cDStepHandler) {
+		this.cDStepHandler = cDStepHandler;
+	}
+
+	public List<Double> getLoadFactorStepHandler() {
+		return loadFactorStepHandler;
+	}
+
+	public void setLoadFactorStepHandler(List<Double> loadFactorStepHandler) {
+		this.loadFactorStepHandler = loadFactorStepHandler;
+	}
+
+	public List<Amount<Angle>> getAlphaStepHandler() {
+		return alphaStepHandler;
+	}
+
+	public void setAlphaStepHandler(List<Amount<Angle>> alphaStepHandler) {
+		this.alphaStepHandler = alphaStepHandler;
+	}
+
+	public List<Amount<Duration>> getTimeStepHandler() {
+		return timeStepHandler;
+	}
+
+	public void setTimeStepHandler(List<Amount<Duration>> timeStepHandler) {
+		this.timeStepHandler = timeStepHandler;
+	}
+
+	public List<Amount<Acceleration>> getAccelerationStepHandler() {
+		return accelerationStepHandler;
+	}
+
+	public void setAccelerationStepHandler(List<Amount<Acceleration>> accelerationStepHandler) {
+		this.accelerationStepHandler = accelerationStepHandler;
+	}
+
+	public List<Amount<Force>> getWeightStepHandler() {
+		return weightStepHandler;
+	}
+
+	public void setWeightStepHandler(List<Amount<Force>> weightStepHandler) {
+		this.weightStepHandler = weightStepHandler;
+	}
+
+	public List<Amount<Angle>> getGammaStepHandler() {
+		return gammaStepHandler;
+	}
+
+	public void setGammaStepHandler(List<Amount<Angle>> gammaStepHandler) {
+		this.gammaStepHandler = gammaStepHandler;
+	}
+
+	public List<Amount<Angle>> getThetaStepHandler() {
+		return thetaStepHandler;
+	}
+
+	public void setThetaStepHandler(List<Amount<Angle>> thetaStepHandler) {
+		this.thetaStepHandler = thetaStepHandler;
+	}
+
+	public List<Amount<Velocity>> getSpeedTASStepHandler() {
+		return speedTASStepHandler;
+	}
+
+	public void setSpeedTASStepHandler(List<Amount<Velocity>> speedTASStepHandler) {
+		this.speedTASStepHandler = speedTASStepHandler;
+	}
+
+	public List<Amount<Length>> getGroundDistanceStepHandler() {
+		return groundDistanceStepHandler;
+	}
+
+	public void setGroundDistanceStepHandler(List<Amount<Length>> groundDistanceStepHandler) {
+		this.groundDistanceStepHandler = groundDistanceStepHandler;
+	}
+
+	public List<Amount<Length>> getVerticalDistanceStepHandler() {
+		return verticalDistanceStepHandler;
+	}
+
+	public void setVerticalDistanceStepHandler(List<Amount<Length>> verticalDistanceStepHandler) {
+		this.verticalDistanceStepHandler = verticalDistanceStepHandler;
+	}
+
+	public List<Double> getAlphaDotStepHandler() {
+		return alphaDotStepHandler;
+	}
+
+	public void setAlphaDotStepHandler(List<Double> alphaDotStepHandler) {
+		this.alphaDotStepHandler = alphaDotStepHandler;
 	}
 
 }

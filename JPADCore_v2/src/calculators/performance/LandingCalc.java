@@ -1074,31 +1074,26 @@ public class LandingCalc {
 					// CD:
 					this.cDList.add(cDFunction.value(time.doubleValue(SI.SECOND)));
 					//----------------------------------------------------------------------------------------
-					// EMISSIONS:
-					for(int iEng=0; iEng < thePowerPlant.getEngineNumber(); i++) {
-						
-						//----------------------------------------------------------------------------------------
-						// EMISSIONS NOx:
-						this.emissionNOxList.add(((DynamicsEquationsLanding)ode).emissionNOx(speed, time, alpha, gamma, altitude, deltaTemperature, weight, fuelUsedList.get(i)));
-						//----------------------------------------------------------------------------------------
-						// EMISSIONS CO:
-						this.emissionCOList.add(((DynamicsEquationsLanding)ode).emissionCO(speed, time, alpha, gamma, altitude, deltaTemperature, weight, fuelUsedList.get(i)));
-						//----------------------------------------------------------------------------------------
-						// EMISSIONS HC:
-						this.emissionHCList.add(((DynamicsEquationsLanding)ode).emissionHC(speed, time, gamma, alpha, altitude, deltaTemperature, weight, fuelUsedList.get(i)));
-						//----------------------------------------------------------------------------------------
-						// EMISSIONS Soot:
-						this.emissionSootList.add(((DynamicsEquationsLanding)ode).emissionSoot(speed, time, alpha, gamma, altitude, deltaTemperature, weight, fuelUsedList.get(i)));
-						//----------------------------------------------------------------------------------------
-						// EMISSIONS CO2:
-						this.emissionCO2List.add(((DynamicsEquationsLanding)ode).emissionCO2(speed, time, alpha, gamma, altitude, deltaTemperature, weight, fuelUsedList.get(i)));
-						//----------------------------------------------------------------------------------------
-						// EMISSIONS SOx:
-						this.emissionSOxList.add(((DynamicsEquationsLanding)ode).emissionSOx(speed, time, alpha, gamma, altitude, deltaTemperature, weight, fuelUsedList.get(i)));
-						//----------------------------------------------------------------------------------------
-						// EMISSIONS H2O:
-						this.emissionH2OList.add(((DynamicsEquationsLanding)ode).emissionH2O(speed, time, alpha, gamma, altitude, deltaTemperature, weight, fuelUsedList.get(i)));
-					}
+					// EMISSIONS NOx:
+					this.emissionNOxList.add(((DynamicsEquationsLanding)ode).emissionNOx(speed, time, alpha, gamma, altitude, deltaTemperature, weight, fuelUsedList.get(i)));
+					//----------------------------------------------------------------------------------------
+					// EMISSIONS CO:
+					this.emissionCOList.add(((DynamicsEquationsLanding)ode).emissionCO(speed, time, alpha, gamma, altitude, deltaTemperature, weight, fuelUsedList.get(i)));
+					//----------------------------------------------------------------------------------------
+					// EMISSIONS HC:
+					this.emissionHCList.add(((DynamicsEquationsLanding)ode).emissionHC(speed, time, gamma, alpha, altitude, deltaTemperature, weight, fuelUsedList.get(i)));
+					//----------------------------------------------------------------------------------------
+					// EMISSIONS Soot:
+					this.emissionSootList.add(((DynamicsEquationsLanding)ode).emissionSoot(speed, time, alpha, gamma, altitude, deltaTemperature, weight, fuelUsedList.get(i)));
+					//----------------------------------------------------------------------------------------
+					// EMISSIONS CO2:
+					this.emissionCO2List.add(((DynamicsEquationsLanding)ode).emissionCO2(speed, time, alpha, gamma, altitude, deltaTemperature, weight, fuelUsedList.get(i)));
+					//----------------------------------------------------------------------------------------
+					// EMISSIONS SOx:
+					this.emissionSOxList.add(((DynamicsEquationsLanding)ode).emissionSOx(speed, time, alpha, gamma, altitude, deltaTemperature, weight, fuelUsedList.get(i)));
+					//----------------------------------------------------------------------------------------
+					// EMISSIONS H2O:
+					this.emissionH2OList.add(((DynamicsEquationsLanding)ode).emissionH2O(speed, time, alpha, gamma, altitude, deltaTemperature, weight, fuelUsedList.get(i)));
 				}
 			}
 		}

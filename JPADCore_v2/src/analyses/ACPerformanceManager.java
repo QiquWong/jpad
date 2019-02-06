@@ -37,9 +37,6 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jscience.physics.amount.Amount;
-import org.moeaframework.util.tree.For;
-
-import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import aircraft.Aircraft;
 import aircraft.components.liftingSurface.airfoils.Airfoil;
@@ -69,7 +66,6 @@ import calculators.performance.customdata.ThrustMap;
 import configuration.MyConfiguration;
 import configuration.enumerations.ConditionEnum;
 import configuration.enumerations.EngineOperatingConditionEnum;
-import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.FoldersEnum;
 import configuration.enumerations.MissionPhasesEnum;
 import configuration.enumerations.PerformanceEnum;
@@ -86,7 +82,6 @@ import standaloneutils.MyUnits;
 import standaloneutils.MyXMLReaderUtils;
 import standaloneutils.atmosphere.AtmosphereCalc;
 import standaloneutils.atmosphere.SpeedCalc;
-import sun.rmi.server.UnicastRef;
 import writers.JPADStaticWriteUtils;
 
 public class ACPerformanceManager {
@@ -558,7 +553,7 @@ public class ACPerformanceManager {
 		
 	}
 	
-	@SuppressWarnings({ "unchecked" })
+	@SuppressWarnings("unchecked")
 	public static ACPerformanceManager importFromXML (
 			String pathToXML,
 			Aircraft theAircraft,
@@ -2725,8 +2720,8 @@ public class ACPerformanceManager {
 						.getXMLPropertyByPath(
 								reader.getXmlDoc(), reader.getXpath(),
 								"//plot/mission_profile/efficiency_proifle/@perform");
-				if (cDProfileProperty != null) {
-					if(cDProfileProperty.equalsIgnoreCase("TRUE")) 
+				if (efficiencyProfileProperty != null) {
+					if(efficiencyProfileProperty.equalsIgnoreCase("TRUE")) 
 						plotList.add(PerformancePlotEnum.EFFICIENCY_PROFILE);
 				}
 				
@@ -2883,6 +2878,7 @@ public class ACPerformanceManager {
 				.setHoldingAltitude(holdingAltitude.to(SI.METER))
 				.setFuelReserve(fuelReserve)
 				.setFirstGuessCruiseLength(missionRange.to(SI.METER).divide(3)) // first guess value equal to 1/3 of the total mission range
+				.setFirstGuessInitialMissionFuelMass(maximumTakeOffMass.to(SI.KILOGRAM).divide(4)) // first guess value equal to 1/4 of the max take-off mass
 				.setTakeOffCalibrationFactorThrust(takeOffCalibrationFactorThrust)
 				.setAprCalibrationFactorThrust(aprCalibrationFactorThrust)
 				.setClimbCalibrationFactorThrust(climbCalibrationFactorThrust)
@@ -4690,6 +4686,7 @@ public class ACPerformanceManager {
 					new TakeOffCalc(
 							_thePerformanceInterface.getTheAircraft().getWing().getAspectRatio(),
 							_thePerformanceInterface.getTheAircraft().getWing().getSurfacePlanform(), 
+							_thePerformanceInterface.getTheAircraft().getFuselage().getUpsweepAngle(),
 							_thePerformanceInterface.getTheAircraft().getPowerPlant(),
 							_thePerformanceInterface.getPolarCLTakeOff().get(xcg),
 							_thePerformanceInterface.getPolarCDTakeOff().get(xcg),

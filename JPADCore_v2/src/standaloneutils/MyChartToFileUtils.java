@@ -483,10 +483,10 @@ public class MyChartToFileUtils {
 			chartFactory.setyMax(MyArrayUtils.getMax(yMaxArray));
 		}
 		
-		if(xMin==xMax || yMin==yMax) {
-			System.err.println("WARNING (PLOT) - RANGE OR DOMAIN ARE EQUAL TO ZERO! THE CHART WILL NOT BE CREATED!");
-			return;
-		}
+//		if(xMin==xMax || yMin==yMax) {
+//			System.err.println("WARNING (PLOT) - RANGE OR DOMAIN ARE EQUAL TO ZERO! THE CHART WILL NOT BE CREATED!");
+//			return;
+//		}
 		
 		chartFactory.createMultiTraceChart();
 		
@@ -586,10 +586,10 @@ public class MyChartToFileUtils {
 			chartFactory.setyMax(MyArrayUtils.getMax(yMaxArray));
 		}
 		
-		if(xMin==xMax || yMin==yMax) {
-			System.err.println("WARNING (PLOT) - RANGE OR DOMAIN ARE EQUAL TO ZERO! THE CHART WILL NOT BE CREATED!");
-			return;
-		}
+//		if(xMin==xMax || yMin==yMax) {
+//			System.err.println("WARNING (PLOT) - RANGE OR DOMAIN ARE EQUAL TO ZERO! THE CHART WILL NOT BE CREATED!");
+//			return;
+//		}
 		
 
 		chartFactory.createMultiTraceChart();
@@ -747,10 +747,10 @@ public class MyChartToFileUtils {
 			chartFactory.setyMax(MyArrayUtils.getMax(yMaxArray));
 		}
 		
-		if(xMin==xMax || yMin==yMax) {
-			System.err.println("WARNING (PLOT) - RANGE OR DOMAIN ARE EQUAL TO ZERO! THE CHART WILL NOT BE CREATED!");
-			return;
-		}
+//		if(xMin==xMax || yMin==yMax) {
+//			System.err.println("WARNING (PLOT) - RANGE OR DOMAIN ARE EQUAL TO ZERO! THE CHART WILL NOT BE CREATED!");
+//			return;
+//		}
 		
 
 		chartFactory.createMultiTraceChart();
@@ -867,10 +867,10 @@ public class MyChartToFileUtils {
 			yMax = MyArrayUtils.getMax(yMaxArray);
 		}
 		
-		if(xMin==xMax || yMin==yMax) {
-			System.err.println("WARNING (PLOT) - RANGE OR DOMAIN ARE EQUAL TO ZERO! THE CHART WILL NOT BE CREATED!");
-			return;
-		}
+//		if(xMin==xMax || yMin==yMax) {
+//			System.err.println("WARNING (PLOT) - RANGE OR DOMAIN ARE EQUAL TO ZERO! THE CHART WILL NOT BE CREATED!");
+//			return;
+//		}
 		
 		
 		chartFactory.setxMin(xMin - Math.abs(0.1*Math.max(Math.abs(xMax), Math.abs(xMin))));
@@ -1075,11 +1075,11 @@ public class MyChartToFileUtils {
 			yMax = MyArrayUtils.getMax(yMaxArray);
 		}
 		
-		if(xMin==xMax || yMin==yMax) {
-			System.err.println("WARNING (PLOT) - RANGE OR DOMAIN ARE EQUAL TO ZERO! THE CHART WILL NOT BE CREATED!");
-			return;
-		}
-		
+//		if(xMin==xMax || yMin==yMax) {
+//			System.err.println("WARNING (PLOT) - RANGE OR DOMAIN ARE EQUAL TO ZERO! THE CHART WILL NOT BE CREATED!");
+//			return;
+//		}
+//		
 		
 		chartFactory.setxMin(xMin - Math.abs(0.1*Math.max(Math.abs(xMax), Math.abs(xMin))));
 		chartFactory.setxMax(xMax + Math.abs(0.1*Math.max(Math.abs(xMax), Math.abs(xMin))));
@@ -1444,11 +1444,11 @@ public class MyChartToFileUtils {
 			yMax = MyArrayUtils.getMax(yMaxArray);
 		}
 				
-		if(xMin==xMax || yMin==yMax) {
-			System.err.println("WARNING (PLOT) - RANGE OR DOMAIN ARE EQUAL TO ZERO! THE CHART WILL NOT BE CREATED!");
-			return;
-		}
-		
+//		if(xMin==xMax || yMin==yMax) {
+//			System.err.println("WARNING (PLOT) - RANGE OR DOMAIN ARE EQUAL TO ZERO! THE CHART WILL NOT BE CREATED!");
+//			return;
+//		}
+//		
 		
 		JFreeChart chart = ChartFactory.createXYLineChart(
 				chartName,	 					// Title
