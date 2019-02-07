@@ -18,11 +18,13 @@ import opencascade.BRepBuilderAPI_MakeEdge;
 import opencascade.BRepBuilderAPI_MakeVertex;
 import opencascade.BRepBuilderAPI_Transform;
 import opencascade.BRepFilletAPI_MakeFillet;
+import opencascade.BRepGProp;
 import opencascade.BRepMesh_IncrementalMesh;
 import opencascade.BRepOffsetAPI_MakeFilling;
 import opencascade.BRepTools;
 import opencascade.BRep_Builder;
 import opencascade.BRep_Tool;
+import opencascade.GProp_GProps;
 import opencascade.GeomAPI;
 import opencascade.GeomAPI_ExtremaCurveCurve;
 import opencascade.GeomAPI_IntCS;
@@ -852,6 +854,14 @@ public final class OCCUtils {
 		}
 		
 		return revolvedWires;
+	}
+	
+	public static gp_Pnt getShapeCG(OCCShape shape) {
+		
+		GProp_GProps gProp = new GProp_GProps();
+		BRepGProp.LinearProperties(shape.getShape(), gProp);	
+		
+		return gProp.CentreOfMass();
 	}
 	
 	public enum FileExtension {
