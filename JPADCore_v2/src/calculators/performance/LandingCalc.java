@@ -779,13 +779,17 @@ public class LandingCalc {
 			if(Math.abs(rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE)) > targetRateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE))
 				if(Math.abs(rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE) - targetRateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE)) < 50.0)
 					newAlphaDotFlare = alphaDotFlare + 0.02;
-				else
+				else if(Math.abs(rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE) - targetRateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE)) < 250.0)
 					newAlphaDotFlare = alphaDotFlare + 0.1;
+				else
+					newAlphaDotFlare = alphaDotFlare + 0.5;
 			else
 				if(Math.abs(rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE) - targetRateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE)) < 50.0)
 					newAlphaDotFlare = alphaDotFlare - 0.02;
-				else
+				else if(Math.abs(rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE) - targetRateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE)) < 250.0)
 					newAlphaDotFlare = alphaDotFlare - 0.1;
+				else
+					newAlphaDotFlare = alphaDotFlare - 0.5;
 
 			if(Math.abs(altitudeAtFlareEnding.doubleValue(SI.METER) - 1e-2) < 1 
 					&& Math.abs(rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE)) < Math.abs(targetRateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE))

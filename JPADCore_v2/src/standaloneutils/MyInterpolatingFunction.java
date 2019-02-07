@@ -38,6 +38,36 @@ public class MyInterpolatingFunction {
 		return psf;
 	} 
 	
+	public PolynomialSplineFunction interpolateLinearAtIndex(double[] input, int index, double[] data) {
+		
+		switch (index) {
+		case 0:
+			this.x = input; 
+			xMin = MyArrayUtils.getMin(this.x);
+			xMax = MyArrayUtils.getMax(this.x);
+			break;
+		case 1:
+			this.y = input; 
+			yMin = MyArrayUtils.getMin(this.y);
+			yMax = MyArrayUtils.getMax(this.y);
+			break;
+		case 2:
+			this.z = input; 
+			zMin = MyArrayUtils.getMin(this.z);
+			zMax = MyArrayUtils.getMax(this.z);
+			break;
+		case 3:
+			this.k = input; 
+			kMin = MyArrayUtils.getMin(this.k);
+			kMax = MyArrayUtils.getMax(this.k);
+			break;
+		default:
+			break;
+		}
+		psf = new LinearInterpolator().interpolate(input, data);
+		return psf;
+	} 
+	
 	public PolynomialSplineFunction interpolate(double[] x, double[] data) {
 		this.x = x;
 		xMin = MyArrayUtils.getMin(this.x);
@@ -56,6 +86,67 @@ public class MyInterpolatingFunction {
 		yMax = MyArrayUtils.getMax(this.y);
 		
 		bif = new BilinearInterpolatingFunction(x, y, data);
+		return bif;
+		
+	}
+	
+	public BilinearInterpolatingFunction interpolateBilinearAtIndex (
+			double[] input1, double[] input2,  
+			int index1, int index2, 
+			double[][] data
+			) {
+		
+		switch (index1) {
+		case 0:
+			this.x = input1; 
+			xMin = MyArrayUtils.getMin(this.x);
+			xMax = MyArrayUtils.getMax(this.x);
+			break;
+		case 1:
+			this.y = input1; 
+			yMin = MyArrayUtils.getMin(this.y);
+			yMax = MyArrayUtils.getMax(this.y);
+			break;
+		case 2:
+			this.z = input1; 
+			zMin = MyArrayUtils.getMin(this.z);
+			zMax = MyArrayUtils.getMax(this.z);
+			break;
+		case 3:
+			this.k = input1; 
+			kMin = MyArrayUtils.getMin(this.k);
+			kMax = MyArrayUtils.getMax(this.k);
+			break;
+		default:
+			break;
+		}
+		
+		switch (index2) {
+		case 0:
+			this.x = input2; 
+			xMin = MyArrayUtils.getMin(this.x);
+			xMax = MyArrayUtils.getMax(this.x);
+			break;
+		case 1:
+			this.y = input2; 
+			yMin = MyArrayUtils.getMin(this.y);
+			yMax = MyArrayUtils.getMax(this.y);
+			break;
+		case 2:
+			this.z = input2; 
+			zMin = MyArrayUtils.getMin(this.z);
+			zMax = MyArrayUtils.getMax(this.z);
+			break;
+		case 3:
+			this.k = input2; 
+			kMin = MyArrayUtils.getMin(this.k);
+			kMax = MyArrayUtils.getMax(this.k);
+			break;
+		default:
+			break;
+		}
+		
+		bif = new BilinearInterpolatingFunction(input1, input2, data);
 		return bif;
 		
 	}
@@ -84,6 +175,92 @@ public class MyInterpolatingFunction {
 		zMax = MyArrayUtils.getMax(this.z);
 		
 		tif = new TrilinearInterpolatingFunction(x, y, z, data);
+		return tif;
+		
+	}
+	
+	public TrilinearInterpolatingFunction interpolateTrilinearAtIndex (
+			double[] input1, double[] input2, double[] input3, 
+			int index1, int index2, int index3,
+			double[][][] data
+			) {
+		
+		switch (index1) {
+		case 0:
+			this.x = input1; 
+			xMin = MyArrayUtils.getMin(this.x);
+			xMax = MyArrayUtils.getMax(this.x);
+			break;
+		case 1:
+			this.y = input1; 
+			yMin = MyArrayUtils.getMin(this.y);
+			yMax = MyArrayUtils.getMax(this.y);
+			break;
+		case 2:
+			this.z = input1; 
+			zMin = MyArrayUtils.getMin(this.z);
+			zMax = MyArrayUtils.getMax(this.z);
+			break;
+		case 3:
+			this.k = input1; 
+			kMin = MyArrayUtils.getMin(this.k);
+			kMax = MyArrayUtils.getMax(this.k);
+			break;
+		default:
+			break;
+		}
+		
+		switch (index2) {
+		case 0:
+			this.x = input2; 
+			xMin = MyArrayUtils.getMin(this.x);
+			xMax = MyArrayUtils.getMax(this.x);
+			break;
+		case 1:
+			this.y = input2; 
+			yMin = MyArrayUtils.getMin(this.y);
+			yMax = MyArrayUtils.getMax(this.y);
+			break;
+		case 2:
+			this.z = input2; 
+			zMin = MyArrayUtils.getMin(this.z);
+			zMax = MyArrayUtils.getMax(this.z);
+			break;
+		case 3:
+			this.k = input2; 
+			kMin = MyArrayUtils.getMin(this.k);
+			kMax = MyArrayUtils.getMax(this.k);
+			break;
+		default:
+			break;
+		}
+		
+		switch (index3) {
+		case 0:
+			this.x = input3; 
+			xMin = MyArrayUtils.getMin(this.x);
+			xMax = MyArrayUtils.getMax(this.x);
+			break;
+		case 1:
+			this.y = input3; 
+			yMin = MyArrayUtils.getMin(this.y);
+			yMax = MyArrayUtils.getMax(this.y);
+			break;
+		case 2:
+			this.z = input3; 
+			zMin = MyArrayUtils.getMin(this.z);
+			zMax = MyArrayUtils.getMax(this.z);
+			break;
+		case 3:
+			this.k = input3; 
+			kMin = MyArrayUtils.getMin(this.k);
+			kMax = MyArrayUtils.getMax(this.k);
+			break;
+		default:
+			break;
+		}
+		
+		tif = new TrilinearInterpolatingFunction(input1, input2, input3, data);
 		return tif;
 		
 	}

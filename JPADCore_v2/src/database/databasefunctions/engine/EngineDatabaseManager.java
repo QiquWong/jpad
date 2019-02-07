@@ -297,12 +297,14 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 	    List<double[]> interpolationInputDoubleArrayList = new ArrayList<>();
 	    List<double[]> interpolationRepeatedInputDoubleArrayList = new ArrayList<>();
 	    List<Boolean> interpolationInputBooleanList = new ArrayList<>();
+	    List<Integer> interpolationInputIndexList = new ArrayList<>();
 	    for(int i=0; i<numberOfInput; i++) {
 			if(inputDoubleArrayList.get(i).length > 1) {
 				interpolationNumberOfInput += 1;
 				interpolationInputDoubleArrayList.add(inputDoubleArrayList.get(i));
 				interpolationRepeatedInputDoubleArrayList.add(repeatedInputDoubleArrayList.get(i));
 				interpolationInputBooleanList.add(true);
+				interpolationInputIndexList.add(i);
 			}
 			else
 				interpolationInputBooleanList.add(false);
@@ -387,6 +389,7 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 	    		DatabaseInterpolationUtils.createMultiDimensionalMatrix(
 	    				interpolationNumberOfInput,
 	    				i,
+	    				interpolationInputIndexList,
 	    				interpolationInputDoubleArrayList,
 	    				engineDataDoubleArrayList.get(i),
 	    				interpolatingMatrixIndexes,
@@ -407,7 +410,7 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 	    		}
 	    		
 	    		MyInterpolatingFunction interpolatedResponseSurface = new MyInterpolatingFunction();
-	    		interpolatedResponseSurface.interpolateLinear(interpolationInputDoubleArrayList.get(0), engineDataDoubleArrayList.get(i));
+	    		interpolatedResponseSurface.interpolateLinearAtIndex(interpolationInputDoubleArrayList.get(0), interpolationInputIndexList.get(0), engineDataDoubleArrayList.get(i));
 	    		interpolatedResponseSurface.setxMin(inputLowerBounds[0]);
 	    		interpolatedResponseSurface.setyMin(inputLowerBounds[1]);
 	    		interpolatedResponseSurface.setzMin(inputLowerBounds[2]);

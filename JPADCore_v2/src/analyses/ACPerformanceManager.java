@@ -2041,9 +2041,9 @@ public class ACPerformanceManager {
 		}
 		//...............................................................
 		// ALTERNATE CRUISE LENGTH
-		List<String> alternateCruiseLengthProperty = reader.getXMLPropertiesByPath("//performance/mission_profile_and_payload_range/alternate_cruise_length");
+		List<String> alternateCruiseLengthProperty = reader.getXMLPropertiesByPath("//performance/mission_profile_and_payload_range/alternate_cruise_range");
 		if(!alternateCruiseLengthProperty.isEmpty()) {
-			alternateCruiseLength = reader.getXMLAmountLengthByPath("//performance/mission_profile_and_payload_range/alternate_cruise_length"); 
+			alternateCruiseLength = reader.getXMLAmountLengthByPath("//performance/mission_profile_and_payload_range/alternate_cruise_range"); 
 		}
 		//...............................................................
 		// ALTERNATE CRUISE ALTITUDE
@@ -7382,7 +7382,9 @@ public class ACPerformanceManager {
 							_thePerformanceInterface.getTheOperatingConditions(),
 							_thePerformanceInterface.getMissionRange(), 
 							_thePerformanceInterface.getAlternateCruiseLength(), 
+							_thePerformanceInterface.getAlternateCruiseAltitude(),
 							_thePerformanceInterface.getHoldingDuration(),
+							_thePerformanceInterface.getHoldingAltitude(),
 							_thePerformanceInterface.getFuelReserve(), 
 							_thePerformanceInterface.getFirstGuessInitialMissionFuelMass(),
 							_thePerformanceInterface.getMaximumTakeOffMass(), 

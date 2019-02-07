@@ -17,6 +17,7 @@ public class DatabaseInterpolationUtils {
 	public static void createMultiDimensionalMatrix (
 			int numberOfVariable, 
 			int index,
+			List<Integer> variableIndexList,
 			List<double[]> variableArrayList,
 			double[] values, 
 			Map<List<Integer>, Integer> interpolatingMatrixIndexes,
@@ -62,7 +63,11 @@ public class DatabaseInterpolationUtils {
 			for(int i=0; i<interpolatingMatrixIndexes.size(); i++)
 				dataMatrix2 [matrixIndexSet.get(i).get(0)][matrixIndexSet.get(i).get(1)] = values[matrixIndexValues.get(i)];
 			
-			interpolatedResponseSurface.interpolateBilinear(variableMatrixX1, variableMatrixX2, dataMatrix2);
+			interpolatedResponseSurface.interpolateBilinearAtIndex(
+					variableMatrixX1, variableMatrixX2, 
+					variableIndexList.get(0), variableIndexList.get(1), 
+					dataMatrix2
+					);
 			
 			outputMap.put(index, interpolatedResponseSurface);
 			
@@ -76,7 +81,11 @@ public class DatabaseInterpolationUtils {
 			for(int i=0; i<interpolatingMatrixIndexes.size(); i++)
 				dataMatrix3 [matrixIndexSet.get(i).get(0)][matrixIndexSet.get(i).get(1)][matrixIndexSet.get(i).get(2)] = values[matrixIndexValues.get(i)];
 			
-			interpolatedResponseSurface.interpolateTrilinear(variableMatrixX1, variableMatrixX2, variableMatrixX3, dataMatrix3);
+			interpolatedResponseSurface.interpolateTrilinearAtIndex(
+					variableMatrixX1, variableMatrixX2, variableMatrixX3, 
+					variableIndexList.get(0), variableIndexList.get(1), variableIndexList.get(2), 
+					dataMatrix3
+					);
 			
 			outputMap.put(index, interpolatedResponseSurface);
 			

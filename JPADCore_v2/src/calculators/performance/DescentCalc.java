@@ -1185,7 +1185,7 @@ public class DescentCalc {
 					*0.454
 					*0.224809
 					/60
-					*sfcCruiseList.get(i)
+					*_sfcCruiseList.get(i)
 					);
 			
 			_fuelFlowFlightIdleList.add(
@@ -1194,7 +1194,7 @@ public class DescentCalc {
 					*0.454
 					*0.224809
 					/60
-					*sfcFlightIdleList.get(i)
+					*_sfcFlightIdleList.get(i)
 					);
 			_emissionIndexNOxCruiseList.add(i, cruiseEmissionNOxIndexListTemp.stream().mapToDouble(e -> e).average().getAsDouble());
 			_emissionIndexNOxFlightIdleList.add(i, flightIdleEmissionNOxIndexListTemp.stream().mapToDouble(e -> e).average().getAsDouble());
@@ -1517,14 +1517,14 @@ public class DescentCalc {
 		
 		_totalDescentLength = _descentLengths.get(_descentLengths.size()-1).to(NonSI.NAUTICAL_MILE); 
 		_totalDescentTime = _descentTimes.get(_descentTimes.size()-1).to(NonSI.MINUTE);
-		_totalDescentFuelUsed = _fuelUsedPerStep.get(_fuelUsedPerStep.size()).to(SI.KILOGRAM);
-		_totalDescentNOxEmissions = _emissionNOxPerStep.get(_emissionNOxPerStep.size()).to(SI.KILOGRAM);
-		_totalDescentCOEmissions = _emissionCOPerStep.get(_emissionNOxPerStep.size()).to(SI.KILOGRAM);
-		_totalDescentHCEmissions = _emissionHCPerStep.get(_emissionNOxPerStep.size()).to(SI.KILOGRAM);
-		_totalDescentSootEmissions = _emissionSootPerStep.get(_emissionNOxPerStep.size()).to(SI.KILOGRAM);
-		_totalDescentCO2Emissions = _emissionCO2PerStep.get(_emissionNOxPerStep.size()).to(SI.KILOGRAM);
-		_totalDescentSOxEmissions = _emissionSOxPerStep.get(_emissionNOxPerStep.size()).to(SI.KILOGRAM);
-		_totalDescentH2OEmissions = _emissionH2OPerStep.get(_emissionNOxPerStep.size()).to(SI.KILOGRAM);
+		_totalDescentFuelUsed = _fuelUsedPerStep.get(_fuelUsedPerStep.size()-1).to(SI.KILOGRAM);
+		_totalDescentNOxEmissions = _emissionNOxPerStep.get(_emissionNOxPerStep.size()-1).to(SI.KILOGRAM);
+		_totalDescentCOEmissions = _emissionCOPerStep.get(_emissionNOxPerStep.size()-1).to(SI.KILOGRAM);
+		_totalDescentHCEmissions = _emissionHCPerStep.get(_emissionNOxPerStep.size()-1).to(SI.KILOGRAM);
+		_totalDescentSootEmissions = _emissionSootPerStep.get(_emissionNOxPerStep.size()-1).to(SI.KILOGRAM);
+		_totalDescentCO2Emissions = _emissionCO2PerStep.get(_emissionNOxPerStep.size()-1).to(SI.KILOGRAM);
+		_totalDescentSOxEmissions = _emissionSOxPerStep.get(_emissionNOxPerStep.size()-1).to(SI.KILOGRAM);
+		_totalDescentH2OEmissions = _emissionH2OPerStep.get(_emissionNOxPerStep.size()-1).to(SI.KILOGRAM);
 		
 	}
 	

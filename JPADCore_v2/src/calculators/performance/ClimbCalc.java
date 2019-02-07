@@ -888,6 +888,20 @@ public class ClimbCalc {
 				_machClimb.add(_speedTASClimb.get(i).doubleValue(SI.METERS_PER_SECOND)/speedOfSound);
 			}
 			
+			_rateOfClimbClimb.add(
+					Amount.valueOf(
+							MyMathUtils.getInterpolatedValue1DLinear(
+									MyArrayUtils.convertListOfAmountTodoubleArray(_rcMapAEO.get(i).getSpeedList()
+											.stream().map(v -> v.to(SI.METERS_PER_SECOND)).collect(Collectors.toList())
+											),
+									MyArrayUtils.convertListOfAmountTodoubleArray(_rcMapAEO.get(i).getRCList()
+											.stream().map(rc -> rc.to(SI.METERS_PER_SECOND)).collect(Collectors.toList())
+											),
+									_speedTASClimb.get(i).doubleValue(SI.METERS_PER_SECOND)
+									),
+							SI.METERS_PER_SECOND
+							)
+					);
 			_timeClimb.add(
 					_timeClimb.get(_timeClimb.size()-1)
 					.plus(
@@ -963,20 +977,6 @@ public class ClimbCalc {
 									_speedTASClimb.get(i).doubleValue(SI.METERS_PER_SECOND)
 									),
 							SI.NEWTON
-							)
-					);
-			_rateOfClimbClimb.add(
-					Amount.valueOf(
-							MyMathUtils.getInterpolatedValue1DLinear(
-									MyArrayUtils.convertListOfAmountTodoubleArray(_rcMapAEO.get(i).getSpeedList()
-											.stream().map(v -> v.to(SI.METERS_PER_SECOND)).collect(Collectors.toList())
-											),
-									MyArrayUtils.convertListOfAmountTodoubleArray(_rcMapAEO.get(i).getRCList()
-											.stream().map(rc -> rc.to(SI.METERS_PER_SECOND)).collect(Collectors.toList())
-											),
-									_speedTASClimb.get(i).doubleValue(SI.METERS_PER_SECOND)
-									),
-							SI.METERS_PER_SECOND
 							)
 					);
 			
