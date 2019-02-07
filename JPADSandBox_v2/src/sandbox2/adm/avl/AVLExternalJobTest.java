@@ -48,7 +48,6 @@ public class AVLExternalJobTest {
 	
 	public static AVLExternalJob job = new AVLExternalJob();
 
-
 	//-------------------------------------------------------------
 
 	public static void main(String[] args) throws InvalidFormatException, IOException, InterruptedException, HDF5LibraryException {
@@ -59,15 +58,13 @@ public class AVLExternalJobTest {
 		System.out.println("AVL External Job Test");
 		System.out.println("---------------------");
 		
-		
-		
 		try {
 			
 			theAircraft = AircraftUtils.importAircraft(args);
 			theOperatingConditions = AircraftUtils.importOperatingConditions(args);
 			AircraftUtils.performAnalyses(theAircraft, theOperatingConditions);
 			
-			System.out.println("--------------------------------------------- Prepared AVL job:");
+			System.out.println("--------------------------------------------- Prepare AVL job:");
 
 			//System.out.println(theAircraft.toString());
 			System.out.println(theOperatingConditions.toString());

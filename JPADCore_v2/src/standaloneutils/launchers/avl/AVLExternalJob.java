@@ -12,7 +12,9 @@ import javax.measure.unit.SI;
 
 import aircraft.Aircraft;
 import analyses.OperatingConditions;
+import configuration.enumerations.AnalysisTypeEnum;
 import javaslang.Tuple;
+import standaloneutils.MyUnits;
 import standaloneutils.atmosphere.SpeedCalc;
 import standaloneutils.launchers.SystemCommandExecutor;
 
@@ -571,7 +573,62 @@ public class AVLExternalJob implements IAVLExternalJob {
 	}
 	
 	public AVLMassInputData importToMassInputData(Aircraft theAircraft) {
-		// if (theAircraft != null) // TODO
+		// Get masses and inertias from weight+balance analyses
+		double massWing = 0.0;
+		double ixx = 0.0;
+		if (theAircraft != null) {
+			// TODO: @masc adjust the following code accordingly
+			
+			if (theAircraft.getTheAnalysisManager().getAnalysisList().contains(AnalysisTypeEnum.WEIGHTS)) {
+				// the weights analysis is done at this time
+				massWing = theAircraft
+						.getTheAnalysisManager().getTheWeights().getWingMass()
+						.doubleValue(SI.KILOGRAM);
+				
+			}
+			if (theAircraft.getTheAnalysisManager().getAnalysisList().contains(AnalysisTypeEnum.BALANCE)) {
+				// the balance analysis is done at this time
+				ixx = theAircraft
+						.getTheAnalysisManager().getTheBalance().getAircraftInertiaMomentIxx()
+						.doubleValue(MyUnits.KILOGRAM_METER_SQUARED);
+				
+				System.out.println("\n\n\n\n");
+				System.out.println("Ixx = " + ixx + "kg m^2");
+				System.out.println("\n\n\n\n");
+			}
+			return
+					new AVLMassInputData
+							.Builder()
+							.setDescription("(C) Agostino De Marco, agodemar, mass properties")
+							.setLUnit(1.0)
+							.setMUnit(1.0)
+							.addMassProperties( // wing center panel
+								Tuple.of( // TODO
+									Tuple.of(massWing, 14.0, 0.0, 0.0), // mass, x, y, z
+									Tuple.of(ixx, 832.0, 12532.0, 0.0, 0.0, 0.0) // Ixx, Iyy, Izz, Ixy, Ixz, Iyz
+								)
+							)
+							.addMassProperties( // wing R mid panel
+									Tuple.of(
+										Tuple.of(55.5, 4.2, 22.0, 1.0), // mass, x, y, z
+										Tuple.of(1180.0, 210.0, 1390.0, 0.0, 0.0, 0.0) // Ixx, Iyy, Izz, Ixy, Ixz, Iyz
+									)
+								)
+							.addMassProperties( // wing L mid panel
+									Tuple.of(
+										Tuple.of(55.5, 4.2, -22.0, 1.0), // mass, x, y, z
+										Tuple.of(1180.0, 210.0, 1390.0, 0.0, 0.0, 0.0) // Ixx, Iyy, Izz, Ixy, Ixz, Iyz
+									)
+								)
+							.addMassProperties( // horiz tail
+									Tuple.of(
+										Tuple.of(12.0, 29.0, 0.0, 1.0), // mass, x, y, z
+										Tuple.of(270.0, 12.0, 282.0, 0.0, 0.0, 0.0) // Ixx, Iyy, Izz, Ixy, Ixz, Iyz
+									)
+								)
+							.build();
+			
+		} else
 		return
 			new AVLMassInputData
 					.Builder()
