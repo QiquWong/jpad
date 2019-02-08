@@ -54,6 +54,8 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 	//-------------------------------------------------------------------
 	public void importDatabaseFromFile(String databaseFolderPath, String engineDatabaseFileName) {
 		
+		int maxDataIndex = 13; /* number of columns of the engine Excel File */
+		
 		/*
 		 * READING DATA FROM EXCEL FILE ...
 		 */
@@ -84,13 +86,35 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 					row.forEach(cell -> {
 						sheetRowData.add(dataFormatter.formatCellValue(cell));
 					});
-					sheetData.add(sheetRowData.stream().filter(data -> !data.isEmpty()).collect(Collectors.toList()));
+					// TODO: SET 0.0 WHEN DATA IS EMPTY
+//					sheetData.add(sheetRowData.stream().filter(data -> !data.isEmpty()).collect(Collectors.toList()));
+					sheetData.add(sheetRowData.stream().collect(Collectors.toList()));
 				});
-				for(int j=0; j<sheetData.size(); j++)
-					if(sheetData.get(j).isEmpty()) {
+				for(int j=0; j<sheetData.size(); j++) {
+					List<Boolean> isRemove = new ArrayList<>();
+					for (int k=0; k<sheetData.get(j).size(); k++) {
+						if(sheetData.get(j).get(k).isEmpty()) {
+							isRemove.add(true);
+						}
+						else
+							isRemove.add(false);
+					}
+					if (!isRemove.contains(false)) {
 						sheetData.remove(j);
 						j--;
 					}
+				}
+				for(int j=0; j<sheetData.size(); j++) {
+					for(int k=0; k<sheetData.get(j).size(); k++) { 
+						if(sheetData.get(j).get(k).isEmpty()) 
+							sheetData.get(j).set(k, "0.0");
+						if(k >= maxDataIndex) { 
+							sheetData.get(j).remove(k);
+							k--;
+						}
+					}
+				}
+				
 				dataMap.put(workbook.getSheetName(i), sheetData);
 			}
 		} catch (InvalidFormatException e) {
@@ -124,7 +148,7 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 		Map<Integer, MyInterpolatingFunction> interpolatedGroundIdleDataMap = createInterpolatedDataMap(dataMap, "GROUND IDLE");
 		
 		/*
-		 * FILLING SUERCLASS INTERPO FUNCTIONS ...
+		 * FILLING SUERCLASS INTERPOLATING FUNCTIONS ...
 		 */
 		
 		/* TAKE-OFF */

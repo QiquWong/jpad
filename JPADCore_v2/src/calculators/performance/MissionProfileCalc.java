@@ -472,6 +472,12 @@ public class MissionProfileCalc {
 	//--------------------------------------------------------------------------------------------
 	// METHODS:
 
+	/*
+	 * FIXME: CHECK LOOP ON CRUISE RANGE, ALTERNATE RANGE AND FUEL MASS.
+	 * 		  SOME PHASES ARE WRITTEN TWICE IN THE OUTPUT.
+	 * 		  CHARTS MUST BE FIXED SUMMING UP ALL PHASES DATA (NOW EACH PHASE IS INDEPENDENT). 
+	 */
+	
 	public void calculateProfiles(Amount<Velocity> vMC) {
 
 		initialMissionMass = operatingEmptyMass
@@ -1228,7 +1234,6 @@ public class MissionProfileCalc {
 //								-0.003767654434394
 //								)
 						);
-				
 
 				List<Amount<Force>> dragPerStep = new ArrayList<>();
 				dragPerStep.add(
@@ -1260,7 +1265,7 @@ public class MissionProfileCalc {
 				List<Double> phi = new ArrayList<>();
 				try {
 				phi.add(dragPerStep.get(0).doubleValue(SI.NEWTON)
-						/ theAircraft.getPowerPlant().getT0Total().doubleValue(SI.NEWTON)
+						/ thrustFormDatabaseList.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
 						);
 				} catch (ArithmeticException e) {
 					System.err.println("WARNING: (CRUISE - MISSION PROFILE) THRUST FROM DATABASE = 0.0, CANNOT DIVIDE BY 0.0! RETURNING ... ");
@@ -1638,7 +1643,7 @@ public class MissionProfileCalc {
 					
 					try {
 						phi.add(dragPerStep.get(j).doubleValue(SI.NEWTON)
-								/ theAircraft.getPowerPlant().getT0Total().doubleValue(SI.NEWTON)
+								/ thrustFormDatabaseList.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
 								);
 						} catch (ArithmeticException e) {
 							System.err.println("WARNING: (CRUISE - MISSION PROFILE) THRUST FROM DATABASE = 0.0, CANNOT DIVIDE BY 0.0! RETURNING ... ");
@@ -2161,7 +2166,7 @@ public class MissionProfileCalc {
 					List<Double> phiAlternateCruise = new ArrayList<>();
 					try {
 						phiAlternateCruise.add(dragPerStepAlternateCruise.get(0).doubleValue(SI.NEWTON)
-								/ theAircraft.getPowerPlant().getT0Total().doubleValue(SI.NEWTON)
+								/ thrustAlternateCruiseFormDatabaseList.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
 								);
 						} catch (ArithmeticException e) {
 							System.err.println("WARNING: (ALTERNATE CRUISE - MISSION PROFILE) THRUST FROM DATABASE = 0.0, CANNOT DIVIDE BY 0.0! RETURNING ... ");
@@ -2575,7 +2580,7 @@ public class MissionProfileCalc {
 						
 						try {
 							phiAlternateCruise.add(dragPerStepAlternateCruise.get(j).doubleValue(SI.NEWTON)
-									/ theAircraft.getPowerPlant().getT0Total().doubleValue(SI.NEWTON)
+									/ thrustAlternateCruiseFormDatabaseList.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
 									);
 							} catch (ArithmeticException e) {
 								System.err.println("WARNING: (ALTERNATE CRUISE - MISSION PROFILE) THRUST FROM DATABASE = 0.0, CANNOT DIVIDE BY 0.0! RETURNING ... ");
@@ -2998,7 +3003,7 @@ public class MissionProfileCalc {
 					List<Double> phiHolding = new ArrayList<>();
 					try {
 						phiHolding.add(dragPerStepHolding.get(0).doubleValue(SI.NEWTON)
-								/ theAircraft.getPowerPlant().getT0Total().doubleValue(SI.NEWTON)
+								/ thrustHoldingFormDatabaseList.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
 								);
 						} catch (ArithmeticException e) {
 							System.err.println("WARNING: (HOLDING - MISSION PROFILE) THRUST FROM DATABASE = 0.0, CANNOT DIVIDE BY 0.0! RETURNING ... ");
@@ -3394,7 +3399,7 @@ public class MissionProfileCalc {
 						
 						try {
 							phiHolding.add(dragPerStepHolding.get(j).doubleValue(SI.NEWTON)
-									/ theAircraft.getPowerPlant().getT0Total().doubleValue(SI.NEWTON)
+									/ thrustHoldingFormDatabaseList.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
 									);
 							} catch (ArithmeticException e) {
 								System.err.println("WARNING: (HOLDING - MISSION PROFILE) THRUST FROM DATABASE = 0.0, CANNOT DIVIDE BY 0.0! RETURNING ... ");
