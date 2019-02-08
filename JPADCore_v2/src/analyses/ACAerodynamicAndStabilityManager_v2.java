@@ -80,12 +80,12 @@ public class ACAerodynamicAndStabilityManager_v2 {
 	private Amount<Length> _hTailMomentumPole;
 	private Amount<Length> _vTailMomentumPole;
 	private Amount<Length> _canardMomentumPole;
-	private List<Amount<Angle>> _alphaBodyList;
-	private List<Amount<Angle>> _alphaWingList;
-	private List<Amount<Angle>> _alphaHTailList;
-	private List<Amount<Angle>> _alphaCanardList;
-	private List<Amount<Angle>> _alphaNacelleList;
-	private List<Amount<Angle>> _betaList;
+	private List<Amount<Angle>> _alphaBodyList = new ArrayList<>();
+	private List<Amount<Angle>> _alphaWingList = new ArrayList<>();
+	private List<Amount<Angle>> _alphaHTailList = new ArrayList<>();
+	private List<Amount<Angle>> _alphaCanardList = new ArrayList<>();
+	private List<Amount<Angle>> _alphaNacelleList = new ArrayList<>();
+	private List<Amount<Angle>> _betaList = new ArrayList<>();
 	private Amount<Angle> currentDownwashAngle;
 
 	// for downwash estimation
@@ -1137,7 +1137,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 						// TODO
 						break;
 					default:
-						System.err.println("WARNING (IMPORT AERODYNAMIC AND STABILITY DATA): CANARD ANALYSIS TYPE NOT RECOGNIZED!");
+						System.err.println("WARNING (IMPORT AERODYNAMIC AND STABILITY DATA): NACELLES ANALYSIS TYPE NOT RECOGNIZED!");
 						break;
 					}
 
@@ -1631,14 +1631,14 @@ public class ACAerodynamicAndStabilityManager_v2 {
 		String minimumUnstickSpeedPerformString = MyXMLReaderUtils
 				.getXMLPropertyByPath(
 						reader.getXmlDoc(), reader.getXpath(),
-						"//aircraft_analyses/VMU/@perform");
+						"//aircraft/VMU/@perform");
 
 		if(minimumUnstickSpeedPerformString.equalsIgnoreCase("TRUE") && theCondition == ConditionEnum.TAKE_OFF){
 
 			String minimumUnstickSpeedMethodString = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
-							"//aircraft_analyses/VMU/@method");
+							"//aircraft/VMU/@method");
 
 			if(minimumUnstickSpeedMethodString != null) {
 
@@ -1713,10 +1713,12 @@ public class ACAerodynamicAndStabilityManager_v2 {
 					plotMap.put(ComponentEnum.WING, wingPlotList);
 
 				}
-				else 
-					System.err.println("WARNING (IMPORT AERODYNAMIC AND STABILITY DATA): THE COMPONENT 'WING' HAS NOT BEEN DEFINED! IMPOSSIBLE TO READ THE PLOT LIST!");
 			}
 		}
+				else 
+					if(performWingAnalysis == true) {
+					System.err.println("WARNING (IMPORT AERODYNAMIC AND STABILITY DATA): THE COMPONENT 'WING' HAS NOT BEEN DEFINED! IMPOSSIBLE TO READ THE PLOT LIST!");
+					}
 		//...............................................................
 		// HTAIL:
 		String createHTailPlotProperty = MyXMLReaderUtils
@@ -1748,11 +1750,12 @@ public class ACAerodynamicAndStabilityManager_v2 {
 					plotMap.put(ComponentEnum.HORIZONTAL_TAIL, hTailPlotList);
 
 				}
-				else 
-					System.err.println("WARNING (IMPORT AERODYNAMIC AND STABILITY DATA): THE COMPONENT 'HORIZONTAL TAIL' HAS NOT BEEN DEFINED! IMPOSSIBLE TO READ THE PLOT LIST!");
 			}
 		}
-
+				else 
+					if(performHTailAnalysis == true) {
+					System.err.println("WARNING (IMPORT AERODYNAMIC AND STABILITY DATA): THE COMPONENT 'HORIZONTAL TAIL' HAS NOT BEEN DEFINED! IMPOSSIBLE TO READ THE PLOT LIST!");
+					}
 		//...............................................................
 		// CANARD:
 		String createCanardPlotProperty = MyXMLReaderUtils
@@ -1784,10 +1787,12 @@ public class ACAerodynamicAndStabilityManager_v2 {
 					plotMap.put(ComponentEnum.CANARD, canardPlotList);
 
 				}
-				else 
-					System.err.println("WARNING (IMPORT AERODYNAMIC AND STABILITY DATA): THE COMPONENT 'CANARD' HAS NOT BEEN DEFINED! IMPOSSIBLE TO READ THE PLOT LIST!");
 			}
 		}
+				else 
+					if(performCanardAnalysis == true) {
+					System.err.println("WARNING (IMPORT AERODYNAMIC AND STABILITY DATA): THE COMPONENT 'CANARD' HAS NOT BEEN DEFINED! IMPOSSIBLE TO READ THE PLOT LIST!");
+					}
 
 		//...............................................................
 		// VTAIL:
@@ -1819,10 +1824,13 @@ public class ACAerodynamicAndStabilityManager_v2 {
 					plotMap.put(ComponentEnum.VERTICAL_TAIL, vTailPlotList);
 
 				}
-				else 
-					System.err.println("WARNING (IMPORT AERODYNAMIC AND STABILITY DATA): THE COMPONENT 'VERTICAL TAIL' HAS NOT BEEN DEFINED! IMPOSSIBLE TO READ THE PLOT LIST!");
 			}
 		}
+				else 
+					if(performVTailAnalysis == true) {
+					System.err.println("WARNING (IMPORT AERODYNAMIC AND STABILITY DATA): THE COMPONENT 'VERTICAL TAIL' HAS NOT BEEN DEFINED! IMPOSSIBLE TO READ THE PLOT LIST!");
+					}
+		
 
 		//...............................................................
 		// FUSELAGE:
@@ -1843,11 +1851,13 @@ public class ACAerodynamicAndStabilityManager_v2 {
 					plotMap.put(ComponentEnum.FUSELAGE, fuselagePlotList);
 
 				}
-				else 
-					System.err.println("WARNING (IMPORT AERODYNAMIC AND STABILITY DATA): THE COMPONENT 'FUSELAGE' HAS NOT BEEN DEFINED! IMPOSSIBLE TO READ THE PLOT LIST!");
 			}
 		}
-
+				else 
+					if(performFuselageAnalysis == true) {
+					System.err.println("WARNING (IMPORT AERODYNAMIC AND STABILITY DATA): THE COMPONENT 'FUSELAGE' HAS NOT BEEN DEFINED! IMPOSSIBLE TO READ THE PLOT LIST!");
+					}
+		
 		//...............................................................
 		// NACELLE:
 		String createNacellesPlotProperty = MyXMLReaderUtils
@@ -1867,11 +1877,13 @@ public class ACAerodynamicAndStabilityManager_v2 {
 					plotMap.put(ComponentEnum.NACELLE, nacellesPlotList);
 
 				}
-				else 
-					System.err.println("WARNING (IMPORT AERODYNAMIC AND STABILITY DATA): THE COMPONENT 'NACELLES' HAS NOT BEEN DEFINED! IMPOSSIBLE TO READ THE PLOT LIST!");
 			}
 		}
-
+				else 
+					if(performNacellesAnalysis == true) {
+					System.err.println("WARNING (IMPORT AERODYNAMIC AND STABILITY DATA): THE COMPONENT 'NACELLES' HAS NOT BEEN DEFINED! IMPOSSIBLE TO READ THE PLOT LIST!");
+					}
+		
 		//...............................................................
 		// AIRCRAFT:
 		//...............................................................
@@ -2103,6 +2115,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 				NonSI.DEGREE_ANGLE
 				);
 
+		if(_theAerodynamicBuilderInterface.getTheAircraft().getHTail() != null) {
 		_deltaEForEquilibrium = MyArrayUtils.convertDoubleArrayToListOfAmount(
 				MyArrayUtils.linspace(
 						_theAerodynamicBuilderInterface.getTheAircraft().getHTail()
@@ -2112,7 +2125,9 @@ public class ACAerodynamicAndStabilityManager_v2 {
 						), 
 				NonSI.DEGREE_ANGLE
 				);
+		}
 
+		if(_theAerodynamicBuilderInterface.getTheAircraft().getVTail() != null) {
 		_deltaRForEquilibrium = MyArrayUtils.convertDoubleArrayToListOfAmount(
 				MyArrayUtils.linspace(
 						5,
@@ -2122,35 +2137,43 @@ public class ACAerodynamicAndStabilityManager_v2 {
 						),  
 				NonSI.DEGREE_ANGLE
 				);
-
+		}
+		
+		if(_theAerodynamicBuilderInterface.getTheAircraft().getWing() != null) {
 		_wingMomentumPole = Amount.valueOf(
 				_theAerodynamicBuilderInterface.getAdimensionalWingMomentumPole()
 				* _theAerodynamicBuilderInterface.getTheAircraft().getWing().getMeanAerodynamicChord().doubleValue(SI.METER)
 				+ _theAerodynamicBuilderInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeX().doubleValue(SI.METER),
 				SI.METER
 				);
+		}
 
+		if(_theAerodynamicBuilderInterface.getTheAircraft().getHTail() != null) {
 		_hTailMomentumPole = Amount.valueOf(
 				_theAerodynamicBuilderInterface.getAdimensionalHTailMomentumPole()
 				* _theAerodynamicBuilderInterface.getTheAircraft().getHTail().getMeanAerodynamicChord().doubleValue(SI.METER)
 				+ _theAerodynamicBuilderInterface.getTheAircraft().getHTail().getMeanAerodynamicChordLeadingEdgeX().doubleValue(SI.METER),
 				SI.METER
 				);
+		}
 
+		if(_theAerodynamicBuilderInterface.getTheAircraft().getVTail() != null) {
 		_vTailMomentumPole = Amount.valueOf(
 				_theAerodynamicBuilderInterface.getAdimensionalVTailMomentumPole()
 				* _theAerodynamicBuilderInterface.getTheAircraft().getVTail().getMeanAerodynamicChord().doubleValue(SI.METER)
 				+ _theAerodynamicBuilderInterface.getTheAircraft().getVTail().getMeanAerodynamicChordLeadingEdgeX().doubleValue(SI.METER),
 				SI.METER
 				);
+		}
 
+		if(_theAerodynamicBuilderInterface.getTheAircraft().getCanard() != null) {
 		_canardMomentumPole = Amount.valueOf(
 				_theAerodynamicBuilderInterface.getAdimensionalCanardMomentumPole()
 				* _theAerodynamicBuilderInterface.getTheAircraft().getCanard().getMeanAerodynamicChord().doubleValue(SI.METER)
 				+ _theAerodynamicBuilderInterface.getTheAircraft().getCanard().getMeanAerodynamicChordLeadingEdgeX().doubleValue(SI.METER),
 				SI.METER
 				);
-
+		}
 
 	}
 
@@ -2192,9 +2215,11 @@ public class ACAerodynamicAndStabilityManager_v2 {
 		//------------------------------------------------------------------------------
 		// WING
 		//------------------------------------------------------------------------------
+		
 		if(_theAerodynamicBuilderInterface.getTheAircraft().getWing() != null) {
 			if(_theAerodynamicBuilderInterface.isPerformWingAnalyses() == true) {
 
+				if(_theAerodynamicBuilderInterface.getTheAircraft().getCanard() != null) {
 
 				//------------
 				_alphaBodyList.stream()
@@ -2213,7 +2238,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 							.get(i)
 							)
 							.plus(
-									_theAerodynamicBuilderInterface.getTheAircraft().getCanard().getRiggingAngle().to(NonSI.DEGREE_ANGLE)));
+									_theAerodynamicBuilderInterface.getTheAircraft().getWing().getRiggingAngle().to(NonSI.DEGREE_ANGLE)));
 				}); 
 
 				_alphaWingCurrent = _alphaBodyCurrent.minus(
@@ -2229,8 +2254,23 @@ public class ACAerodynamicAndStabilityManager_v2 {
 										_alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE)),
 								NonSI.DEGREE_ANGLE)
 						).plus(
-								_theAerodynamicBuilderInterface.getTheAircraft().getCanard().getRiggingAngle().to(NonSI.DEGREE_ANGLE));
+								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getRiggingAngle().to(NonSI.DEGREE_ANGLE));
+				}
+				
+				if(_theAerodynamicBuilderInterface.getTheAircraft().getCanard() == null) {
+				
+					_alphaBodyList.stream()
+					.forEach(x -> {
+					_alphaWingList.add(x.to(NonSI.DEGREE_ANGLE)
+							.plus(
+									_theAerodynamicBuilderInterface.getTheAircraft().getWing().getRiggingAngle().to(NonSI.DEGREE_ANGLE)));
+				}); 
 
+				_alphaWingCurrent = _alphaBodyCurrent.plus(
+								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getRiggingAngle().to(NonSI.DEGREE_ANGLE));
+				}
+			
+				
 				_liftingSurfaceAerodynamicManagers.put(
 						ComponentEnum.WING,
 						new LiftingSurfaceAerodynamicsManager(
@@ -2250,8 +2290,6 @@ public class ACAerodynamicAndStabilityManager_v2 {
 			
 				ACAerodynamicAndStabilityManagerUtils.calculateCurrentWingLiftCurve(this);
 				
-			
-			
 			}
 		}
 
