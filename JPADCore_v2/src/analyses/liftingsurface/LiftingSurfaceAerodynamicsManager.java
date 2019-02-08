@@ -160,18 +160,18 @@ public class LiftingSurfaceAerodynamicsManager {
 	private Map <MethodEnum, Double> _deltaCMc4;
 	
 	// DRAG
-	private Map <MethodEnum, Double> _cD0;
-	private Map <MethodEnum, List<Double>> _cDParasite;
-	private Map <MethodEnum, Double> _cDGap;
-	private Map <MethodEnum, Double> _oswaldFactor;
-	private Map <MethodEnum, Double> _cDInduced;
-	private Map <MethodEnum, Double> _cDWave;
-	private Map <MethodEnum, Double[]> _polar3DCurve;
-	private Map <MethodEnum, Map<Amount<Angle>, List<Double>>> _parasiteDragCoefficientDistribution;
-	private Map <MethodEnum, Map<Amount<Angle>, List<Double>>> _inducedDragCoefficientDistribution;
-	private Map <MethodEnum, Map<Amount<Angle>, List<Double>>> _dragCoefficientDistribution;
-	private Map <MethodEnum, Map<Amount<Angle>, List<Amount<Force>>>> _dragDistribution;
-	private Map <MethodEnum, Double> _cDAtAlpha;
+	private Map <MethodEnum, Double> _cD0 = new HashMap<>();
+	private Map <MethodEnum, List<Double>> _cDParasite = new HashMap<>();
+	private Map <MethodEnum, Double> _cDGap = new HashMap<>();
+	private Map <MethodEnum, Double> _oswaldFactor = new HashMap<>();
+	private Map <MethodEnum, Double> _cDInduced = new HashMap<>();
+	private Map <MethodEnum, Double> _cDWave = new HashMap<>();
+	private Map <MethodEnum, Double[]> _polar3DCurve = new HashMap<>();
+	private Map <MethodEnum, Map<Amount<Angle>, List<Double>>> _parasiteDragCoefficientDistribution = new HashMap<>();
+	private Map <MethodEnum, Map<Amount<Angle>, List<Double>>> _inducedDragCoefficientDistribution = new HashMap<>();
+	private Map <MethodEnum, Map<Amount<Angle>, List<Double>>> _dragCoefficientDistribution = new HashMap<>();
+	private Map <MethodEnum, Map<Amount<Angle>, List<Amount<Force>>>> _dragDistribution = new HashMap<>();
+	private Map <MethodEnum, Double> _cDAtAlpha = new HashMap<>();
 
 	// PITCHING MOMENT
 	private Map <MethodEnum, Double> _cMac;
@@ -223,21 +223,25 @@ public class LiftingSurfaceAerodynamicsManager {
 			this._currentMachNumber = this._theOperatingConditions.getMachTakeOff();
 			this._currentAltitude = this._theOperatingConditions.getAltitudeTakeOff();
 			this._currentAlpha = this._theOperatingConditions.getAlphaTakeOff();
+			this._currentDeltaTemperature = this._theOperatingConditions.getDeltaTemperatureTakeOff();
 			break;
 		case CLIMB:
 			this._currentMachNumber = this._theOperatingConditions.getMachClimb();
 			this._currentAltitude = this._theOperatingConditions.getAltitudeClimb();
 			this._currentAlpha = this._theOperatingConditions.getAlphaClimb();
+			this._currentDeltaTemperature = this._theOperatingConditions.getDeltaTemperatureClimb();
 			break;
 		case CRUISE:
 			this._currentMachNumber = this._theOperatingConditions.getMachCruise();
 			this._currentAltitude = this._theOperatingConditions.getAltitudeCruise();
 			this._currentAlpha = this._theOperatingConditions.getAlphaCruise();
+			this._currentDeltaTemperature = this._theOperatingConditions.getDeltaTemperatureCruise();
 			break;
 		case LANDING:
 			this._currentMachNumber = this._theOperatingConditions.getMachLanding();
 			this._currentAltitude = this._theOperatingConditions.getAltitudeLanding();
 			this._currentAlpha = this._theOperatingConditions.getAlphaLanding();
+			this._currentDeltaTemperature = this._theOperatingConditions.getDeltaTemperatureLanding();
 			break;
 		default:
 			break;
@@ -2328,7 +2332,7 @@ public class LiftingSurfaceAerodynamicsManager {
 			double cD0Gap = DragCalc.calculateCDGap(_theLiftingSurface);
 
 			_cDGap.put(
-					MethodEnum.AIRFOIL_DISTRIBUTION,
+					MethodEnum.SEMIEMPIRICAL,
 					cD0Gap);
 		}
 	}
