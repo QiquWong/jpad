@@ -239,8 +239,19 @@ public class Test37mds {
 		OCCWire nacelleIntakeWire = sortedNacelleFreeWires.get(1);	
 		OCCWire nacelleRearWire = sortedNacelleFreeWires.get(2);	
 		
+		gp_Pnt nacelleTipWireCG = OCCUtils.getShapeCG(nacelleTipWire);
 		gp_Pnt nacelleIntakeWireCG = OCCUtils.getShapeCG(nacelleIntakeWire);
 		gp_Pnt nacelleRearWireCG = OCCUtils.getShapeCG(nacelleRearWire); 
+		
+		// Get the hub diameter
+		List<CADVertex> zSortedTipWireVtx = nacelleTipWire.vertices().stream()
+				.sorted(Comparator.comparing(v -> v.pnt()[2]))
+				.collect(Collectors.toList());	
+		
+		double hubWireDiameter = zSortedTipWireVtx.get(nacelleTipWire.vertices().size() - 1).pnt()[2] - 
+								  zSortedTipWireVtx.get(0).pnt()[2];
+		
+		System.out.println("Hub wire diameter: " + hubWireDiameter);
 		
 		// ----------------------------
 		// Generate the propeller hub
@@ -531,9 +542,20 @@ public class Test37mds {
 		TopExp_Explorer filletExp = new TopExp_Explorer();
 		filletExp.Init(filletMaker2.Shape(), TopAbs_ShapeEnum.TopAbs_SOLID);
 		
-		OCCSolid solidNacelle = (OCCSolid) OCCUtils.theFactory.newShape(TopoDS.ToSolid(filletExp.Current()));	
+		OCCSolid solidNacelle0 = (OCCSolid) OCCUtils.theFactory.newShape(TopoDS.ToSolid(filletExp.Current()));	
 		
-		tpNacelleShapes.add(solidNacelle);
+		// ------------------
+		// Final translation
+		// ------------------
+		gp_Trsf finalTranslate = new gp_Trsf();
+		finalTranslate.SetTranslation(nacelleTipWireCG, new gp_Pnt(0.0, 0.0, zMin[0] + refNacelleHeight/2));
+		
+		OCCSolid soliNacelle = (OCCSolid) OCCUtils.theFactory.newShape(
+				TopoDS.ToSolid(
+						new BRepBuilderAPI_Transform(solidNacelle0.getShape(), finalTranslate, 0).Shape()
+						));
+		
+		tpNacelleShapes.add(soliNacelle);
 		
 		// ----------------------------
 		// Explore the BLADE shapes
