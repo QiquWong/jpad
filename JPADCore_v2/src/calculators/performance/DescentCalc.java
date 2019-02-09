@@ -750,7 +750,10 @@ public class DescentCalc {
 		}
 		
 		_thrustPerStep.add(interpolatedThrustList.get(0));
-		_throttlePerStep.add(_thrustPerStep.get(0).doubleValue(SI.NEWTON) / _theAircraft.getPowerPlant().getT0Total().doubleValue(SI.NEWTON));
+		_throttlePerStep.add(
+				_thrustPerStep.get(0).doubleValue(SI.NEWTON) 
+				/ _cruiseThrustFromDatabase.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
+				);
 		_interpolatedSFCList.add(
 				(_sfcCruiseList.get(0)*weightCruise.get(0))
 				+ (_sfcFlightIdleList.get(0)*weightFlightIdle.get(0))
@@ -789,7 +792,7 @@ public class DescentCalc {
 				);
 		
 		/* Step by step calculation */
-		for(int i=1; i<_descentAltitudes.size()-1; i++) {
+		for(int i=1; i<_descentAltitudes.size(); i++) {
 			sigmaList.add(
 					OperatingConditions.getAtmosphere(
 							_descentAltitudes.get(i).doubleValue(SI.METER),
@@ -843,7 +846,7 @@ public class DescentCalc {
 							Amount.valueOf(
 									( (horizontalSpeedListTAS.get(i).doubleValue(SI.METERS_PER_SECOND)
 											+ horizontalSpeedListTAS.get(i-1).doubleValue(SI.METERS_PER_SECOND)) / 2 )
-									*(_descentTimes.get(i).doubleValue(SI.SECOND) - _descentTimes.get(i).doubleValue(SI.SECOND)),
+									*(_descentTimes.get(i).doubleValue(SI.SECOND) - _descentTimes.get(i-1).doubleValue(SI.SECOND)),
 									SI.METER
 									)
 							.to(NonSI.NAUTICAL_MILE)
@@ -1298,15 +1301,21 @@ public class DescentCalc {
 					_interpolatedEmissionIndexSOxList.remove(i);
 					_interpolatedEmissionIndexH2OList.remove(i);
 					_fuelUsedPerStep.remove(i);
-					_aircraftMassPerStep.remove(i);
-					_cLSteps.remove(i);
-					_cDSteps.remove(i);
-					_efficiencyPerStep.remove(i);
-					_dragPerStep.remove(i);
+					_emissionNOxPerStep.remove(i);
+					_emissionCOPerStep.remove(i);
+					_emissionHCPerStep.remove(i);
+					_emissionSootPerStep.remove(i);
+					_emissionCO2PerStep.remove(i);
+					_emissionSOxPerStep.remove(i);
+					_emissionH2OPerStep.remove(i);
 				}
 				
 				_thrustPerStep.add(i, interpolatedThrustList.get(i));
-				_throttlePerStep.add(i, _thrustPerStep.get(i).doubleValue(SI.NEWTON) / _theAircraft.getPowerPlant().getT0Total().doubleValue(SI.NEWTON));
+				_throttlePerStep.add(
+						i, 
+						_thrustPerStep.get(i).doubleValue(SI.NEWTON) / 
+						_cruiseThrustFromDatabase.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
+						);
 				_interpolatedSFCList.add(
 						(_sfcCruiseList.get(i)*weightCruise.get(i))
 						+ (_sfcFlightIdleList.get(i)*weightFlightIdle.get(i))
@@ -1439,6 +1448,8 @@ public class DescentCalc {
 										)
 								)
 						);
+				
+				_aircraftMassPerStep.remove(i);
 				_aircraftMassPerStep.add(
 						i,
 						_aircraftMassPerStep.get(i-1)
@@ -1447,6 +1458,8 @@ public class DescentCalc {
 								SI.KILOGRAM)
 								)
 						);
+				
+				_cLSteps.remove(i);
 				_cLSteps.add(
 						i,
 						LiftCalc.calculateLiftCoeff(
@@ -1462,6 +1475,8 @@ public class DescentCalc {
 								_theOperatingConditions.getDeltaTemperatureCruise()
 								)
 						);
+				
+				_cDSteps.remove(i);
 				_cDSteps.add(
 						i,
 						MyMathUtils.getInterpolatedValue1DLinear(
@@ -1479,11 +1494,15 @@ public class DescentCalc {
 										)
 								)
 						);
+				
+				_efficiencyPerStep.remove(i);
 				_efficiencyPerStep.add(
 						i,
 						_cLSteps.get(i)
 						/_cDSteps.get(i)
 						);
+				
+				_dragPerStep.remove(i);
 				_dragPerStep.add(
 						i,
 						DragCalc.calculateDragAtSpeed(

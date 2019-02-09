@@ -226,6 +226,316 @@ public class MissionProfileCalc {
 	private Map<MissionPhasesEnum, List<Amount<Energy>>> fuelEnergyMap;
 	private Map<MissionPhasesEnum, List<Amount<Energy>>> batteryEnergyMap;	
 	
+	//----------------------------------------------------------------------
+	// QUANTITES TO BE ADDED IN MAPS PER PHASE AT THE END OF THE ITERATION
+	//----------------------------------------------------------------------
+	// TAKE-OFF
+	private List<Amount<Length>> rangeTakeOff;
+	private List<Amount<Length>> altitudeTakeOff;
+	private List<Amount<Duration>> timeTakeOff;
+	private List<Amount<Mass>> fuelUsedTakeOff;
+	private List<Amount<Mass>> aircraftMassTakeOff;
+	private List<Amount<Mass>> emissionNOxTakeOff;
+	private List<Amount<Mass>> emissionCOTakeOff;
+	private List<Amount<Mass>> emissionHCTakeOff;
+	private List<Amount<Mass>> emissionSootTakeOff;
+	private List<Amount<Mass>> emissionCO2TakeOff;
+	private List<Amount<Mass>> emissionSOxTakeOff;
+	private List<Amount<Mass>> emissionH2OTakeOff;
+	private List<Amount<Velocity>> speedTASTakeOff;
+	private List<Amount<Velocity>> speedCASTakeOff;
+	private List<Double> machTakeOff;
+	private List<Double> cLTakeOff;
+	private List<Double> cDTakeOff;
+	private List<Double> efficiencyTakeOff;		
+	private List<Amount<Force>> dragTakeOff;
+	private List<Amount<Force>> totalThrustTakeOff;
+	private List<Amount<Force>> thermicThrustTakeOff;
+	private List<Amount<Force>> electricThrustTakeOff;
+	private List<Double> throttleTakeOff;
+	private List<Double> sfcTakeOff;
+	private List<Double> fuelFlowTakeOff;
+	private List<Amount<Velocity>> rateOfClimbTakeOff;
+	private List<Amount<Angle>> climbAngleTakeOff;
+	private List<Amount<Power>> fuelPowerTakeOff;
+	private List<Amount<Power>> batteryPowerTakeOff;
+	private List<Amount<Energy>> fuelEnergyTakeOff;
+	private List<Amount<Energy>> batteryEnergyTakeOff;
+	
+	//......................................................................
+	// CLIMB
+	private List<Amount<Length>> rangeClimb;
+	private List<Amount<Length>> altitudeClimb;
+	private List<Amount<Duration>> timeClimb;
+	private List<Amount<Mass>> fuelUsedClimb;
+	private List<Amount<Mass>> aircraftMassClimb;
+	private List<Amount<Mass>> emissionNOxClimb;
+	private List<Amount<Mass>> emissionCOClimb;
+	private List<Amount<Mass>> emissionHCClimb;
+	private List<Amount<Mass>> emissionSootClimb;
+	private List<Amount<Mass>> emissionCO2Climb;
+	private List<Amount<Mass>> emissionSOxClimb;
+	private List<Amount<Mass>> emissionH2OClimb;
+	private List<Amount<Velocity>> speedTASClimb;
+	private List<Amount<Velocity>> speedCASClimb;
+	private List<Double> machClimb;
+	private List<Double> cLClimb;
+	private List<Double> cDClimb;
+	private List<Double> efficiencyClimb;		
+	private List<Amount<Force>> dragClimb;
+	private List<Amount<Force>> totalThrustClimb;
+	private List<Amount<Force>> thermicThrustClimb;
+	private List<Amount<Force>> electricThrustClimb;
+	private List<Double> throttleClimb;
+	private List<Double> sfcClimb;
+	private List<Double> fuelFlowClimb;
+	private List<Amount<Velocity>> rateOfClimbClimb;
+	private List<Amount<Angle>> climbAngleClimb;
+	private List<Amount<Power>> fuelPowerClimb;
+	private List<Amount<Power>> batteryPowerClimb;
+	private List<Amount<Energy>> fuelEnergyClimb;
+	private List<Amount<Energy>> batteryEnergyClimb;
+	
+	//......................................................................
+	// CRUISE
+	private List<Amount<Length>> rangeCruise;
+	private List<Amount<Length>> altitudeCruise;
+	private List<Amount<Duration>> timeCruise;
+	private List<Amount<Mass>> fuelUsedCruise;
+	private List<Amount<Mass>> aircraftMassCruise;
+	private List<Amount<Mass>> emissionNOxCruise;
+	private List<Amount<Mass>> emissionCOCruise;
+	private List<Amount<Mass>> emissionHCCruise;
+	private List<Amount<Mass>> emissionSootCruise;
+	private List<Amount<Mass>> emissionCO2Cruise;
+	private List<Amount<Mass>> emissionSOxCruise;
+	private List<Amount<Mass>> emissionH2OCruise;
+	private List<Amount<Velocity>> speedTASCruise;
+	private List<Amount<Velocity>> speedCASCruise;
+	private List<Double> machCruise;
+	private List<Double> cLCruise;
+	private List<Double> cDCruise;
+	private List<Double> efficiencyCruise;		
+	private List<Amount<Force>> dragCruise;
+	private List<Amount<Force>> totalThrustCruise;
+	private List<Amount<Force>> thermicThrustCruise;
+	private List<Amount<Force>> electricThrustCruise;
+	private List<Double> throttleCruise;
+	private List<Double> sfcCruise;
+	private List<Double> fuelFlowCruise;
+	private List<Amount<Velocity>> rateOfClimbCruise;
+	private List<Amount<Angle>> climbAngleCruise;
+	private List<Amount<Power>> fuelPowerCruise;
+	private List<Amount<Power>> batteryPowerCruise;
+	private List<Amount<Energy>> fuelEnergyCruise;
+	private List<Amount<Energy>> batteryEnergyCruise;
+	
+	//......................................................................
+	// FIRST DESCENT
+	private List<Amount<Length>> rangeFirstDescent;
+	private List<Amount<Length>> altitudeFirstDescent;
+	private List<Amount<Duration>> timeFirstDescent;
+	private List<Amount<Mass>> fuelUsedFirstDescent;
+	private List<Amount<Mass>> aircraftMassFirstDescent;
+	private List<Amount<Mass>> emissionNOxFirstDescent;
+	private List<Amount<Mass>> emissionCOFirstDescent;
+	private List<Amount<Mass>> emissionHCFirstDescent;
+	private List<Amount<Mass>> emissionSootFirstDescent;
+	private List<Amount<Mass>> emissionCO2FirstDescent;
+	private List<Amount<Mass>> emissionSOxFirstDescent;
+	private List<Amount<Mass>> emissionH2OFirstDescent;
+	private List<Amount<Velocity>> speedTASFirstDescent;
+	private List<Amount<Velocity>> speedCASFirstDescent;
+	private List<Double> machFirstDescent;
+	private List<Double> cLFirstDescent;
+	private List<Double> cDFirstDescent;
+	private List<Double> efficiencyFirstDescent;		
+	private List<Amount<Force>> dragFirstDescent;
+	private List<Amount<Force>> totalThrustFirstDescent;
+	private List<Amount<Force>> thermicThrustFirstDescent;
+	private List<Amount<Force>> electricThrustFirstDescent;
+	private List<Double> throttleFirstDescent;
+	private List<Double> sfcFirstDescent;
+	private List<Double> fuelFlowFirstDescent;
+	private List<Amount<Velocity>> rateOfClimbFirstDescent;
+	private List<Amount<Angle>> climbAngleFirstDescent;
+	private List<Amount<Power>> fuelPowerFirstDescent;
+	private List<Amount<Power>> batteryPowerFirstDescent;
+	private List<Amount<Energy>> fuelEnergyFirstDescent;
+	private List<Amount<Energy>> batteryEnergyFirstDescent;
+	
+	//......................................................................
+	// SECOND CLIMB
+	private List<Amount<Length>> rangeSecondClimb;
+	private List<Amount<Length>> altitudeSecondClimb;
+	private List<Amount<Duration>> timeSecondClimb;
+	private List<Amount<Mass>> fuelUsedSecondClimb;
+	private List<Amount<Mass>> aircraftMassSecondClimb;
+	private List<Amount<Mass>> emissionNOxSecondClimb;
+	private List<Amount<Mass>> emissionCOSecondClimb;
+	private List<Amount<Mass>> emissionHCSecondClimb;
+	private List<Amount<Mass>> emissionSootSecondClimb;
+	private List<Amount<Mass>> emissionCO2SecondClimb;
+	private List<Amount<Mass>> emissionSOxSecondClimb ;
+	private List<Amount<Mass>> emissionH2OSecondClimb ;
+	private List<Amount<Velocity>> speedTASSecondClimb;
+	private List<Amount<Velocity>> speedCASSecondClimb;
+	private List<Double> machSecondClimb;
+	private List<Double> cLSecondClimb;
+	private List<Double> cDSecondClimb;
+	private List<Double> efficiencySecondClimb;		
+	private List<Amount<Force>> dragSecondClimb;
+	private List<Amount<Force>> totalThrustSecondClimb;
+	private List<Amount<Force>> thermicThrustSecondClimb;
+	private List<Amount<Force>> electricThrustSecondClimb;
+	private List<Double> throttleSecondClimb;
+	private List<Double> sfcSecondClimb;
+	private List<Double> fuelFlowSecondClimb;
+	private List<Amount<Velocity>> rateOfClimbSecondClimb;
+	private List<Amount<Angle>> climbAngleSecondClimb;
+	private List<Amount<Power>> fuelPowerSecondClimb;
+	private List<Amount<Power>> batteryPowerSecondClimb;
+	private List<Amount<Energy>> fuelEnergySecondClimb;
+	private List<Amount<Energy>> batteryEnergySecondClimb;
+	
+	//......................................................................
+	// ALTERNATE CRUISE
+	private List<Amount<Length>> rangeAlternateCruise;
+	private List<Amount<Length>> altitudeAlternateCruise;
+	private List<Amount<Duration>> timeAlternateCruise;
+	private List<Amount<Mass>> fuelUsedAlternateCruise;
+	private List<Amount<Mass>> aircraftMassAlternateCruise;
+	private List<Amount<Mass>> emissionNOxAlternateCruise;
+	private List<Amount<Mass>> emissionCOAlternateCruise;
+	private List<Amount<Mass>> emissionHCAlternateCruise;
+	private List<Amount<Mass>> emissionSootAlternateCruise;
+	private List<Amount<Mass>> emissionCO2AlternateCruise;
+	private List<Amount<Mass>> emissionSOxAlternateCruise;
+	private List<Amount<Mass>> emissionH2OAlternateCruise;
+	private List<Amount<Velocity>> speedTASAlternateCruise;
+	private List<Amount<Velocity>> speedCASAlternateCruise;
+	private List<Double> machAlternateCruise;
+	private List<Double> cLAlternateCruise;
+	private List<Double> cDAlternateCruise;
+	private List<Double> efficiencyAlternateCruise;		
+	private List<Amount<Force>> dragAlternateCruise;
+	private List<Amount<Force>> totalThrustAlternateCruise;
+	private List<Amount<Force>> thermicThrustAlternateCruise;
+	private List<Amount<Force>> electricThrustAlternateCruise;
+	private List<Double> throttleAlternateCruise;
+	private List<Double> sfcAlternateCruise;
+	private List<Double> fuelFlowAlternateCruise;
+	private List<Amount<Velocity>> rateOfClimbAlternateCruise;
+	private List<Amount<Angle>> climbAngleAlternateCruise;
+	private List<Amount<Power>> fuelPowerAlternateCruise;
+	private List<Amount<Power>> batteryPowerAlternateCruise;
+	private List<Amount<Energy>> fuelEnergyAlternateCruise;
+	private List<Amount<Energy>> batteryEnergyAlternateCruise;
+	
+	//......................................................................
+	// SECOND DESCENT
+	private List<Amount<Length>> rangeSecondDescent;
+	private List<Amount<Length>> altitudeSecondDescent;
+	private List<Amount<Duration>> timeSecondDescent;
+	private List<Amount<Mass>> fuelUsedSecondDescent;
+	private List<Amount<Mass>> aircraftMassSecondDescent;
+	private List<Amount<Mass>> emissionNOxSecondDescent;
+	private List<Amount<Mass>> emissionCOSecondDescent;
+	private List<Amount<Mass>> emissionHCSecondDescent;
+	private List<Amount<Mass>> emissionSootSecondDescent;
+	private List<Amount<Mass>> emissionCO2SecondDescent;
+	private List<Amount<Mass>> emissionSOxSecondDescent;
+	private List<Amount<Mass>> emissionH2OSecondDescent;
+	private List<Amount<Velocity>> speedTASSecondDescent;
+	private List<Amount<Velocity>> speedCASSecondDescent;
+	private List<Double> machSecondDescent;
+	private List<Double> cLSecondDescent;
+	private List<Double> cDSecondDescent;
+	private List<Double> efficiencySecondDescent;		
+	private List<Amount<Force>> dragSecondDescent;
+	private List<Amount<Force>> totalThrustSecondDescent;
+	private List<Amount<Force>> thermicThrustSecondDescent;
+	private List<Amount<Force>> electricThrustSecondDescent;
+	private List<Double> throttleSecondDescent;
+	private List<Double> sfcSecondDescent;
+	private List<Double> fuelFlowSecondDescent;
+	private List<Amount<Velocity>> rateOfClimbSecondDescent;
+	private List<Amount<Angle>> climbAngleSecondDescent;
+	private List<Amount<Power>> fuelPowerSecondDescent;
+	private List<Amount<Power>> batteryPowerSecondDescent;
+	private List<Amount<Energy>> fuelEnergySecondDescent;
+	private List<Amount<Energy>> batteryEnergySecondDescent;
+	
+	//......................................................................
+	// HOLDING
+	private List<Amount<Length>> rangeHolding;
+	private List<Amount<Length>> altitudeHolding;
+	private List<Amount<Duration>> timeHolding;
+	private List<Amount<Mass>> fuelUsedHolding;
+	private List<Amount<Mass>> aircraftMassHolding;
+	private List<Amount<Mass>> emissionNOxHolding;
+	private List<Amount<Mass>> emissionCOHolding;
+	private List<Amount<Mass>> emissionHCHolding;
+	private List<Amount<Mass>> emissionSootHolding;
+	private List<Amount<Mass>> emissionCO2Holding;
+	private List<Amount<Mass>> emissionSOxHolding;
+	private List<Amount<Mass>> emissionH2OHolding;
+	private List<Amount<Velocity>> speedTASHolding;
+	private List<Amount<Velocity>> speedCASHolding;
+	private List<Double> machHolding;
+	private List<Double> cLHolding;
+	private List<Double> cDHolding;
+	private List<Double> efficiencyHolding;		
+	private List<Amount<Force>> dragHolding;
+	private List<Amount<Force>> totalThrustHolding;
+	private List<Amount<Force>> thermicThrustHolding;
+	private List<Amount<Force>> electricThrustHolding;
+	private List<Double> throttleHolding;
+	private List<Double> sfcHolding;
+	private List<Double> fuelFlowHolding;
+	private List<Amount<Velocity>> rateOfClimbHolding;
+	private List<Amount<Angle>> climbAngleHolding;
+	private List<Amount<Power>> fuelPowerHolding;
+	private List<Amount<Power>> batteryPowerHolding;
+	private List<Amount<Energy>> fuelEnergyHolding;
+	private List<Amount<Energy>> batteryEnergyHolding;
+	
+	//......................................................................
+	// LANDING
+	private List<Amount<Length>> rangeLanding;
+	private List<Amount<Length>> altitudeLanding;
+	private List<Amount<Duration>> timeLanding;
+	private List<Amount<Mass>> fuelUsedLanding;
+	private List<Amount<Mass>> aircraftMassLanding;
+	private List<Amount<Mass>> emissionNOxLanding;
+	private List<Amount<Mass>> emissionCOLanding;
+	private List<Amount<Mass>> emissionHCLanding;
+	private List<Amount<Mass>> emissionSootLanding;
+	private List<Amount<Mass>> emissionCO2Landing;
+	private List<Amount<Mass>> emissionSOxLanding;
+	private List<Amount<Mass>> emissionH2OLanding;
+	private List<Amount<Velocity>> speedTASLanding;
+	private List<Amount<Velocity>> speedCASLanding;
+	private List<Double> machLanding;
+	private List<Double> cLLanding;
+	private List<Double> cDLanding;
+	private List<Double> efficiencyLanding;		
+	private List<Amount<Force>> dragLanding;
+	private List<Amount<Force>> totalThrustLanding;
+	private List<Amount<Force>> thermicThrustLanding;
+	private List<Amount<Force>> electricThrustLanding;
+	private List<Double> throttleLanding;
+	private List<Double> sfcLanding;
+	private List<Double> fuelFlowLanding;
+	private List<Amount<Velocity>> rateOfClimbLanding;
+	private List<Amount<Angle>> climbAngleLanding;
+	private List<Amount<Power>> fuelPowerLanding;
+	private List<Amount<Power>> batteryPowerLanding;
+	private List<Amount<Energy>> fuelEnergyLanding;
+	private List<Amount<Energy>> batteryEnergyLanding;
+	
+	//......................................................................
+	// TOTAL OUTPUT QUANTITIES
 	private Amount<Mass> initialFuelMass;
 	private Amount<Mass> initialMissionMass;
 	private Amount<Mass> endMissionMass;
@@ -472,11 +782,323 @@ public class MissionProfileCalc {
 	//--------------------------------------------------------------------------------------------
 	// METHODS:
 
-	/*
-	 * FIXME: CHECK LOOP ON CRUISE RANGE, ALTERNATE RANGE AND FUEL MASS.
-	 * 		  SOME PHASES ARE WRITTEN TWICE IN THE OUTPUT.
-	 * 		  CHARTS MUST BE FIXED SUMMING UP ALL PHASES DATA (NOW EACH PHASE IS INDEPENDENT). 
-	 */
+	private void initializePhasesLists(boolean isCruiseLoop, boolean isAlternateCruiseLoop) {
+
+		if(isCruiseLoop == false && isAlternateCruiseLoop == false) {
+
+			//----------------------------------------------------------------------
+			// TAKE-OFF
+			this.rangeTakeOff = new ArrayList<>();
+			this.altitudeTakeOff = new ArrayList<>();
+			this.timeTakeOff = new ArrayList<>();
+			this.fuelUsedTakeOff = new ArrayList<>();
+			this.aircraftMassTakeOff = new ArrayList<>();
+			this.emissionNOxTakeOff = new ArrayList<>();
+			this.emissionCOTakeOff = new ArrayList<>();
+			this.emissionHCTakeOff = new ArrayList<>();
+			this.emissionSootTakeOff = new ArrayList<>();
+			this.emissionCO2TakeOff = new ArrayList<>();
+			this.emissionSOxTakeOff = new ArrayList<>();
+			this.emissionH2OTakeOff = new ArrayList<>();
+			this.speedTASTakeOff = new ArrayList<>();
+			this.speedCASTakeOff = new ArrayList<>();
+			this.machTakeOff = new ArrayList<>();
+			this.cLTakeOff = new ArrayList<>();
+			this.cDTakeOff = new ArrayList<>();
+			this.efficiencyTakeOff = new ArrayList<>();		
+			this.dragTakeOff = new ArrayList<>();
+			this.totalThrustTakeOff = new ArrayList<>();
+			this.thermicThrustTakeOff = new ArrayList<>();
+			this.electricThrustTakeOff = new ArrayList<>();
+			this.throttleTakeOff = new ArrayList<>();
+			this.sfcTakeOff = new ArrayList<>();
+			this.fuelFlowTakeOff = new ArrayList<>();
+			this.rateOfClimbTakeOff = new ArrayList<>();
+			this.climbAngleTakeOff = new ArrayList<>();
+			this.fuelPowerTakeOff = new ArrayList<>();
+			this.batteryPowerTakeOff = new ArrayList<>();
+			this.fuelEnergyTakeOff = new ArrayList<>();
+			this.batteryEnergyTakeOff = new ArrayList<>();
+
+			//......................................................................
+			// CLIMB
+			this.rangeClimb = new ArrayList<>();
+			this.altitudeClimb = new ArrayList<>();
+			this.timeClimb = new ArrayList<>();
+			this.fuelUsedClimb = new ArrayList<>();
+			this.aircraftMassClimb = new ArrayList<>();
+			this.emissionNOxClimb = new ArrayList<>();
+			this.emissionCOClimb = new ArrayList<>();
+			this.emissionHCClimb = new ArrayList<>();
+			this.emissionSootClimb = new ArrayList<>();
+			this.emissionCO2Climb = new ArrayList<>();
+			this.emissionSOxClimb = new ArrayList<>();
+			this.emissionH2OClimb = new ArrayList<>();
+			this.speedTASClimb = new ArrayList<>();
+			this.speedCASClimb = new ArrayList<>();
+			this.machClimb = new ArrayList<>();
+			this.cLClimb = new ArrayList<>();
+			this.cDClimb = new ArrayList<>();
+			this.efficiencyClimb = new ArrayList<>();		
+			this.dragClimb = new ArrayList<>();
+			this.totalThrustClimb = new ArrayList<>();
+			this.thermicThrustClimb = new ArrayList<>();
+			this.electricThrustClimb = new ArrayList<>();
+			this.throttleClimb = new ArrayList<>();
+			this.sfcClimb = new ArrayList<>();
+			this.fuelFlowClimb = new ArrayList<>();
+			this.rateOfClimbClimb = new ArrayList<>();
+			this.climbAngleClimb = new ArrayList<>();
+			this.fuelPowerClimb = new ArrayList<>();
+			this.batteryPowerClimb = new ArrayList<>();
+			this.fuelEnergyClimb = new ArrayList<>();
+			this.batteryEnergyClimb = new ArrayList<>();
+
+		}
+
+		if (isAlternateCruiseLoop == false) {
+
+			//......................................................................
+			// CRUISE
+			this.rangeCruise = new ArrayList<>();
+			this.altitudeCruise = new ArrayList<>();
+			this.timeCruise = new ArrayList<>();
+			this.fuelUsedCruise = new ArrayList<>();
+			this.aircraftMassCruise = new ArrayList<>();
+			this.emissionNOxCruise = new ArrayList<>();
+			this.emissionCOCruise = new ArrayList<>();
+			this.emissionHCCruise = new ArrayList<>();
+			this.emissionSootCruise = new ArrayList<>();
+			this.emissionCO2Cruise = new ArrayList<>();
+			this.emissionSOxCruise = new ArrayList<>();
+			this.emissionH2OCruise = new ArrayList<>();
+			this.speedTASCruise = new ArrayList<>();
+			this.speedCASCruise = new ArrayList<>();
+			this.machCruise = new ArrayList<>();
+			this.cLCruise = new ArrayList<>();
+			this.cDCruise = new ArrayList<>();
+			this.efficiencyCruise = new ArrayList<>();		
+			this.dragCruise = new ArrayList<>();
+			this.totalThrustCruise = new ArrayList<>();
+			this.thermicThrustCruise = new ArrayList<>();
+			this.electricThrustCruise = new ArrayList<>();
+			this.throttleCruise = new ArrayList<>();
+			this.sfcCruise = new ArrayList<>();
+			this.fuelFlowCruise = new ArrayList<>();
+			this.rateOfClimbCruise = new ArrayList<>();
+			this.climbAngleCruise = new ArrayList<>();
+			this.fuelPowerCruise = new ArrayList<>();
+			this.batteryPowerCruise = new ArrayList<>();
+			this.fuelEnergyCruise = new ArrayList<>();
+			this.batteryEnergyCruise = new ArrayList<>();
+
+			//......................................................................
+			// FIRST DESCENT
+			this.rangeFirstDescent = new ArrayList<>();
+			this.altitudeFirstDescent = new ArrayList<>();
+			this.timeFirstDescent = new ArrayList<>();
+			this.fuelUsedFirstDescent = new ArrayList<>();
+			this.aircraftMassFirstDescent = new ArrayList<>();
+			this.emissionNOxFirstDescent = new ArrayList<>();
+			this.emissionCOFirstDescent = new ArrayList<>();
+			this.emissionHCFirstDescent = new ArrayList<>();
+			this.emissionSootFirstDescent = new ArrayList<>();
+			this.emissionCO2FirstDescent = new ArrayList<>();
+			this.emissionSOxFirstDescent = new ArrayList<>();
+			this.emissionH2OFirstDescent = new ArrayList<>();
+			this.speedTASFirstDescent = new ArrayList<>();
+			this.speedCASFirstDescent = new ArrayList<>();
+			this.machFirstDescent = new ArrayList<>();
+			this.cLFirstDescent = new ArrayList<>();
+			this.cDFirstDescent = new ArrayList<>();
+			this.efficiencyFirstDescent = new ArrayList<>();		
+			this.dragFirstDescent = new ArrayList<>();
+			this.totalThrustFirstDescent = new ArrayList<>();
+			this.thermicThrustFirstDescent = new ArrayList<>();
+			this.electricThrustFirstDescent = new ArrayList<>();
+			this.throttleFirstDescent = new ArrayList<>();
+			this.sfcFirstDescent = new ArrayList<>();
+			this.fuelFlowFirstDescent = new ArrayList<>();
+			this.rateOfClimbFirstDescent = new ArrayList<>();
+			this.climbAngleFirstDescent = new ArrayList<>();
+			this.fuelPowerFirstDescent = new ArrayList<>();
+			this.batteryPowerFirstDescent = new ArrayList<>();
+			this.fuelEnergyFirstDescent = new ArrayList<>();
+			this.batteryEnergyFirstDescent = new ArrayList<>();
+
+			//......................................................................
+			// SECOND CLIMB
+			this.rangeSecondClimb = new ArrayList<>();
+			this.altitudeSecondClimb = new ArrayList<>();
+			this.timeSecondClimb = new ArrayList<>();
+			this.fuelUsedSecondClimb = new ArrayList<>();
+			this.aircraftMassSecondClimb = new ArrayList<>();
+			this.emissionNOxSecondClimb = new ArrayList<>();
+			this.emissionCOSecondClimb = new ArrayList<>();
+			this.emissionHCSecondClimb = new ArrayList<>();
+			this.emissionSootSecondClimb = new ArrayList<>();
+			this.emissionCO2SecondClimb = new ArrayList<>();
+			this.emissionSOxSecondClimb  = new ArrayList<>();
+			this.emissionH2OSecondClimb  = new ArrayList<>();
+			this.speedTASSecondClimb = new ArrayList<>();
+			this.speedCASSecondClimb = new ArrayList<>();
+			this.machSecondClimb = new ArrayList<>();
+			this.cLSecondClimb = new ArrayList<>();
+			this.cDSecondClimb = new ArrayList<>();
+			this.efficiencySecondClimb = new ArrayList<>();		
+			this.dragSecondClimb = new ArrayList<>();
+			this.totalThrustSecondClimb = new ArrayList<>();
+			this.thermicThrustSecondClimb = new ArrayList<>();
+			this.electricThrustSecondClimb = new ArrayList<>();
+			this.throttleSecondClimb = new ArrayList<>();
+			this.sfcSecondClimb = new ArrayList<>();
+			this.fuelFlowSecondClimb = new ArrayList<>();
+			this.rateOfClimbSecondClimb = new ArrayList<>();
+			this.climbAngleSecondClimb = new ArrayList<>();
+			this.fuelPowerSecondClimb = new ArrayList<>();
+			this.batteryPowerSecondClimb = new ArrayList<>();
+			this.fuelEnergySecondClimb = new ArrayList<>();
+			this.batteryEnergySecondClimb = new ArrayList<>();
+
+		}
+		
+		//......................................................................
+		// ALTERNATE CRUISE
+		this.rangeAlternateCruise = new ArrayList<>();
+		this.altitudeAlternateCruise = new ArrayList<>();
+		this.timeAlternateCruise = new ArrayList<>();
+		this.fuelUsedAlternateCruise = new ArrayList<>();
+		this.aircraftMassAlternateCruise = new ArrayList<>();
+		this.emissionNOxAlternateCruise = new ArrayList<>();
+		this.emissionCOAlternateCruise = new ArrayList<>();
+		this.emissionHCAlternateCruise = new ArrayList<>();
+		this.emissionSootAlternateCruise = new ArrayList<>();
+		this.emissionCO2AlternateCruise = new ArrayList<>();
+		this.emissionSOxAlternateCruise = new ArrayList<>();
+		this.emissionH2OAlternateCruise = new ArrayList<>();
+		this.speedTASAlternateCruise = new ArrayList<>();
+		this.speedCASAlternateCruise = new ArrayList<>();
+		this.machAlternateCruise = new ArrayList<>();
+		this.cLAlternateCruise = new ArrayList<>();
+		this.cDAlternateCruise = new ArrayList<>();
+		this.efficiencyAlternateCruise = new ArrayList<>();		
+		this.dragAlternateCruise = new ArrayList<>();
+		this.totalThrustAlternateCruise = new ArrayList<>();
+		this.thermicThrustAlternateCruise = new ArrayList<>();
+		this.electricThrustAlternateCruise = new ArrayList<>();
+		this.throttleAlternateCruise = new ArrayList<>();
+		this.sfcAlternateCruise = new ArrayList<>();
+		this.fuelFlowAlternateCruise = new ArrayList<>();
+		this.rateOfClimbAlternateCruise = new ArrayList<>();
+		this.climbAngleAlternateCruise = new ArrayList<>();
+		this.fuelPowerAlternateCruise = new ArrayList<>();
+		this.batteryPowerAlternateCruise = new ArrayList<>();
+		this.fuelEnergyAlternateCruise = new ArrayList<>();
+		this.batteryEnergyAlternateCruise = new ArrayList<>();
+		
+		//......................................................................
+		// SECOND DESCENT
+		this.rangeSecondDescent = new ArrayList<>();
+		this.altitudeSecondDescent = new ArrayList<>();
+		this.timeSecondDescent = new ArrayList<>();
+		this.fuelUsedSecondDescent = new ArrayList<>();
+		this.aircraftMassSecondDescent = new ArrayList<>();
+		this.emissionNOxSecondDescent = new ArrayList<>();
+		this.emissionCOSecondDescent = new ArrayList<>();
+		this.emissionHCSecondDescent = new ArrayList<>();
+		this.emissionSootSecondDescent = new ArrayList<>();
+		this.emissionCO2SecondDescent = new ArrayList<>();
+		this.emissionSOxSecondDescent = new ArrayList<>();
+		this.emissionH2OSecondDescent = new ArrayList<>();
+		this.speedTASSecondDescent = new ArrayList<>();
+		this.speedCASSecondDescent = new ArrayList<>();
+		this.machSecondDescent = new ArrayList<>();
+		this.cLSecondDescent = new ArrayList<>();
+		this.cDSecondDescent = new ArrayList<>();
+		this.efficiencySecondDescent = new ArrayList<>();		
+		this.dragSecondDescent = new ArrayList<>();
+		this.totalThrustSecondDescent = new ArrayList<>();
+		this.thermicThrustSecondDescent = new ArrayList<>();
+		this.electricThrustSecondDescent = new ArrayList<>();
+		this.throttleSecondDescent = new ArrayList<>();
+		this.sfcSecondDescent = new ArrayList<>();
+		this.fuelFlowSecondDescent = new ArrayList<>();
+		this.rateOfClimbSecondDescent = new ArrayList<>();
+		this.climbAngleSecondDescent = new ArrayList<>();
+		this.fuelPowerSecondDescent = new ArrayList<>();
+		this.batteryPowerSecondDescent = new ArrayList<>();
+		this.fuelEnergySecondDescent = new ArrayList<>();
+		this.batteryEnergySecondDescent = new ArrayList<>();
+		
+		//......................................................................
+		// HOLDING
+		this.rangeHolding = new ArrayList<>();
+		this.altitudeHolding = new ArrayList<>();
+		this.timeHolding = new ArrayList<>();
+		this.fuelUsedHolding = new ArrayList<>();
+		this.aircraftMassHolding = new ArrayList<>();
+		this.emissionNOxHolding = new ArrayList<>();
+		this.emissionCOHolding = new ArrayList<>();
+		this.emissionHCHolding = new ArrayList<>();
+		this.emissionSootHolding = new ArrayList<>();
+		this.emissionCO2Holding = new ArrayList<>();
+		this.emissionSOxHolding = new ArrayList<>();
+		this.emissionH2OHolding = new ArrayList<>();
+		this.speedTASHolding = new ArrayList<>();
+		this.speedCASHolding = new ArrayList<>();
+		this.machHolding = new ArrayList<>();
+		this.cLHolding = new ArrayList<>();
+		this.cDHolding = new ArrayList<>();
+		this.efficiencyHolding = new ArrayList<>();		
+		this.dragHolding = new ArrayList<>();
+		this.totalThrustHolding = new ArrayList<>();
+		this.thermicThrustHolding = new ArrayList<>();
+		this.electricThrustHolding = new ArrayList<>();
+		this.throttleHolding = new ArrayList<>();
+		this.sfcHolding = new ArrayList<>();
+		this.fuelFlowHolding = new ArrayList<>();
+		this.rateOfClimbHolding = new ArrayList<>();
+		this.climbAngleHolding = new ArrayList<>();
+		this.fuelPowerHolding = new ArrayList<>();
+		this.batteryPowerHolding = new ArrayList<>();
+		this.fuelEnergyHolding = new ArrayList<>();
+		this.batteryEnergyHolding = new ArrayList<>();
+		
+		//......................................................................
+		// LANDING
+		this.rangeLanding = new ArrayList<>();
+		this.altitudeLanding = new ArrayList<>();
+		this.timeLanding = new ArrayList<>();
+		this.fuelUsedLanding = new ArrayList<>();
+		this.aircraftMassLanding = new ArrayList<>();
+		this.emissionNOxLanding = new ArrayList<>();
+		this.emissionCOLanding = new ArrayList<>();
+		this.emissionHCLanding = new ArrayList<>();
+		this.emissionSootLanding = new ArrayList<>();
+		this.emissionCO2Landing = new ArrayList<>();
+		this.emissionSOxLanding = new ArrayList<>();
+		this.emissionH2OLanding = new ArrayList<>();
+		this.speedTASLanding = new ArrayList<>();
+		this.speedCASLanding = new ArrayList<>();
+		this.machLanding = new ArrayList<>();
+		this.cLLanding = new ArrayList<>();
+		this.cDLanding = new ArrayList<>();
+		this.efficiencyLanding = new ArrayList<>();		
+		this.dragLanding = new ArrayList<>();
+		this.totalThrustLanding = new ArrayList<>();
+		this.thermicThrustLanding = new ArrayList<>();
+		this.electricThrustLanding = new ArrayList<>();
+		this.throttleLanding = new ArrayList<>();
+		this.sfcLanding = new ArrayList<>();
+		this.fuelFlowLanding = new ArrayList<>();
+		this.rateOfClimbLanding = new ArrayList<>();
+		this.climbAngleLanding = new ArrayList<>();
+		this.fuelPowerLanding = new ArrayList<>();
+		this.batteryPowerLanding = new ArrayList<>();
+		this.fuelEnergyLanding = new ArrayList<>();
+		this.batteryEnergyLanding = new ArrayList<>();
+		
+	}
 	
 	public void calculateProfiles(Amount<Velocity> vMC) {
 
@@ -502,314 +1124,6 @@ public class MissionProfileCalc {
 		LandingCalc theLandingCalculator = null;
 		
 		//----------------------------------------------------------------------
-		// QUANTITES TO BE ADDED IN MAPS PER PHASE AT THE END OF THE ITERATION
-		//----------------------------------------------------------------------
-		// TAKE-OFF
-		List<Amount<Length>> rangeTakeOff = new ArrayList<>();
-		List<Amount<Length>> altitudeTakeOff = new ArrayList<>();
-		List<Amount<Duration>> timeTakeOff = new ArrayList<>();
-		List<Amount<Mass>> fuelUsedTakeOff = new ArrayList<>();
-		List<Amount<Mass>> aircraftMassTakeOff = new ArrayList<>();
-		List<Amount<Mass>> emissionNOxTakeOff = new ArrayList<>();
-		List<Amount<Mass>> emissionCOTakeOff = new ArrayList<>();
-		List<Amount<Mass>> emissionHCTakeOff = new ArrayList<>();
-		List<Amount<Mass>> emissionSootTakeOff = new ArrayList<>();
-		List<Amount<Mass>> emissionCO2TakeOff = new ArrayList<>();
-		List<Amount<Mass>> emissionSOxTakeOff = new ArrayList<>();
-		List<Amount<Mass>> emissionH2OTakeOff = new ArrayList<>();
-		List<Amount<Velocity>> speedTASTakeOff = new ArrayList<>();
-		List<Amount<Velocity>> speedCASTakeOff = new ArrayList<>();
-		List<Double> machTakeOff = new ArrayList<>();
-		List<Double> cLTakeOff = new ArrayList<>();
-		List<Double> cDTakeOff = new ArrayList<>();
-		List<Double> efficiencyTakeOff = new ArrayList<>();		
-		List<Amount<Force>> dragTakeOff = new ArrayList<>();
-		List<Amount<Force>> totalThrustTakeOff = new ArrayList<>();
-		List<Amount<Force>> thermicThrustTakeOff = new ArrayList<>();
-		List<Amount<Force>> electricThrustTakeOff = new ArrayList<>();
-		List<Double> throttleTakeOff = new ArrayList<>();
-		List<Double> sfcTakeOff = new ArrayList<>();
-		List<Double> fuelFlowTakeOff = new ArrayList<>();
-		List<Amount<Velocity>> rateOfClimbTakeOff = new ArrayList<>();
-		List<Amount<Angle>> climbAngleTakeOff = new ArrayList<>();
-		List<Amount<Power>> fuelPowerTakeOff = new ArrayList<>();
-		List<Amount<Power>> batteryPowerTakeOff = new ArrayList<>();
-		List<Amount<Energy>> fuelEnergyTakeOff = new ArrayList<>();
-		List<Amount<Energy>> batteryEnergyTakeOff = new ArrayList<>();
-		
-		//......................................................................
-		// CLIMB
-		List<Amount<Length>> rangeClimb = new ArrayList<>();
-		List<Amount<Length>> altitudeClimb = new ArrayList<>();
-		List<Amount<Duration>> timeClimb = new ArrayList<>();
-		List<Amount<Mass>> fuelUsedClimb = new ArrayList<>();
-		List<Amount<Mass>> aircraftMassClimb = new ArrayList<>();
-		List<Amount<Mass>> emissionNOxClimb = new ArrayList<>();
-		List<Amount<Mass>> emissionCOClimb = new ArrayList<>();
-		List<Amount<Mass>> emissionHCClimb = new ArrayList<>();
-		List<Amount<Mass>> emissionSootClimb = new ArrayList<>();
-		List<Amount<Mass>> emissionCO2Climb = new ArrayList<>();
-		List<Amount<Mass>> emissionSOxClimb = new ArrayList<>();
-		List<Amount<Mass>> emissionH2OClimb = new ArrayList<>();
-		List<Amount<Velocity>> speedTASClimb = new ArrayList<>();
-		List<Amount<Velocity>> speedCASClimb = new ArrayList<>();
-		List<Double> machClimb = new ArrayList<>();
-		List<Double> cLClimb = new ArrayList<>();
-		List<Double> cDClimb = new ArrayList<>();
-		List<Double> efficiencyClimb = new ArrayList<>();		
-		List<Amount<Force>> dragClimb = new ArrayList<>();
-		List<Amount<Force>> totalThrustClimb = new ArrayList<>();
-		List<Amount<Force>> thermicThrustClimb = new ArrayList<>();
-		List<Amount<Force>> electricThrustClimb = new ArrayList<>();
-		List<Double> throttleClimb = new ArrayList<>();
-		List<Double> sfcClimb = new ArrayList<>();
-		List<Double> fuelFlowClimb = new ArrayList<>();
-		List<Amount<Velocity>> rateOfClimbClimb = new ArrayList<>();
-		List<Amount<Angle>> climbAngleClimb = new ArrayList<>();
-		List<Amount<Power>> fuelPowerClimb = new ArrayList<>();
-		List<Amount<Power>> batteryPowerClimb = new ArrayList<>();
-		List<Amount<Energy>> fuelEnergyClimb = new ArrayList<>();
-		List<Amount<Energy>> batteryEnergyClimb = new ArrayList<>();
-		
-		//......................................................................
-		// CRUISE
-		List<Amount<Length>> rangeCruise = new ArrayList<>();
-		List<Amount<Length>> altitudeCruise = new ArrayList<>();
-		List<Amount<Duration>> timeCruise = new ArrayList<>();
-		List<Amount<Mass>> fuelUsedCruise = new ArrayList<>();
-		List<Amount<Mass>> aircraftMassCruise = new ArrayList<>();
-		List<Amount<Mass>> emissionNOxCruise = new ArrayList<>();
-		List<Amount<Mass>> emissionCOCruise = new ArrayList<>();
-		List<Amount<Mass>> emissionHCCruise = new ArrayList<>();
-		List<Amount<Mass>> emissionSootCruise = new ArrayList<>();
-		List<Amount<Mass>> emissionCO2Cruise = new ArrayList<>();
-		List<Amount<Mass>> emissionSOxCruise = new ArrayList<>();
-		List<Amount<Mass>> emissionH2OCruise = new ArrayList<>();
-		List<Amount<Velocity>> speedTASCruise = new ArrayList<>();
-		List<Amount<Velocity>> speedCASCruise = new ArrayList<>();
-		List<Double> machCruise = new ArrayList<>();
-		List<Double> cLCruise = new ArrayList<>();
-		List<Double> cDCruise = new ArrayList<>();
-		List<Double> efficiencyCruise = new ArrayList<>();		
-		List<Amount<Force>> dragCruise = new ArrayList<>();
-		List<Amount<Force>> totalThrustCruise = new ArrayList<>();
-		List<Amount<Force>> thermicThrustCruise = new ArrayList<>();
-		List<Amount<Force>> electricThrustCruise = new ArrayList<>();
-		List<Double> throttleCruise = new ArrayList<>();
-		List<Double> sfcCruise = new ArrayList<>();
-		List<Double> fuelFlowCruise = new ArrayList<>();
-		List<Amount<Velocity>> rateOfClimbCruise = new ArrayList<>();
-		List<Amount<Angle>> climbAngleCruise = new ArrayList<>();
-		List<Amount<Power>> fuelPowerCruise = new ArrayList<>();
-		List<Amount<Power>> batteryPowerCruise = new ArrayList<>();
-		List<Amount<Energy>> fuelEnergyCruise = new ArrayList<>();
-		List<Amount<Energy>> batteryEnergyCruise = new ArrayList<>();
-		
-		//......................................................................
-		// FIRST DESCENT
-		List<Amount<Length>> rangeFirstDescent = new ArrayList<>();
-		List<Amount<Length>> altitudeFirstDescent = new ArrayList<>();
-		List<Amount<Duration>> timeFirstDescent = new ArrayList<>();
-		List<Amount<Mass>> fuelUsedFirstDescent = new ArrayList<>();
-		List<Amount<Mass>> aircraftMassFirstDescent = new ArrayList<>();
-		List<Amount<Mass>> emissionNOxFirstDescent = new ArrayList<>();
-		List<Amount<Mass>> emissionCOFirstDescent = new ArrayList<>();
-		List<Amount<Mass>> emissionHCFirstDescent = new ArrayList<>();
-		List<Amount<Mass>> emissionSootFirstDescent = new ArrayList<>();
-		List<Amount<Mass>> emissionCO2FirstDescent = new ArrayList<>();
-		List<Amount<Mass>> emissionSOxFirstDescent = new ArrayList<>();
-		List<Amount<Mass>> emissionH2OFirstDescent = new ArrayList<>();
-		List<Amount<Velocity>> speedTASFirstDescent = new ArrayList<>();
-		List<Amount<Velocity>> speedCASFirstDescent = new ArrayList<>();
-		List<Double> machFirstDescent = new ArrayList<>();
-		List<Double> cLFirstDescent = new ArrayList<>();
-		List<Double> cDFirstDescent = new ArrayList<>();
-		List<Double> efficiencyFirstDescent = new ArrayList<>();		
-		List<Amount<Force>> dragFirstDescent = new ArrayList<>();
-		List<Amount<Force>> totalThrustFirstDescent = new ArrayList<>();
-		List<Amount<Force>> thermicThrustFirstDescent = new ArrayList<>();
-		List<Amount<Force>> electricThrustFirstDescent = new ArrayList<>();
-		List<Double> throttleFirstDescent = new ArrayList<>();
-		List<Double> sfcFirstDescent = new ArrayList<>();
-		List<Double> fuelFlowFirstDescent = new ArrayList<>();
-		List<Amount<Velocity>> rateOfClimbFirstDescent = new ArrayList<>();
-		List<Amount<Angle>> climbAngleFirstDescent = new ArrayList<>();
-		List<Amount<Power>> fuelPowerFirstDescent = new ArrayList<>();
-		List<Amount<Power>> batteryPowerFirstDescent = new ArrayList<>();
-		List<Amount<Energy>> fuelEnergyFirstDescent = new ArrayList<>();
-		List<Amount<Energy>> batteryEnergyFirstDescent = new ArrayList<>();
-		
-		//......................................................................
-		// SECOND CLIMB
-		List<Amount<Length>> rangeSecondClimb = new ArrayList<>();
-		List<Amount<Length>> altitudeSecondClimb = new ArrayList<>();
-		List<Amount<Duration>> timeSecondClimb = new ArrayList<>();
-		List<Amount<Mass>> fuelUsedSecondClimb = new ArrayList<>();
-		List<Amount<Mass>> aircraftMassSecondClimb = new ArrayList<>();
-		List<Amount<Mass>> emissionNOxSecondClimb = new ArrayList<>();
-		List<Amount<Mass>> emissionCOSecondClimb = new ArrayList<>();
-		List<Amount<Mass>> emissionHCSecondClimb = new ArrayList<>();
-		List<Amount<Mass>> emissionSootSecondClimb = new ArrayList<>();
-		List<Amount<Mass>> emissionCO2SecondClimb = new ArrayList<>();
-		List<Amount<Mass>> emissionSOxSecondClimb  = new ArrayList<>();
-		List<Amount<Mass>> emissionH2OSecondClimb  = new ArrayList<>();
-		List<Amount<Velocity>> speedTASSecondClimb = new ArrayList<>();
-		List<Amount<Velocity>> speedCASSecondClimb = new ArrayList<>();
-		List<Double> machSecondClimb = new ArrayList<>();
-		List<Double> cLSecondClimb = new ArrayList<>();
-		List<Double> cDSecondClimb = new ArrayList<>();
-		List<Double> efficiencySecondClimb = new ArrayList<>();		
-		List<Amount<Force>> dragSecondClimb = new ArrayList<>();
-		List<Amount<Force>> totalThrustSecondClimb = new ArrayList<>();
-		List<Amount<Force>> thermicThrustSecondClimb = new ArrayList<>();
-		List<Amount<Force>> electricThrustSecondClimb = new ArrayList<>();
-		List<Double> throttleSecondClimb = new ArrayList<>();
-		List<Double> sfcSecondClimb = new ArrayList<>();
-		List<Double> fuelFlowSecondClimb = new ArrayList<>();
-		List<Amount<Velocity>> rateOfClimbSecondClimb = new ArrayList<>();
-		List<Amount<Angle>> climbAngleSecondClimb = new ArrayList<>();
-		List<Amount<Power>> fuelPowerSecondClimb = new ArrayList<>();
-		List<Amount<Power>> batteryPowerSecondClimb = new ArrayList<>();
-		List<Amount<Energy>> fuelEnergySecondClimb = new ArrayList<>();
-		List<Amount<Energy>> batteryEnergySecondClimb = new ArrayList<>();
-		
-		//......................................................................
-		// ALTERNATE CRUISE
-		List<Amount<Length>> rangeAlternateCruise = new ArrayList<>();
-		List<Amount<Length>> altitudeAlternateCruise = new ArrayList<>();
-		List<Amount<Duration>> timeAlternateCruise = new ArrayList<>();
-		List<Amount<Mass>> fuelUsedAlternateCruise = new ArrayList<>();
-		List<Amount<Mass>> aircraftMassAlternateCruise = new ArrayList<>();
-		List<Amount<Mass>> emissionNOxAlternateCruise = new ArrayList<>();
-		List<Amount<Mass>> emissionCOAlternateCruise = new ArrayList<>();
-		List<Amount<Mass>> emissionHCAlternateCruise = new ArrayList<>();
-		List<Amount<Mass>> emissionSootAlternateCruise = new ArrayList<>();
-		List<Amount<Mass>> emissionCO2AlternateCruise = new ArrayList<>();
-		List<Amount<Mass>> emissionSOxAlternateCruise = new ArrayList<>();
-		List<Amount<Mass>> emissionH2OAlternateCruise = new ArrayList<>();
-		List<Amount<Velocity>> speedTASAlternateCruise = new ArrayList<>();
-		List<Amount<Velocity>> speedCASAlternateCruise = new ArrayList<>();
-		List<Double> machAlternateCruise = new ArrayList<>();
-		List<Double> cLAlternateCruise = new ArrayList<>();
-		List<Double> cDAlternateCruise = new ArrayList<>();
-		List<Double> efficiencyAlternateCruise = new ArrayList<>();		
-		List<Amount<Force>> dragAlternateCruise = new ArrayList<>();
-		List<Amount<Force>> totalThrustAlternateCruise = new ArrayList<>();
-		List<Amount<Force>> thermicThrustAlternateCruise = new ArrayList<>();
-		List<Amount<Force>> electricThrustAlternateCruise = new ArrayList<>();
-		List<Double> throttleAlternateCruise = new ArrayList<>();
-		List<Double> sfcAlternateCruise = new ArrayList<>();
-		List<Double> fuelFlowAlternateCruise = new ArrayList<>();
-		List<Amount<Velocity>> rateOfClimbAlternateCruise = new ArrayList<>();
-		List<Amount<Angle>> climbAngleAlternateCruise = new ArrayList<>();
-		List<Amount<Power>> fuelPowerAlternateCruise = new ArrayList<>();
-		List<Amount<Power>> batteryPowerAlternateCruise = new ArrayList<>();
-		List<Amount<Energy>> fuelEnergyAlternateCruise = new ArrayList<>();
-		List<Amount<Energy>> batteryEnergyAlternateCruise = new ArrayList<>();
-		
-		//......................................................................
-		// SECOND DESCENT
-		List<Amount<Length>> rangeSecondDescent = new ArrayList<>();
-		List<Amount<Length>> altitudeSecondDescent = new ArrayList<>();
-		List<Amount<Duration>> timeSecondDescent = new ArrayList<>();
-		List<Amount<Mass>> fuelUsedSecondDescent = new ArrayList<>();
-		List<Amount<Mass>> aircraftMassSecondDescent = new ArrayList<>();
-		List<Amount<Mass>> emissionNOxSecondDescent = new ArrayList<>();
-		List<Amount<Mass>> emissionCOSecondDescent = new ArrayList<>();
-		List<Amount<Mass>> emissionHCSecondDescent = new ArrayList<>();
-		List<Amount<Mass>> emissionSootSecondDescent = new ArrayList<>();
-		List<Amount<Mass>> emissionCO2SecondDescent = new ArrayList<>();
-		List<Amount<Mass>> emissionSOxSecondDescent = new ArrayList<>();
-		List<Amount<Mass>> emissionH2OSecondDescent = new ArrayList<>();
-		List<Amount<Velocity>> speedTASSecondDescent = new ArrayList<>();
-		List<Amount<Velocity>> speedCASSecondDescent = new ArrayList<>();
-		List<Double> machSecondDescent = new ArrayList<>();
-		List<Double> cLSecondDescent = new ArrayList<>();
-		List<Double> cDSecondDescent = new ArrayList<>();
-		List<Double> efficiencySecondDescent = new ArrayList<>();		
-		List<Amount<Force>> dragSecondDescent = new ArrayList<>();
-		List<Amount<Force>> totalThrustSecondDescent = new ArrayList<>();
-		List<Amount<Force>> thermicThrustSecondDescent = new ArrayList<>();
-		List<Amount<Force>> electricThrustSecondDescent = new ArrayList<>();
-		List<Double> throttleSecondDescent = new ArrayList<>();
-		List<Double> sfcSecondDescent = new ArrayList<>();
-		List<Double> fuelFlowSecondDescent = new ArrayList<>();
-		List<Amount<Velocity>> rateOfClimbSecondDescent = new ArrayList<>();
-		List<Amount<Angle>> climbAngleSecondDescent = new ArrayList<>();
-		List<Amount<Power>> fuelPowerSecondDescent = new ArrayList<>();
-		List<Amount<Power>> batteryPowerSecondDescent = new ArrayList<>();
-		List<Amount<Energy>> fuelEnergySecondDescent = new ArrayList<>();
-		List<Amount<Energy>> batteryEnergySecondDescent = new ArrayList<>();
-		
-		//......................................................................
-		// HOLDING
-		List<Amount<Length>> rangeHolding = new ArrayList<>();
-		List<Amount<Length>> altitudeHolding = new ArrayList<>();
-		List<Amount<Duration>> timeHolding = new ArrayList<>();
-		List<Amount<Mass>> fuelUsedHolding = new ArrayList<>();
-		List<Amount<Mass>> aircraftMassHolding = new ArrayList<>();
-		List<Amount<Mass>> emissionNOxHolding = new ArrayList<>();
-		List<Amount<Mass>> emissionCOHolding = new ArrayList<>();
-		List<Amount<Mass>> emissionHCHolding = new ArrayList<>();
-		List<Amount<Mass>> emissionSootHolding = new ArrayList<>();
-		List<Amount<Mass>> emissionCO2Holding = new ArrayList<>();
-		List<Amount<Mass>> emissionSOxHolding = new ArrayList<>();
-		List<Amount<Mass>> emissionH2OHolding = new ArrayList<>();
-		List<Amount<Velocity>> speedTASHolding = new ArrayList<>();
-		List<Amount<Velocity>> speedCASHolding = new ArrayList<>();
-		List<Double> machHolding = new ArrayList<>();
-		List<Double> cLHolding = new ArrayList<>();
-		List<Double> cDHolding = new ArrayList<>();
-		List<Double> efficiencyHolding = new ArrayList<>();		
-		List<Amount<Force>> dragHolding = new ArrayList<>();
-		List<Amount<Force>> totalThrustHolding = new ArrayList<>();
-		List<Amount<Force>> thermicThrustHolding = new ArrayList<>();
-		List<Amount<Force>> electricThrustHolding = new ArrayList<>();
-		List<Double> throttleHolding = new ArrayList<>();
-		List<Double> sfcHolding = new ArrayList<>();
-		List<Double> fuelFlowHolding = new ArrayList<>();
-		List<Amount<Velocity>> rateOfClimbHolding = new ArrayList<>();
-		List<Amount<Angle>> climbAngleHolding = new ArrayList<>();
-		List<Amount<Power>> fuelPowerHolding = new ArrayList<>();
-		List<Amount<Power>> batteryPowerHolding = new ArrayList<>();
-		List<Amount<Energy>> fuelEnergyHolding = new ArrayList<>();
-		List<Amount<Energy>> batteryEnergyHolding = new ArrayList<>();
-		
-		//......................................................................
-		// LANDING
-		List<Amount<Length>> rangeLanding = new ArrayList<>();
-		List<Amount<Length>> altitudeLanding = new ArrayList<>();
-		List<Amount<Duration>> timeLanding = new ArrayList<>();
-		List<Amount<Mass>> fuelUsedLanding = new ArrayList<>();
-		List<Amount<Mass>> aircraftMassLanding = new ArrayList<>();
-		List<Amount<Mass>> emissionNOxLanding = new ArrayList<>();
-		List<Amount<Mass>> emissionCOLanding = new ArrayList<>();
-		List<Amount<Mass>> emissionHCLanding = new ArrayList<>();
-		List<Amount<Mass>> emissionSootLanding = new ArrayList<>();
-		List<Amount<Mass>> emissionCO2Landing = new ArrayList<>();
-		List<Amount<Mass>> emissionSOxLanding = new ArrayList<>();
-		List<Amount<Mass>> emissionH2OLanding = new ArrayList<>();
-		List<Amount<Velocity>> speedTASLanding = new ArrayList<>();
-		List<Amount<Velocity>> speedCASLanding = new ArrayList<>();
-		List<Double> machLanding = new ArrayList<>();
-		List<Double> cLLanding = new ArrayList<>();
-		List<Double> cDLanding = new ArrayList<>();
-		List<Double> efficiencyLanding = new ArrayList<>();		
-		List<Amount<Force>> dragLanding = new ArrayList<>();
-		List<Amount<Force>> totalThrustLanding = new ArrayList<>();
-		List<Amount<Force>> thermicThrustLanding = new ArrayList<>();
-		List<Amount<Force>> electricThrustLanding = new ArrayList<>();
-		List<Double> throttleLanding = new ArrayList<>();
-		List<Double> sfcLanding = new ArrayList<>();
-		List<Double> fuelFlowLanding = new ArrayList<>();
-		List<Amount<Velocity>> rateOfClimbLanding = new ArrayList<>();
-		List<Amount<Angle>> climbAngleLanding = new ArrayList<>();
-		List<Amount<Power>> fuelPowerLanding = new ArrayList<>();
-		List<Amount<Power>> batteryPowerLanding = new ArrayList<>();
-		List<Amount<Energy>> fuelEnergyLanding = new ArrayList<>();
-		List<Amount<Energy>> batteryEnergyLanding = new ArrayList<>();
-
-		//----------------------------------------------------------------------
 		// ITERATION START ...
 		//----------------------------------------------------------------------
 		if(initialMissionMass.doubleValue(SI.KILOGRAM) > maximumTakeOffMass.doubleValue(SI.KILOGRAM)) {
@@ -818,7 +1132,7 @@ public class MissionProfileCalc {
 					.minus(operatingEmptyMass)
 					.minus(singlePassengerMass.times(deisgnPassengersNumber)); 
 		}
-
+		
 		Amount<Length> currentCruiseRange = Amount.valueOf(0.0, NonSI.NAUTICAL_MILE);
 		Amount<Length> currentAlternateCruiseRange = Amount.valueOf(0.0, NonSI.NAUTICAL_MILE);
 		Amount<Mass> newInitialFuelMass = Amount.valueOf(0.0, SI.KILOGRAM);
@@ -826,6 +1140,8 @@ public class MissionProfileCalc {
 		int i = 0;
 
 		do {
+			
+			initializePhasesLists(false, false);
 
 			if(i >= 1)
 				initialFuelMass = newInitialFuelMass;
@@ -1079,6 +1395,9 @@ public class MissionProfileCalc {
 			totalRange = Amount.valueOf(0.0, SI.METER);
 
 			for (int iCruise=0; iCruise < 5; iCruise++) {
+				
+				initializePhasesLists(true, false);
+				
 				List<Amount<Length>> cruiseSteps = MyArrayUtils.convertDoubleArrayToListOfAmount( 
 						MyArrayUtils.linspace(
 								0.0,
@@ -1940,6 +2259,9 @@ public class MissionProfileCalc {
 				currentAlternateCruiseRange = alternateCruiseRange;
 
 				for (int iAlternate=0; iAlternate < 5; iAlternate++) {
+					
+					initializePhasesLists(false, true);
+					
 					List<Amount<Length>> alternateCruiseSteps = MyArrayUtils.convertDoubleArrayToListOfAmount( 
 							MyArrayUtils.linspace(
 									0.0,
@@ -3690,6 +4012,19 @@ public class MissionProfileCalc {
 			
 			//.....................................................................
 			// NEW INITIAL MISSION MASS
+			totalFuel = Amount.valueOf(
+					fuelUsedTakeOff.get(fuelUsedTakeOff.size()-1).doubleValue(SI.KILOGRAM)
+					+ fuelUsedClimb.get(fuelUsedClimb.size()-1).doubleValue(SI.KILOGRAM)
+					+ fuelUsedCruise.get(fuelUsedCruise.size()-1).doubleValue(SI.KILOGRAM)
+					+ fuelUsedFirstDescent.get(fuelUsedFirstDescent.size()-1).doubleValue(SI.KILOGRAM)
+					+ fuelUsedSecondClimb.get(fuelUsedSecondClimb.size()-1).doubleValue(SI.KILOGRAM)
+					+ fuelUsedAlternateCruise.get(fuelUsedAlternateCruise.size()-1).doubleValue(SI.KILOGRAM)
+					+ fuelUsedSecondDescent.get(fuelUsedSecondDescent.size()-1).doubleValue(SI.KILOGRAM)
+					+ fuelUsedHolding.get(fuelUsedHolding.size()-1).doubleValue(SI.KILOGRAM)
+					+ fuelUsedLanding.get(fuelUsedLanding.size()-1).doubleValue(SI.KILOGRAM),
+					SI.KILOGRAM
+					);
+			
 			newInitialFuelMass = totalFuel.to(SI.KILOGRAM).divide(1-fuelReserve); 
 			initialMissionMass = operatingEmptyMass
 					.plus(singlePassengerMass.times(deisgnPassengersNumber))
@@ -3730,104 +4065,104 @@ public class MissionProfileCalc {
 		//-------------------------------------------------------------------------------------------------
 		// MANAGING OUTPUT DATA:
 		this.totalFuel = Amount.valueOf(
-				fuelUsedTakeOff.stream().mapToDouble(f -> f.doubleValue(SI.KILOGRAM)).sum()
-				+ fuelUsedClimb.stream().mapToDouble(f -> f.doubleValue(SI.KILOGRAM)).sum()
-				+ fuelUsedCruise.stream().mapToDouble(f -> f.doubleValue(SI.KILOGRAM)).sum()
-				+ fuelUsedFirstDescent.stream().mapToDouble(f -> f.doubleValue(SI.KILOGRAM)).sum()
-				+ fuelUsedSecondClimb.stream().mapToDouble(f -> f.doubleValue(SI.KILOGRAM)).sum()
-				+ fuelUsedAlternateCruise.stream().mapToDouble(f -> f.doubleValue(SI.KILOGRAM)).sum()
-				+ fuelUsedSecondDescent.stream().mapToDouble(f -> f.doubleValue(SI.KILOGRAM)).sum()
-				+ fuelUsedHolding.stream().mapToDouble(f -> f.doubleValue(SI.KILOGRAM)).sum()
-				+ fuelUsedLanding.stream().mapToDouble(f -> f.doubleValue(SI.KILOGRAM)).sum(),
+				fuelUsedTakeOff.get(fuelUsedTakeOff.size()-1).doubleValue(SI.KILOGRAM)
+				+ fuelUsedClimb.get(fuelUsedClimb.size()-1).doubleValue(SI.KILOGRAM)
+				+ fuelUsedCruise.get(fuelUsedCruise.size()-1).doubleValue(SI.KILOGRAM)
+				+ fuelUsedFirstDescent.get(fuelUsedFirstDescent.size()-1).doubleValue(SI.KILOGRAM)
+				+ fuelUsedSecondClimb.get(fuelUsedSecondClimb.size()-1).doubleValue(SI.KILOGRAM)
+				+ fuelUsedAlternateCruise.get(fuelUsedAlternateCruise.size()-1).doubleValue(SI.KILOGRAM)
+				+ fuelUsedSecondDescent.get(fuelUsedSecondDescent.size()-1).doubleValue(SI.KILOGRAM)
+				+ fuelUsedHolding.get(fuelUsedHolding.size()-1).doubleValue(SI.KILOGRAM)
+				+ fuelUsedLanding.get(fuelUsedLanding.size()-1).doubleValue(SI.KILOGRAM),
 				SI.KILOGRAM
 				);
 		this.blockFuel = Amount.valueOf(
-				fuelUsedTakeOff.stream().mapToDouble(f -> f.doubleValue(SI.KILOGRAM)).sum()
-				+ fuelUsedClimb.stream().mapToDouble(f -> f.doubleValue(SI.KILOGRAM)).sum()
-				+ fuelUsedCruise.stream().mapToDouble(f -> f.doubleValue(SI.KILOGRAM)).sum()
-				+ fuelUsedFirstDescent.stream().mapToDouble(f -> f.doubleValue(SI.KILOGRAM)).sum()
-				+ fuelUsedLanding.stream().mapToDouble(f -> f.doubleValue(SI.KILOGRAM)).sum(),
+				fuelUsedTakeOff.get(fuelUsedTakeOff.size()-1).doubleValue(SI.KILOGRAM)
+				+ fuelUsedClimb.get(fuelUsedClimb.size()-1).doubleValue(SI.KILOGRAM)
+				+ fuelUsedCruise.get(fuelUsedCruise.size()-1).doubleValue(SI.KILOGRAM)
+				+ fuelUsedFirstDescent.get(fuelUsedFirstDescent.size()-1).doubleValue(SI.KILOGRAM)
+				+ fuelUsedLanding.get(fuelUsedLanding.size()-1).doubleValue(SI.KILOGRAM),
 				SI.KILOGRAM
 				);
 		this.endMissionMass = this.initialMissionMass.to(SI.KILOGRAM).minus(this.totalFuel.to(SI.KILOGRAM));
 		this.totalTime = Amount.valueOf(
-				timeTakeOff.stream().mapToDouble(t -> t.doubleValue(NonSI.MINUTE)).sum()
-				+ timeClimb.stream().mapToDouble(t -> t.doubleValue(NonSI.MINUTE)).sum()
-				+ timeCruise.stream().mapToDouble(t -> t.doubleValue(NonSI.MINUTE)).sum()
-				+ timeFirstDescent.stream().mapToDouble(t -> t.doubleValue(NonSI.MINUTE)).sum()
-				+ timeSecondClimb.stream().mapToDouble(t -> t.doubleValue(NonSI.MINUTE)).sum()
-				+ timeAlternateCruise.stream().mapToDouble(t -> t.doubleValue(NonSI.MINUTE)).sum()
-				+ timeSecondDescent.stream().mapToDouble(t -> t.doubleValue(NonSI.MINUTE)).sum()
-				+ timeHolding.stream().mapToDouble(t -> t.doubleValue(NonSI.MINUTE)).sum()
-				+ timeLanding.stream().mapToDouble(t -> t.doubleValue(NonSI.MINUTE)).sum(),
+				timeTakeOff.get(timeTakeOff.size()-1).doubleValue(NonSI.MINUTE)
+				+ timeClimb.get(timeClimb.size()-1).doubleValue(NonSI.MINUTE)
+				+ timeCruise.get(timeCruise.size()-1).doubleValue(NonSI.MINUTE)
+				+ timeFirstDescent.get(timeFirstDescent.size()-1).doubleValue(NonSI.MINUTE)
+				+ timeSecondClimb.get(timeSecondClimb.size()-1).doubleValue(NonSI.MINUTE)
+				+ timeAlternateCruise.get(timeAlternateCruise.size()-1).doubleValue(NonSI.MINUTE)
+				+ timeSecondDescent.get(timeSecondDescent.size()-1).doubleValue(NonSI.MINUTE)
+				+ timeHolding.get(timeHolding.size()-1).doubleValue(NonSI.MINUTE)
+				+ timeLanding.get(timeLanding.size()-1).doubleValue(NonSI.MINUTE),
 				NonSI.MINUTE
 				);
 		this.blockTime = Amount.valueOf(
-				timeTakeOff.stream().mapToDouble(t -> t.doubleValue(NonSI.MINUTE)).sum()
-				+ timeClimb.stream().mapToDouble(t -> t.doubleValue(NonSI.MINUTE)).sum()
-				+ timeCruise.stream().mapToDouble(t -> t.doubleValue(NonSI.MINUTE)).sum()
-				+ timeFirstDescent.stream().mapToDouble(t -> t.doubleValue(NonSI.MINUTE)).sum()
-				+ timeLanding.stream().mapToDouble(t -> t.doubleValue(NonSI.MINUTE)).sum(),
+				timeTakeOff.get(timeTakeOff.size()-1).doubleValue(NonSI.MINUTE)
+				+ timeClimb.get(timeClimb.size()-1).doubleValue(NonSI.MINUTE)
+				+ timeCruise.get(timeCruise.size()-1).doubleValue(NonSI.MINUTE)
+				+ timeFirstDescent.get(timeFirstDescent.size()-1).doubleValue(NonSI.MINUTE)
+				+ timeLanding.get(timeLanding.size()-1).doubleValue(NonSI.MINUTE),
 				NonSI.MINUTE
 				);
 		this.totalRange = Amount.valueOf(
-				rangeTakeOff.stream().mapToDouble(r -> r.doubleValue(NonSI.NAUTICAL_MILE)).sum()
-				+ rangeClimb.stream().mapToDouble(r -> r.doubleValue(NonSI.NAUTICAL_MILE)).sum()
-				+ rangeCruise.stream().mapToDouble(r -> r.doubleValue(NonSI.NAUTICAL_MILE)).sum()
-				+ rangeFirstDescent.stream().mapToDouble(r -> r.doubleValue(NonSI.NAUTICAL_MILE)).sum()
-				+ rangeSecondClimb.stream().mapToDouble(r -> r.doubleValue(NonSI.NAUTICAL_MILE)).sum()
-				+ rangeAlternateCruise.stream().mapToDouble(r -> r.doubleValue(NonSI.NAUTICAL_MILE)).sum()
-				+ rangeSecondDescent.stream().mapToDouble(r -> r.doubleValue(NonSI.NAUTICAL_MILE)).sum()
-				+ rangeHolding.stream().mapToDouble(r -> r.doubleValue(NonSI.NAUTICAL_MILE)).sum()
-				+ rangeLanding.stream().mapToDouble(r -> r.doubleValue(NonSI.NAUTICAL_MILE)).sum(),
+				rangeTakeOff.get(rangeTakeOff.size()-1).doubleValue(NonSI.NAUTICAL_MILE)
+				+ rangeClimb.get(rangeClimb.size()-1).doubleValue(NonSI.NAUTICAL_MILE)
+				+ rangeCruise.get(rangeCruise.size()-1).doubleValue(NonSI.NAUTICAL_MILE)
+				+ rangeFirstDescent.get(rangeFirstDescent.size()-1).doubleValue(NonSI.NAUTICAL_MILE)
+				+ rangeSecondClimb.get(rangeSecondClimb.size()-1).doubleValue(NonSI.NAUTICAL_MILE)
+				+ rangeAlternateCruise.get(rangeAlternateCruise.size()-1).doubleValue(NonSI.NAUTICAL_MILE)
+				+ rangeSecondDescent.get(rangeSecondDescent.size()-1).doubleValue(NonSI.NAUTICAL_MILE)
+				+ rangeHolding.get(rangeHolding.size()-1).doubleValue(NonSI.NAUTICAL_MILE)
+				+ rangeLanding.get(rangeLanding.size()-1).doubleValue(NonSI.NAUTICAL_MILE),
 				NonSI.NAUTICAL_MILE
 				);
 		this.totalFuelPower = Amount.valueOf(
-				fuelPowerTakeOff.stream().mapToDouble(fp -> fp.doubleValue(SI.KILO(SI.WATT))).sum()
-				+ fuelPowerClimb.stream().mapToDouble(fp -> fp.doubleValue(SI.KILO(SI.WATT))).sum()
-				+ fuelPowerCruise.stream().mapToDouble(fp -> fp.doubleValue(SI.KILO(SI.WATT))).sum()
-				+ fuelPowerFirstDescent.stream().mapToDouble(fp -> fp.doubleValue(SI.KILO(SI.WATT))).sum()
-				+ fuelPowerSecondClimb.stream().mapToDouble(fp -> fp.doubleValue(SI.KILO(SI.WATT))).sum()
-				+ fuelPowerAlternateCruise.stream().mapToDouble(fp -> fp.doubleValue(SI.KILO(SI.WATT))).sum()
-				+ fuelPowerSecondDescent.stream().mapToDouble(fp -> fp.doubleValue(SI.KILO(SI.WATT))).sum()
-				+ fuelPowerHolding.stream().mapToDouble(fp -> fp.doubleValue(SI.KILO(SI.WATT))).sum()
-				+ fuelPowerLanding.stream().mapToDouble(fp -> fp.doubleValue(SI.KILO(SI.WATT))).sum(),
+				fuelPowerTakeOff.get(fuelPowerTakeOff.size()-1).doubleValue(SI.KILO(SI.WATT))
+				+ fuelPowerClimb.get(fuelPowerClimb.size()-1).doubleValue(SI.KILO(SI.WATT))
+				+ fuelPowerCruise.get(fuelPowerCruise.size()-1).doubleValue(SI.KILO(SI.WATT))
+				+ fuelPowerFirstDescent.get(fuelPowerFirstDescent.size()-1).doubleValue(SI.KILO(SI.WATT))
+				+ fuelPowerSecondClimb.get(fuelPowerSecondClimb.size()-1).doubleValue(SI.KILO(SI.WATT))
+				+ fuelPowerAlternateCruise.get(fuelPowerAlternateCruise.size()-1).doubleValue(SI.KILO(SI.WATT))
+				+ fuelPowerSecondDescent.get(fuelPowerSecondDescent.size()-1).doubleValue(SI.KILO(SI.WATT))
+				+ fuelPowerHolding.get(fuelPowerHolding.size()-1).doubleValue(SI.KILO(SI.WATT))
+				+ fuelPowerLanding.get(fuelPowerLanding.size()-1).doubleValue(SI.KILO(SI.WATT)),
 				SI.KILO(SI.WATT)
 				);
 		this.totalBatteryPower = Amount.valueOf(
-				batteryPowerTakeOff.stream().mapToDouble(bp -> bp.doubleValue(SI.KILO(SI.WATT))).sum()
-				+ batteryPowerClimb.stream().mapToDouble(bp -> bp.doubleValue(SI.KILO(SI.WATT))).sum()
-				+ batteryPowerCruise.stream().mapToDouble(bp -> bp.doubleValue(SI.KILO(SI.WATT))).sum()
-				+ batteryPowerFirstDescent.stream().mapToDouble(bp -> bp.doubleValue(SI.KILO(SI.WATT))).sum()
-				+ batteryPowerSecondClimb.stream().mapToDouble(bp -> bp.doubleValue(SI.KILO(SI.WATT))).sum()
-				+ batteryPowerAlternateCruise.stream().mapToDouble(bp -> bp.doubleValue(SI.KILO(SI.WATT))).sum()
-				+ batteryPowerSecondDescent.stream().mapToDouble(bp -> bp.doubleValue(SI.KILO(SI.WATT))).sum()
-				+ batteryPowerHolding.stream().mapToDouble(bp -> bp.doubleValue(SI.KILO(SI.WATT))).sum()
-				+ batteryPowerLanding.stream().mapToDouble(bp -> bp.doubleValue(SI.KILO(SI.WATT))).sum(),
+				batteryPowerTakeOff.get(batteryPowerTakeOff.size()-1).doubleValue(SI.KILO(SI.WATT))
+				+ batteryPowerClimb.get(batteryPowerClimb.size()-1).doubleValue(SI.KILO(SI.WATT))
+				+ batteryPowerCruise.get(batteryPowerCruise.size()-1).doubleValue(SI.KILO(SI.WATT))
+				+ batteryPowerFirstDescent.get(batteryPowerFirstDescent.size()-1).doubleValue(SI.KILO(SI.WATT))
+				+ batteryPowerSecondClimb.get(batteryPowerSecondClimb.size()-1).doubleValue(SI.KILO(SI.WATT))
+				+ batteryPowerAlternateCruise.get(batteryPowerAlternateCruise.size()-1).doubleValue(SI.KILO(SI.WATT))
+				+ batteryPowerSecondDescent.get(batteryPowerSecondDescent.size()-1).doubleValue(SI.KILO(SI.WATT))
+				+ batteryPowerHolding.get(batteryPowerHolding.size()-1).doubleValue(SI.KILO(SI.WATT))
+				+ batteryPowerLanding.get(batteryPowerLanding.size()-1).doubleValue(SI.KILO(SI.WATT)),
 				SI.KILO(SI.WATT)
 				);
 		this.totalFuelEnergy = Amount.valueOf(
-				fuelEnergyTakeOff.stream().mapToDouble(fe -> fe.doubleValue(SI.JOULE)).sum()
-				+ fuelEnergyClimb.stream().mapToDouble(fe -> fe.doubleValue(SI.JOULE)).sum()
-				+ fuelEnergyCruise.stream().mapToDouble(fe -> fe.doubleValue(SI.JOULE)).sum()
-				+ fuelEnergyFirstDescent.stream().mapToDouble(fe -> fe.doubleValue(SI.JOULE)).sum()
-				+ fuelEnergySecondClimb.stream().mapToDouble(fe -> fe.doubleValue(SI.JOULE)).sum()
-				+ fuelEnergyAlternateCruise.stream().mapToDouble(fe -> fe.doubleValue(SI.JOULE)).sum()
-				+ fuelEnergySecondDescent.stream().mapToDouble(fe -> fe.doubleValue(SI.JOULE)).sum()
-				+ fuelEnergyHolding.stream().mapToDouble(fe -> fe.doubleValue(SI.JOULE)).sum()
-				+ fuelEnergyLanding.stream().mapToDouble(fe -> fe.doubleValue(SI.JOULE)).sum(),
+				fuelEnergyTakeOff.get(fuelEnergyTakeOff.size()-1).doubleValue(SI.JOULE)
+				+ fuelEnergyClimb.get(fuelEnergyClimb.size()-1).doubleValue(SI.JOULE)
+				+ fuelEnergyCruise.get(fuelEnergyCruise.size()-1).doubleValue(SI.JOULE)
+				+ fuelEnergyFirstDescent.get(fuelEnergyFirstDescent.size()-1).doubleValue(SI.JOULE)
+				+ fuelEnergySecondClimb.get(fuelEnergySecondClimb.size()-1).doubleValue(SI.JOULE)
+				+ fuelEnergyAlternateCruise.get(fuelEnergyAlternateCruise.size()-1).doubleValue(SI.JOULE)
+				+ fuelEnergySecondDescent.get(fuelEnergySecondDescent.size()-1).doubleValue(SI.JOULE)
+				+ fuelEnergyHolding.get(fuelEnergyHolding.size()-1).doubleValue(SI.JOULE)
+				+ fuelEnergyLanding.get(fuelEnergyLanding.size()-1).doubleValue(SI.JOULE),
 				SI.JOULE
 				);
 		this.totalBatteryEnergy = Amount.valueOf(
-				batteryEnergyTakeOff.stream().mapToDouble(be -> be.doubleValue(SI.JOULE)).sum()
-				+ batteryEnergyClimb.stream().mapToDouble(be -> be.doubleValue(SI.JOULE)).sum()
-				+ batteryEnergyCruise.stream().mapToDouble(be -> be.doubleValue(SI.JOULE)).sum()
-				+ batteryEnergyFirstDescent.stream().mapToDouble(be -> be.doubleValue(SI.JOULE)).sum()
-				+ batteryEnergySecondClimb.stream().mapToDouble(be -> be.doubleValue(SI.JOULE)).sum()
-				+ batteryEnergyAlternateCruise.stream().mapToDouble(be -> be.doubleValue(SI.JOULE)).sum()
-				+ batteryEnergySecondDescent.stream().mapToDouble(be -> be.doubleValue(SI.JOULE)).sum()
-				+ batteryEnergyHolding.stream().mapToDouble(be -> be.doubleValue(SI.JOULE)).sum()
-				+ batteryEnergyLanding.stream().mapToDouble(be -> be.doubleValue(SI.JOULE)).sum(),
+				batteryEnergyTakeOff.get(batteryEnergyTakeOff.size()-1).doubleValue(SI.JOULE)
+				+ batteryEnergyClimb.get(batteryEnergyClimb.size()-1).doubleValue(SI.JOULE)
+				+ batteryEnergyCruise.get(batteryEnergyCruise.size()-1).doubleValue(SI.JOULE)
+				+ batteryEnergyFirstDescent.get(batteryEnergyFirstDescent.size()-1).doubleValue(SI.JOULE)
+				+ batteryEnergySecondClimb.get(batteryEnergySecondClimb.size()-1).doubleValue(SI.JOULE)
+				+ batteryEnergyAlternateCruise.get(batteryEnergyAlternateCruise.size()-1).doubleValue(SI.JOULE)
+				+ batteryEnergySecondDescent.get(batteryEnergySecondDescent.size()-1).doubleValue(SI.JOULE)
+				+ batteryEnergyHolding.get(batteryEnergyHolding.size()-1).doubleValue(SI.JOULE)
+				+ batteryEnergyLanding.get(batteryEnergyLanding.size()-1).doubleValue(SI.JOULE),
 				SI.JOULE
 				);
 		
@@ -3841,7 +4176,7 @@ public class MissionProfileCalc {
 		this.rangeMap.put(MissionPhasesEnum.ALTERNATE_CRUISE, rangeAlternateCruise.stream().map(e -> e.to(NonSI.NAUTICAL_MILE)).collect(Collectors.toList()));
 		this.rangeMap.put(MissionPhasesEnum.SECOND_DESCENT, rangeSecondDescent.stream().map(e -> e.to(NonSI.NAUTICAL_MILE)).collect(Collectors.toList()));
 		this.rangeMap.put(MissionPhasesEnum.HOLDING, rangeHolding.stream().map(e -> e.to(NonSI.NAUTICAL_MILE)).collect(Collectors.toList()));
-		this.rangeMap.put(MissionPhasesEnum.LANDING, rangeLanding.stream().map(e -> e.to(NonSI.NAUTICAL_MILE)).collect(Collectors.toList()));
+		this.rangeMap.put(MissionPhasesEnum.APPROACH_AND_LANDING, rangeLanding.stream().map(e -> e.to(NonSI.NAUTICAL_MILE)).collect(Collectors.toList()));
 		
 		//.................................................................................................
 		// ALTITUDE
@@ -3853,7 +4188,7 @@ public class MissionProfileCalc {
 		this.altitudeMap.put(MissionPhasesEnum.ALTERNATE_CRUISE, altitudeAlternateCruise.stream().map(e -> e.to(NonSI.FOOT)).collect(Collectors.toList()));
 		this.altitudeMap.put(MissionPhasesEnum.SECOND_DESCENT, altitudeSecondDescent.stream().map(e -> e.to(NonSI.FOOT)).collect(Collectors.toList()));
 		this.altitudeMap.put(MissionPhasesEnum.HOLDING, altitudeHolding.stream().map(e -> e.to(NonSI.FOOT)).collect(Collectors.toList()));
-		this.altitudeMap.put(MissionPhasesEnum.LANDING, altitudeLanding.stream().map(e -> e.to(NonSI.FOOT)).collect(Collectors.toList()));
+		this.altitudeMap.put(MissionPhasesEnum.APPROACH_AND_LANDING, altitudeLanding.stream().map(e -> e.to(NonSI.FOOT)).collect(Collectors.toList()));
 		
 		//.................................................................................................
 		// TIME
@@ -3865,7 +4200,7 @@ public class MissionProfileCalc {
 		this.timeMap.put(MissionPhasesEnum.ALTERNATE_CRUISE, timeAlternateCruise.stream().map(e -> e.to(NonSI.MINUTE)).collect(Collectors.toList()));
 		this.timeMap.put(MissionPhasesEnum.SECOND_DESCENT, timeSecondDescent.stream().map(e -> e.to(NonSI.MINUTE)).collect(Collectors.toList()));
 		this.timeMap.put(MissionPhasesEnum.HOLDING, timeHolding.stream().map(e -> e.to(NonSI.MINUTE)).collect(Collectors.toList()));
-		this.timeMap.put(MissionPhasesEnum.LANDING, timeLanding.stream().map(e -> e.to(NonSI.MINUTE)).collect(Collectors.toList()));
+		this.timeMap.put(MissionPhasesEnum.APPROACH_AND_LANDING, timeLanding.stream().map(e -> e.to(NonSI.MINUTE)).collect(Collectors.toList()));
 		
 		//.................................................................................................
 		// FUEL USED
@@ -3877,7 +4212,7 @@ public class MissionProfileCalc {
 		this.fuelUsedMap.put(MissionPhasesEnum.ALTERNATE_CRUISE, fuelUsedAlternateCruise.stream().map(e -> e.to(SI.KILOGRAM)).collect(Collectors.toList()));
 		this.fuelUsedMap.put(MissionPhasesEnum.SECOND_DESCENT, fuelUsedSecondDescent.stream().map(e -> e.to(SI.KILOGRAM)).collect(Collectors.toList()));
 		this.fuelUsedMap.put(MissionPhasesEnum.HOLDING, fuelUsedHolding.stream().map(e -> e.to(SI.KILOGRAM)).collect(Collectors.toList()));
-		this.fuelUsedMap.put(MissionPhasesEnum.LANDING, fuelUsedLanding.stream().map(e -> e.to(SI.KILOGRAM)).collect(Collectors.toList()));
+		this.fuelUsedMap.put(MissionPhasesEnum.APPROACH_AND_LANDING, fuelUsedLanding.stream().map(e -> e.to(SI.KILOGRAM)).collect(Collectors.toList()));
 		
 		//.................................................................................................
 		// AIRCRAFT MASS
@@ -3889,7 +4224,7 @@ public class MissionProfileCalc {
 		this.massMap.put(MissionPhasesEnum.ALTERNATE_CRUISE, aircraftMassAlternateCruise.stream().map(e -> e.to(SI.KILOGRAM)).collect(Collectors.toList()));
 		this.massMap.put(MissionPhasesEnum.SECOND_DESCENT, aircraftMassSecondDescent.stream().map(e -> e.to(SI.KILOGRAM)).collect(Collectors.toList()));
 		this.massMap.put(MissionPhasesEnum.HOLDING, aircraftMassHolding.stream().map(e -> e.to(SI.KILOGRAM)).collect(Collectors.toList()));
-		this.massMap.put(MissionPhasesEnum.LANDING, aircraftMassLanding.stream().map(e -> e.to(SI.KILOGRAM)).collect(Collectors.toList()));
+		this.massMap.put(MissionPhasesEnum.APPROACH_AND_LANDING, aircraftMassLanding.stream().map(e -> e.to(SI.KILOGRAM)).collect(Collectors.toList()));
 		
 		//.................................................................................................
 		// EMISSION NOx
@@ -3901,7 +4236,7 @@ public class MissionProfileCalc {
 		this.emissionNOxMap.put(MissionPhasesEnum.ALTERNATE_CRUISE, emissionNOxAlternateCruise.stream().map(e -> e.to(SI.GRAM)).collect(Collectors.toList()));
 		this.emissionNOxMap.put(MissionPhasesEnum.SECOND_DESCENT, emissionNOxSecondDescent.stream().map(e -> e.to(SI.GRAM)).collect(Collectors.toList()));
 		this.emissionNOxMap.put(MissionPhasesEnum.HOLDING, emissionNOxHolding.stream().map(e -> e.to(SI.GRAM)).collect(Collectors.toList()));
-		this.emissionNOxMap.put(MissionPhasesEnum.LANDING, emissionNOxLanding.stream().map(e -> e.to(SI.GRAM)).collect(Collectors.toList()));
+		this.emissionNOxMap.put(MissionPhasesEnum.APPROACH_AND_LANDING, emissionNOxLanding.stream().map(e -> e.to(SI.GRAM)).collect(Collectors.toList()));
 		
 		//.................................................................................................
 		// EMISSION CO
@@ -3913,7 +4248,7 @@ public class MissionProfileCalc {
 		this.emissionCOMap.put(MissionPhasesEnum.ALTERNATE_CRUISE, emissionCOAlternateCruise.stream().map(e -> e.to(SI.GRAM)).collect(Collectors.toList()));
 		this.emissionCOMap.put(MissionPhasesEnum.SECOND_DESCENT, emissionCOSecondDescent.stream().map(e -> e.to(SI.GRAM)).collect(Collectors.toList()));
 		this.emissionCOMap.put(MissionPhasesEnum.HOLDING, emissionCOHolding.stream().map(e -> e.to(SI.GRAM)).collect(Collectors.toList()));
-		this.emissionCOMap.put(MissionPhasesEnum.LANDING, emissionCOLanding.stream().map(e -> e.to(SI.GRAM)).collect(Collectors.toList()));
+		this.emissionCOMap.put(MissionPhasesEnum.APPROACH_AND_LANDING, emissionCOLanding.stream().map(e -> e.to(SI.GRAM)).collect(Collectors.toList()));
 		
 		//.................................................................................................
 		// EMISSION HC
@@ -3925,7 +4260,7 @@ public class MissionProfileCalc {
 		this.emissionHCMap.put(MissionPhasesEnum.ALTERNATE_CRUISE, emissionHCAlternateCruise.stream().map(e -> e.to(SI.GRAM)).collect(Collectors.toList()));
 		this.emissionHCMap.put(MissionPhasesEnum.SECOND_DESCENT, emissionHCSecondDescent.stream().map(e -> e.to(SI.GRAM)).collect(Collectors.toList()));
 		this.emissionHCMap.put(MissionPhasesEnum.HOLDING, emissionHCHolding.stream().map(e -> e.to(SI.GRAM)).collect(Collectors.toList()));
-		this.emissionHCMap.put(MissionPhasesEnum.LANDING, emissionHCLanding.stream().map(e -> e.to(SI.GRAM)).collect(Collectors.toList()));
+		this.emissionHCMap.put(MissionPhasesEnum.APPROACH_AND_LANDING, emissionHCLanding.stream().map(e -> e.to(SI.GRAM)).collect(Collectors.toList()));
 		
 		//.................................................................................................
 		// EMISSION Soot
@@ -3937,7 +4272,7 @@ public class MissionProfileCalc {
 		this.emissionSootMap.put(MissionPhasesEnum.ALTERNATE_CRUISE, emissionSootAlternateCruise.stream().map(e -> e.to(SI.GRAM)).collect(Collectors.toList()));
 		this.emissionSootMap.put(MissionPhasesEnum.SECOND_DESCENT, emissionSootSecondDescent.stream().map(e -> e.to(SI.GRAM)).collect(Collectors.toList()));
 		this.emissionSootMap.put(MissionPhasesEnum.HOLDING, emissionSootHolding.stream().map(e -> e.to(SI.GRAM)).collect(Collectors.toList()));
-		this.emissionSootMap.put(MissionPhasesEnum.LANDING, emissionSootLanding.stream().map(e -> e.to(SI.GRAM)).collect(Collectors.toList()));
+		this.emissionSootMap.put(MissionPhasesEnum.APPROACH_AND_LANDING, emissionSootLanding.stream().map(e -> e.to(SI.GRAM)).collect(Collectors.toList()));
 		
 		//.................................................................................................
 		// EMISSION CO2
@@ -3949,7 +4284,7 @@ public class MissionProfileCalc {
 		this.emissionCO2Map.put(MissionPhasesEnum.ALTERNATE_CRUISE, emissionCO2AlternateCruise.stream().map(e -> e.to(SI.GRAM)).collect(Collectors.toList()));
 		this.emissionCO2Map.put(MissionPhasesEnum.SECOND_DESCENT, emissionCO2SecondDescent.stream().map(e -> e.to(SI.GRAM)).collect(Collectors.toList()));
 		this.emissionCO2Map.put(MissionPhasesEnum.HOLDING, emissionCO2Holding.stream().map(e -> e.to(SI.GRAM)).collect(Collectors.toList()));
-		this.emissionCO2Map.put(MissionPhasesEnum.LANDING, emissionCO2Landing.stream().map(e -> e.to(SI.GRAM)).collect(Collectors.toList()));
+		this.emissionCO2Map.put(MissionPhasesEnum.APPROACH_AND_LANDING, emissionCO2Landing.stream().map(e -> e.to(SI.GRAM)).collect(Collectors.toList()));
 		
 		//.................................................................................................
 		// EMISSION SOx
@@ -3961,7 +4296,7 @@ public class MissionProfileCalc {
 		this.emissionSOxMap.put(MissionPhasesEnum.ALTERNATE_CRUISE, emissionSOxAlternateCruise.stream().map(e -> e.to(SI.GRAM)).collect(Collectors.toList()));
 		this.emissionSOxMap.put(MissionPhasesEnum.SECOND_DESCENT, emissionSOxSecondDescent.stream().map(e -> e.to(SI.GRAM)).collect(Collectors.toList()));
 		this.emissionSOxMap.put(MissionPhasesEnum.HOLDING, emissionSOxHolding.stream().map(e -> e.to(SI.GRAM)).collect(Collectors.toList()));
-		this.emissionSOxMap.put(MissionPhasesEnum.LANDING, emissionSOxLanding.stream().map(e -> e.to(SI.GRAM)).collect(Collectors.toList()));
+		this.emissionSOxMap.put(MissionPhasesEnum.APPROACH_AND_LANDING, emissionSOxLanding.stream().map(e -> e.to(SI.GRAM)).collect(Collectors.toList()));
 		
 		//.................................................................................................
 		// EMISSION H2O
@@ -3973,7 +4308,7 @@ public class MissionProfileCalc {
 		this.emissionH2OMap.put(MissionPhasesEnum.ALTERNATE_CRUISE, emissionH2OAlternateCruise.stream().map(e -> e.to(SI.GRAM)).collect(Collectors.toList()));
 		this.emissionH2OMap.put(MissionPhasesEnum.SECOND_DESCENT, emissionH2OSecondDescent.stream().map(e -> e.to(SI.GRAM)).collect(Collectors.toList()));
 		this.emissionH2OMap.put(MissionPhasesEnum.HOLDING, emissionH2OHolding.stream().map(e -> e.to(SI.GRAM)).collect(Collectors.toList()));
-		this.emissionH2OMap.put(MissionPhasesEnum.LANDING, emissionH2OLanding.stream().map(e -> e.to(SI.GRAM)).collect(Collectors.toList()));
+		this.emissionH2OMap.put(MissionPhasesEnum.APPROACH_AND_LANDING, emissionH2OLanding.stream().map(e -> e.to(SI.GRAM)).collect(Collectors.toList()));
 		
 		//.................................................................................................
 		// SPEED TAS
@@ -3985,7 +4320,7 @@ public class MissionProfileCalc {
 		this.speedTASMissionMap.put(MissionPhasesEnum.ALTERNATE_CRUISE, speedTASAlternateCruise.stream().map(e -> e.to(NonSI.KNOT)).collect(Collectors.toList()));
 		this.speedTASMissionMap.put(MissionPhasesEnum.SECOND_DESCENT, speedTASSecondDescent.stream().map(e -> e.to(NonSI.KNOT)).collect(Collectors.toList()));
 		this.speedTASMissionMap.put(MissionPhasesEnum.HOLDING, speedTASHolding.stream().map(e -> e.to(NonSI.KNOT)).collect(Collectors.toList()));
-		this.speedTASMissionMap.put(MissionPhasesEnum.LANDING, speedTASLanding.stream().map(e -> e.to(NonSI.KNOT)).collect(Collectors.toList()));
+		this.speedTASMissionMap.put(MissionPhasesEnum.APPROACH_AND_LANDING, speedTASLanding.stream().map(e -> e.to(NonSI.KNOT)).collect(Collectors.toList()));
 		
 		//.................................................................................................
 		// SPEED CAS
@@ -3997,7 +4332,7 @@ public class MissionProfileCalc {
 		this.speedCASMissionMap.put(MissionPhasesEnum.ALTERNATE_CRUISE, speedCASAlternateCruise.stream().map(e -> e.to(NonSI.KNOT)).collect(Collectors.toList()));
 		this.speedCASMissionMap.put(MissionPhasesEnum.SECOND_DESCENT, speedCASSecondDescent.stream().map(e -> e.to(NonSI.KNOT)).collect(Collectors.toList()));
 		this.speedCASMissionMap.put(MissionPhasesEnum.HOLDING, speedCASHolding.stream().map(e -> e.to(NonSI.KNOT)).collect(Collectors.toList()));
-		this.speedCASMissionMap.put(MissionPhasesEnum.LANDING, speedCASLanding.stream().map(e -> e.to(NonSI.KNOT)).collect(Collectors.toList()));
+		this.speedCASMissionMap.put(MissionPhasesEnum.APPROACH_AND_LANDING, speedCASLanding.stream().map(e -> e.to(NonSI.KNOT)).collect(Collectors.toList()));
 		
 		//.................................................................................................
 		// MACH
@@ -4009,7 +4344,7 @@ public class MissionProfileCalc {
 		this.machMissionMap.put(MissionPhasesEnum.ALTERNATE_CRUISE, machAlternateCruise);
 		this.machMissionMap.put(MissionPhasesEnum.SECOND_DESCENT, machSecondDescent);
 		this.machMissionMap.put(MissionPhasesEnum.HOLDING, machHolding);
-		this.machMissionMap.put(MissionPhasesEnum.LANDING, machLanding);
+		this.machMissionMap.put(MissionPhasesEnum.APPROACH_AND_LANDING, machLanding);
 		
 		//.................................................................................................
 		// CL
@@ -4021,7 +4356,7 @@ public class MissionProfileCalc {
 		this.liftingCoefficientMissionMap.put(MissionPhasesEnum.ALTERNATE_CRUISE, cLAlternateCruise);
 		this.liftingCoefficientMissionMap.put(MissionPhasesEnum.SECOND_DESCENT, cLSecondDescent);
 		this.liftingCoefficientMissionMap.put(MissionPhasesEnum.HOLDING, cLHolding);
-		this.liftingCoefficientMissionMap.put(MissionPhasesEnum.LANDING, cLLanding);
+		this.liftingCoefficientMissionMap.put(MissionPhasesEnum.APPROACH_AND_LANDING, cLLanding);
 		
 		//.................................................................................................
 		// CD
@@ -4033,7 +4368,7 @@ public class MissionProfileCalc {
 		this.dragCoefficientMissionMap.put(MissionPhasesEnum.ALTERNATE_CRUISE, cDAlternateCruise);
 		this.dragCoefficientMissionMap.put(MissionPhasesEnum.SECOND_DESCENT, cDSecondDescent);
 		this.dragCoefficientMissionMap.put(MissionPhasesEnum.HOLDING, cDHolding);
-		this.dragCoefficientMissionMap.put(MissionPhasesEnum.LANDING, cDLanding);
+		this.dragCoefficientMissionMap.put(MissionPhasesEnum.APPROACH_AND_LANDING, cDLanding);
 		
 		//.................................................................................................
 		// EFFICIENCY
@@ -4045,7 +4380,7 @@ public class MissionProfileCalc {
 		this.efficiencyMissionMap.put(MissionPhasesEnum.ALTERNATE_CRUISE, efficiencyAlternateCruise);
 		this.efficiencyMissionMap.put(MissionPhasesEnum.SECOND_DESCENT, efficiencySecondDescent);
 		this.efficiencyMissionMap.put(MissionPhasesEnum.HOLDING, efficiencyHolding);
-		this.efficiencyMissionMap.put(MissionPhasesEnum.LANDING, efficiencyLanding);
+		this.efficiencyMissionMap.put(MissionPhasesEnum.APPROACH_AND_LANDING, efficiencyLanding);
 		
 		//.................................................................................................
 		// DRAG
@@ -4057,7 +4392,7 @@ public class MissionProfileCalc {
 		this.dragMissionMap.put(MissionPhasesEnum.ALTERNATE_CRUISE, dragAlternateCruise.stream().map(e -> e.to(NonSI.POUND_FORCE)).collect(Collectors.toList()));
 		this.dragMissionMap.put(MissionPhasesEnum.SECOND_DESCENT, dragSecondDescent.stream().map(e -> e.to(NonSI.POUND_FORCE)).collect(Collectors.toList()));
 		this.dragMissionMap.put(MissionPhasesEnum.HOLDING, dragHolding.stream().map(e -> e.to(NonSI.POUND_FORCE)).collect(Collectors.toList()));
-		this.dragMissionMap.put(MissionPhasesEnum.LANDING, dragLanding.stream().map(e -> e.to(NonSI.POUND_FORCE)).collect(Collectors.toList()));
+		this.dragMissionMap.put(MissionPhasesEnum.APPROACH_AND_LANDING, dragLanding.stream().map(e -> e.to(NonSI.POUND_FORCE)).collect(Collectors.toList()));
 		
 		//.................................................................................................
 		// TOTAL THRUST
@@ -4069,7 +4404,7 @@ public class MissionProfileCalc {
 		this.totalThrustMissionMap.put(MissionPhasesEnum.ALTERNATE_CRUISE, totalThrustAlternateCruise.stream().map(e -> e.to(NonSI.POUND_FORCE)).collect(Collectors.toList()));
 		this.totalThrustMissionMap.put(MissionPhasesEnum.SECOND_DESCENT, totalThrustSecondDescent.stream().map(e -> e.to(NonSI.POUND_FORCE)).collect(Collectors.toList()));
 		this.totalThrustMissionMap.put(MissionPhasesEnum.HOLDING, totalThrustHolding.stream().map(e -> e.to(NonSI.POUND_FORCE)).collect(Collectors.toList()));
-		this.totalThrustMissionMap.put(MissionPhasesEnum.LANDING, totalThrustLanding.stream().map(e -> e.to(NonSI.POUND_FORCE)).collect(Collectors.toList()));
+		this.totalThrustMissionMap.put(MissionPhasesEnum.APPROACH_AND_LANDING, totalThrustLanding.stream().map(e -> e.to(NonSI.POUND_FORCE)).collect(Collectors.toList()));
 		
 		//.................................................................................................
 		// THERMIC THRUST
@@ -4081,7 +4416,7 @@ public class MissionProfileCalc {
 		this.thermicThrustMissionMap.put(MissionPhasesEnum.ALTERNATE_CRUISE, thermicThrustAlternateCruise.stream().map(e -> e.to(NonSI.POUND_FORCE)).collect(Collectors.toList()));
 		this.thermicThrustMissionMap.put(MissionPhasesEnum.SECOND_DESCENT, thermicThrustSecondDescent.stream().map(e -> e.to(NonSI.POUND_FORCE)).collect(Collectors.toList()));
 		this.thermicThrustMissionMap.put(MissionPhasesEnum.HOLDING, thermicThrustHolding.stream().map(e -> e.to(NonSI.POUND_FORCE)).collect(Collectors.toList()));
-		this.thermicThrustMissionMap.put(MissionPhasesEnum.LANDING, thermicThrustLanding.stream().map(e -> e.to(NonSI.POUND_FORCE)).collect(Collectors.toList()));
+		this.thermicThrustMissionMap.put(MissionPhasesEnum.APPROACH_AND_LANDING, thermicThrustLanding.stream().map(e -> e.to(NonSI.POUND_FORCE)).collect(Collectors.toList()));
 		
 		//.................................................................................................
 		// ELECTRIC THRUST
@@ -4093,7 +4428,7 @@ public class MissionProfileCalc {
 		this.electricThrustMissionMap.put(MissionPhasesEnum.ALTERNATE_CRUISE, electricThrustAlternateCruise.stream().map(e -> e.to(NonSI.POUND_FORCE)).collect(Collectors.toList()));
 		this.electricThrustMissionMap.put(MissionPhasesEnum.SECOND_DESCENT, electricThrustSecondDescent.stream().map(e -> e.to(NonSI.POUND_FORCE)).collect(Collectors.toList()));
 		this.electricThrustMissionMap.put(MissionPhasesEnum.HOLDING, electricThrustHolding.stream().map(e -> e.to(NonSI.POUND_FORCE)).collect(Collectors.toList()));
-		this.electricThrustMissionMap.put(MissionPhasesEnum.LANDING, electricThrustLanding.stream().map(e -> e.to(NonSI.POUND_FORCE)).collect(Collectors.toList()));
+		this.electricThrustMissionMap.put(MissionPhasesEnum.APPROACH_AND_LANDING, electricThrustLanding.stream().map(e -> e.to(NonSI.POUND_FORCE)).collect(Collectors.toList()));
 		
 		//.................................................................................................
 		// THROTTLE
@@ -4105,7 +4440,7 @@ public class MissionProfileCalc {
 		this.throttleMissionMap.put(MissionPhasesEnum.ALTERNATE_CRUISE, throttleAlternateCruise);
 		this.throttleMissionMap.put(MissionPhasesEnum.SECOND_DESCENT, throttleSecondDescent);
 		this.throttleMissionMap.put(MissionPhasesEnum.HOLDING, throttleHolding);
-		this.throttleMissionMap.put(MissionPhasesEnum.LANDING, throttleLanding);
+		this.throttleMissionMap.put(MissionPhasesEnum.APPROACH_AND_LANDING, throttleLanding);
 		
 		//.................................................................................................
 		// SFC
@@ -4117,7 +4452,7 @@ public class MissionProfileCalc {
 		this.sfcMissionMap.put(MissionPhasesEnum.ALTERNATE_CRUISE, sfcAlternateCruise); /* lb/lb*hr */
 		this.sfcMissionMap.put(MissionPhasesEnum.SECOND_DESCENT, sfcSecondDescent); /* lb/lb*hr */
 		this.sfcMissionMap.put(MissionPhasesEnum.HOLDING, sfcHolding); /* lb/lb*hr */
-		this.sfcMissionMap.put(MissionPhasesEnum.LANDING, sfcLanding); /* lb/lb*hr */
+		this.sfcMissionMap.put(MissionPhasesEnum.APPROACH_AND_LANDING, sfcLanding); /* lb/lb*hr */
 		
 		//.................................................................................................
 		// FUEL FLOW
@@ -4129,7 +4464,7 @@ public class MissionProfileCalc {
 		this.fuelFlowMissionMap.put(MissionPhasesEnum.ALTERNATE_CRUISE, fuelFlowAlternateCruise); /* kg/min */
 		this.fuelFlowMissionMap.put(MissionPhasesEnum.SECOND_DESCENT, fuelFlowSecondDescent); /* kg/min */
 		this.fuelFlowMissionMap.put(MissionPhasesEnum.HOLDING, fuelFlowHolding); /* kg/min */
-		this.fuelFlowMissionMap.put(MissionPhasesEnum.LANDING, fuelFlowLanding.stream().map(e -> e*60.0).collect(Collectors.toList())); /* kg/min */
+		this.fuelFlowMissionMap.put(MissionPhasesEnum.APPROACH_AND_LANDING, fuelFlowLanding.stream().map(e -> e*60.0).collect(Collectors.toList())); /* kg/min */
 		
 		//.................................................................................................
 		// RATE OF CLIMB
@@ -4141,7 +4476,7 @@ public class MissionProfileCalc {
 		this.rateOfClimbMissionMap.put(MissionPhasesEnum.ALTERNATE_CRUISE, rateOfClimbAlternateCruise.stream().map(e -> e.to(MyUnits.FOOT_PER_MINUTE)).collect(Collectors.toList()));
 		this.rateOfClimbMissionMap.put(MissionPhasesEnum.SECOND_DESCENT, rateOfClimbSecondDescent.stream().map(e -> e.to(MyUnits.FOOT_PER_MINUTE)).collect(Collectors.toList()));
 		this.rateOfClimbMissionMap.put(MissionPhasesEnum.HOLDING, rateOfClimbHolding.stream().map(e -> e.to(MyUnits.FOOT_PER_MINUTE)).collect(Collectors.toList()));
-		this.rateOfClimbMissionMap.put(MissionPhasesEnum.LANDING, rateOfClimbLanding.stream().map(e -> e.to(MyUnits.FOOT_PER_MINUTE)).collect(Collectors.toList()));
+		this.rateOfClimbMissionMap.put(MissionPhasesEnum.APPROACH_AND_LANDING, rateOfClimbLanding.stream().map(e -> e.to(MyUnits.FOOT_PER_MINUTE)).collect(Collectors.toList()));
 		
 		//.................................................................................................
 		// CLIMB ANGLE
@@ -4153,7 +4488,7 @@ public class MissionProfileCalc {
 		this.climbAngleMissionMap.put(MissionPhasesEnum.ALTERNATE_CRUISE, climbAngleAlternateCruise.stream().map(e -> e.to(NonSI.DEGREE_ANGLE)).collect(Collectors.toList()));
 		this.climbAngleMissionMap.put(MissionPhasesEnum.SECOND_DESCENT, climbAngleSecondDescent.stream().map(e -> e.to(NonSI.DEGREE_ANGLE)).collect(Collectors.toList()));
 		this.climbAngleMissionMap.put(MissionPhasesEnum.HOLDING, climbAngleHolding.stream().map(e -> e.to(NonSI.DEGREE_ANGLE)).collect(Collectors.toList()));
-		this.climbAngleMissionMap.put(MissionPhasesEnum.LANDING, climbAngleLanding.stream().map(e -> e.to(NonSI.DEGREE_ANGLE)).collect(Collectors.toList()));
+		this.climbAngleMissionMap.put(MissionPhasesEnum.APPROACH_AND_LANDING, climbAngleLanding.stream().map(e -> e.to(NonSI.DEGREE_ANGLE)).collect(Collectors.toList()));
 		
 		//.................................................................................................
 		// FUEL POWER
@@ -4165,7 +4500,7 @@ public class MissionProfileCalc {
 		this.fuelPowerMap.put(MissionPhasesEnum.ALTERNATE_CRUISE, fuelPowerAlternateCruise.stream().map(e -> e.to(SI.KILO(SI.WATT))).collect(Collectors.toList()));
 		this.fuelPowerMap.put(MissionPhasesEnum.SECOND_DESCENT, fuelPowerSecondDescent.stream().map(e -> e.to(SI.KILO(SI.WATT))).collect(Collectors.toList()));
 		this.fuelPowerMap.put(MissionPhasesEnum.HOLDING, fuelPowerHolding.stream().map(e -> e.to(SI.KILO(SI.WATT))).collect(Collectors.toList()));
-		this.fuelPowerMap.put(MissionPhasesEnum.LANDING, fuelPowerLanding.stream().map(e -> e.to(SI.KILO(SI.WATT))).collect(Collectors.toList()));
+		this.fuelPowerMap.put(MissionPhasesEnum.APPROACH_AND_LANDING, fuelPowerLanding.stream().map(e -> e.to(SI.KILO(SI.WATT))).collect(Collectors.toList()));
 		
 		//.................................................................................................
 		// BATTERY POWER
@@ -4177,7 +4512,7 @@ public class MissionProfileCalc {
 		this.batteryPowerMap.put(MissionPhasesEnum.ALTERNATE_CRUISE, batteryPowerAlternateCruise.stream().map(e -> e.to(SI.KILO(SI.WATT))).collect(Collectors.toList()));
 		this.batteryPowerMap.put(MissionPhasesEnum.SECOND_DESCENT, batteryPowerSecondDescent.stream().map(e -> e.to(SI.KILO(SI.WATT))).collect(Collectors.toList()));
 		this.batteryPowerMap.put(MissionPhasesEnum.HOLDING, batteryPowerHolding.stream().map(e -> e.to(SI.KILO(SI.WATT))).collect(Collectors.toList()));
-		this.batteryPowerMap.put(MissionPhasesEnum.LANDING, batteryPowerLanding.stream().map(e -> e.to(SI.KILO(SI.WATT))).collect(Collectors.toList()));
+		this.batteryPowerMap.put(MissionPhasesEnum.APPROACH_AND_LANDING, batteryPowerLanding.stream().map(e -> e.to(SI.KILO(SI.WATT))).collect(Collectors.toList()));
 		
 		//.................................................................................................
 		// FUEL ENERGY
@@ -4189,7 +4524,7 @@ public class MissionProfileCalc {
 		this.fuelEnergyMap.put(MissionPhasesEnum.ALTERNATE_CRUISE, fuelEnergyAlternateCruise.stream().map(e -> e.to(SI.JOULE)).collect(Collectors.toList()));
 		this.fuelEnergyMap.put(MissionPhasesEnum.SECOND_DESCENT, fuelEnergySecondDescent.stream().map(e -> e.to(SI.JOULE)).collect(Collectors.toList()));
 		this.fuelEnergyMap.put(MissionPhasesEnum.HOLDING, fuelEnergyHolding.stream().map(e -> e.to(SI.JOULE)).collect(Collectors.toList()));
-		this.fuelEnergyMap.put(MissionPhasesEnum.LANDING, fuelEnergyLanding.stream().map(e -> e.to(SI.JOULE)).collect(Collectors.toList()));
+		this.fuelEnergyMap.put(MissionPhasesEnum.APPROACH_AND_LANDING, fuelEnergyLanding.stream().map(e -> e.to(SI.JOULE)).collect(Collectors.toList()));
 		
 		//.................................................................................................
 		// BATTERY ENERGY
@@ -4201,7 +4536,7 @@ public class MissionProfileCalc {
 		this.batteryEnergyMap.put(MissionPhasesEnum.ALTERNATE_CRUISE, batteryEnergyAlternateCruise.stream().map(e -> e.to(SI.JOULE)).collect(Collectors.toList()));
 		this.batteryEnergyMap.put(MissionPhasesEnum.SECOND_DESCENT, batteryEnergySecondDescent.stream().map(e -> e.to(SI.JOULE)).collect(Collectors.toList()));
 		this.batteryEnergyMap.put(MissionPhasesEnum.HOLDING, batteryEnergyHolding.stream().map(e -> e.to(SI.JOULE)).collect(Collectors.toList()));
-		this.batteryEnergyMap.put(MissionPhasesEnum.LANDING, batteryEnergyLanding.stream().map(e -> e.to(SI.JOULE)).collect(Collectors.toList()));
+		this.batteryEnergyMap.put(MissionPhasesEnum.APPROACH_AND_LANDING, batteryEnergyLanding.stream().map(e -> e.to(SI.JOULE)).collect(Collectors.toList()));
 		
 	}
 
@@ -4210,32 +4545,111 @@ public class MissionProfileCalc {
 			List<PerformancePlotEnum> _plotList,
 			String _missionProfilesFolderPath) {
 		
-		// FIXME: ALL PLOT DATA MUST BE SUMMED UP TO MAKE THE TIME HISTORY...
+		//.....................................................................................
+		// COMMON LISTS FOR ALL CHARTS
+		List<Amount<Length>> altitudeListPlot = new ArrayList<>();
+		altitudeListPlot.addAll(altitudeMap.get(MissionPhasesEnum.TAKE_OFF));
+		altitudeListPlot.addAll(altitudeMap.get(MissionPhasesEnum.CLIMB));
+		altitudeListPlot.addAll(altitudeMap.get(MissionPhasesEnum.CRUISE));
+		altitudeListPlot.addAll(altitudeMap.get(MissionPhasesEnum.FIRST_DESCENT));
+		altitudeListPlot.addAll(altitudeMap.get(MissionPhasesEnum.SECOND_CLIMB));
+		altitudeListPlot.addAll(altitudeMap.get(MissionPhasesEnum.ALTERNATE_CRUISE));
+		altitudeListPlot.addAll(altitudeMap.get(MissionPhasesEnum.SECOND_DESCENT));
+		altitudeListPlot.addAll(altitudeMap.get(MissionPhasesEnum.HOLDING));
+		altitudeListPlot.addAll(altitudeMap.get(MissionPhasesEnum.APPROACH_AND_LANDING));
+		
+		List<Amount<Duration>> timeListPlot = new ArrayList<>();
+		timeListPlot.addAll(
+				timeMap.get(MissionPhasesEnum.TAKE_OFF)
+				);
+		timeListPlot.addAll(
+				timeMap.get(MissionPhasesEnum.CLIMB).stream()
+				.map(time -> time.plus(timeListPlot.get(timeListPlot.size()-1)))
+				.collect(Collectors.toList())
+				);
+		timeListPlot.addAll(
+				timeMap.get(MissionPhasesEnum.CRUISE).stream()
+				.map(time -> time.plus(timeListPlot.get(timeListPlot.size()-1)))
+				.collect(Collectors.toList())
+				);
+		timeListPlot.addAll(
+				timeMap.get(MissionPhasesEnum.FIRST_DESCENT).stream()
+				.map(time -> time.plus(timeListPlot.get(timeListPlot.size()-1)))
+				.collect(Collectors.toList())
+				);
+		timeListPlot.addAll(
+				timeMap.get(MissionPhasesEnum.SECOND_CLIMB).stream()
+				.map(time -> time.plus(timeListPlot.get(timeListPlot.size()-1)))
+				.collect(Collectors.toList())
+				);
+		timeListPlot.addAll(
+				timeMap.get(MissionPhasesEnum.ALTERNATE_CRUISE).stream()
+				.map(time -> time.plus(timeListPlot.get(timeListPlot.size()-1)))
+				.collect(Collectors.toList())
+				);
+		timeListPlot.addAll(
+				timeMap.get(MissionPhasesEnum.SECOND_DESCENT).stream()
+				.map(time -> time.plus(timeListPlot.get(timeListPlot.size()-1)))
+				.collect(Collectors.toList())
+				);
+		timeListPlot.addAll(
+				timeMap.get(MissionPhasesEnum.HOLDING).stream()
+				.map(time -> time.plus(timeListPlot.get(timeListPlot.size()-1)))
+				.collect(Collectors.toList())
+				);
+		timeListPlot.addAll(
+				timeMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).stream()
+				.map(time -> time.plus(timeListPlot.get(timeListPlot.size()-1)))
+				.collect(Collectors.toList())
+				);
+		//.....................................................................................
 		
 		if(_plotList.contains(PerformancePlotEnum.RANGE_PROFILE)) { 
 			
 			List<Amount<Length>> rangeListPlot = new ArrayList<>();
-			List<Amount<Length>> altitudeListPlot = new ArrayList<>();
-			
-			rangeListPlot.addAll(rangeMap.get(MissionPhasesEnum.TAKE_OFF));
-			rangeListPlot.addAll(rangeMap.get(MissionPhasesEnum.CLIMB));
-			rangeListPlot.addAll(rangeMap.get(MissionPhasesEnum.CRUISE));
-			rangeListPlot.addAll(rangeMap.get(MissionPhasesEnum.FIRST_DESCENT));
-			rangeListPlot.addAll(rangeMap.get(MissionPhasesEnum.SECOND_CLIMB));
-			rangeListPlot.addAll(rangeMap.get(MissionPhasesEnum.ALTERNATE_CRUISE));
-			rangeListPlot.addAll(rangeMap.get(MissionPhasesEnum.SECOND_DESCENT));
-			rangeListPlot.addAll(rangeMap.get(MissionPhasesEnum.HOLDING));
-			rangeListPlot.addAll(rangeMap.get(MissionPhasesEnum.LANDING));
-			
-			altitudeListPlot.addAll(altitudeMap.get(MissionPhasesEnum.TAKE_OFF));
-			altitudeListPlot.addAll(altitudeMap.get(MissionPhasesEnum.CLIMB));
-			altitudeListPlot.addAll(altitudeMap.get(MissionPhasesEnum.CRUISE));
-			altitudeListPlot.addAll(altitudeMap.get(MissionPhasesEnum.FIRST_DESCENT));
-			altitudeListPlot.addAll(altitudeMap.get(MissionPhasesEnum.SECOND_CLIMB));
-			altitudeListPlot.addAll(altitudeMap.get(MissionPhasesEnum.ALTERNATE_CRUISE));
-			altitudeListPlot.addAll(altitudeMap.get(MissionPhasesEnum.SECOND_DESCENT));
-			altitudeListPlot.addAll(altitudeMap.get(MissionPhasesEnum.HOLDING));
-			altitudeListPlot.addAll(altitudeMap.get(MissionPhasesEnum.LANDING));
+			rangeListPlot.addAll(
+					rangeMap.get(MissionPhasesEnum.TAKE_OFF)
+					);
+			rangeListPlot.addAll(
+					rangeMap.get(MissionPhasesEnum.CLIMB).stream()
+					.map(range -> range.plus(rangeListPlot.get(rangeListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			rangeListPlot.addAll(
+					rangeMap.get(MissionPhasesEnum.CRUISE).stream()
+					.map(range -> range.plus(rangeListPlot.get(rangeListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			rangeListPlot.addAll(
+					rangeMap.get(MissionPhasesEnum.FIRST_DESCENT).stream()
+					.map(range -> range.plus(rangeListPlot.get(rangeListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			rangeListPlot.addAll(
+					rangeMap.get(MissionPhasesEnum.SECOND_CLIMB).stream()
+					.map(range -> range.plus(rangeListPlot.get(rangeListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			rangeListPlot.addAll(
+					rangeMap.get(MissionPhasesEnum.ALTERNATE_CRUISE).stream()
+					.map(range -> range.plus(rangeListPlot.get(rangeListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			rangeListPlot.addAll(
+					rangeMap.get(MissionPhasesEnum.SECOND_DESCENT).stream()
+					.map(range -> range.plus(rangeListPlot.get(rangeListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			rangeListPlot.addAll(
+					rangeMap.get(MissionPhasesEnum.HOLDING).stream()
+					.map(range -> range.plus(rangeListPlot.get(rangeListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			rangeListPlot.addAll(
+					rangeMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).stream()
+					.map(range -> range.plus(rangeListPlot.get(rangeListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
 			
 			MyChartToFileUtils.plotNoLegend(
 					MyArrayUtils.convertListOfAmountTodoubleArray(
@@ -4280,29 +4694,6 @@ public class MissionProfileCalc {
 		}
 		
 		if(_plotList.contains(PerformancePlotEnum.TIME_PROFILE)) { 
-			
-			List<Amount<Duration>> timeListPlot = new ArrayList<>();
-			List<Amount<Length>> altitudeListPlot = new ArrayList<>();
-			
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.TAKE_OFF));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.CLIMB));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.CRUISE));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.FIRST_DESCENT));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.SECOND_CLIMB));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.ALTERNATE_CRUISE));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.SECOND_DESCENT));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.HOLDING));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.LANDING));
-			
-			altitudeListPlot.addAll(altitudeMap.get(MissionPhasesEnum.TAKE_OFF));
-			altitudeListPlot.addAll(altitudeMap.get(MissionPhasesEnum.CLIMB));
-			altitudeListPlot.addAll(altitudeMap.get(MissionPhasesEnum.CRUISE));
-			altitudeListPlot.addAll(altitudeMap.get(MissionPhasesEnum.FIRST_DESCENT));
-			altitudeListPlot.addAll(altitudeMap.get(MissionPhasesEnum.SECOND_CLIMB));
-			altitudeListPlot.addAll(altitudeMap.get(MissionPhasesEnum.ALTERNATE_CRUISE));
-			altitudeListPlot.addAll(altitudeMap.get(MissionPhasesEnum.SECOND_DESCENT));
-			altitudeListPlot.addAll(altitudeMap.get(MissionPhasesEnum.HOLDING));
-			altitudeListPlot.addAll(altitudeMap.get(MissionPhasesEnum.LANDING));
 			
 			MyChartToFileUtils.plotNoLegend(
 					MyArrayUtils.convertListOfAmountTodoubleArray(
@@ -4388,27 +4779,49 @@ public class MissionProfileCalc {
 		if(_plotList.contains(PerformancePlotEnum.FUEL_USED_PROFILE)) { 
 			
 			List<Amount<Mass>> fuelUsedListPlot = new ArrayList<>();
-			List<Amount<Length>> altitudeListPlot = new ArrayList<>();
-			
-			fuelUsedListPlot.addAll(fuelUsedMap.get(MissionPhasesEnum.TAKE_OFF));
-			fuelUsedListPlot.addAll(fuelUsedMap.get(MissionPhasesEnum.CLIMB));
-			fuelUsedListPlot.addAll(fuelUsedMap.get(MissionPhasesEnum.CRUISE));
-			fuelUsedListPlot.addAll(fuelUsedMap.get(MissionPhasesEnum.FIRST_DESCENT));
-			fuelUsedListPlot.addAll(fuelUsedMap.get(MissionPhasesEnum.SECOND_CLIMB));
-			fuelUsedListPlot.addAll(fuelUsedMap.get(MissionPhasesEnum.ALTERNATE_CRUISE));
-			fuelUsedListPlot.addAll(fuelUsedMap.get(MissionPhasesEnum.SECOND_DESCENT));
-			fuelUsedListPlot.addAll(fuelUsedMap.get(MissionPhasesEnum.HOLDING));
-			fuelUsedListPlot.addAll(fuelUsedMap.get(MissionPhasesEnum.LANDING));
-			
-			altitudeListPlot.addAll(altitudeMap.get(MissionPhasesEnum.TAKE_OFF));
-			altitudeListPlot.addAll(altitudeMap.get(MissionPhasesEnum.CLIMB));
-			altitudeListPlot.addAll(altitudeMap.get(MissionPhasesEnum.CRUISE));
-			altitudeListPlot.addAll(altitudeMap.get(MissionPhasesEnum.FIRST_DESCENT));
-			altitudeListPlot.addAll(altitudeMap.get(MissionPhasesEnum.SECOND_CLIMB));
-			altitudeListPlot.addAll(altitudeMap.get(MissionPhasesEnum.ALTERNATE_CRUISE));
-			altitudeListPlot.addAll(altitudeMap.get(MissionPhasesEnum.SECOND_DESCENT));
-			altitudeListPlot.addAll(altitudeMap.get(MissionPhasesEnum.HOLDING));
-			altitudeListPlot.addAll(altitudeMap.get(MissionPhasesEnum.LANDING));
+			fuelUsedListPlot.addAll(
+					fuelUsedMap.get(MissionPhasesEnum.TAKE_OFF)
+					);
+			fuelUsedListPlot.addAll(
+					fuelUsedMap.get(MissionPhasesEnum.CLIMB).stream()
+					.map(fuel -> fuel.plus(fuelUsedListPlot.get(fuelUsedListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			fuelUsedListPlot.addAll(
+					fuelUsedMap.get(MissionPhasesEnum.CRUISE).stream()
+					.map(fuel -> fuel.plus(fuelUsedListPlot.get(fuelUsedListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			fuelUsedListPlot.addAll(
+					fuelUsedMap.get(MissionPhasesEnum.FIRST_DESCENT).stream()
+					.map(fuel -> fuel.plus(fuelUsedListPlot.get(fuelUsedListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			fuelUsedListPlot.addAll(
+					fuelUsedMap.get(MissionPhasesEnum.SECOND_CLIMB).stream()
+					.map(fuel -> fuel.plus(fuelUsedListPlot.get(fuelUsedListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			fuelUsedListPlot.addAll(
+					fuelUsedMap.get(MissionPhasesEnum.ALTERNATE_CRUISE).stream()
+					.map(fuel -> fuel.plus(fuelUsedListPlot.get(fuelUsedListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			fuelUsedListPlot.addAll(
+					fuelUsedMap.get(MissionPhasesEnum.SECOND_DESCENT).stream()
+					.map(fuel -> fuel.plus(fuelUsedListPlot.get(fuelUsedListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			fuelUsedListPlot.addAll(
+					fuelUsedMap.get(MissionPhasesEnum.HOLDING).stream()
+					.map(fuel -> fuel.plus(fuelUsedListPlot.get(fuelUsedListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			fuelUsedListPlot.addAll(
+					fuelUsedMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).stream()
+					.map(fuel -> fuel.plus(fuelUsedListPlot.get(fuelUsedListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
 			
 			MyChartToFileUtils.plotNoLegend(
 					MyArrayUtils.convertListOfAmountTodoubleArray(
@@ -4453,19 +4866,7 @@ public class MissionProfileCalc {
 		
 		if(_plotList.contains(PerformancePlotEnum.WEIGHT_PROFILE)) { 
 			
-			List<Amount<Duration>> timeListPlot = new ArrayList<>();
 			List<Amount<Mass>> aircraftMassListPlot = new ArrayList<>();
-			
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.TAKE_OFF));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.CLIMB));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.CRUISE));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.FIRST_DESCENT));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.SECOND_CLIMB));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.ALTERNATE_CRUISE));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.SECOND_DESCENT));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.HOLDING));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.LANDING));
-			
 			aircraftMassListPlot.addAll(massMap.get(MissionPhasesEnum.TAKE_OFF));
 			aircraftMassListPlot.addAll(massMap.get(MissionPhasesEnum.CLIMB));
 			aircraftMassListPlot.addAll(massMap.get(MissionPhasesEnum.CRUISE));
@@ -4474,7 +4875,7 @@ public class MissionProfileCalc {
 			aircraftMassListPlot.addAll(massMap.get(MissionPhasesEnum.ALTERNATE_CRUISE));
 			aircraftMassListPlot.addAll(massMap.get(MissionPhasesEnum.SECOND_DESCENT));
 			aircraftMassListPlot.addAll(massMap.get(MissionPhasesEnum.HOLDING));
-			aircraftMassListPlot.addAll(massMap.get(MissionPhasesEnum.LANDING));
+			aircraftMassListPlot.addAll(massMap.get(MissionPhasesEnum.APPROACH_AND_LANDING));
 			
 			MyChartToFileUtils.plotNoLegend(
 					MyArrayUtils.convertListOfAmountTodoubleArray(
@@ -4499,94 +4900,335 @@ public class MissionProfileCalc {
 		
 		if(_plotList.contains(PerformancePlotEnum.EMISSIONS_PROFILE)) { 
 
-			List<Amount<Duration>> timeListPlot = new ArrayList<>();
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.TAKE_OFF));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.CLIMB));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.CRUISE));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.FIRST_DESCENT));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.SECOND_CLIMB));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.ALTERNATE_CRUISE));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.SECOND_DESCENT));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.HOLDING));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.LANDING));
-			
+			//..........................................................................................
+			// NOx EMISSIONS
 			List<Amount<Mass>> emissionNOxListPlot = new ArrayList<>();
-			emissionNOxListPlot.addAll(emissionNOxMap.get(MissionPhasesEnum.TAKE_OFF));
-			emissionNOxListPlot.addAll(emissionNOxMap.get(MissionPhasesEnum.CLIMB));
-			emissionNOxListPlot.addAll(emissionNOxMap.get(MissionPhasesEnum.CRUISE));
-			emissionNOxListPlot.addAll(emissionNOxMap.get(MissionPhasesEnum.FIRST_DESCENT));
-			emissionNOxListPlot.addAll(emissionNOxMap.get(MissionPhasesEnum.SECOND_CLIMB));
-			emissionNOxListPlot.addAll(emissionNOxMap.get(MissionPhasesEnum.ALTERNATE_CRUISE));
-			emissionNOxListPlot.addAll(emissionNOxMap.get(MissionPhasesEnum.SECOND_DESCENT));
-			emissionNOxListPlot.addAll(emissionNOxMap.get(MissionPhasesEnum.HOLDING));
-			emissionNOxListPlot.addAll(emissionNOxMap.get(MissionPhasesEnum.LANDING));
+			emissionNOxListPlot.addAll(
+					emissionNOxMap.get(MissionPhasesEnum.TAKE_OFF)
+					);
+			emissionNOxListPlot.addAll(
+					emissionNOxMap.get(MissionPhasesEnum.CLIMB).stream()
+					.map(e -> e.plus(emissionNOxListPlot.get(emissionNOxListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			emissionNOxListPlot.addAll(
+					emissionNOxMap.get(MissionPhasesEnum.CRUISE).stream()
+					.map(e -> e.plus(emissionNOxListPlot.get(emissionNOxListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			emissionNOxListPlot.addAll(
+					emissionNOxMap.get(MissionPhasesEnum.FIRST_DESCENT).stream()
+					.map(e -> e.plus(emissionNOxListPlot.get(emissionNOxListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			emissionNOxListPlot.addAll(
+					emissionNOxMap.get(MissionPhasesEnum.SECOND_CLIMB).stream()
+					.map(e -> e.plus(emissionNOxListPlot.get(emissionNOxListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			emissionNOxListPlot.addAll(
+					emissionNOxMap.get(MissionPhasesEnum.ALTERNATE_CRUISE).stream()
+					.map(e -> e.plus(emissionNOxListPlot.get(emissionNOxListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			emissionNOxListPlot.addAll(
+					emissionNOxMap.get(MissionPhasesEnum.SECOND_DESCENT).stream()
+					.map(e -> e.plus(emissionNOxListPlot.get(emissionNOxListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			emissionNOxListPlot.addAll(
+					emissionNOxMap.get(MissionPhasesEnum.HOLDING).stream()
+					.map(e -> e.plus(emissionNOxListPlot.get(emissionNOxListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			emissionNOxListPlot.addAll(
+					emissionNOxMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).stream()
+					.map(e -> e.plus(emissionNOxListPlot.get(emissionNOxListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
 			
+			//..........................................................................................
+			// CO EMISSIONS
 			List<Amount<Mass>> emissionCOListPlot = new ArrayList<>();
-			emissionCOListPlot.addAll(emissionCOMap.get(MissionPhasesEnum.TAKE_OFF));
-			emissionCOListPlot.addAll(emissionCOMap.get(MissionPhasesEnum.CLIMB));
-			emissionCOListPlot.addAll(emissionCOMap.get(MissionPhasesEnum.CRUISE));
-			emissionCOListPlot.addAll(emissionCOMap.get(MissionPhasesEnum.FIRST_DESCENT));
-			emissionCOListPlot.addAll(emissionCOMap.get(MissionPhasesEnum.SECOND_CLIMB));
-			emissionCOListPlot.addAll(emissionCOMap.get(MissionPhasesEnum.ALTERNATE_CRUISE));
-			emissionCOListPlot.addAll(emissionCOMap.get(MissionPhasesEnum.SECOND_DESCENT));
-			emissionCOListPlot.addAll(emissionCOMap.get(MissionPhasesEnum.HOLDING));
-			emissionCOListPlot.addAll(emissionCOMap.get(MissionPhasesEnum.LANDING));
+			emissionCOListPlot.addAll(
+					emissionCOMap.get(MissionPhasesEnum.TAKE_OFF)
+					);
+			emissionCOListPlot.addAll(
+					emissionCOMap.get(MissionPhasesEnum.CLIMB).stream()
+					.map(e -> e.plus(emissionCOListPlot.get(emissionCOListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			emissionCOListPlot.addAll(
+					emissionCOMap.get(MissionPhasesEnum.CRUISE).stream()
+					.map(e -> e.plus(emissionCOListPlot.get(emissionCOListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			emissionCOListPlot.addAll(
+					emissionCOMap.get(MissionPhasesEnum.FIRST_DESCENT).stream()
+					.map(e -> e.plus(emissionCOListPlot.get(emissionCOListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			emissionCOListPlot.addAll(
+					emissionCOMap.get(MissionPhasesEnum.SECOND_CLIMB).stream()
+					.map(e -> e.plus(emissionCOListPlot.get(emissionCOListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			emissionCOListPlot.addAll(
+					emissionCOMap.get(MissionPhasesEnum.ALTERNATE_CRUISE).stream()
+					.map(e -> e.plus(emissionCOListPlot.get(emissionCOListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			emissionCOListPlot.addAll(
+					emissionCOMap.get(MissionPhasesEnum.SECOND_DESCENT).stream()
+					.map(e -> e.plus(emissionCOListPlot.get(emissionCOListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			emissionCOListPlot.addAll(
+					emissionCOMap.get(MissionPhasesEnum.HOLDING).stream()
+					.map(e -> e.plus(emissionCOListPlot.get(emissionCOListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			emissionCOListPlot.addAll(
+					emissionCOMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).stream()
+					.map(e -> e.plus(emissionCOListPlot.get(emissionCOListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
 			
+			//..........................................................................................
+			// HC EMISSION
 			List<Amount<Mass>> emissionHCListPlot = new ArrayList<>();
-			emissionHCListPlot.addAll(emissionHCMap.get(MissionPhasesEnum.TAKE_OFF));
-			emissionHCListPlot.addAll(emissionHCMap.get(MissionPhasesEnum.CLIMB));
-			emissionHCListPlot.addAll(emissionHCMap.get(MissionPhasesEnum.CRUISE));
-			emissionHCListPlot.addAll(emissionHCMap.get(MissionPhasesEnum.FIRST_DESCENT));
-			emissionHCListPlot.addAll(emissionHCMap.get(MissionPhasesEnum.SECOND_CLIMB));
-			emissionHCListPlot.addAll(emissionHCMap.get(MissionPhasesEnum.ALTERNATE_CRUISE));
-			emissionHCListPlot.addAll(emissionHCMap.get(MissionPhasesEnum.SECOND_DESCENT));
-			emissionHCListPlot.addAll(emissionHCMap.get(MissionPhasesEnum.HOLDING));
-			emissionHCListPlot.addAll(emissionHCMap.get(MissionPhasesEnum.LANDING));
+			emissionHCListPlot.addAll(
+					emissionHCMap.get(MissionPhasesEnum.TAKE_OFF)
+					);
+			emissionHCListPlot.addAll(
+					emissionHCMap.get(MissionPhasesEnum.CLIMB).stream()
+					.map(e -> e.plus(emissionHCListPlot.get(emissionHCListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			emissionHCListPlot.addAll(
+					emissionHCMap.get(MissionPhasesEnum.CRUISE).stream()
+					.map(e -> e.plus(emissionHCListPlot.get(emissionHCListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			emissionHCListPlot.addAll(
+					emissionHCMap.get(MissionPhasesEnum.FIRST_DESCENT).stream()
+					.map(e -> e.plus(emissionHCListPlot.get(emissionHCListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			emissionHCListPlot.addAll(
+					emissionHCMap.get(MissionPhasesEnum.SECOND_CLIMB).stream()
+					.map(e -> e.plus(emissionHCListPlot.get(emissionHCListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			emissionHCListPlot.addAll(
+					emissionHCMap.get(MissionPhasesEnum.ALTERNATE_CRUISE).stream()
+					.map(e -> e.plus(emissionHCListPlot.get(emissionHCListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			emissionHCListPlot.addAll(
+					emissionHCMap.get(MissionPhasesEnum.SECOND_DESCENT).stream()
+					.map(e -> e.plus(emissionHCListPlot.get(emissionHCListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			emissionHCListPlot.addAll(
+					emissionHCMap.get(MissionPhasesEnum.HOLDING).stream()
+					.map(e -> e.plus(emissionHCListPlot.get(emissionHCListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			emissionHCListPlot.addAll(
+					emissionHCMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).stream()
+					.map(e -> e.plus(emissionHCListPlot.get(emissionHCListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
 			
+			//..........................................................................................
+			// SOOT EMISSION
 			List<Amount<Mass>> emissionSootListPlot = new ArrayList<>();
-			emissionSootListPlot.addAll(emissionSootMap.get(MissionPhasesEnum.TAKE_OFF));
-			emissionSootListPlot.addAll(emissionSootMap.get(MissionPhasesEnum.CLIMB));
-			emissionSootListPlot.addAll(emissionSootMap.get(MissionPhasesEnum.CRUISE));
-			emissionSootListPlot.addAll(emissionSootMap.get(MissionPhasesEnum.FIRST_DESCENT));
-			emissionSootListPlot.addAll(emissionSootMap.get(MissionPhasesEnum.SECOND_CLIMB));
-			emissionSootListPlot.addAll(emissionSootMap.get(MissionPhasesEnum.ALTERNATE_CRUISE));
-			emissionSootListPlot.addAll(emissionSootMap.get(MissionPhasesEnum.SECOND_DESCENT));
-			emissionSootListPlot.addAll(emissionSootMap.get(MissionPhasesEnum.HOLDING));
-			emissionSootListPlot.addAll(emissionSootMap.get(MissionPhasesEnum.LANDING));
+			emissionSootListPlot.addAll(
+					emissionSootMap.get(MissionPhasesEnum.TAKE_OFF)
+					);
+			emissionSootListPlot.addAll(
+					emissionSootMap.get(MissionPhasesEnum.CLIMB).stream()
+					.map(e -> e.plus(emissionSootListPlot.get(emissionSootListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			emissionSootListPlot.addAll(
+					emissionSootMap.get(MissionPhasesEnum.CRUISE).stream()
+					.map(e -> e.plus(emissionSootListPlot.get(emissionSootListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			emissionSootListPlot.addAll(
+					emissionSootMap.get(MissionPhasesEnum.FIRST_DESCENT).stream()
+					.map(e -> e.plus(emissionSootListPlot.get(emissionSootListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			emissionSootListPlot.addAll(
+					emissionSootMap.get(MissionPhasesEnum.SECOND_CLIMB).stream()
+					.map(e -> e.plus(emissionSootListPlot.get(emissionSootListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			emissionSootListPlot.addAll(
+					emissionSootMap.get(MissionPhasesEnum.ALTERNATE_CRUISE).stream()
+					.map(e -> e.plus(emissionSootListPlot.get(emissionSootListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			emissionSootListPlot.addAll(
+					emissionSootMap.get(MissionPhasesEnum.SECOND_DESCENT).stream()
+					.map(e -> e.plus(emissionSootListPlot.get(emissionSootListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			emissionSootListPlot.addAll(
+					emissionSootMap.get(MissionPhasesEnum.HOLDING).stream()
+					.map(e -> e.plus(emissionSootListPlot.get(emissionSootListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			emissionSootListPlot.addAll(
+					emissionSootMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).stream()
+					.map(e -> e.plus(emissionSootListPlot.get(emissionSootListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
 			
+			//..........................................................................................
+			// CO2 EMISSION
 			List<Amount<Mass>> emissionCO2ListPlot = new ArrayList<>();
-			emissionCO2ListPlot.addAll(emissionCO2Map.get(MissionPhasesEnum.TAKE_OFF));
-			emissionCO2ListPlot.addAll(emissionCO2Map.get(MissionPhasesEnum.CLIMB));
-			emissionCO2ListPlot.addAll(emissionCO2Map.get(MissionPhasesEnum.CRUISE));
-			emissionCO2ListPlot.addAll(emissionCO2Map.get(MissionPhasesEnum.FIRST_DESCENT));
-			emissionCO2ListPlot.addAll(emissionCO2Map.get(MissionPhasesEnum.SECOND_CLIMB));
-			emissionCO2ListPlot.addAll(emissionCO2Map.get(MissionPhasesEnum.ALTERNATE_CRUISE));
-			emissionCO2ListPlot.addAll(emissionCO2Map.get(MissionPhasesEnum.SECOND_DESCENT));
-			emissionCO2ListPlot.addAll(emissionCO2Map.get(MissionPhasesEnum.HOLDING));
-			emissionCO2ListPlot.addAll(emissionCO2Map.get(MissionPhasesEnum.LANDING));
+			emissionCO2ListPlot.addAll(
+					emissionCO2Map.get(MissionPhasesEnum.TAKE_OFF)
+					);
+			emissionCO2ListPlot.addAll(
+					emissionCO2Map.get(MissionPhasesEnum.CLIMB).stream()
+					.map(e -> e.plus(emissionCO2ListPlot.get(emissionCO2ListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			emissionCO2ListPlot.addAll(
+					emissionCO2Map.get(MissionPhasesEnum.CRUISE).stream()
+					.map(e -> e.plus(emissionCO2ListPlot.get(emissionCO2ListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			emissionCO2ListPlot.addAll(
+					emissionCO2Map.get(MissionPhasesEnum.FIRST_DESCENT).stream()
+					.map(e -> e.plus(emissionCO2ListPlot.get(emissionCO2ListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			emissionCO2ListPlot.addAll(
+					emissionCO2Map.get(MissionPhasesEnum.SECOND_CLIMB).stream()
+					.map(e -> e.plus(emissionCO2ListPlot.get(emissionCO2ListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			emissionCO2ListPlot.addAll(
+					emissionCO2Map.get(MissionPhasesEnum.ALTERNATE_CRUISE).stream()
+					.map(e -> e.plus(emissionCO2ListPlot.get(emissionCO2ListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			emissionCO2ListPlot.addAll(
+					emissionCO2Map.get(MissionPhasesEnum.SECOND_DESCENT).stream()
+					.map(e -> e.plus(emissionCO2ListPlot.get(emissionCO2ListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			emissionCO2ListPlot.addAll(
+					emissionCO2Map.get(MissionPhasesEnum.HOLDING).stream()
+					.map(e -> e.plus(emissionCO2ListPlot.get(emissionCO2ListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			emissionCO2ListPlot.addAll(
+					emissionCO2Map.get(MissionPhasesEnum.APPROACH_AND_LANDING).stream()
+					.map(e -> e.plus(emissionCO2ListPlot.get(emissionCO2ListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
 			
+			//..........................................................................................
+			// SOx EMISSION
 			List<Amount<Mass>> emissionSOxListPlot = new ArrayList<>();
-			emissionSOxListPlot.addAll(emissionSOxMap.get(MissionPhasesEnum.TAKE_OFF));
-			emissionSOxListPlot.addAll(emissionSOxMap.get(MissionPhasesEnum.CLIMB));
-			emissionSOxListPlot.addAll(emissionSOxMap.get(MissionPhasesEnum.CRUISE));
-			emissionSOxListPlot.addAll(emissionSOxMap.get(MissionPhasesEnum.FIRST_DESCENT));
-			emissionSOxListPlot.addAll(emissionSOxMap.get(MissionPhasesEnum.SECOND_CLIMB));
-			emissionSOxListPlot.addAll(emissionSOxMap.get(MissionPhasesEnum.ALTERNATE_CRUISE));
-			emissionSOxListPlot.addAll(emissionSOxMap.get(MissionPhasesEnum.SECOND_DESCENT));
-			emissionSOxListPlot.addAll(emissionSOxMap.get(MissionPhasesEnum.HOLDING));
-			emissionSOxListPlot.addAll(emissionSOxMap.get(MissionPhasesEnum.LANDING));
+			emissionSOxListPlot.addAll(
+					emissionSOxMap.get(MissionPhasesEnum.TAKE_OFF)
+					);
+			emissionSOxListPlot.addAll(
+					emissionSOxMap.get(MissionPhasesEnum.CLIMB).stream()
+					.map(e -> e.plus(emissionSOxListPlot.get(emissionSOxListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			emissionSOxListPlot.addAll(
+					emissionSOxMap.get(MissionPhasesEnum.CRUISE).stream()
+					.map(e -> e.plus(emissionSOxListPlot.get(emissionSOxListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			emissionSOxListPlot.addAll(
+					emissionSOxMap.get(MissionPhasesEnum.FIRST_DESCENT).stream()
+					.map(e -> e.plus(emissionSOxListPlot.get(emissionSOxListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			emissionSOxListPlot.addAll(
+					emissionSOxMap.get(MissionPhasesEnum.SECOND_CLIMB).stream()
+					.map(e -> e.plus(emissionSOxListPlot.get(emissionSOxListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			emissionSOxListPlot.addAll(
+					emissionSOxMap.get(MissionPhasesEnum.ALTERNATE_CRUISE).stream()
+					.map(e -> e.plus(emissionSOxListPlot.get(emissionSOxListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			emissionSOxListPlot.addAll(
+					emissionSOxMap.get(MissionPhasesEnum.SECOND_DESCENT).stream()
+					.map(e -> e.plus(emissionSOxListPlot.get(emissionSOxListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			emissionSOxListPlot.addAll(
+					emissionSOxMap.get(MissionPhasesEnum.HOLDING).stream()
+					.map(e -> e.plus(emissionSOxListPlot.get(emissionSOxListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			emissionSOxListPlot.addAll(
+					emissionSOxMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).stream()
+					.map(e -> e.plus(emissionSOxListPlot.get(emissionSOxListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
 			
+			//..........................................................................................
+			// H2O EMISSION
 			List<Amount<Mass>> emissionH2OListPlot = new ArrayList<>();
-			emissionH2OListPlot.addAll(emissionH2OMap.get(MissionPhasesEnum.TAKE_OFF));
-			emissionH2OListPlot.addAll(emissionH2OMap.get(MissionPhasesEnum.CLIMB));
-			emissionH2OListPlot.addAll(emissionH2OMap.get(MissionPhasesEnum.CRUISE));
-			emissionH2OListPlot.addAll(emissionH2OMap.get(MissionPhasesEnum.FIRST_DESCENT));
-			emissionH2OListPlot.addAll(emissionH2OMap.get(MissionPhasesEnum.SECOND_CLIMB));
-			emissionH2OListPlot.addAll(emissionH2OMap.get(MissionPhasesEnum.ALTERNATE_CRUISE));
-			emissionH2OListPlot.addAll(emissionH2OMap.get(MissionPhasesEnum.SECOND_DESCENT));
-			emissionH2OListPlot.addAll(emissionH2OMap.get(MissionPhasesEnum.HOLDING));
-			emissionH2OListPlot.addAll(emissionH2OMap.get(MissionPhasesEnum.LANDING));
-
+			emissionH2OListPlot.addAll(
+					emissionH2OMap.get(MissionPhasesEnum.TAKE_OFF)
+					);
+			emissionH2OListPlot.addAll(
+					emissionH2OMap.get(MissionPhasesEnum.CLIMB).stream()
+					.map(e -> e.plus(emissionH2OListPlot.get(emissionH2OListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			emissionH2OListPlot.addAll(
+					emissionH2OMap.get(MissionPhasesEnum.CRUISE).stream()
+					.map(e -> e.plus(emissionH2OListPlot.get(emissionH2OListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			emissionH2OListPlot.addAll(
+					emissionH2OMap.get(MissionPhasesEnum.FIRST_DESCENT).stream()
+					.map(e -> e.plus(emissionH2OListPlot.get(emissionH2OListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			emissionH2OListPlot.addAll(
+					emissionH2OMap.get(MissionPhasesEnum.SECOND_CLIMB).stream()
+					.map(e -> e.plus(emissionH2OListPlot.get(emissionH2OListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			emissionH2OListPlot.addAll(
+					emissionH2OMap.get(MissionPhasesEnum.ALTERNATE_CRUISE).stream()
+					.map(e -> e.plus(emissionH2OListPlot.get(emissionH2OListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			emissionH2OListPlot.addAll(
+					emissionH2OMap.get(MissionPhasesEnum.SECOND_DESCENT).stream()
+					.map(e -> e.plus(emissionH2OListPlot.get(emissionH2OListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			emissionH2OListPlot.addAll(
+					emissionH2OMap.get(MissionPhasesEnum.HOLDING).stream()
+					.map(e -> e.plus(emissionH2OListPlot.get(emissionH2OListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			emissionH2OListPlot.addAll(
+					emissionH2OMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).stream()
+					.map(e -> e.plus(emissionH2OListPlot.get(emissionH2OListPlot.size()-1)))
+					.collect(Collectors.toList())
+					);
+			
 			List<Double[]> xList1 = new ArrayList<>();
 			for(int i=0; i<5; i++) {
 				xList1.add(MyArrayUtils.convertFromDoubleToPrimitive(
@@ -4651,7 +5293,7 @@ public class MissionProfileCalc {
 						"Emissions (CO2, H2O)", "Time", "Emissions", 
 						0.0, null, null, null, 
 						"min", "g", 
-						true, legend1, 
+						true, legend2, 
 						_missionProfilesFolderPath, "Emission_CO2_H2O_profile", 
 						theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 						);
@@ -4663,17 +5305,6 @@ public class MissionProfileCalc {
 		
 		if(_plotList.contains(PerformancePlotEnum.SPEED_PROFILE)) { 
 
-			List<Amount<Duration>> timeListPlot = new ArrayList<>();
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.TAKE_OFF));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.CLIMB));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.CRUISE));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.FIRST_DESCENT));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.SECOND_CLIMB));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.ALTERNATE_CRUISE));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.SECOND_DESCENT));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.HOLDING));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.LANDING));
-			
 			List<Amount<Velocity>> speedTASListPlot = new ArrayList<>();
 			speedTASListPlot.addAll(speedTASMissionMap.get(MissionPhasesEnum.TAKE_OFF));
 			speedTASListPlot.addAll(speedTASMissionMap.get(MissionPhasesEnum.CLIMB));
@@ -4683,7 +5314,7 @@ public class MissionProfileCalc {
 			speedTASListPlot.addAll(speedTASMissionMap.get(MissionPhasesEnum.ALTERNATE_CRUISE));
 			speedTASListPlot.addAll(speedTASMissionMap.get(MissionPhasesEnum.SECOND_DESCENT));
 			speedTASListPlot.addAll(speedTASMissionMap.get(MissionPhasesEnum.HOLDING));
-			speedTASListPlot.addAll(speedTASMissionMap.get(MissionPhasesEnum.LANDING));
+			speedTASListPlot.addAll(speedTASMissionMap.get(MissionPhasesEnum.APPROACH_AND_LANDING));
 			
 			List<Amount<Velocity>> speedCASListPlot = new ArrayList<>();
 			speedCASListPlot.addAll(speedCASMissionMap.get(MissionPhasesEnum.TAKE_OFF));
@@ -4694,7 +5325,7 @@ public class MissionProfileCalc {
 			speedCASListPlot.addAll(speedCASMissionMap.get(MissionPhasesEnum.ALTERNATE_CRUISE));
 			speedCASListPlot.addAll(speedCASMissionMap.get(MissionPhasesEnum.SECOND_DESCENT));
 			speedCASListPlot.addAll(speedCASMissionMap.get(MissionPhasesEnum.HOLDING));
-			speedCASListPlot.addAll(speedCASMissionMap.get(MissionPhasesEnum.LANDING));
+			speedCASListPlot.addAll(speedCASMissionMap.get(MissionPhasesEnum.APPROACH_AND_LANDING));
 			
 			List<Double[]> xList = new ArrayList<>();
 			for(int i=0; i<2; i++) {
@@ -4750,19 +5381,7 @@ public class MissionProfileCalc {
 		
 		if(_plotList.contains(PerformancePlotEnum.MACH_PROFILE)) { 
 			
-			List<Amount<Duration>> timeListPlot = new ArrayList<>();
 			List<Double> machListPlot = new ArrayList<>();
-			
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.TAKE_OFF));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.CLIMB));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.CRUISE));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.FIRST_DESCENT));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.SECOND_CLIMB));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.ALTERNATE_CRUISE));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.SECOND_DESCENT));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.HOLDING));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.LANDING));
-			
 			machListPlot.addAll(machMissionMap.get(MissionPhasesEnum.TAKE_OFF));
 			machListPlot.addAll(machMissionMap.get(MissionPhasesEnum.CLIMB));
 			machListPlot.addAll(machMissionMap.get(MissionPhasesEnum.CRUISE));
@@ -4771,7 +5390,7 @@ public class MissionProfileCalc {
 			machListPlot.addAll(machMissionMap.get(MissionPhasesEnum.ALTERNATE_CRUISE));
 			machListPlot.addAll(machMissionMap.get(MissionPhasesEnum.SECOND_DESCENT));
 			machListPlot.addAll(machMissionMap.get(MissionPhasesEnum.HOLDING));
-			machListPlot.addAll(machMissionMap.get(MissionPhasesEnum.LANDING));
+			machListPlot.addAll(machMissionMap.get(MissionPhasesEnum.APPROACH_AND_LANDING));
 			
 			MyChartToFileUtils.plotNoLegend(
 					MyArrayUtils.convertListOfAmountTodoubleArray(
@@ -4794,19 +5413,7 @@ public class MissionProfileCalc {
 		
 		if(_plotList.contains(PerformancePlotEnum.CL_PROFILE)) { 
 			
-			List<Amount<Duration>> timeListPlot = new ArrayList<>();
 			List<Double> cLListPlot = new ArrayList<>();
-			
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.TAKE_OFF));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.CLIMB));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.CRUISE));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.FIRST_DESCENT));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.SECOND_CLIMB));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.ALTERNATE_CRUISE));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.SECOND_DESCENT));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.HOLDING));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.LANDING));
-			
 			cLListPlot.addAll(liftingCoefficientMissionMap.get(MissionPhasesEnum.TAKE_OFF));
 			cLListPlot.addAll(liftingCoefficientMissionMap.get(MissionPhasesEnum.CLIMB));
 			cLListPlot.addAll(liftingCoefficientMissionMap.get(MissionPhasesEnum.CRUISE));
@@ -4815,7 +5422,7 @@ public class MissionProfileCalc {
 			cLListPlot.addAll(liftingCoefficientMissionMap.get(MissionPhasesEnum.ALTERNATE_CRUISE));
 			cLListPlot.addAll(liftingCoefficientMissionMap.get(MissionPhasesEnum.SECOND_DESCENT));
 			cLListPlot.addAll(liftingCoefficientMissionMap.get(MissionPhasesEnum.HOLDING));
-			cLListPlot.addAll(liftingCoefficientMissionMap.get(MissionPhasesEnum.LANDING));
+			cLListPlot.addAll(liftingCoefficientMissionMap.get(MissionPhasesEnum.APPROACH_AND_LANDING));
 			
 			MyChartToFileUtils.plotNoLegend(
 					MyArrayUtils.convertListOfAmountTodoubleArray(
@@ -4838,19 +5445,7 @@ public class MissionProfileCalc {
 		
 		if(_plotList.contains(PerformancePlotEnum.CD_PROFILE)) { 
 			
-			List<Amount<Duration>> timeListPlot = new ArrayList<>();
 			List<Double> cDListPlot = new ArrayList<>();
-			
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.TAKE_OFF));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.CLIMB));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.CRUISE));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.FIRST_DESCENT));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.SECOND_CLIMB));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.ALTERNATE_CRUISE));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.SECOND_DESCENT));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.HOLDING));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.LANDING));
-			
 			cDListPlot.addAll(dragCoefficientMissionMap.get(MissionPhasesEnum.TAKE_OFF));
 			cDListPlot.addAll(dragCoefficientMissionMap.get(MissionPhasesEnum.CLIMB));
 			cDListPlot.addAll(dragCoefficientMissionMap.get(MissionPhasesEnum.CRUISE));
@@ -4859,7 +5454,7 @@ public class MissionProfileCalc {
 			cDListPlot.addAll(dragCoefficientMissionMap.get(MissionPhasesEnum.ALTERNATE_CRUISE));
 			cDListPlot.addAll(dragCoefficientMissionMap.get(MissionPhasesEnum.SECOND_DESCENT));
 			cDListPlot.addAll(dragCoefficientMissionMap.get(MissionPhasesEnum.HOLDING));
-			cDListPlot.addAll(dragCoefficientMissionMap.get(MissionPhasesEnum.LANDING));
+			cDListPlot.addAll(dragCoefficientMissionMap.get(MissionPhasesEnum.APPROACH_AND_LANDING));
 			
 			MyChartToFileUtils.plotNoLegend(
 					MyArrayUtils.convertListOfAmountTodoubleArray(
@@ -4882,28 +5477,16 @@ public class MissionProfileCalc {
 		
 		if(_plotList.contains(PerformancePlotEnum.EFFICIENCY_PROFILE)) { 
 			
-			List<Amount<Duration>> timeListPlot = new ArrayList<>();
 			List<Double> efficiencyListPlot = new ArrayList<>();
-			
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.TAKE_OFF));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.CLIMB));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.CRUISE));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.FIRST_DESCENT));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.SECOND_CLIMB));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.ALTERNATE_CRUISE));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.SECOND_DESCENT));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.HOLDING));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.LANDING));
-			
-			efficiencyListPlot.addAll(dragCoefficientMissionMap.get(MissionPhasesEnum.TAKE_OFF));
-			efficiencyListPlot.addAll(dragCoefficientMissionMap.get(MissionPhasesEnum.CLIMB));
-			efficiencyListPlot.addAll(dragCoefficientMissionMap.get(MissionPhasesEnum.CRUISE));
-			efficiencyListPlot.addAll(dragCoefficientMissionMap.get(MissionPhasesEnum.FIRST_DESCENT));
-			efficiencyListPlot.addAll(dragCoefficientMissionMap.get(MissionPhasesEnum.SECOND_CLIMB));
-			efficiencyListPlot.addAll(dragCoefficientMissionMap.get(MissionPhasesEnum.ALTERNATE_CRUISE));
-			efficiencyListPlot.addAll(dragCoefficientMissionMap.get(MissionPhasesEnum.SECOND_DESCENT));
-			efficiencyListPlot.addAll(dragCoefficientMissionMap.get(MissionPhasesEnum.HOLDING));
-			efficiencyListPlot.addAll(dragCoefficientMissionMap.get(MissionPhasesEnum.LANDING));
+			efficiencyListPlot.addAll(efficiencyMissionMap.get(MissionPhasesEnum.TAKE_OFF));
+			efficiencyListPlot.addAll(efficiencyMissionMap.get(MissionPhasesEnum.CLIMB));
+			efficiencyListPlot.addAll(efficiencyMissionMap.get(MissionPhasesEnum.CRUISE));
+			efficiencyListPlot.addAll(efficiencyMissionMap.get(MissionPhasesEnum.FIRST_DESCENT));
+			efficiencyListPlot.addAll(efficiencyMissionMap.get(MissionPhasesEnum.SECOND_CLIMB));
+			efficiencyListPlot.addAll(efficiencyMissionMap.get(MissionPhasesEnum.ALTERNATE_CRUISE));
+			efficiencyListPlot.addAll(efficiencyMissionMap.get(MissionPhasesEnum.SECOND_DESCENT));
+			efficiencyListPlot.addAll(efficiencyMissionMap.get(MissionPhasesEnum.HOLDING));
+			efficiencyListPlot.addAll(efficiencyMissionMap.get(MissionPhasesEnum.APPROACH_AND_LANDING));
 			
 			MyChartToFileUtils.plotNoLegend(
 					MyArrayUtils.convertListOfAmountTodoubleArray(
@@ -4926,17 +5509,6 @@ public class MissionProfileCalc {
 		
 		if(_plotList.contains(PerformancePlotEnum.DRAG_THRUST_PROFILE)) { 
 
-			List<Amount<Duration>> timeListPlot = new ArrayList<>();
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.TAKE_OFF));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.CLIMB));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.CRUISE));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.FIRST_DESCENT));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.SECOND_CLIMB));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.ALTERNATE_CRUISE));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.SECOND_DESCENT));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.HOLDING));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.LANDING));
-			
 			List<Amount<Force>> dragListPlot = new ArrayList<>();
 			dragListPlot.addAll(dragMissionMap.get(MissionPhasesEnum.TAKE_OFF));
 			dragListPlot.addAll(dragMissionMap.get(MissionPhasesEnum.CLIMB));
@@ -4946,7 +5518,7 @@ public class MissionProfileCalc {
 			dragListPlot.addAll(dragMissionMap.get(MissionPhasesEnum.ALTERNATE_CRUISE));
 			dragListPlot.addAll(dragMissionMap.get(MissionPhasesEnum.SECOND_DESCENT));
 			dragListPlot.addAll(dragMissionMap.get(MissionPhasesEnum.HOLDING));
-			dragListPlot.addAll(dragMissionMap.get(MissionPhasesEnum.LANDING));
+			dragListPlot.addAll(dragMissionMap.get(MissionPhasesEnum.APPROACH_AND_LANDING));
 			
 			List<Amount<Force>> totalThrustListPlot = new ArrayList<>();
 			totalThrustListPlot.addAll(totalThrustMissionMap.get(MissionPhasesEnum.TAKE_OFF));
@@ -4957,7 +5529,7 @@ public class MissionProfileCalc {
 			totalThrustListPlot.addAll(totalThrustMissionMap.get(MissionPhasesEnum.ALTERNATE_CRUISE));
 			totalThrustListPlot.addAll(totalThrustMissionMap.get(MissionPhasesEnum.SECOND_DESCENT));
 			totalThrustListPlot.addAll(totalThrustMissionMap.get(MissionPhasesEnum.HOLDING));
-			totalThrustListPlot.addAll(totalThrustMissionMap.get(MissionPhasesEnum.LANDING));
+			totalThrustListPlot.addAll(totalThrustMissionMap.get(MissionPhasesEnum.APPROACH_AND_LANDING));
 			
 			List<Amount<Force>> thermicThrustListPlot = new ArrayList<>();
 			thermicThrustListPlot.addAll(thermicThrustMissionMap.get(MissionPhasesEnum.TAKE_OFF));
@@ -4968,7 +5540,7 @@ public class MissionProfileCalc {
 			thermicThrustListPlot.addAll(thermicThrustMissionMap.get(MissionPhasesEnum.ALTERNATE_CRUISE));
 			thermicThrustListPlot.addAll(thermicThrustMissionMap.get(MissionPhasesEnum.SECOND_DESCENT));
 			thermicThrustListPlot.addAll(thermicThrustMissionMap.get(MissionPhasesEnum.HOLDING));
-			thermicThrustListPlot.addAll(thermicThrustMissionMap.get(MissionPhasesEnum.LANDING));
+			thermicThrustListPlot.addAll(thermicThrustMissionMap.get(MissionPhasesEnum.APPROACH_AND_LANDING));
 			
 			List<Amount<Force>> electricThrustListPlot = new ArrayList<>();
 			electricThrustListPlot.addAll(electricThrustMissionMap.get(MissionPhasesEnum.TAKE_OFF));
@@ -4979,7 +5551,7 @@ public class MissionProfileCalc {
 			electricThrustListPlot.addAll(electricThrustMissionMap.get(MissionPhasesEnum.ALTERNATE_CRUISE));
 			electricThrustListPlot.addAll(electricThrustMissionMap.get(MissionPhasesEnum.SECOND_DESCENT));
 			electricThrustListPlot.addAll(electricThrustMissionMap.get(MissionPhasesEnum.HOLDING));
-			electricThrustListPlot.addAll(electricThrustMissionMap.get(MissionPhasesEnum.LANDING));
+			electricThrustListPlot.addAll(electricThrustMissionMap.get(MissionPhasesEnum.APPROACH_AND_LANDING));
 			
 			List<Double[]> xList = new ArrayList<>();
 			for(int i=0; i<4; i++) {
@@ -5049,19 +5621,7 @@ public class MissionProfileCalc {
 		
 		if(_plotList.contains(PerformancePlotEnum.ENGINES_THROTTLE_PROFILE)) { 
 			
-			List<Amount<Duration>> timeListPlot = new ArrayList<>();
 			List<Double> throttleListPlot = new ArrayList<>();
-			
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.TAKE_OFF));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.CLIMB));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.CRUISE));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.FIRST_DESCENT));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.SECOND_CLIMB));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.ALTERNATE_CRUISE));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.SECOND_DESCENT));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.HOLDING));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.LANDING));
-			
 			throttleListPlot.addAll(throttleMissionMap.get(MissionPhasesEnum.TAKE_OFF));
 			throttleListPlot.addAll(throttleMissionMap.get(MissionPhasesEnum.CLIMB));
 			throttleListPlot.addAll(throttleMissionMap.get(MissionPhasesEnum.CRUISE));
@@ -5070,7 +5630,7 @@ public class MissionProfileCalc {
 			throttleListPlot.addAll(throttleMissionMap.get(MissionPhasesEnum.ALTERNATE_CRUISE));
 			throttleListPlot.addAll(throttleMissionMap.get(MissionPhasesEnum.SECOND_DESCENT));
 			throttleListPlot.addAll(throttleMissionMap.get(MissionPhasesEnum.HOLDING));
-			throttleListPlot.addAll(throttleMissionMap.get(MissionPhasesEnum.LANDING));
+			throttleListPlot.addAll(throttleMissionMap.get(MissionPhasesEnum.APPROACH_AND_LANDING));
 			
 			MyChartToFileUtils.plotNoLegend(
 					MyArrayUtils.convertListOfAmountTodoubleArray(
@@ -5095,19 +5655,7 @@ public class MissionProfileCalc {
 		
 		if(_plotList.contains(PerformancePlotEnum.FUEL_FLOW_PROFILE)) { 
 			
-			List<Amount<Duration>> timeListPlot = new ArrayList<>();
 			List<Double> fuelFlowListPlot = new ArrayList<>();
-			
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.TAKE_OFF));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.CLIMB));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.CRUISE));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.FIRST_DESCENT));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.SECOND_CLIMB));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.ALTERNATE_CRUISE));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.SECOND_DESCENT));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.HOLDING));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.LANDING));
-			
 			fuelFlowListPlot.addAll(fuelFlowMissionMap.get(MissionPhasesEnum.TAKE_OFF));
 			fuelFlowListPlot.addAll(fuelFlowMissionMap.get(MissionPhasesEnum.CLIMB));
 			fuelFlowListPlot.addAll(fuelFlowMissionMap.get(MissionPhasesEnum.CRUISE));
@@ -5116,7 +5664,7 @@ public class MissionProfileCalc {
 			fuelFlowListPlot.addAll(fuelFlowMissionMap.get(MissionPhasesEnum.ALTERNATE_CRUISE));
 			fuelFlowListPlot.addAll(fuelFlowMissionMap.get(MissionPhasesEnum.SECOND_DESCENT));
 			fuelFlowListPlot.addAll(fuelFlowMissionMap.get(MissionPhasesEnum.HOLDING));
-			fuelFlowListPlot.addAll(fuelFlowMissionMap.get(MissionPhasesEnum.LANDING));
+			fuelFlowListPlot.addAll(fuelFlowMissionMap.get(MissionPhasesEnum.APPROACH_AND_LANDING));
 			
 			MyChartToFileUtils.plotNoLegend(
 					MyArrayUtils.convertListOfAmountTodoubleArray(
@@ -5139,19 +5687,7 @@ public class MissionProfileCalc {
 		
 		if(_plotList.contains(PerformancePlotEnum.SFC_PROFILE)) { 
 			
-			List<Amount<Duration>> timeListPlot = new ArrayList<>();
 			List<Double> sfcListPlot = new ArrayList<>();
-			
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.TAKE_OFF));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.CLIMB));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.CRUISE));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.FIRST_DESCENT));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.SECOND_CLIMB));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.ALTERNATE_CRUISE));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.SECOND_DESCENT));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.HOLDING));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.LANDING));
-			
 			sfcListPlot.addAll(sfcMissionMap.get(MissionPhasesEnum.TAKE_OFF));
 			sfcListPlot.addAll(sfcMissionMap.get(MissionPhasesEnum.CLIMB));
 			sfcListPlot.addAll(sfcMissionMap.get(MissionPhasesEnum.CRUISE));
@@ -5160,7 +5696,7 @@ public class MissionProfileCalc {
 			sfcListPlot.addAll(sfcMissionMap.get(MissionPhasesEnum.ALTERNATE_CRUISE));
 			sfcListPlot.addAll(sfcMissionMap.get(MissionPhasesEnum.SECOND_DESCENT));
 			sfcListPlot.addAll(sfcMissionMap.get(MissionPhasesEnum.HOLDING));
-			sfcListPlot.addAll(sfcMissionMap.get(MissionPhasesEnum.LANDING));
+			sfcListPlot.addAll(sfcMissionMap.get(MissionPhasesEnum.APPROACH_AND_LANDING));
 			
 			MyChartToFileUtils.plotNoLegend(
 					MyArrayUtils.convertListOfAmountTodoubleArray(
@@ -5183,19 +5719,7 @@ public class MissionProfileCalc {
 		
 		if(_plotList.contains(PerformancePlotEnum.RATE_OF_CLIMB_PROFILE)) { 
 			
-			List<Amount<Duration>> timeListPlot = new ArrayList<>();
 			List<Amount<Velocity>> rateOfClimbListPlot = new ArrayList<>();
-			
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.TAKE_OFF));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.CLIMB));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.CRUISE));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.FIRST_DESCENT));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.SECOND_CLIMB));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.ALTERNATE_CRUISE));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.SECOND_DESCENT));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.HOLDING));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.LANDING));
-			
 			rateOfClimbListPlot.addAll(rateOfClimbMissionMap.get(MissionPhasesEnum.TAKE_OFF));
 			rateOfClimbListPlot.addAll(rateOfClimbMissionMap.get(MissionPhasesEnum.CLIMB));
 			rateOfClimbListPlot.addAll(rateOfClimbMissionMap.get(MissionPhasesEnum.CRUISE));
@@ -5204,7 +5728,7 @@ public class MissionProfileCalc {
 			rateOfClimbListPlot.addAll(rateOfClimbMissionMap.get(MissionPhasesEnum.ALTERNATE_CRUISE));
 			rateOfClimbListPlot.addAll(rateOfClimbMissionMap.get(MissionPhasesEnum.SECOND_DESCENT));
 			rateOfClimbListPlot.addAll(rateOfClimbMissionMap.get(MissionPhasesEnum.HOLDING));
-			rateOfClimbListPlot.addAll(rateOfClimbMissionMap.get(MissionPhasesEnum.LANDING));
+			rateOfClimbListPlot.addAll(rateOfClimbMissionMap.get(MissionPhasesEnum.APPROACH_AND_LANDING));
 			
 			MyChartToFileUtils.plotNoLegend(
 					MyArrayUtils.convertListOfAmountTodoubleArray(
@@ -5246,19 +5770,7 @@ public class MissionProfileCalc {
 		
 		if(_plotList.contains(PerformancePlotEnum.CLIMB_ANGLE_PROFILE)) { 
 			
-			List<Amount<Duration>> timeListPlot = new ArrayList<>();
 			List<Amount<Angle>> climbAngleListPlot = new ArrayList<>();
-			
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.TAKE_OFF));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.CLIMB));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.CRUISE));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.FIRST_DESCENT));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.SECOND_CLIMB));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.ALTERNATE_CRUISE));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.SECOND_DESCENT));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.HOLDING));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.LANDING));
-			
 			climbAngleListPlot.addAll(climbAngleMissionMap.get(MissionPhasesEnum.TAKE_OFF));
 			climbAngleListPlot.addAll(climbAngleMissionMap.get(MissionPhasesEnum.CLIMB));
 			climbAngleListPlot.addAll(climbAngleMissionMap.get(MissionPhasesEnum.CRUISE));
@@ -5267,7 +5779,7 @@ public class MissionProfileCalc {
 			climbAngleListPlot.addAll(climbAngleMissionMap.get(MissionPhasesEnum.ALTERNATE_CRUISE));
 			climbAngleListPlot.addAll(climbAngleMissionMap.get(MissionPhasesEnum.SECOND_DESCENT));
 			climbAngleListPlot.addAll(climbAngleMissionMap.get(MissionPhasesEnum.HOLDING));
-			climbAngleListPlot.addAll(climbAngleMissionMap.get(MissionPhasesEnum.LANDING));
+			climbAngleListPlot.addAll(climbAngleMissionMap.get(MissionPhasesEnum.APPROACH_AND_LANDING));
 			
 			MyChartToFileUtils.plotNoLegend(
 					MyArrayUtils.convertListOfAmountTodoubleArray(
@@ -5309,17 +5821,6 @@ public class MissionProfileCalc {
 	
 		if(_plotList.contains(PerformancePlotEnum.POWER_PROFILE)) { 
 
-			List<Amount<Duration>> timeListPlot = new ArrayList<>();
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.TAKE_OFF));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.CLIMB));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.CRUISE));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.FIRST_DESCENT));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.SECOND_CLIMB));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.ALTERNATE_CRUISE));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.SECOND_DESCENT));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.HOLDING));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.LANDING));
-			
 			List<Amount<Power>> fuelPowerListPlot = new ArrayList<>();
 			fuelPowerListPlot.addAll(fuelPowerMap.get(MissionPhasesEnum.TAKE_OFF));
 			fuelPowerListPlot.addAll(fuelPowerMap.get(MissionPhasesEnum.CLIMB));
@@ -5329,7 +5830,7 @@ public class MissionProfileCalc {
 			fuelPowerListPlot.addAll(fuelPowerMap.get(MissionPhasesEnum.ALTERNATE_CRUISE));
 			fuelPowerListPlot.addAll(fuelPowerMap.get(MissionPhasesEnum.SECOND_DESCENT));
 			fuelPowerListPlot.addAll(fuelPowerMap.get(MissionPhasesEnum.HOLDING));
-			fuelPowerListPlot.addAll(fuelPowerMap.get(MissionPhasesEnum.LANDING));
+			fuelPowerListPlot.addAll(fuelPowerMap.get(MissionPhasesEnum.APPROACH_AND_LANDING));
 			
 			List<Amount<Power>> batteryPowerListPlot = new ArrayList<>();
 			batteryPowerListPlot.addAll(batteryPowerMap.get(MissionPhasesEnum.TAKE_OFF));
@@ -5340,7 +5841,7 @@ public class MissionProfileCalc {
 			batteryPowerListPlot.addAll(batteryPowerMap.get(MissionPhasesEnum.ALTERNATE_CRUISE));
 			batteryPowerListPlot.addAll(batteryPowerMap.get(MissionPhasesEnum.SECOND_DESCENT));
 			batteryPowerListPlot.addAll(batteryPowerMap.get(MissionPhasesEnum.HOLDING));
-			batteryPowerListPlot.addAll(batteryPowerMap.get(MissionPhasesEnum.LANDING));
+			batteryPowerListPlot.addAll(batteryPowerMap.get(MissionPhasesEnum.APPROACH_AND_LANDING));
 			
 			List<Double[]> xList = new ArrayList<>();
 			for(int i=0; i<2; i++) {
@@ -5396,17 +5897,6 @@ public class MissionProfileCalc {
 		
 		if(_plotList.contains(PerformancePlotEnum.ENERGY_PROFILE)) { 
 
-			List<Amount<Duration>> timeListPlot = new ArrayList<>();
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.TAKE_OFF));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.CLIMB));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.CRUISE));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.FIRST_DESCENT));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.SECOND_CLIMB));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.ALTERNATE_CRUISE));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.SECOND_DESCENT));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.HOLDING));
-			timeListPlot.addAll(timeMap.get(MissionPhasesEnum.LANDING));
-			
 			List<Amount<Energy>> fuelEnergyListPlot = new ArrayList<>();
 			fuelEnergyListPlot.addAll(fuelEnergyMap.get(MissionPhasesEnum.TAKE_OFF));
 			fuelEnergyListPlot.addAll(fuelEnergyMap.get(MissionPhasesEnum.CLIMB));
@@ -5416,7 +5906,7 @@ public class MissionProfileCalc {
 			fuelEnergyListPlot.addAll(fuelEnergyMap.get(MissionPhasesEnum.ALTERNATE_CRUISE));
 			fuelEnergyListPlot.addAll(fuelEnergyMap.get(MissionPhasesEnum.SECOND_DESCENT));
 			fuelEnergyListPlot.addAll(fuelEnergyMap.get(MissionPhasesEnum.HOLDING));
-			fuelEnergyListPlot.addAll(fuelEnergyMap.get(MissionPhasesEnum.LANDING));
+			fuelEnergyListPlot.addAll(fuelEnergyMap.get(MissionPhasesEnum.APPROACH_AND_LANDING));
 			
 			List<Amount<Energy>> batteryEnergyListPlot = new ArrayList<>();
 			batteryEnergyListPlot.addAll(batteryEnergyMap.get(MissionPhasesEnum.TAKE_OFF));
@@ -5427,7 +5917,7 @@ public class MissionProfileCalc {
 			batteryEnergyListPlot.addAll(batteryEnergyMap.get(MissionPhasesEnum.ALTERNATE_CRUISE));
 			batteryEnergyListPlot.addAll(batteryEnergyMap.get(MissionPhasesEnum.SECOND_DESCENT));
 			batteryEnergyListPlot.addAll(batteryEnergyMap.get(MissionPhasesEnum.HOLDING));
-			batteryEnergyListPlot.addAll(batteryEnergyMap.get(MissionPhasesEnum.LANDING));
+			batteryEnergyListPlot.addAll(batteryEnergyMap.get(MissionPhasesEnum.APPROACH_AND_LANDING));
 			
 			List<Double[]> xList = new ArrayList<>();
 			for(int i=0; i<2; i++) {
@@ -5468,7 +5958,7 @@ public class MissionProfileCalc {
 						);
 				MyChartToFileUtils.plot(
 						xList, yList2, 
-						"Power Profile", "Time", "Powers", 
+						"Energy Profile", "Time", "Energies", 
 						0.0, null, null, null, 
 						"hr", "hp*hr", 
 						true, legend, 
@@ -5487,7 +5977,7 @@ public class MissionProfileCalc {
 	public String toString() {
 
 		MyConfiguration.customizeAmountOutput();
-		DecimalFormat numberFormat = new DecimalFormat("0.000");
+		DecimalFormat numberFormat = new DecimalFormat("0.00");
 		
 		StringBuilder sb = new StringBuilder()
 				.append("\t-------------------------------------\n")
@@ -5830,39 +6320,39 @@ public class MissionProfileCalc {
 		.append("\t\t.....................................\n")
 		.append("\t\t\tTime\tRange\tAltitude\tFuel\tMass\tNOx\tCO\tHC\tSoot\tCO2\tSOx\tH2O\tTAS\tCAS\tMach\tCL\tCD\tE\tDrag\tTot. Thrust\tThermic Thrust\tElectric Thrust\tThrottle\tFuel Flow\tSFC\tRate of Climb\tClimb Gradient\tClimb Angle\tFuel Power\tBattery Power\tFuel Energy\tBattery Energy\n")
 		.append("\t\t\tmin\tnm\tft\tkg\tkg\tg\tg\tg\tg\tg\tg\tg\tkts\tkts\t\t\t\t\tlbf\tlbf\tlbf\tlbf\t%\tkg/min\tlb/lb*hr\tft/min\t%\tdeg\tkW\tkW\tkW*h\tkW*h\n");
-		for(int i=0; i<timeMap.get(MissionPhasesEnum.LANDING).size(); i++)
-			sb.append("\t\t\t" + numberFormat.format(timeMap.get(MissionPhasesEnum.LANDING).get(i).doubleValue(NonSI.MINUTE))  
-			+ "\t" + numberFormat.format(rangeMap.get(MissionPhasesEnum.LANDING).get(i).doubleValue(NonSI.NAUTICAL_MILE))
-			+ "\t" + numberFormat.format(altitudeMap.get(MissionPhasesEnum.LANDING).get(i).doubleValue(NonSI.FOOT))
-			+ "\t" + numberFormat.format(fuelUsedMap.get(MissionPhasesEnum.LANDING).get(i).doubleValue(SI.KILOGRAM))
-			+ "\t" + numberFormat.format(massMap.get(MissionPhasesEnum.LANDING).get(i).doubleValue(SI.KILOGRAM))
-			+ "\t" + numberFormat.format(emissionNOxMap.get(MissionPhasesEnum.LANDING).get(i).doubleValue(SI.GRAM))
-			+ "\t" + numberFormat.format(emissionCOMap.get(MissionPhasesEnum.LANDING).get(i).doubleValue(SI.GRAM))
-			+ "\t" + numberFormat.format(emissionHCMap.get(MissionPhasesEnum.LANDING).get(i).doubleValue(SI.GRAM))
-			+ "\t" + numberFormat.format(emissionSootMap.get(MissionPhasesEnum.LANDING).get(i).doubleValue(SI.GRAM))
-			+ "\t" + numberFormat.format(emissionCO2Map.get(MissionPhasesEnum.LANDING).get(i).doubleValue(SI.GRAM))
-			+ "\t" + numberFormat.format(emissionSOxMap.get(MissionPhasesEnum.LANDING).get(i).doubleValue(SI.GRAM))
-			+ "\t" + numberFormat.format(emissionH2OMap.get(MissionPhasesEnum.LANDING).get(i).doubleValue(SI.GRAM))
-			+ "\t" + numberFormat.format(speedTASMissionMap.get(MissionPhasesEnum.LANDING).get(i).doubleValue(NonSI.KNOT))
-			+ "\t" + numberFormat.format(speedCASMissionMap.get(MissionPhasesEnum.LANDING).get(i).doubleValue(NonSI.KNOT))
-			+ "\t" + numberFormat.format(machMissionMap.get(MissionPhasesEnum.LANDING).get(i))
-			+ "\t" + numberFormat.format(liftingCoefficientMissionMap.get(MissionPhasesEnum.LANDING).get(i))
-			+ "\t" + numberFormat.format(dragCoefficientMissionMap.get(MissionPhasesEnum.LANDING).get(i))
-			+ "\t" + numberFormat.format(efficiencyMissionMap.get(MissionPhasesEnum.LANDING).get(i))
-			+ "\t" + numberFormat.format(dragMissionMap.get(MissionPhasesEnum.LANDING).get(i).doubleValue(NonSI.POUND_FORCE))
-			+ "\t" + numberFormat.format(totalThrustMissionMap.get(MissionPhasesEnum.LANDING).get(i).doubleValue(NonSI.POUND_FORCE))
-			+ "\t" + numberFormat.format(thermicThrustMissionMap.get(MissionPhasesEnum.LANDING).get(i).doubleValue(NonSI.POUND_FORCE))
-			+ "\t" + numberFormat.format(electricThrustMissionMap.get(MissionPhasesEnum.LANDING).get(i).doubleValue(NonSI.POUND_FORCE))
-			+ "\t" + numberFormat.format(throttleMissionMap.get(MissionPhasesEnum.LANDING).get(i)*100.0)
-			+ "\t" + numberFormat.format(fuelFlowMissionMap.get(MissionPhasesEnum.LANDING).get(i))
-			+ "\t" + numberFormat.format(sfcMissionMap.get(MissionPhasesEnum.LANDING).get(i))
-			+ "\t" + numberFormat.format(rateOfClimbMissionMap.get(MissionPhasesEnum.LANDING).get(i).doubleValue(MyUnits.FOOT_PER_MINUTE))
-			+ "\t" + numberFormat.format(climbAngleMissionMap.get(MissionPhasesEnum.LANDING).get(i).doubleValue(SI.RADIAN)*100.0)
-			+ "\t" + numberFormat.format(climbAngleMissionMap.get(MissionPhasesEnum.LANDING).get(i).doubleValue(NonSI.DEGREE_ANGLE))
-			+ "\t" + numberFormat.format(fuelPowerMap.get(MissionPhasesEnum.LANDING).get(i).doubleValue(SI.KILO(SI.WATT)))
-			+ "\t" + numberFormat.format(batteryPowerMap.get(MissionPhasesEnum.LANDING).get(i).doubleValue(SI.KILO(SI.WATT)))
-			+ "\t" + numberFormat.format(fuelEnergyMap.get(MissionPhasesEnum.LANDING).get(i).doubleValue(MyUnits.KILOWATT_HOUR))
-			+ "\t" + numberFormat.format(batteryEnergyMap.get(MissionPhasesEnum.LANDING).get(i).doubleValue(MyUnits.KILOWATT_HOUR))
+		for(int i=0; i<timeMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).size(); i++)
+			sb.append("\t\t\t" + numberFormat.format(timeMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(NonSI.MINUTE))  
+			+ "\t" + numberFormat.format(rangeMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(NonSI.NAUTICAL_MILE))
+			+ "\t" + numberFormat.format(altitudeMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(NonSI.FOOT))
+			+ "\t" + numberFormat.format(fuelUsedMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(SI.KILOGRAM))
+			+ "\t" + numberFormat.format(massMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(SI.KILOGRAM))
+			+ "\t" + numberFormat.format(emissionNOxMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(SI.GRAM))
+			+ "\t" + numberFormat.format(emissionCOMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(SI.GRAM))
+			+ "\t" + numberFormat.format(emissionHCMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(SI.GRAM))
+			+ "\t" + numberFormat.format(emissionSootMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(SI.GRAM))
+			+ "\t" + numberFormat.format(emissionCO2Map.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(SI.GRAM))
+			+ "\t" + numberFormat.format(emissionSOxMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(SI.GRAM))
+			+ "\t" + numberFormat.format(emissionH2OMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(SI.GRAM))
+			+ "\t" + numberFormat.format(speedTASMissionMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(NonSI.KNOT))
+			+ "\t" + numberFormat.format(speedCASMissionMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(NonSI.KNOT))
+			+ "\t" + numberFormat.format(machMissionMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i))
+			+ "\t" + numberFormat.format(liftingCoefficientMissionMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i))
+			+ "\t" + numberFormat.format(dragCoefficientMissionMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i))
+			+ "\t" + numberFormat.format(efficiencyMissionMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i))
+			+ "\t" + numberFormat.format(dragMissionMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(NonSI.POUND_FORCE))
+			+ "\t" + numberFormat.format(totalThrustMissionMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(NonSI.POUND_FORCE))
+			+ "\t" + numberFormat.format(thermicThrustMissionMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(NonSI.POUND_FORCE))
+			+ "\t" + numberFormat.format(electricThrustMissionMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(NonSI.POUND_FORCE))
+			+ "\t" + numberFormat.format(throttleMissionMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i)*100.0)
+			+ "\t" + numberFormat.format(fuelFlowMissionMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i))
+			+ "\t" + numberFormat.format(sfcMissionMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i))
+			+ "\t" + numberFormat.format(rateOfClimbMissionMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(MyUnits.FOOT_PER_MINUTE))
+			+ "\t" + numberFormat.format(climbAngleMissionMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(SI.RADIAN)*100.0)
+			+ "\t" + numberFormat.format(climbAngleMissionMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(NonSI.DEGREE_ANGLE))
+			+ "\t" + numberFormat.format(fuelPowerMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(SI.KILO(SI.WATT)))
+			+ "\t" + numberFormat.format(batteryPowerMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(SI.KILO(SI.WATT)))
+			+ "\t" + numberFormat.format(fuelEnergyMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(MyUnits.KILOWATT_HOUR))
+			+ "\t" + numberFormat.format(batteryEnergyMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(MyUnits.KILOWATT_HOUR))
 			+ "\n");
 		
 		sb.append("\t-------------------------------------\n")

@@ -3978,41 +3978,41 @@ public class ACPerformanceManager {
             		}
         			dataListMissionProfile.add(new Object[] {" "});
         		}
-        		for(int i=0; i<_timeMap.get(xcg).get(MissionPhasesEnum.LANDING).size(); i++) {
+        		for(int i=0; i<_timeMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).size(); i++) {
         			dataListMissionProfile.add(new Object[] {
-        					MissionPhasesEnum.LANDING.toString(),
-        					_timeMap.get(xcg).get(MissionPhasesEnum.LANDING).get(i).doubleValue(NonSI.MINUTE),
-        					_rangeMap.get(xcg).get(MissionPhasesEnum.LANDING).get(i).doubleValue(NonSI.NAUTICAL_MILE),
-        					_altitudeMap.get(xcg).get(MissionPhasesEnum.LANDING).get(i).doubleValue(NonSI.FOOT),
-        					_fuelUsedMap.get(xcg).get(MissionPhasesEnum.LANDING).get(i).doubleValue(SI.KILOGRAM),
-        					_massMap.get(xcg).get(MissionPhasesEnum.LANDING).get(i).doubleValue(SI.KILOGRAM),
-        					_emissionNOxMap.get(xcg).get(MissionPhasesEnum.LANDING).get(i).doubleValue(SI.GRAM),       					
-        					_emissionCOMap.get(xcg).get(MissionPhasesEnum.LANDING).get(i).doubleValue(SI.GRAM),
-        					_emissionHCMap.get(xcg).get(MissionPhasesEnum.LANDING).get(i).doubleValue(SI.GRAM),
-        					_emissionSootMap.get(xcg).get(MissionPhasesEnum.LANDING).get(i).doubleValue(SI.GRAM),
-        					_emissionCO2Map.get(xcg).get(MissionPhasesEnum.LANDING).get(i).doubleValue(SI.GRAM),
-        					_emissionSOxMap.get(xcg).get(MissionPhasesEnum.LANDING).get(i).doubleValue(SI.GRAM),
-        					_emissionH2OMap.get(xcg).get(MissionPhasesEnum.LANDING).get(i).doubleValue(SI.GRAM),
-        					_speedTASMissionMap.get(xcg).get(MissionPhasesEnum.LANDING).get(i).doubleValue(NonSI.KNOT),
-        					_speedCASMissionMap.get(xcg).get(MissionPhasesEnum.LANDING).get(i).doubleValue(NonSI.KNOT),
-        					_machMissionMap.get(xcg).get(MissionPhasesEnum.LANDING).get(i).doubleValue(),
-        					_liftingCoefficientMissionMap.get(xcg).get(MissionPhasesEnum.LANDING).get(i).doubleValue(),
-        					_dragCoefficientMissionMap.get(xcg).get(MissionPhasesEnum.LANDING).get(i).doubleValue(),
-        					_efficiencyMissionMap.get(xcg).get(MissionPhasesEnum.LANDING).get(i).doubleValue(),
-        					_dragMissionMap.get(xcg).get(MissionPhasesEnum.LANDING).get(i).doubleValue(NonSI.POUND_FORCE),
-        					_totalThrustMissionMap.get(xcg).get(MissionPhasesEnum.LANDING).get(i).doubleValue(NonSI.POUND_FORCE),
-        					_thermicThrustMissionMap.get(xcg).get(MissionPhasesEnum.LANDING).get(i).doubleValue(NonSI.POUND_FORCE),
-        					_electricThrustMissionMap.get(xcg).get(MissionPhasesEnum.LANDING).get(i).doubleValue(NonSI.POUND_FORCE), 
-        					_throttleMissionMap.get(xcg).get(MissionPhasesEnum.LANDING).get(i).doubleValue()*100,
-        					_fuelFlowMissionMap.get(xcg).get(MissionPhasesEnum.LANDING).get(i).doubleValue(), 
-        					_sfcMissionMap.get(xcg).get(MissionPhasesEnum.LANDING).get(i).doubleValue(),
-        					_rateOfClimbMissionMap.get(xcg).get(MissionPhasesEnum.LANDING).get(i).doubleValue(MyUnits.FOOT_PER_MINUTE),
-        					_climbAngleMissionMap.get(xcg).get(MissionPhasesEnum.LANDING).get(i).doubleValue(SI.RADIAN)*100,
-        					_climbAngleMissionMap.get(xcg).get(MissionPhasesEnum.LANDING).get(i).doubleValue(NonSI.DEGREE_ANGLE),
-        					_fuelPowerMap.get(xcg).get(MissionPhasesEnum.LANDING).get(i).doubleValue(SI.KILO(SI.WATT)),
-        					_batteryPowerMap.get(xcg).get(MissionPhasesEnum.LANDING).get(i).doubleValue(SI.KILO(SI.WATT)),
-        					_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.LANDING).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
-        					_batteryEnergyMap.get(xcg).get(MissionPhasesEnum.LANDING).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
+        					MissionPhasesEnum.APPROACH_AND_LANDING.toString(),
+        					_timeMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(NonSI.MINUTE),
+        					_rangeMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(NonSI.NAUTICAL_MILE),
+        					_altitudeMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(NonSI.FOOT),
+        					_fuelUsedMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(SI.KILOGRAM),
+        					_massMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(SI.KILOGRAM),
+        					_emissionNOxMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(SI.GRAM),       					
+        					_emissionCOMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(SI.GRAM),
+        					_emissionHCMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(SI.GRAM),
+        					_emissionSootMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(SI.GRAM),
+        					_emissionCO2Map.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(SI.GRAM),
+        					_emissionSOxMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(SI.GRAM),
+        					_emissionH2OMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(SI.GRAM),
+        					_speedTASMissionMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(NonSI.KNOT),
+        					_speedCASMissionMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(NonSI.KNOT),
+        					_machMissionMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(),
+        					_liftingCoefficientMissionMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(),
+        					_dragCoefficientMissionMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(),
+        					_efficiencyMissionMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(),
+        					_dragMissionMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(NonSI.POUND_FORCE),
+        					_totalThrustMissionMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(NonSI.POUND_FORCE),
+        					_thermicThrustMissionMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(NonSI.POUND_FORCE),
+        					_electricThrustMissionMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(NonSI.POUND_FORCE), 
+        					_throttleMissionMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue()*100,
+        					_fuelFlowMissionMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(), 
+        					_sfcMissionMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(),
+        					_rateOfClimbMissionMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(MyUnits.FOOT_PER_MINUTE),
+        					_climbAngleMissionMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(SI.RADIAN)*100,
+        					_climbAngleMissionMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(NonSI.DEGREE_ANGLE),
+        					_fuelPowerMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(SI.KILO(SI.WATT)),
+        					_batteryPowerMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(SI.KILO(SI.WATT)),
+        					_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
+        					_batteryEnergyMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
         					});
         		}
 
@@ -4031,9 +4031,9 @@ public class ACPerformanceManager {
         			} else if (obj instanceof Double) {
         				cell.setCellValue((Double) obj);
         			}
-        			sheetMissionProfile.setDefaultColumnWidth(40);
-        			sheetMissionProfile.setColumnWidth(1, 2048);
-        			sheetMissionProfile.setColumnWidth(2, 3840);
+        			sheetMissionProfile.setDefaultColumnWidth(30);
+//        			sheetMissionProfile.setColumnWidth(1, 2048);
+//        			sheetMissionProfile.setColumnWidth(2, 3840);
         		}
 
         		int rownumMissionProfile = 1;
