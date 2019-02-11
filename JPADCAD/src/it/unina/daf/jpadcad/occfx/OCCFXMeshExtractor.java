@@ -436,7 +436,7 @@ public class OCCFXMeshExtractor {
 	protected void createMesh() {
 		//Force to recreate the mesh with our parameters
 		BRepTools.Clean(shape);
-		new BRepMesh_IncrementalMesh(shape, 7E-3);
+		new BRepMesh_IncrementalMesh(shape, 7E-5);
 	}
 	
 	public Collection<TopoDS_Face> getFaces() {
