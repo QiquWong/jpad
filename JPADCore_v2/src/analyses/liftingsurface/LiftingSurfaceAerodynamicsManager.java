@@ -204,19 +204,13 @@ public class LiftingSurfaceAerodynamicsManager {
 		this._momentumPole = momentumPole;
 		
 		initializeVariables();
-		initializeData(_theCondition);
-		
+		initializeData(_theCondition);		
 	}
 	
 	//------------------------------------------------------------------------------
 	// METHODS
 	//------------------------------------------------------------------------------
 	private void initializeData(ConditionEnum theCondition) {
-		
-		/* 
-		 * FIXME: (MANUELA) INSERT 'currentDeltaTemperature' FIELD AND FILL IT WITH THE RELATED INPUT FROM OperatingConditions. 
-		 * USE IT IN ALL AERODYNAMIC CALCULATIONS.
-		 */
 		
 		switch (theCondition) {
 		case TAKE_OFF:
@@ -258,9 +252,9 @@ public class LiftingSurfaceAerodynamicsManager {
 			CalcXAC calcXAC = new CalcXAC();
 			calcXAC.deYoungHarper();
 		}
-		
-		if(_momentumPole == null)
-			_momentumPole = _xacLRF.get(MethodEnum.DEYOUNG_HARPER);
+//		
+//		if(_momentumPole == null)
+//			_momentumPole = _xacLRF.get(MethodEnum.DEYOUNG_HARPER);
 		
 		//----------------------------------------------------------------------------------------------------------------------
 		// Calculating the mean airfoil

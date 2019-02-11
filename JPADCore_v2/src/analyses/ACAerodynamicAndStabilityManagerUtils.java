@@ -124,7 +124,7 @@ public class ACAerodynamicAndStabilityManagerUtils {
 		CalcXAC calcXAC = liftingSurfaceAerodynamicManager.new CalcXAC();
 		calcXAC.datcomNapolitano();
 		liftingSurfaceAerodynamicManager.setMomentumPole(
-				liftingSurfaceAerodynamicManager.getXacLRF().get(MethodEnum.NASA_BLACKWELL )
+				liftingSurfaceAerodynamicManager.getXacLRF().get(MethodEnum.NAPOLITANO_DATCOM )
 				);
 
 		//.........................................................................................................................
@@ -192,7 +192,7 @@ public class ACAerodynamicAndStabilityManagerUtils {
 
 		//.........................................................................................................................
 		//	CM_AC
-		CalcCMac calcCMac = liftingSurfaceAerodynamicManager.new CalcCMac();
+ 		CalcCMac calcCMac = liftingSurfaceAerodynamicManager.new CalcCMac();
 		calcCMac.fromAirfoilDistribution();
 
 		//.........................................................................................................................
@@ -737,7 +737,7 @@ public class ACAerodynamicAndStabilityManagerUtils {
 				SI.METER));
 
 		aerodynamicAndStabilityManager.setDeltaEForEquilibrium(MyArrayUtils.convertDoubleArrayToListOfAmount((MyArrayUtils.linspaceDouble(
-				_theAerodynamicBuilderInterface.getMaximumElevatorDeflection().doubleValue(NonSI.DEGREE_ANGLE),
+				_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getSymmetricFlaps().get(0).getMinimumDeflection().doubleValue(NonSI.DEGREE_ANGLE),
 				5, 
 				10
 				)),
@@ -1160,7 +1160,7 @@ public class ACAerodynamicAndStabilityManagerUtils {
 									.get(_theAerodynamicBuilderInterface.getComponentTaskList()
 											.get(ComponentEnum.AIRCRAFT)
 											.get(AerodynamicAndStabilityEnum.WING_DOWNWASH))
-									.get(_theAerodynamicBuilderInterface.getDownwashConstant())
+									.get(_theAerodynamicBuilderInterface.isWingHTailDownwashConstant())
 									),
 							aerodynamicAndStabilityManager.getAlphaBodyCurrent().doubleValue(NonSI.DEGREE_ANGLE)
 							),
