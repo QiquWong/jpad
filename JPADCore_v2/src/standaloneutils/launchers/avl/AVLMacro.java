@@ -13,7 +13,9 @@ public class AVLMacro {
 	}
 
 	public AVLMacro mass(String filePath) {
-		commandSequence.append("MASS ").append(filePath).append("\n");
+		// @masc do nothing when mass file name is null
+		if (filePath != null)
+			commandSequence.append("MASS ").append(filePath).append("\n");
 		return this;
 	}
 	public AVLMacro mset(Integer value) {
@@ -51,12 +53,16 @@ public class AVLMacro {
 		return this;
 	}
 	public AVLMacro stabilityDerivatives(String filePath) {
-		commandSequence.append("st").append("\n")
+		// @masc do nothing when stability derivatives file name is null
+		if (filePath != null)
+			commandSequence.append("st").append("\n")
 			.append(filePath).append("\n");
 		return this;
 	}
 	public AVLMacro bodyAxisDerivatives(String filePath) {
-		commandSequence.append("sb").append("\n")
+		// @masc do nothing when stability body-axis derivatives file name is null
+		if (filePath != null)
+			commandSequence.append("sb").append("\n")
 			.append(filePath).append("\n");
 		return this;
 	}
@@ -84,7 +90,7 @@ public class AVLMacro {
 		return this;
 	}
 	
-	public String format() {
+	public String getCommands() {
 		return commandSequence.toString();
 	}
 }

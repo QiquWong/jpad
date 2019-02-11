@@ -176,6 +176,8 @@ public final class AVLTestUtils {
 					fusDesDatabaseReader,
 					veDSCDatabaseReader);
 			
+			if (aircraft == null) throw new IOException("Unable to import a valid JPAD Aircraft");
+			
 			// activating system.out
 			System.setOut(originalOut);			
 			

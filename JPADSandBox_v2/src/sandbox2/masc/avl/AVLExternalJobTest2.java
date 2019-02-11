@@ -72,7 +72,6 @@ public class AVLExternalJobTest2 {
 
 				System.out.println("--------------------------------------------- Launch AVL job in a separate process.");
 
-
 				// Establish the path to dir where the executable file resides 
 				String binDirPath;
 				File binDir = AVLTestUtils.getAVLBinDir(args); 
@@ -137,15 +136,6 @@ public class AVLExternalJobTest2 {
 				// Assign the main .avl input file
 				job.setInputAVLFile(new File(binDirPath + File.separator + job.getBaseName()+".avl"));
 
-				// Assign the .mass file
-				job.setInputMassFile(new File(binDirPath + File.separator + job.getBaseName()+".mass"));
-				
-				// Assign the output stability derivatives file
-				job.setOutputStabilityDerivativesFile(new File(binDirPath + File.separator + job.getBaseName()+".st"));
-
-				// Assign the output stability derivatives file
-				job.setOutputStabilityDerivativesBodyAxesFile(new File(binDirPath + File.separator + job.getBaseName()+".sb"));
-
 				// Assign .run file with commands
 				job.setInputRunFile(new File(binDirPath + File.separator + job.getBaseName()+".run"));
 				
@@ -154,9 +144,23 @@ public class AVLExternalJobTest2 {
 
 				AVLMainInputData inputData = job.importToMainInputData(theOperatingConditions, theAircraft);
 				
-				AVLAircraft aircraft = job.importToAVLAircraft(theAircraft);
+				AVLAircraft avlAircraft = job.importToAVLAircraft(theAircraft);
 				
 				AVLMassInputData massData = job.importToMassInputData(theAircraft);
+
+				if (massData != null) { // true if massData != null
+					
+					job.setEnabledStabilityAnalysis(true);
+					
+					// Assign the .mass file
+					job.setInputMassFile(new File(binDirPath + File.separator + job.getBaseName()+".mass"));
+					
+					// Assign the output stability derivatives file
+					job.setOutputStabilityDerivativesFile(new File(binDirPath + File.separator + job.getBaseName()+".st"));
+
+					// Assign the output stability derivatives file
+					job.setOutputStabilityDerivativesBodyAxesFile(new File(binDirPath + File.separator + job.getBaseName()+".sb"));
+				}				
 				
 				AVLMacro avlMacro = job.formRunMacro(theOperatingConditions); // TODO: modify this as appropriate
 				
@@ -171,7 +175,7 @@ public class AVLExternalJobTest2 {
 				 * 
 				 * ================================================================
 				 */
-				String jobCommandLine = job.formCommand(inputData, aircraft, massData, avlMacro);
+				String jobCommandLine = job.formCommand(inputData, avlAircraft, massData, avlMacro);
 
 				// Print out the command line
 				System.out.println("Command line: " + jobCommandLine);
@@ -197,25 +201,26 @@ public class AVLExternalJobTest2 {
 				System.out.println("---------------------------------------------");
 
 				// Parse the AVL output file
-				
-				System.out.println("Output file full path: " + job.getOutputStabilityDerivativesFile());
-				
-				// Use AVLOutputStabilityDerivativesFileReader object
-				AVLOutputStabilityDerivativesFileReader reader = new AVLOutputStabilityDerivativesFileReader(job.getOutputStabilityDerivativesFile());
-				
-				System.out.println("The AVL output file is available? " + reader.isFileAvailable());
-				System.out.println("The AVL output file to read: " + reader.getTheFile());
-				
-				// parse the file and build map of variables & values
-				reader.parse();
-				
-				// print the map
-				System.out.println("------ Map of variables ------");
-				Map<String, List<Number>> variables = reader.getVariables();
-				// Print the map of variables
-				variables.forEach((key, value) -> {
-				    System.out.println(key + " = " + value);
-				});		
+				if (job.isEnabledStabilityAnalysis()) {
+					
+					System.out.println("Output file full path: " + job.getOutputStabilityDerivativesFile());
+					// Use AVLOutputStabilityDerivativesFileReader object
+					AVLOutputStabilityDerivativesFileReader reader = new AVLOutputStabilityDerivativesFileReader(job.getOutputStabilityDerivativesFile());
+					
+					System.out.println("The AVL output file is available? " + reader.isFileAvailable());
+					System.out.println("The AVL output file to read: " + reader.getTheFile());
+					
+					// parse the file and build map of variables & values
+					reader.parse();
+					
+					// print the map
+					System.out.println("------ Map of variables ------");
+					Map<String, List<Number>> variables = reader.getVariables();
+					// Print the map of variables
+					variables.forEach((key, value) -> {
+						System.out.println(key + " = " + value);
+					});		
+				}
 				
 				System.out.println("---------------------------------------------");
 
@@ -225,14 +230,12 @@ public class AVLExternalJobTest2 {
 				long estimatedTime = System.currentTimeMillis() - startTime;
 				System.out.println("\n\n\t TIME ESTIMATED = " + (estimatedTime/1000) + " seconds");
 				
-				
-				
-				
 			} catch (IOException e) {
 				System.err.println("Error: " + e.getMessage());
 				AVLExternalJobTest2.theCmdLineParser.printUsage(System.err);
 				System.err.println();
 				System.err.println("  Must launch this app with proper command line arguments.");
+				System.err.println("  Make sure you point to a valid aircraft data set.");
 				return;
 			}	  			
 		}		
