@@ -117,8 +117,7 @@ public interface IACAerodynamicAndStabilityManager_v2 {
 	double  getTotalMomentCalibrationAlphaScaleFactor();
 	double  getTotalMomentCalibrationCMScaleFactor();
 	boolean isCalculateWingPendularStability();  // if TRUE--> calculated, if FALSE--> not calculated
-	@Nullable
-	Boolean getDownwashConstant(); // if TRUE--> constant, if FALSE--> variable
+
 	
 	/** Builder of ACAErodynamicCalculator instances. */
 	class Builder extends IACAerodynamicAndStabilityManager_v2_Builder { 

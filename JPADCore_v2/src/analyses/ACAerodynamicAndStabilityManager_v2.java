@@ -100,7 +100,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 	private Amount<Length> _verticalDistanceZeroLiftDirectionWingHTailPARTIAL = null;
 	private Amount<Length> _verticalDistanceZeroLiftDirectionWingHTailCOMPLETE = null;
 	private Amount<Length> _verticalDistanceZeroLiftDirectionWingHTailEFFECTIVE;
-	private Map<MethodEnum, List<Amount<Length>>> _verticalDistanceZeroLiftDirectionWingHTailVariable;
+	private Map<MethodEnum, List<Amount<Length>>> _verticalDistanceZeroLiftDirectionWingHTailVariable = new HashMap<>();
 
 	//..............................................................................
 	// INNER CALCULATORS
@@ -2040,6 +2040,8 @@ public class ACAerodynamicAndStabilityManager_v2 {
 				.setTotalMomentCalibrationAlphaScaleFactor(totalMomentCalibrationAlphaScaleFactor)
 				.setTotalMomentCalibrationCMScaleFactor(totalMomentCalibrationCMScaleFactor)
 				.setCalculateWingPendularStability(aircraftWingPendularStability)
+				.setWingHTailDownwashConstant(wingHTailConstantGradientFlag)
+				.setCanardWingDownwashConstant(canardWingConstantGradientFlag)
 				.build();
 
 		ACAerodynamicAndStabilityManager_v2 theAerodynamicAndStabilityManager = new ACAerodynamicAndStabilityManager_v2();
@@ -2234,7 +2236,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 									.get(ComponentEnum.AIRCRAFT)
 									.get(AerodynamicAndStabilityEnum.CANARD_DOWNWASH)
 									)
-							.get(_theAerodynamicBuilderInterface.getDownwashConstant())
+							.get(_theAerodynamicBuilderInterface.isCanardWingDownwashConstant())
 							.get(i)
 							)
 							.plus(
@@ -2250,7 +2252,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 												.get(_theAerodynamicBuilderInterface
 														.getComponentTaskList()
 														.get(ComponentEnum.AIRCRAFT)
-														.get(AerodynamicAndStabilityEnum.CANARD_DOWNWASH)).get(_theAerodynamicBuilderInterface.getDownwashConstant())),
+														.get(AerodynamicAndStabilityEnum.CANARD_DOWNWASH)).get(_theAerodynamicBuilderInterface.isCanardWingDownwashConstant())),
 										_alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE)),
 								NonSI.DEGREE_ANGLE)
 						).plus(
@@ -2313,14 +2315,15 @@ public class ACAerodynamicAndStabilityManager_v2 {
 									.get(ComponentEnum.AIRCRAFT)
 									.get(AerodynamicAndStabilityEnum.WING_DOWNWASH)
 									)
-							.get(_theAerodynamicBuilderInterface.getDownwashConstant())
+							.get(_theAerodynamicBuilderInterface.isWingHTailDownwashConstant())
 							.get(i)
 							)
 							.plus(
 									_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getRiggingAngle().to(NonSI.DEGREE_ANGLE)));
 				}); 
-				
-
+	
+				// TODO continue here
+if(_theAerodynamicBuilderInterface.getTheAircraft().getCanard() != null) {
 				_alphaHTailCurrent = _alphaBodyCurrent.minus(
 						Amount.valueOf(
 								MyMathUtils.getInterpolatedValue1DLinear(
@@ -2330,11 +2333,18 @@ public class ACAerodynamicAndStabilityManager_v2 {
 												.get(_theAerodynamicBuilderInterface
 														.getComponentTaskList()
 														.get(ComponentEnum.AIRCRAFT)
-														.get(AerodynamicAndStabilityEnum.CANARD_DOWNWASH)).get(_theAerodynamicBuilderInterface.getDownwashConstant())),
+														.get(AerodynamicAndStabilityEnum.CANARD_DOWNWASH)).get(_theAerodynamicBuilderInterface.isCanardWingDownwashConstant())),
 										_alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE)),
 								NonSI.DEGREE_ANGLE)
 						).plus(
-								_theAerodynamicBuilderInterface.getTheAircraft().getCanard().getRiggingAngle().to(NonSI.DEGREE_ANGLE));
+								_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getRiggingAngle().to(NonSI.DEGREE_ANGLE));
+}
+
+if(_theAerodynamicBuilderInterface.getTheAircraft().getCanard() != null) {
+	
+	_alphaHTailCurrent = _alphaBodyCurrent.plus(
+					_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getRiggingAngle().to(NonSI.DEGREE_ANGLE));
+}
 
 				_liftingSurfaceAerodynamicManagers.put(
 						ComponentEnum.HORIZONTAL_TAIL,
@@ -3864,7 +3874,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 
 					sb.append("\n\tAlpha body (deg) = " + _alphaBodyList.stream().map(a -> a.doubleValue(NonSI.DEGREE_ANGLE)).collect(Collectors.toList()) + "\n");
 
-					if(_theAerodynamicBuilderInterface.getDownwashConstant()) {
+					if(_theAerodynamicBuilderInterface.isWingHTailDownwashConstant()) {
 
 						sb.append("\n\tLINEAR\n");
 
@@ -7427,7 +7437,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 
 					//-----------------------------------------------------------------------------
 					// CONSTANT GRADIENT
-					if(_theAerodynamicBuilderInterface.getDownwashConstant()) {
+					if(_theAerodynamicBuilderInterface.isWingHTailDownwashConstant()) {
 
 						dataListDownwash.add(new Object[] {"LINEAR"});
 						currentBoldIndex = currentBoldIndex+1;

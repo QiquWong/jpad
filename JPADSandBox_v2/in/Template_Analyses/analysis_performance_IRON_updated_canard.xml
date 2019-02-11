@@ -11,6 +11,7 @@
 				<maximum_take_off_mass unit="kg">55151</maximum_take_off_mass> <!-- LEONARDO = 55151 / UNINA = 55448 -->
 				<operating_empty_mass unit="kg">34010</operating_empty_mass> <!-- LEONARDO = 34010 / UNINA = 34441 -->
 				<maximum_fuel_mass unit="kg">7786</maximum_fuel_mass> <!-- IRON = 11959 / CS300 = 17213 -->
+				<maximum_payload unit="kg"></maximum_payload> <!-- default = design_n_pax*121kg + 700kg -->
 				<single_passenger_mass unit="kg">105</single_passenger_mass> 
 			</weights>
 			<aerodynamics> 
@@ -337,7 +338,6 @@
 			<cD_proifle perform="TRUE"/>
 			<efficiency_proifle perform="TRUE"/>
 			<drag_thrust_proifle perform="TRUE"/>
-			<engines_throttle_proifle perform="TRUE"/>
 			<fuel_flow_proifle perform="TRUE"/>
 			<sfc_proifle perform="TRUE"/>
 			<rate_of_climb_proifle perform="TRUE"/>

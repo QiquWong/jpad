@@ -32,6 +32,7 @@ public interface IACPerformanceManager {
 	Amount<Mass> getMaximumTakeOffMass();
 	Amount<Mass> getOperatingEmptyMass();
 	Amount<Mass> getMaximumFuelMass();
+	Amount<Mass> getMaximumPayload();
 	Amount<Mass> getSinglePassengerMass();
 	//..............................................................................
 	// Aerodynamics

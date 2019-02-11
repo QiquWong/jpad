@@ -15,6 +15,7 @@
 				-->
 				<operating_empty_mass unit="kg">34836</operating_empty_mass> 
 				<maximum_fuel_mass unit="kg">7252</maximum_fuel_mass> 
+				<maximum_payload unit="kg"></maximum_payload> <!-- default = design_n_pax*121kg + 700kg -->
 				<single_passenger_mass unit="kg">108</single_passenger_mass> 
 			</weights>
 			<aerodynamics> 
@@ -275,7 +276,6 @@
 			<cD_proifle perform="TRUE"/>
 			<efficiency_proifle perform="TRUE"/>
 			<drag_thrust_proifle perform="TRUE"/>
-			<engines_throttle_proifle perform="TRUE"/>
 			<fuel_flow_proifle perform="TRUE"/>
 			<sfc_proifle perform="TRUE"/>
 			<rate_of_climb_proifle perform="TRUE"/>

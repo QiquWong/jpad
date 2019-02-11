@@ -216,7 +216,6 @@ public class MissionProfileCalc {
 	private Map<MissionPhasesEnum, List<Amount<Force>>> totalThrustMissionMap;
 	private Map<MissionPhasesEnum, List<Amount<Force>>> thermicThrustMissionMap;
 	private Map<MissionPhasesEnum, List<Amount<Force>>> electricThrustMissionMap;
-	private Map<MissionPhasesEnum, List<Double>> throttleMissionMap;
 	private Map<MissionPhasesEnum, List<Double>> sfcMissionMap;
 	private Map<MissionPhasesEnum, List<Double>> fuelFlowMissionMap;
 	private Map<MissionPhasesEnum, List<Amount<Velocity>>> rateOfClimbMissionMap;
@@ -767,7 +766,6 @@ public class MissionProfileCalc {
 		this.totalThrustMissionMap = new TreeMap<>();
 		this.thermicThrustMissionMap = new TreeMap<>();
 		this.electricThrustMissionMap = new TreeMap<>();
-		this.throttleMissionMap = new TreeMap<>();
 		this.sfcMissionMap = new TreeMap<>();
 		this.fuelFlowMissionMap = new TreeMap<>();
 		this.rateOfClimbMissionMap = new TreeMap<>();
@@ -1402,7 +1400,7 @@ public class MissionProfileCalc {
 						MyArrayUtils.linspace(
 								0.0,
 								currentCruiseRange.doubleValue(SI.METER),
-								50
+								25
 								),
 						SI.METER
 						);
@@ -4431,28 +4429,16 @@ public class MissionProfileCalc {
 		this.electricThrustMissionMap.put(MissionPhasesEnum.APPROACH_AND_LANDING, electricThrustLanding.stream().map(e -> e.to(NonSI.POUND_FORCE)).collect(Collectors.toList()));
 		
 		//.................................................................................................
-		// THROTTLE
-		this.throttleMissionMap.put(MissionPhasesEnum.TAKE_OFF, throttleTakeOff);
-		this.throttleMissionMap.put(MissionPhasesEnum.CLIMB, throttleClimb);
-		this.throttleMissionMap.put(MissionPhasesEnum.CRUISE, throttleCruise);
-		this.throttleMissionMap.put(MissionPhasesEnum.FIRST_DESCENT, throttleFirstDescent);
-		this.throttleMissionMap.put(MissionPhasesEnum.SECOND_CLIMB, throttleSecondClimb);
-		this.throttleMissionMap.put(MissionPhasesEnum.ALTERNATE_CRUISE, throttleAlternateCruise);
-		this.throttleMissionMap.put(MissionPhasesEnum.SECOND_DESCENT, throttleSecondDescent);
-		this.throttleMissionMap.put(MissionPhasesEnum.HOLDING, throttleHolding);
-		this.throttleMissionMap.put(MissionPhasesEnum.APPROACH_AND_LANDING, throttleLanding);
-		
-		//.................................................................................................
 		// SFC
-		this.sfcMissionMap.put(MissionPhasesEnum.TAKE_OFF, sfcTakeOff); /* lb/lb*hr */
-		this.sfcMissionMap.put(MissionPhasesEnum.CLIMB, sfcClimb); /* lb/lb*hr */
-		this.sfcMissionMap.put(MissionPhasesEnum.CRUISE, sfcCruise); /* lb/lb*hr */
-		this.sfcMissionMap.put(MissionPhasesEnum.FIRST_DESCENT, sfcFirstDescent); /* lb/lb*hr */
-		this.sfcMissionMap.put(MissionPhasesEnum.SECOND_CLIMB, sfcSecondClimb); /* lb/lb*hr */
-		this.sfcMissionMap.put(MissionPhasesEnum.ALTERNATE_CRUISE, sfcAlternateCruise); /* lb/lb*hr */
-		this.sfcMissionMap.put(MissionPhasesEnum.SECOND_DESCENT, sfcSecondDescent); /* lb/lb*hr */
-		this.sfcMissionMap.put(MissionPhasesEnum.HOLDING, sfcHolding); /* lb/lb*hr */
-		this.sfcMissionMap.put(MissionPhasesEnum.APPROACH_AND_LANDING, sfcLanding); /* lb/lb*hr */
+		this.sfcMissionMap.put(MissionPhasesEnum.TAKE_OFF, sfcTakeOff.stream().map(sfc -> sfc.isNaN() ? 0.0 : sfc).collect(Collectors.toList())); /* lb/lb*hr */
+		this.sfcMissionMap.put(MissionPhasesEnum.CLIMB, sfcClimb.stream().map(sfc -> sfc.isNaN() ? 0.0 : sfc).collect(Collectors.toList())); /* lb/lb*hr */
+		this.sfcMissionMap.put(MissionPhasesEnum.CRUISE, sfcCruise.stream().map(sfc -> sfc.isNaN() ? 0.0 : sfc).collect(Collectors.toList())); /* lb/lb*hr */
+		this.sfcMissionMap.put(MissionPhasesEnum.FIRST_DESCENT, sfcFirstDescent.stream().map(sfc -> sfc.isNaN() ? 0.0 : sfc).collect(Collectors.toList())); /* lb/lb*hr */
+		this.sfcMissionMap.put(MissionPhasesEnum.SECOND_CLIMB, sfcSecondClimb.stream().map(sfc -> sfc.isNaN() ? 0.0 : sfc).collect(Collectors.toList())); /* lb/lb*hr */
+		this.sfcMissionMap.put(MissionPhasesEnum.ALTERNATE_CRUISE, sfcAlternateCruise.stream().map(sfc -> sfc.isNaN() ? 0.0 : sfc).collect(Collectors.toList())); /* lb/lb*hr */
+		this.sfcMissionMap.put(MissionPhasesEnum.SECOND_DESCENT, sfcSecondDescent.stream().map(sfc -> sfc.isNaN() ? 0.0 : sfc).collect(Collectors.toList())); /* lb/lb*hr */
+		this.sfcMissionMap.put(MissionPhasesEnum.HOLDING, sfcHolding.stream().map(sfc -> sfc.isNaN() ? 0.0 : sfc).collect(Collectors.toList())); /* lb/lb*hr */
+		this.sfcMissionMap.put(MissionPhasesEnum.APPROACH_AND_LANDING, sfcLanding.stream().map(sfc -> sfc.isNaN() ? 0.0 : sfc).collect(Collectors.toList())); /* lb/lb*hr */
 		
 		//.................................................................................................
 		// FUEL FLOW
@@ -5619,40 +5605,6 @@ public class MissionProfileCalc {
 			
 		}
 		
-		if(_plotList.contains(PerformancePlotEnum.ENGINES_THROTTLE_PROFILE)) { 
-			
-			List<Double> throttleListPlot = new ArrayList<>();
-			throttleListPlot.addAll(throttleMissionMap.get(MissionPhasesEnum.TAKE_OFF));
-			throttleListPlot.addAll(throttleMissionMap.get(MissionPhasesEnum.CLIMB));
-			throttleListPlot.addAll(throttleMissionMap.get(MissionPhasesEnum.CRUISE));
-			throttleListPlot.addAll(throttleMissionMap.get(MissionPhasesEnum.FIRST_DESCENT));
-			throttleListPlot.addAll(throttleMissionMap.get(MissionPhasesEnum.SECOND_CLIMB));
-			throttleListPlot.addAll(throttleMissionMap.get(MissionPhasesEnum.ALTERNATE_CRUISE));
-			throttleListPlot.addAll(throttleMissionMap.get(MissionPhasesEnum.SECOND_DESCENT));
-			throttleListPlot.addAll(throttleMissionMap.get(MissionPhasesEnum.HOLDING));
-			throttleListPlot.addAll(throttleMissionMap.get(MissionPhasesEnum.APPROACH_AND_LANDING));
-			
-			MyChartToFileUtils.plotNoLegend(
-					MyArrayUtils.convertListOfAmountTodoubleArray(
-							timeListPlot.stream()
-							.map(t -> t.to(NonSI.MINUTE))
-							.collect(Collectors.toList())
-							),
-					MyArrayUtils.convertToDoublePrimitive(
-							MyArrayUtils.convertListOfDoubleToDoubleArray(
-									throttleListPlot.stream()
-									.map(t -> t.doubleValue()*100)
-									.collect(Collectors.toList())
-									)
-							),
-					0.0, null, null, null,
-					"Time", "Engines Throttle",
-					"min", "%",
-					_missionProfilesFolderPath, "Engines_Throttle_Profile", 
-					theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
-					);
-		}
-		
 		if(_plotList.contains(PerformancePlotEnum.FUEL_FLOW_PROFILE)) { 
 			
 			List<Double> fuelFlowListPlot = new ArrayList<>();
@@ -6000,8 +5952,8 @@ public class MissionProfileCalc {
 				.append("\t\t.....................................\n")
 				.append("\t\tTAKE-OFF\n")
 				.append("\t\t.....................................\n")
-				.append("\t\t\tTime\tRange\tAltitude\tFuel\tMass\tNOx\tCO\tHC\tSoot\tCO2\tSOx\tH2O\tTAS\tCAS\tMach\tCL\tCD\tE\tDrag\tTot. Thrust\tThermic Thrust\tElectric Thrust\tThrottle\tFuel Flow\tSFC\tRate of Climb\tClimb Gradient\tClimb Angle\tFuel Power\tBattery Power\tFuel Energy\tBattery Energy\n")
-				.append("\t\t\tmin\tnm\tft\tkg\tkg\tg\tg\tg\tg\tg\tg\tg\tkts\tkts\t\t\t\t\tlbf\tlbf\tlbf\tlbf\t%\tkg/min\tlb/lb*hr\tft/min\t%\tdeg\tkW\tkW\tkW*h\tkW*h\n");
+				.append("\t\t\tTime\tRange\tAltitude\tFuel\tMass\tNOx\tCO\tHC\tSoot\tCO2\tSOx\tH2O\tTAS\tCAS\tMach\tCL\tCD\tE\tDrag\tTot. Thrust\tThermic Thrust\tElectric Thrust\tFuel Flow\tSFC\tRate of Climb\tClimb Gradient\tClimb Angle\tFuel Power\tBattery Power\tFuel Energy\tBattery Energy\n")
+				.append("\t\t\tmin\tnm\tft\tkg\tkg\tg\tg\tg\tg\tg\tg\tg\tkts\tkts\t\t\t\t\tlbf\tlbf\tlbf\tlbf\tkg/min\tlb/lb*hr\tft/min\t%\tdeg\tkW\tkW\tkW*h\tkW*h\n");
 		for(int i=0; i<timeMap.get(MissionPhasesEnum.TAKE_OFF).size(); i++)
 			sb.append("\t\t\t" + numberFormat.format(timeMap.get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(NonSI.MINUTE))  
 					+ "\t" + numberFormat.format(rangeMap.get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(NonSI.NAUTICAL_MILE))
@@ -6025,7 +5977,6 @@ public class MissionProfileCalc {
 					+ "\t" + numberFormat.format(totalThrustMissionMap.get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(NonSI.POUND_FORCE))
 					+ "\t" + numberFormat.format(thermicThrustMissionMap.get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(NonSI.POUND_FORCE))
 					+ "\t" + numberFormat.format(electricThrustMissionMap.get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(NonSI.POUND_FORCE))
-					+ "\t" + numberFormat.format(throttleMissionMap.get(MissionPhasesEnum.TAKE_OFF).get(i)*100.0)
 					+ "\t" + numberFormat.format(fuelFlowMissionMap.get(MissionPhasesEnum.TAKE_OFF).get(i))
 					+ "\t" + numberFormat.format(sfcMissionMap.get(MissionPhasesEnum.TAKE_OFF).get(i))
 					+ "\t" + numberFormat.format(rateOfClimbMissionMap.get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(MyUnits.FOOT_PER_MINUTE))
@@ -6039,8 +5990,8 @@ public class MissionProfileCalc {
 		sb.append("\t\t.....................................\n")
 		.append("\t\tCLIMB\n")
 		.append("\t\t.....................................\n")
-		.append("\t\t\tTime\tRange\tAltitude\tFuel\tMass\tNOx\tCO\tHC\tSoot\tCO2\tSOx\tH2O\tTAS\tCAS\tMach\tCL\tCD\tE\tDrag\tTot. Thrust\tThermic Thrust\tElectric Thrust\tThrottle\tFuel Flow\tSFC\tRate of Climb\tClimb Gradient\tClimb Angle\tFuel Power\tBattery Power\tFuel Energy\tBattery Energy\n")
-		.append("\t\t\tmin\tnm\tft\tkg\tkg\tg\tg\tg\tg\tg\tg\tg\tkts\tkts\t\t\t\t\tlbf\tlbf\tlbf\tlbf\t%\tkg/min\tlb/lb*hr\tft/min\t%\tdeg\tkW\tkW\tkW*h\tkW*h\n");
+		.append("\t\t\tTime\tRange\tAltitude\tFuel\tMass\tNOx\tCO\tHC\tSoot\tCO2\tSOx\tH2O\tTAS\tCAS\tMach\tCL\tCD\tE\tDrag\tTot. Thrust\tThermic Thrust\tElectric Thrust\tFuel Flow\tSFC\tRate of Climb\tClimb Gradient\tClimb Angle\tFuel Power\tBattery Power\tFuel Energy\tBattery Energy\n")
+		.append("\t\t\tmin\tnm\tft\tkg\tkg\tg\tg\tg\tg\tg\tg\tg\tkts\tkts\t\t\t\t\tlbf\tlbf\tlbf\tlbf\tkg/min\tlb/lb*hr\tft/min\t%\tdeg\tkW\tkW\tkW*h\tkW*h\n");
 		for(int i=0; i<timeMap.get(MissionPhasesEnum.CLIMB).size(); i++)
 			sb.append("\t\t\t" + numberFormat.format(timeMap.get(MissionPhasesEnum.CLIMB).get(i).doubleValue(NonSI.MINUTE))  
 			+ "\t" + numberFormat.format(rangeMap.get(MissionPhasesEnum.CLIMB).get(i).doubleValue(NonSI.NAUTICAL_MILE))
@@ -6064,7 +6015,6 @@ public class MissionProfileCalc {
 			+ "\t" + numberFormat.format(totalThrustMissionMap.get(MissionPhasesEnum.CLIMB).get(i).doubleValue(NonSI.POUND_FORCE))
 			+ "\t" + numberFormat.format(thermicThrustMissionMap.get(MissionPhasesEnum.CLIMB).get(i).doubleValue(NonSI.POUND_FORCE))
 			+ "\t" + numberFormat.format(electricThrustMissionMap.get(MissionPhasesEnum.CLIMB).get(i).doubleValue(NonSI.POUND_FORCE))
-			+ "\t" + numberFormat.format(throttleMissionMap.get(MissionPhasesEnum.CLIMB).get(i)*100.0)
 			+ "\t" + numberFormat.format(fuelFlowMissionMap.get(MissionPhasesEnum.CLIMB).get(i))
 			+ "\t" + numberFormat.format(sfcMissionMap.get(MissionPhasesEnum.CLIMB).get(i))
 			+ "\t" + numberFormat.format(rateOfClimbMissionMap.get(MissionPhasesEnum.CLIMB).get(i).doubleValue(MyUnits.FOOT_PER_MINUTE))
@@ -6078,8 +6028,8 @@ public class MissionProfileCalc {
 		sb.append("\t\t.....................................\n")
 		.append("\t\tCRUISE\n")
 		.append("\t\t.....................................\n")
-		.append("\t\t\tTime\tRange\tAltitude\tFuel\tMass\tNOx\tCO\tHC\tSoot\tCO2\tSOx\tH2O\tTAS\tCAS\tMach\tCL\tCD\tE\tDrag\tTot. Thrust\tThermic Thrust\tElectric Thrust\tThrottle\tFuel Flow\tSFC\tRate of Climb\tClimb Gradient\tClimb Angle\tFuel Power\tBattery Power\tFuel Energy\tBattery Energy\n")
-		.append("\t\t\tmin\tnm\tft\tkg\tkg\tg\tg\tg\tg\tg\tg\tg\tkts\tkts\t\t\t\t\tlbf\tlbf\tlbf\tlbf\t%\tkg/min\tlb/lb*hr\tft/min\t%\tdeg\tkW\tkW\tkW*h\tkW*h\n");
+		.append("\t\t\tTime\tRange\tAltitude\tFuel\tMass\tNOx\tCO\tHC\tSoot\tCO2\tSOx\tH2O\tTAS\tCAS\tMach\tCL\tCD\tE\tDrag\tTot. Thrust\tThermic Thrust\tElectric Thrust\tFuel Flow\tSFC\tRate of Climb\tClimb Gradient\tClimb Angle\tFuel Power\tBattery Power\tFuel Energy\tBattery Energy\n")
+		.append("\t\t\tmin\tnm\tft\tkg\tkg\tg\tg\tg\tg\tg\tg\tg\tkts\tkts\t\t\t\t\tlbf\tlbf\tlbf\tlbf\tkg/min\tlb/lb*hr\tft/min\t%\tdeg\tkW\tkW\tkW*h\tkW*h\n");
 		for(int i=0; i<timeMap.get(MissionPhasesEnum.CRUISE).size(); i++)
 			sb.append("\t\t\t" + numberFormat.format(timeMap.get(MissionPhasesEnum.CRUISE).get(i).doubleValue(NonSI.MINUTE))  
 			+ "\t" + numberFormat.format(rangeMap.get(MissionPhasesEnum.CRUISE).get(i).doubleValue(NonSI.NAUTICAL_MILE))
@@ -6103,7 +6053,6 @@ public class MissionProfileCalc {
 			+ "\t" + numberFormat.format(totalThrustMissionMap.get(MissionPhasesEnum.CRUISE).get(i).doubleValue(NonSI.POUND_FORCE))
 			+ "\t" + numberFormat.format(thermicThrustMissionMap.get(MissionPhasesEnum.CRUISE).get(i).doubleValue(NonSI.POUND_FORCE))
 			+ "\t" + numberFormat.format(electricThrustMissionMap.get(MissionPhasesEnum.CRUISE).get(i).doubleValue(NonSI.POUND_FORCE))
-			+ "\t" + numberFormat.format(throttleMissionMap.get(MissionPhasesEnum.CRUISE).get(i)*100.0)
 			+ "\t" + numberFormat.format(fuelFlowMissionMap.get(MissionPhasesEnum.CRUISE).get(i))
 			+ "\t" + numberFormat.format(sfcMissionMap.get(MissionPhasesEnum.CRUISE).get(i))
 			+ "\t" + numberFormat.format(rateOfClimbMissionMap.get(MissionPhasesEnum.CRUISE).get(i).doubleValue(MyUnits.FOOT_PER_MINUTE))
@@ -6117,8 +6066,8 @@ public class MissionProfileCalc {
 		sb.append("\t\t.....................................\n")
 		.append("\t\tFIRST DESCENT\n")
 		.append("\t\t.....................................\n")
-		.append("\t\t\tTime\tRange\tAltitude\tFuel\tMass\tNOx\tCO\tHC\tSoot\tCO2\tSOx\tH2O\tTAS\tCAS\tMach\tCL\tCD\tE\tDrag\tTot. Thrust\tThermic Thrust\tElectric Thrust\tThrottle\tFuel Flow\tSFC\tRate of Climb\tClimb Gradient\tClimb Angle\tFuel Power\tBattery Power\tFuel Energy\tBattery Energy\n")
-		.append("\t\t\tmin\tnm\tft\tkg\tkg\tg\tg\tg\tg\tg\tg\tg\tkts\tkts\t\t\t\t\tlbf\tlbf\tlbf\tlbf\t%\tkg/min\tlb/lb*hr\tft/min\t%\tdeg\tkW\tkW\tkW*h\tkW*h\n");
+		.append("\t\t\tTime\tRange\tAltitude\tFuel\tMass\tNOx\tCO\tHC\tSoot\tCO2\tSOx\tH2O\tTAS\tCAS\tMach\tCL\tCD\tE\tDrag\tTot. Thrust\tThermic Thrust\tElectric Thrust\tFuel Flow\tSFC\tRate of Climb\tClimb Gradient\tClimb Angle\tFuel Power\tBattery Power\tFuel Energy\tBattery Energy\n")
+		.append("\t\t\tmin\tnm\tft\tkg\tkg\tg\tg\tg\tg\tg\tg\tg\tkts\tkts\t\t\t\t\tlbf\tlbf\tlbf\tlbf\tkg/min\tlb/lb*hr\tft/min\t%\tdeg\tkW\tkW\tkW*h\tkW*h\n");
 		for(int i=0; i<timeMap.get(MissionPhasesEnum.FIRST_DESCENT).size(); i++)
 			sb.append("\t\t\t" + numberFormat.format(timeMap.get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(NonSI.MINUTE))  
 			+ "\t" + numberFormat.format(rangeMap.get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(NonSI.NAUTICAL_MILE))
@@ -6142,7 +6091,6 @@ public class MissionProfileCalc {
 			+ "\t" + numberFormat.format(totalThrustMissionMap.get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(NonSI.POUND_FORCE))
 			+ "\t" + numberFormat.format(thermicThrustMissionMap.get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(NonSI.POUND_FORCE))
 			+ "\t" + numberFormat.format(electricThrustMissionMap.get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(NonSI.POUND_FORCE))
-			+ "\t" + numberFormat.format(throttleMissionMap.get(MissionPhasesEnum.FIRST_DESCENT).get(i)*100.0)
 			+ "\t" + numberFormat.format(fuelFlowMissionMap.get(MissionPhasesEnum.FIRST_DESCENT).get(i))
 			+ "\t" + numberFormat.format(sfcMissionMap.get(MissionPhasesEnum.FIRST_DESCENT).get(i))
 			+ "\t" + numberFormat.format(rateOfClimbMissionMap.get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(MyUnits.FOOT_PER_MINUTE))
@@ -6158,8 +6106,8 @@ public class MissionProfileCalc {
 			sb.append("\t\t.....................................\n")
 			.append("\t\tSECOND CLIMB\n")
 			.append("\t\t.....................................\n")
-			.append("\t\t\tTime\tRange\tAltitude\tFuel\tMass\tNOx\tCO\tHC\tSoot\tCO2\tSOx\tH2O\tTAS\tCAS\tMach\tCL\tCD\tE\tDrag\tTot. Thrust\tThermic Thrust\tElectric Thrust\tThrottle\tFuel Flow\tSFC\tRate of Climb\tClimb Gradient\tClimb Angle\tFuel Power\tBattery Power\tFuel Energy\tBattery Energy\n")
-			.append("\t\t\tmin\tnm\tft\tkg\tkg\tg\tg\tg\tg\tg\tg\tg\tkts\tkts\t\t\t\t\tlbf\tlbf\tlbf\tlbf\t%\tkg/min\tlb/lb*hr\tft/min\t%\tdeg\tkW\tkW\tkW*h\tkW*h\n");
+			.append("\t\t\tTime\tRange\tAltitude\tFuel\tMass\tNOx\tCO\tHC\tSoot\tCO2\tSOx\tH2O\tTAS\tCAS\tMach\tCL\tCD\tE\tDrag\tTot. Thrust\tThermic Thrust\tElectric Thrust\tFuel Flow\tSFC\tRate of Climb\tClimb Gradient\tClimb Angle\tFuel Power\tBattery Power\tFuel Energy\tBattery Energy\n")
+			.append("\t\t\tmin\tnm\tft\tkg\tkg\tg\tg\tg\tg\tg\tg\tg\tkts\tkts\t\t\t\t\tlbf\tlbf\tlbf\tlbf\tkg/min\tlb/lb*hr\tft/min\t%\tdeg\tkW\tkW\tkW*h\tkW*h\n");
 			for(int i=0; i<timeMap.get(MissionPhasesEnum.SECOND_CLIMB).size(); i++)
 				sb.append("\t\t\t" + numberFormat.format(timeMap.get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(NonSI.MINUTE))  
 				+ "\t" + numberFormat.format(rangeMap.get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(NonSI.NAUTICAL_MILE))
@@ -6183,7 +6131,6 @@ public class MissionProfileCalc {
 				+ "\t" + numberFormat.format(totalThrustMissionMap.get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(NonSI.POUND_FORCE))
 				+ "\t" + numberFormat.format(thermicThrustMissionMap.get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(NonSI.POUND_FORCE))
 				+ "\t" + numberFormat.format(electricThrustMissionMap.get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(NonSI.POUND_FORCE))
-				+ "\t" + numberFormat.format(throttleMissionMap.get(MissionPhasesEnum.SECOND_CLIMB).get(i)*100.0)
 				+ "\t" + numberFormat.format(fuelFlowMissionMap.get(MissionPhasesEnum.SECOND_CLIMB).get(i))
 				+ "\t" + numberFormat.format(sfcMissionMap.get(MissionPhasesEnum.SECOND_CLIMB).get(i))
 				+ "\t" + numberFormat.format(rateOfClimbMissionMap.get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(MyUnits.FOOT_PER_MINUTE))
@@ -6197,8 +6144,8 @@ public class MissionProfileCalc {
 			sb.append("\t\t.....................................\n")
 			.append("\t\tALTERNATE CRUISE\n")
 			.append("\t\t.....................................\n")
-			.append("\t\t\tTime\tRange\tAltitude\tFuel\tMass\tNOx\tCO\tHC\tSoot\tCO2\tSOx\tH2O\tTAS\tCAS\tMach\tCL\tCD\tE\tDrag\tTot. Thrust\tThermic Thrust\tElectric Thrust\tThrottle\tFuel Flow\tSFC\tRate of Climb\tClimb Gradient\tClimb Angle\tFuel Power\tBattery Power\tFuel Energy\tBattery Energy\n")
-			.append("\t\t\tmin\tnm\tft\tkg\tkg\tg\tg\tg\tg\tg\tg\tg\tkts\tkts\t\t\t\t\tlbf\tlbf\tlbf\tlbf\t%\tkg/min\tlb/lb*hr\tft/min\t%\tdeg\tkW\tkW\tkW*h\tkW*h\n");
+			.append("\t\t\tTime\tRange\tAltitude\tFuel\tMass\tNOx\tCO\tHC\tSoot\tCO2\tSOx\tH2O\tTAS\tCAS\tMach\tCL\tCD\tE\tDrag\tTot. Thrust\tThermic Thrust\tElectric Thrust\tFuel Flow\tSFC\tRate of Climb\tClimb Gradient\tClimb Angle\tFuel Power\tBattery Power\tFuel Energy\tBattery Energy\n")
+			.append("\t\t\tmin\tnm\tft\tkg\tkg\tg\tg\tg\tg\tg\tg\tg\tkts\tkts\t\t\t\t\tlbf\tlbf\tlbf\tlbf\tkg/min\tlb/lb*hr\tft/min\t%\tdeg\tkW\tkW\tkW*h\tkW*h\n");
 			for(int i=0; i<timeMap.get(MissionPhasesEnum.ALTERNATE_CRUISE).size(); i++)
 				sb.append("\t\t\t" + numberFormat.format(timeMap.get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(NonSI.MINUTE))  
 				+ "\t" + numberFormat.format(rangeMap.get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(NonSI.NAUTICAL_MILE))
@@ -6222,7 +6169,6 @@ public class MissionProfileCalc {
 				+ "\t" + numberFormat.format(totalThrustMissionMap.get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(NonSI.POUND_FORCE))
 				+ "\t" + numberFormat.format(thermicThrustMissionMap.get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(NonSI.POUND_FORCE))
 				+ "\t" + numberFormat.format(electricThrustMissionMap.get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(NonSI.POUND_FORCE))
-				+ "\t" + numberFormat.format(throttleMissionMap.get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i)*100.0)
 				+ "\t" + numberFormat.format(fuelFlowMissionMap.get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i))
 				+ "\t" + numberFormat.format(sfcMissionMap.get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i))
 				+ "\t" + numberFormat.format(rateOfClimbMissionMap.get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(MyUnits.FOOT_PER_MINUTE))
@@ -6236,8 +6182,8 @@ public class MissionProfileCalc {
 			sb.append("\t\t.....................................\n")
 			.append("\t\tSECOND DESCENT\n")
 			.append("\t\t.....................................\n")
-			.append("\t\t\tTime\tRange\tAltitude\tFuel\tMass\tNOx\tCO\tHC\tSoot\tCO2\tSOx\tH2O\tTAS\tCAS\tMach\tCL\tCD\tE\tDrag\tTot. Thrust\tThermic Thrust\tElectric Thrust\tThrottle\tFuel Flow\tSFC\tRate of Climb\tClimb Gradient\tClimb Angle\tFuel Power\tBattery Power\tFuel Energy\tBattery Energy\n")
-			.append("\t\t\tmin\tnm\tft\tkg\tkg\tg\tg\tg\tg\tg\tg\tg\tkts\tkts\t\t\t\t\tlbf\tlbf\tlbf\tlbf\t%\tkg/min\tlb/lb*hr\tft/min\t%\tdeg\tkW\tkW\tkW*h\tkW*h\n");
+			.append("\t\t\tTime\tRange\tAltitude\tFuel\tMass\tNOx\tCO\tHC\tSoot\tCO2\tSOx\tH2O\tTAS\tCAS\tMach\tCL\tCD\tE\tDrag\tTot. Thrust\tThermic Thrust\tElectric Thrust\tFuel Flow\tSFC\tRate of Climb\tClimb Gradient\tClimb Angle\tFuel Power\tBattery Power\tFuel Energy\tBattery Energy\n")
+			.append("\t\t\tmin\tnm\tft\tkg\tkg\tg\tg\tg\tg\tg\tg\tg\tkts\tkts\t\t\t\t\tlbf\tlbf\tlbf\tlbf\tkg/min\tlb/lb*hr\tft/min\t%\tdeg\tkW\tkW\tkW*h\tkW*h\n");
 			for(int i=0; i<timeMap.get(MissionPhasesEnum.SECOND_DESCENT).size(); i++)
 				sb.append("\t\t\t" + numberFormat.format(timeMap.get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(NonSI.MINUTE))  
 				+ "\t" + numberFormat.format(rangeMap.get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(NonSI.NAUTICAL_MILE))
@@ -6261,7 +6207,6 @@ public class MissionProfileCalc {
 				+ "\t" + numberFormat.format(totalThrustMissionMap.get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(NonSI.POUND_FORCE))
 				+ "\t" + numberFormat.format(thermicThrustMissionMap.get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(NonSI.POUND_FORCE))
 				+ "\t" + numberFormat.format(electricThrustMissionMap.get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(NonSI.POUND_FORCE))
-				+ "\t" + numberFormat.format(throttleMissionMap.get(MissionPhasesEnum.SECOND_DESCENT).get(i)*100.0)
 				+ "\t" + numberFormat.format(fuelFlowMissionMap.get(MissionPhasesEnum.SECOND_DESCENT).get(i))
 				+ "\t" + numberFormat.format(sfcMissionMap.get(MissionPhasesEnum.SECOND_DESCENT).get(i))
 				+ "\t" + numberFormat.format(rateOfClimbMissionMap.get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(MyUnits.FOOT_PER_MINUTE))
@@ -6277,8 +6222,8 @@ public class MissionProfileCalc {
 			sb.append("\t\t.....................................\n")
 			.append("\t\tHOLDING\n")
 			.append("\t\t.....................................\n")
-			.append("\t\t\tTime\tRange\tAltitude\tFuel\tMass\tNOx\tCO\tHC\tSoot\tCO2\tSOx\tH2O\tTAS\tCAS\tMach\tCL\tCD\tE\tDrag\tTot. Thrust\tThermic Thrust\tElectric Thrust\tThrottle\tFuel Flow\tSFC\tRate of Climb\tClimb Gradient\tClimb Angle\tFuel Power\tBattery Power\tFuel Energy\tBattery Energy\n")
-			.append("\t\t\tmin\tnm\tft\tkg\tkg\tg\tg\tg\tg\tg\tg\tg\tkts\tkts\t\t\t\t\tlbf\tlbf\tlbf\tlbf\t%\tkg/min\tlb/lb*hr\tft/min\t%\tdeg\tkW\tkW\tkW*h\tkW*h\n");
+			.append("\t\t\tTime\tRange\tAltitude\tFuel\tMass\tNOx\tCO\tHC\tSoot\tCO2\tSOx\tH2O\tTAS\tCAS\tMach\tCL\tCD\tE\tDrag\tTot. Thrust\tThermic Thrust\tElectric Thrust\tFuel Flow\tSFC\tRate of Climb\tClimb Gradient\tClimb Angle\tFuel Power\tBattery Power\tFuel Energy\tBattery Energy\n")
+			.append("\t\t\tmin\tnm\tft\tkg\tkg\tg\tg\tg\tg\tg\tg\tg\tkts\tkts\t\t\t\t\tlbf\tlbf\tlbf\tlbf\tkg/min\tlb/lb*hr\tft/min\t%\tdeg\tkW\tkW\tkW*h\tkW*h\n");
 			for(int i=0; i<timeMap.get(MissionPhasesEnum.HOLDING).size(); i++)
 				sb.append("\t\t\t" + numberFormat.format(timeMap.get(MissionPhasesEnum.HOLDING).get(i).doubleValue(NonSI.MINUTE))  
 				+ "\t" + numberFormat.format(rangeMap.get(MissionPhasesEnum.HOLDING).get(i).doubleValue(NonSI.NAUTICAL_MILE))
@@ -6302,7 +6247,6 @@ public class MissionProfileCalc {
 				+ "\t" + numberFormat.format(totalThrustMissionMap.get(MissionPhasesEnum.HOLDING).get(i).doubleValue(NonSI.POUND_FORCE))
 				+ "\t" + numberFormat.format(thermicThrustMissionMap.get(MissionPhasesEnum.HOLDING).get(i).doubleValue(NonSI.POUND_FORCE))
 				+ "\t" + numberFormat.format(electricThrustMissionMap.get(MissionPhasesEnum.HOLDING).get(i).doubleValue(NonSI.POUND_FORCE))
-				+ "\t" + numberFormat.format(throttleMissionMap.get(MissionPhasesEnum.HOLDING).get(i)*100.0)
 				+ "\t" + numberFormat.format(fuelFlowMissionMap.get(MissionPhasesEnum.HOLDING).get(i))
 				+ "\t" + numberFormat.format(sfcMissionMap.get(MissionPhasesEnum.HOLDING).get(i))
 				+ "\t" + numberFormat.format(rateOfClimbMissionMap.get(MissionPhasesEnum.HOLDING).get(i).doubleValue(MyUnits.FOOT_PER_MINUTE))
@@ -6318,8 +6262,8 @@ public class MissionProfileCalc {
 		sb.append("\t\t.....................................\n")
 		.append("\t\tLANDING\n")
 		.append("\t\t.....................................\n")
-		.append("\t\t\tTime\tRange\tAltitude\tFuel\tMass\tNOx\tCO\tHC\tSoot\tCO2\tSOx\tH2O\tTAS\tCAS\tMach\tCL\tCD\tE\tDrag\tTot. Thrust\tThermic Thrust\tElectric Thrust\tThrottle\tFuel Flow\tSFC\tRate of Climb\tClimb Gradient\tClimb Angle\tFuel Power\tBattery Power\tFuel Energy\tBattery Energy\n")
-		.append("\t\t\tmin\tnm\tft\tkg\tkg\tg\tg\tg\tg\tg\tg\tg\tkts\tkts\t\t\t\t\tlbf\tlbf\tlbf\tlbf\t%\tkg/min\tlb/lb*hr\tft/min\t%\tdeg\tkW\tkW\tkW*h\tkW*h\n");
+		.append("\t\t\tTime\tRange\tAltitude\tFuel\tMass\tNOx\tCO\tHC\tSoot\tCO2\tSOx\tH2O\tTAS\tCAS\tMach\tCL\tCD\tE\tDrag\tTot. Thrust\tThermic Thrust\tElectric Thrust\tFuel Flow\tSFC\tRate of Climb\tClimb Gradient\tClimb Angle\tFuel Power\tBattery Power\tFuel Energy\tBattery Energy\n")
+		.append("\t\t\tmin\tnm\tft\tkg\tkg\tg\tg\tg\tg\tg\tg\tg\tkts\tkts\t\t\t\t\tlbf\tlbf\tlbf\tlbf\tkg/min\tlb/lb*hr\tft/min\t%\tdeg\tkW\tkW\tkW*h\tkW*h\n");
 		for(int i=0; i<timeMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).size(); i++)
 			sb.append("\t\t\t" + numberFormat.format(timeMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(NonSI.MINUTE))  
 			+ "\t" + numberFormat.format(rangeMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(NonSI.NAUTICAL_MILE))
@@ -6343,7 +6287,6 @@ public class MissionProfileCalc {
 			+ "\t" + numberFormat.format(totalThrustMissionMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(NonSI.POUND_FORCE))
 			+ "\t" + numberFormat.format(thermicThrustMissionMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(NonSI.POUND_FORCE))
 			+ "\t" + numberFormat.format(electricThrustMissionMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(NonSI.POUND_FORCE))
-			+ "\t" + numberFormat.format(throttleMissionMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i)*100.0)
 			+ "\t" + numberFormat.format(fuelFlowMissionMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i))
 			+ "\t" + numberFormat.format(sfcMissionMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i))
 			+ "\t" + numberFormat.format(rateOfClimbMissionMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(MyUnits.FOOT_PER_MINUTE))
@@ -7339,14 +7282,6 @@ public class MissionProfileCalc {
 
 	public void setTotalThrustMissionMap(Map<MissionPhasesEnum, List<Amount<Force>>> totalThrustMissionMap) {
 		this.totalThrustMissionMap = totalThrustMissionMap;
-	}
-
-	public Map<MissionPhasesEnum, List<Double>> getThrottleMissionMap() {
-		return throttleMissionMap;
-	}
-
-	public void setThrottleMissionMap(Map<MissionPhasesEnum, List<Double>> throttleMissionMap) {
-		this.throttleMissionMap = throttleMissionMap;
 	}
 
 	public Map<MissionPhasesEnum, List<Double>> getSfcMissionMap() {

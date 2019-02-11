@@ -50,7 +50,7 @@ import calculators.performance.FlightManeuveringEnvelopeCalc;
 import calculators.performance.LandingCalc;
 import calculators.performance.LandingNoiseTrajectoryCalc;
 import calculators.performance.MissionProfileCalc;
-import calculators.performance.PayloadRangeCalcMissionProfile;
+import calculators.performance.PayloadRangeCalc;
 import calculators.performance.PerformanceCalcUtils;
 import calculators.performance.SpecificRangeCalc;
 import calculators.performance.TakeOffCalc;
@@ -215,7 +215,7 @@ public class ACPerformanceManager {
 	private Map<Double, Amount<Duration>> _totalDurationMap;
 	//..............................................................................
 	// Payload-Range
-	private Map<Double, PayloadRangeCalcMissionProfile> _thePayloadRangeCalculatorMap;
+	private Map<Double, PayloadRangeCalc> _thePayloadRangeCalculatorMap;
 	
 	private Map<Double, Amount<Length>> _rangeAtMaxPayloadMap;
 	private Map<Double, Amount<Length>> _rangeAtDesignPayloadMap;
@@ -232,10 +232,9 @@ public class ACPerformanceManager {
 	private Map<Double, Amount<Mass>> _requiredMassAtDesignPayloadMap;
 	
 	private Map<Double, List<Amount<Length>>> _rangeArrayMap;
-	private Map<Double, List<Double>> _payloadArrayMap;
+	private Map<Double, List<Amount<Mass>>> _payloadArrayMassMap;
+	private Map<Double, List<Double>> _payloadArrayPassengersMap;
 	
-	private Map<Double, double[][]> _rangeMatrixMap;
-	private Map<Double, double[][]> _payloadMatrixMap;
 	//..............................................................................
 	// Maneuvering and Gust Flight Envelope 
 	private Map<Double, FlightManeuveringEnvelopeCalc> _theEnvelopeCalculatorMap;
@@ -287,7 +286,6 @@ public class ACPerformanceManager {
 	private Map<Double, Map<MissionPhasesEnum, List<Amount<Force>>>> _totalThrustMissionMap;
 	private Map<Double, Map<MissionPhasesEnum, List<Amount<Force>>>> _thermicThrustMissionMap;
 	private Map<Double, Map<MissionPhasesEnum, List<Amount<Force>>>> _electricThrustMissionMap;
-	private Map<Double, Map<MissionPhasesEnum, List<Double>>> _throttleMissionMap;
 	private Map<Double, Map<MissionPhasesEnum, List<Double>>> _sfcMissionMap;
 	private Map<Double, Map<MissionPhasesEnum, List<Double>>> _fuelFlowMissionMap;
 	private Map<Double, Map<MissionPhasesEnum, List<Amount<Velocity>>>> _rateOfClimbMissionMap;
@@ -461,10 +459,9 @@ public class ACPerformanceManager {
 		this._requiredMassAtDesignPayloadMap = new HashMap<>();
 		
 		this._rangeArrayMap = new HashMap<>();
-		this._payloadArrayMap = new HashMap<>();
+		this._payloadArrayMassMap = new HashMap<>();
+		this._payloadArrayPassengersMap = new HashMap<>();
 		
-		this._rangeMatrixMap = new HashMap<>();
-		this._payloadMatrixMap = new HashMap<>();
 		//..............................................................................
 		// Maneuvering and Gust Flight Envelope 
 		this._theEnvelopeCalculatorMap = new HashMap<>();
@@ -515,7 +512,6 @@ public class ACPerformanceManager {
 		this._totalThrustMissionMap= new HashMap<>();
 		this._thermicThrustMissionMap= new HashMap<>();
 		this._electricThrustMissionMap= new HashMap<>();
-		this._throttleMissionMap= new HashMap<>();
 		this._sfcMissionMap= new HashMap<>();
 		this._fuelFlowMissionMap= new HashMap<>();
 		this._rateOfClimbMissionMap= new HashMap<>();
@@ -613,6 +609,7 @@ public class ACPerformanceManager {
 		Amount<Mass> maximumTakeOffMass = null;
 		Amount<Mass> operatingEmptyMass = null;
 		Amount<Mass> maximumFuelMass = null;
+		Amount<Mass> maximumPayload = null;
 		Amount<Mass> singlePassengerMass = null;
 		
 		if(readWeightsFromPreviousAnalysisFlag == Boolean.TRUE) {
@@ -635,6 +632,10 @@ public class ACPerformanceManager {
 						System.err.println("WARNING!! THE FUEL TANK DOES NOT EXIST ... TERMINATING");
 						System.exit(1);
 					}
+					
+					//...............................................................
+					// MAXIMUM PAYLOAD
+					maximumPayload = theAircraft.getTheAnalysisManager().getTheWeights().getMaxPayload().to(SI.KILOGRAM);
 					
 					//...............................................................
 					// SINGLE PASSENGER MASS
@@ -669,6 +670,17 @@ public class ACPerformanceManager {
 			String maximumFuelMassProperty = reader.getXMLPropertyByPath("//performance/weights/maximum_fuel_mass");
 			if(maximumFuelMassProperty != null)
 				maximumFuelMass = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//performance/weights/maximum_fuel_mass");
+			
+			//...............................................................
+			// MAXIMUM PAYLOAD
+			String maximumPayloadProperty = reader.getXMLPropertyByPath("//performance/weights/maximum_payload");
+			if(maximumPayloadProperty != null)
+				maximumPayload = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//performance/weights/maximum_payload");
+			else
+				maximumPayload =  Amount.valueOf( 
+						(theAircraft.getCabinConfiguration().getDesignPassengerNumber()*121)+700,
+						SI.KILOGRAM
+						);
 
 			//...............................................................
 			// SINGLE PASSENGER MASS
@@ -2734,15 +2746,6 @@ public class ACPerformanceManager {
 						plotList.add(PerformancePlotEnum.DRAG_THRUST_PROFILE);
 				}
 				
-				String throttleProfileProperty = MyXMLReaderUtils
-						.getXMLPropertyByPath(
-								reader.getXmlDoc(), reader.getXpath(),
-								"//plot/mission_profile/engines_throttle_proifle/@perform");
-				if (throttleProfileProperty != null) {
-					if(throttleProfileProperty.equalsIgnoreCase("TRUE")) 
-						plotList.add(PerformancePlotEnum.ENGINES_THROTTLE_PROFILE);
-				}
-				
 				String fuelFlowProfileProperty = MyXMLReaderUtils
 						.getXMLPropertyByPath(
 								reader.getXmlDoc(), reader.getXpath(),
@@ -2809,6 +2812,7 @@ public class ACPerformanceManager {
 				.setMaximumTakeOffMass(maximumTakeOffMass.to(SI.KILOGRAM))
 				.setOperatingEmptyMass(operatingEmptyMass.to(SI.KILOGRAM))
 				.setMaximumFuelMass(maximumFuelMass.to(SI.KILOGRAM))
+				.setMaximumPayload(maximumPayload.to(SI.KILOGRAM))
 				.setSinglePassengerMass(singlePassengerMass.to(SI.KILOGRAM))
 				.addAllXcgPositionList(centerOfGravityList)
 				.putAllCLmaxClean(cLmaxClean)
@@ -3668,8 +3672,8 @@ public class ACPerformanceManager {
         		dataListMissionProfile.add(new Object[] {"Passengers number for this mission","", _theMissionProfileCalculatorMap.get(xcg).getDeisngPassengersNumber()});
         		dataListMissionProfile.add(new Object[] {" "});
         		dataListMissionProfile.add(new Object[] {" "});
-        		dataListMissionProfile.add(new Object[] {"Phase","Time","Range","Altitude","Fuel","Mass","NOx","CO","HC","Soot","CO2","SOx","H2O","Speed TAS","Speed CAS","Mach","CL","CD","Efficiency","Drag","Total Thrust","Thermic Thrust", "Electric Thrust", "Throttle", "Fuel Flow", "SFC", "Rate of Climb", "Climb Gradient", "Climb Angle", "Fuel Power","Battery Power","Fuel Energy","Battery Energy"});
-        		dataListMissionProfile.add(new Object[] {"","min","nm","ft","kg","kg","g","g","g","g","g","g","g","kts","kts","","","","","lbf","lbf","lbf", "lbf", "%", "kg/min", "lb/lb*hr", "ft/min", "%", "deg", "kW","kW","kWh","kWh"});
+        		dataListMissionProfile.add(new Object[] {"Phase","Time","Range","Altitude","Fuel","Mass","NOx","CO","HC","Soot","CO2","SOx","H2O","Speed TAS","Speed CAS","Mach","CL","CD","Efficiency","Drag","Total Thrust","Thermic Thrust", "Electric Thrust", "Fuel Flow", "SFC", "Rate of Climb", "Climb Gradient", "Climb Angle", "Fuel Power","Battery Power","Fuel Energy","Battery Energy"});
+        		dataListMissionProfile.add(new Object[] {"","min","nm","ft","kg","kg","g","g","g","g","g","g","g","kts","kts","","","","","lbf","lbf","lbf", "lbf", "kg/min", "lb/lb*hr", "ft/min", "%", "deg", "kW","kW","kWh","kWh"});
         		for(int i=0; i<_timeMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).size(); i++) {
         			dataListMissionProfile.add(new Object[] {
         					MissionPhasesEnum.TAKE_OFF.toString(),
@@ -3695,7 +3699,6 @@ public class ACPerformanceManager {
         					_totalThrustMissionMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(NonSI.POUND_FORCE),
         					_thermicThrustMissionMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(NonSI.POUND_FORCE),
         					_electricThrustMissionMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(NonSI.POUND_FORCE), 
-        					_throttleMissionMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue()*100,
         					_fuelFlowMissionMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(), 
         					_sfcMissionMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(),
         					_rateOfClimbMissionMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(MyUnits.FOOT_PER_MINUTE),
@@ -3733,7 +3736,6 @@ public class ACPerformanceManager {
         					_totalThrustMissionMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(NonSI.POUND_FORCE),
         					_thermicThrustMissionMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(NonSI.POUND_FORCE),
         					_electricThrustMissionMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(NonSI.POUND_FORCE), 
-        					_throttleMissionMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue()*100,
         					_fuelFlowMissionMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(), 
         					_sfcMissionMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(),
         					_rateOfClimbMissionMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(MyUnits.FOOT_PER_MINUTE),
@@ -3771,7 +3773,6 @@ public class ACPerformanceManager {
         					_totalThrustMissionMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(NonSI.POUND_FORCE),
         					_thermicThrustMissionMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(NonSI.POUND_FORCE),
         					_electricThrustMissionMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(NonSI.POUND_FORCE), 
-        					_throttleMissionMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue()*100,
         					_fuelFlowMissionMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(), 
         					_sfcMissionMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(),
         					_rateOfClimbMissionMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(MyUnits.FOOT_PER_MINUTE),
@@ -3809,7 +3810,6 @@ public class ACPerformanceManager {
         					_totalThrustMissionMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(NonSI.POUND_FORCE),
         					_thermicThrustMissionMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(NonSI.POUND_FORCE),
         					_electricThrustMissionMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(NonSI.POUND_FORCE), 
-        					_throttleMissionMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue()*100,
         					_fuelFlowMissionMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(), 
         					_sfcMissionMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(),
         					_rateOfClimbMissionMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(MyUnits.FOOT_PER_MINUTE),
@@ -3848,7 +3848,6 @@ public class ACPerformanceManager {
             					_totalThrustMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(NonSI.POUND_FORCE),
             					_thermicThrustMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(NonSI.POUND_FORCE),
             					_electricThrustMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(NonSI.POUND_FORCE), 
-            					_throttleMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue()*100,
             					_fuelFlowMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(), 
             					_sfcMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(),
             					_rateOfClimbMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(MyUnits.FOOT_PER_MINUTE),
@@ -3886,7 +3885,6 @@ public class ACPerformanceManager {
             					_totalThrustMissionMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(NonSI.POUND_FORCE),
             					_thermicThrustMissionMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(NonSI.POUND_FORCE),
             					_electricThrustMissionMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(NonSI.POUND_FORCE), 
-            					_throttleMissionMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue()*100,
             					_fuelFlowMissionMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(), 
             					_sfcMissionMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(),
             					_rateOfClimbMissionMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(MyUnits.FOOT_PER_MINUTE),
@@ -3924,7 +3922,6 @@ public class ACPerformanceManager {
             					_totalThrustMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(NonSI.POUND_FORCE),
             					_thermicThrustMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(NonSI.POUND_FORCE),
             					_electricThrustMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(NonSI.POUND_FORCE), 
-            					_throttleMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue()*100,
             					_fuelFlowMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(), 
             					_sfcMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(),
             					_rateOfClimbMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(MyUnits.FOOT_PER_MINUTE),
@@ -3964,7 +3961,6 @@ public class ACPerformanceManager {
             					_totalThrustMissionMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(NonSI.POUND_FORCE),
             					_thermicThrustMissionMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(NonSI.POUND_FORCE),
             					_electricThrustMissionMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(NonSI.POUND_FORCE), 
-            					_throttleMissionMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue()*100,
             					_fuelFlowMissionMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(), 
             					_sfcMissionMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(),
             					_rateOfClimbMissionMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(MyUnits.FOOT_PER_MINUTE),
@@ -4003,7 +3999,6 @@ public class ACPerformanceManager {
         					_totalThrustMissionMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(NonSI.POUND_FORCE),
         					_thermicThrustMissionMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(NonSI.POUND_FORCE),
         					_electricThrustMissionMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(NonSI.POUND_FORCE), 
-        					_throttleMissionMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue()*100,
         					_fuelFlowMissionMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(), 
         					_sfcMissionMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(),
         					_rateOfClimbMissionMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(MyUnits.FOOT_PER_MINUTE),
@@ -4032,8 +4027,6 @@ public class ACPerformanceManager {
         				cell.setCellValue((Double) obj);
         			}
         			sheetMissionProfile.setDefaultColumnWidth(30);
-//        			sheetMissionProfile.setColumnWidth(1, 2048);
-//        			sheetMissionProfile.setColumnWidth(2, 3840);
         		}
 
         		int rownumMissionProfile = 1;
@@ -7040,62 +7033,69 @@ public class ACPerformanceManager {
 			
 			_thePayloadRangeCalculatorMap.put(
 					xcg, 
-					new PayloadRangeCalcMissionProfile(
-							_thePerformanceInterface.getTheAircraft(),
+					new PayloadRangeCalc(
+							_thePerformanceInterface.getTheAircraft(), 
 							_thePerformanceInterface.getTheOperatingConditions(),
-							_thePerformanceInterface.getTakeOffMissionAltitude(),
-							_thePerformanceInterface.getMaximumTakeOffMass(),
-							_thePerformanceInterface.getOperatingEmptyMass(),
-							_thePerformanceInterface.getMaximumFuelMass(),
-							_thePerformanceInterface.getSinglePassengerMass(),
-							_thePerformanceInterface.getFirstGuessCruiseLength(),
-							_thePerformanceInterface.getCalculateSFCCruise(),
-							_thePerformanceInterface.getCalculateSFCAlternateCruise(),
-							_thePerformanceInterface.getCalculateSFCHolding(),
-							_thePerformanceInterface.getSfcFunctionCruise(),
-							_thePerformanceInterface.getSfcFunctionAlternateCruise(),
-							_thePerformanceInterface.getSfcFunctionHolding(),
-							_thePerformanceInterface.getAlternateCruiseLength(),
+							_thePerformanceInterface.getMissionRange(), 
+							_thePerformanceInterface.getAlternateCruiseLength(), 
 							_thePerformanceInterface.getAlternateCruiseAltitude(),
 							_thePerformanceInterface.getHoldingDuration(),
 							_thePerformanceInterface.getHoldingAltitude(),
-							_thePerformanceInterface.getHoldingMachNumber(),
-							_thePerformanceInterface.getLandingFuelFlow(),
-							_thePerformanceInterface.getFuelReserve(),
-							MyArrayUtils.getMax(_thePerformanceInterface.getPolarCLCruise().get(xcg)),
-							_thePerformanceInterface.getCLmaxTakeOff().get(xcg),
-							_thePerformanceInterface.getCLAlphaTakeOff().get(xcg),
-							_thePerformanceInterface.getCLZeroTakeOff().get(xcg),
-							_thePerformanceInterface.getCLmaxLanding().get(xcg),
-							_thePerformanceInterface.getCLZeroLanding().get(xcg),
-							_thePerformanceInterface.getPolarCLTakeOff().get(xcg),
+							_thePerformanceInterface.getFuelReserve(), 
+							_thePerformanceInterface.getFirstGuessInitialMissionFuelMass(),
+							_thePerformanceInterface.getMaximumTakeOffMass(), 
+							_thePerformanceInterface.getOperatingEmptyMass(), 
+							_thePerformanceInterface.getSinglePassengerMass(),
+							_thePerformanceInterface.getMaximumFuelMass(),
+							_thePerformanceInterface.getMaximumPayload(),
+							_thePerformanceInterface.getTheAircraft().getCabinConfiguration().getDesignPassengerNumber(), 
+							MyArrayUtils.getMax(_thePerformanceInterface.getPolarCLClimb().get(xcg)), 
+							_thePerformanceInterface.getCLmaxTakeOff().get(xcg), 
+							_thePerformanceInterface.getCLAlphaTakeOff().get(xcg), 
+							_thePerformanceInterface.getCLZeroTakeOff().get(xcg), 
+							_thePerformanceInterface.getCLmaxLanding().get(xcg), 
+							_thePerformanceInterface.getCLAlphaLanding().get(xcg), 
+							_thePerformanceInterface.getCLZeroLanding().get(xcg), 
+							_thePerformanceInterface.getPolarCLTakeOff().get(xcg), 
 							_thePerformanceInterface.getPolarCDTakeOff().get(xcg),
-							_thePerformanceInterface.getPolarCLClimb().get(xcg),
-							_thePerformanceInterface.getPolarCDClimb().get(xcg),
-							_thePerformanceInterface.getPolarCLCruise().get(xcg),
-							_thePerformanceInterface.getPolarCDCruise().get(xcg),
+							_thePerformanceInterface.getPolarCLClimb().get(xcg), 
+							_thePerformanceInterface.getPolarCDClimb().get(xcg), 
+							_thePerformanceInterface.getPolarCLCruise().get(xcg), 
+							_thePerformanceInterface.getPolarCDCruise().get(xcg), 
 							_thePerformanceInterface.getPolarCLLanding().get(xcg),
-							_thePerformanceInterface.getPolarCDLanding().get(xcg),
-							_thePerformanceInterface.getWindSpeed(),
-							_thePerformanceInterface.getMuFunction(),
-							_thePerformanceInterface.getMuBrakeFunction(),
+							_thePerformanceInterface.getPolarCDLanding().get(xcg), 
+							_thePerformanceInterface.getWindSpeed(), 
+							_thePerformanceInterface.getMuFunction(), 
+							_thePerformanceInterface.getMuBrakeFunction(), 
 							_thePerformanceInterface.getDtHold(),
-							_thePerformanceInterface.getAlphaGround(),
-							_thePerformanceInterface.getObstacleTakeOff(),
-							_thePerformanceInterface.getKRotation(),
-							_thePerformanceInterface.getAlphaDotRotation(),
-							_thePerformanceInterface.getKCLmax(),
-							_thePerformanceInterface.getDragDueToEngineFailure(),
-							_thePerformanceInterface.getKAlphaDot(),
-							_thePerformanceInterface.getObstacleLanding(),
-							_thePerformanceInterface.getThetaApproach(),
-							_thePerformanceInterface.getKApproach(),
+							_thePerformanceInterface.getAlphaGround(), 
+							_thePerformanceInterface.getObstacleTakeOff(), 
+							_thePerformanceInterface.getKRotation(), 
+							_thePerformanceInterface.getKCLmaxTakeOff(),
+							_thePerformanceInterface.getDragDueToEngineFailure(), 
+							_thePerformanceInterface.getKAlphaDot(), 
+							_thePerformanceInterface.getAlphaDotRotation(), 
+							_thePerformanceInterface.getObstacleLanding(), 
+							_thePerformanceInterface.getApproachAngle(), 
+							_thePerformanceInterface.getKCLmaxLanding(), 
+							_thePerformanceInterface.getKApproach(), 
 							_thePerformanceInterface.getKFlare(),
-							_thePerformanceInterface.getKTouchDown(),
-							_thePerformanceInterface.getFreeRollDuration(),
-							_thePerformanceInterface.getClimbSpeedCAS(),
-							_thePerformanceInterface.getSpeedDescentCAS(),
-							_thePerformanceInterface.getRateOfDescent()
+							_thePerformanceInterface.getKTouchDown(), 
+							_thePerformanceInterface.getFreeRollDuration(), 
+							_thePerformanceInterface.getClimbSpeedCAS(), 
+							_thePerformanceInterface.getSpeedDescentCAS(), 
+							_thePerformanceInterface.getRateOfDescent(), 
+							_thePerformanceInterface.getTakeOffCalibrationFactorThrust(), 
+							_thePerformanceInterface.getClimbCalibrationFactorThrust(), 
+							_thePerformanceInterface.getContinuousCalibrationFactorThrust(), 
+							_thePerformanceInterface.getCruiseCalibrationFactorThrust(), 
+							_thePerformanceInterface.getFlightIdleCalibrationFactorThrust(), 
+							_thePerformanceInterface.getGroundIdleCalibrationFactorThrust(), 
+							_thePerformanceInterface.getTakeOffCalibrationFactorSFC(),
+							_thePerformanceInterface.getClimbCalibrationFactorSFC(), 
+							_thePerformanceInterface.getCruiseCalibrationFactorSFC(), 
+							_thePerformanceInterface.getFlightIdleCalibrationFactorSFC(), 
+							_thePerformanceInterface.getGroundIdleCalibrationFactorSFC()
 							)
 					);
 			
@@ -7118,7 +7118,8 @@ public class ACPerformanceManager {
 			_requiredMassAtDesignPayloadMap.put(xcg, _thePayloadRangeCalculatorMap.get(xcg).getRequiredMassAtDesignPayload());
 			
 			_rangeArrayMap.put(xcg, _thePayloadRangeCalculatorMap.get(xcg).getRangeArray());
-			_payloadArrayMap.put(xcg, _thePayloadRangeCalculatorMap.get(xcg).getPayloadArray());
+			_payloadArrayMassMap.put(xcg, _thePayloadRangeCalculatorMap.get(xcg).getPayloadMassArray());
+			_payloadArrayPassengersMap.put(xcg, _thePayloadRangeCalculatorMap.get(xcg).getPayloadPassengerNumberArray());
 			
 		}
 		public void plotPayloadRange(String payloadRangeFolderPath, Double xcg) {
@@ -7500,7 +7501,6 @@ public class ACPerformanceManager {
 			_totalThrustMissionMap.put(xcg, _theMissionProfileCalculatorMap.get(xcg).getTotalThrustMissionMap());
 			_thermicThrustMissionMap.put(xcg, _theMissionProfileCalculatorMap.get(xcg).getThermicThrustMissionMap());
 			_electricThrustMissionMap.put(xcg, _theMissionProfileCalculatorMap.get(xcg).getElectricThrustMissionMap());
-			_throttleMissionMap.put(xcg, _theMissionProfileCalculatorMap.get(xcg).getThrottleMissionMap());
 			_sfcMissionMap.put(xcg, _theMissionProfileCalculatorMap.get(xcg).getSfcMissionMap());
 			_fuelFlowMissionMap.put(xcg, _theMissionProfileCalculatorMap.get(xcg).getFuelFlowMissionMap());
 			_rateOfClimbMissionMap.put(xcg, _theMissionProfileCalculatorMap.get(xcg).getRateOfClimbMissionMap());
@@ -8141,12 +8141,12 @@ public class ACPerformanceManager {
 		this._landingDurationMap = _landingDurationMap;
 	}
 
-	public Map<Double, PayloadRangeCalcMissionProfile> getThePayloadRangeCalculatorMap() {
+	public Map<Double, PayloadRangeCalc> getThePayloadRangeCalculatorMap() {
 		return _thePayloadRangeCalculatorMap;
 	}
 
 	public void setThePayloadRangeCalculatorMap(
-			Map<Double, PayloadRangeCalcMissionProfile> _thePayloadRangeCalculatorMap) {
+			Map<Double, PayloadRangeCalc> _thePayloadRangeCalculatorMap) {
 		this._thePayloadRangeCalculatorMap = _thePayloadRangeCalculatorMap;
 	}
 
@@ -8260,30 +8260,6 @@ public class ACPerformanceManager {
 
 	public void setRangeArrayMap(Map<Double, List<Amount<Length>>> _rangeArrayMap) {
 		this._rangeArrayMap = _rangeArrayMap;
-	}
-
-	public Map<Double, List<Double>> getPayloadArrayMap() {
-		return _payloadArrayMap;
-	}
-
-	public void setPayloadArrayMap(Map<Double, List<Double>> _payloadArrayMap) {
-		this._payloadArrayMap = _payloadArrayMap;
-	}
-
-	public Map<Double, double[][]> getRangeMatrixMap() {
-		return _rangeMatrixMap;
-	}
-
-	public void setRangeMatrixMap(Map<Double, double[][]> _rangeMatrixMap) {
-		this._rangeMatrixMap = _rangeMatrixMap;
-	}
-
-	public Map<Double, double[][]> getPayloadMatrixMap() {
-		return _payloadMatrixMap;
-	}
-
-	public void setPayloadMatrixMap(Map<Double, double[][]> _payloadMatrixMap) {
-		this._payloadMatrixMap = _payloadMatrixMap;
 	}
 
 	public Map<Double, FlightManeuveringEnvelopeCalc> getTheEnvelopeCalculatorMap() {
@@ -9032,14 +9008,6 @@ public class ACPerformanceManager {
 		this._electricThrustMissionMap = electricThrustMissionMap;
 	}
 
-	public Map<Double, Map<MissionPhasesEnum, List<Double>>> getThrottleMissionMap() {
-		return _throttleMissionMap;
-	}
-
-	public void setThrottleMissionMap(Map<Double, Map<MissionPhasesEnum, List<Double>>> throttleMissionMap) {
-		this._throttleMissionMap = throttleMissionMap;
-	}
-
 	public Map<Double, Map<MissionPhasesEnum, List<Double>>> getSfcMissionMap() {
 		return _sfcMissionMap;
 	}
@@ -9103,6 +9071,22 @@ public class ACPerformanceManager {
 
 	public void setBatteryEnergyMap(Map<Double, Map<MissionPhasesEnum, List<Amount<Energy>>>> batteryEnergyMap) {
 		this._batteryEnergyMap = batteryEnergyMap;
+	}
+
+	public Map<Double, List<Amount<Mass>>> getPayloadArrayMassMap() {
+		return _payloadArrayMassMap;
+	}
+
+	public void setPayloadArrayMassMap(Map<Double, List<Amount<Mass>>> _payloadArrayMassMap) {
+		this._payloadArrayMassMap = _payloadArrayMassMap;
+	}
+
+	public Map<Double, List<Double>> getPayloadArrayPassengersMap() {
+		return _payloadArrayPassengersMap;
+	}
+
+	public void setPayloadArrayPassengersMap(Map<Double, List<Double>> _payloadArrayPassengersMap) {
+		this._payloadArrayPassengersMap = _payloadArrayPassengersMap;
 	}
 
 }
