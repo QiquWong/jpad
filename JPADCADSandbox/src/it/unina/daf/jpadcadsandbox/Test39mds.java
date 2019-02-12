@@ -77,7 +77,7 @@ import standaloneutils.MyArrayUtils;
 public class Test39mds extends Application {
 	
 	private static final String tpNacelleTemplateName = "TP_nacelle_01.step";
-	private static final String tpBladeTemplateName = "TP_blade_01.step";
+	private static final String tpBladeTemplateName = "TP_blade_02.step";
 	
 	private static final double tpNacelleTemplateLenght = 12.974006064637578;
 	private static final double tpNacelleTemplateWidth = 3.7866430441810013;
@@ -87,9 +87,9 @@ public class Test39mds extends Application {
 	private static final double tpHubCenterZCoord = 1.1258474162988725;
 	private static final double tpHubLength = tpNacelleTemplateLenght/25;
 	
-	private static final double tpBladeTemplateLenght = 0.44109813120858654;
-	private static final double tpBladeTemplateWidth = 0.7632667546769745;
-	private static final double tpBladeTemplateHeight = 4.669436571890001;
+	private static final double tpBladeTemplateLenght = 0.2793191625149239;
+	private static final double tpBladeTemplateWidth = 0.16429455302182747;
+	private static final double tpBladeTemplateHeight = 1.5860730719635527;
 	
 	public static List<List<TriangleMesh>> mesh;
 	
@@ -250,8 +250,11 @@ public class Test39mds extends Application {
 		System.out.println("Nacelle imported shapes type: " + bladeShapes.ShapeType().toString());
 		
 		// --------------------------
-		// Iterate through nacelles
+		// Iterate through engines
 		// --------------------------
+		nacelleShapes.Reverse();
+		bladeShapes.Reverse();
+		
 		gp_Pnt nacelleCG = OCCUtils.getShapeCG((OCCShape) OCCUtils.theFactory.newShape(nacelleShapes));
 		gp_Pnt bladeCG = OCCUtils.getShapeCG((OCCShape) OCCUtils.theFactory.newShape(bladeShapes));
 		
@@ -261,12 +264,17 @@ public class Test39mds extends Application {
 		gp_Trsf nacelleTranslate = new gp_Trsf();	
 		
 		gp_Trsf bladeScaling = new gp_Trsf();
+		gp_GTrsf bladeXStretch = new gp_GTrsf();
+		gp_GTrsf bladeYStretch = new gp_GTrsf();
 		gp_Trsf bladeTranslate0 = new gp_Trsf();
 		gp_Trsf bladeTranslate1 = new gp_Trsf();
 		
-		gp_Ax2 lengthStretchingRS = new gp_Ax2(nacelleCG, xDir);
-		gp_Ax2 heightStretchingRS = new gp_Ax2(nacelleCG, zDir);
-		gp_Ax2 widthStretchingRS = new gp_Ax2(nacelleCG, yDir);
+		gp_Ax2 nacelleLengthStretchingRS = new gp_Ax2(nacelleCG, xDir);
+		gp_Ax2 nacelleWidthStretchingRS = new gp_Ax2(nacelleCG, yDir);
+		gp_Ax2 nacelleHeightStretchingRS = new gp_Ax2(nacelleCG, zDir);
+		
+		gp_Ax2 bladeLengthStretchingRS = new gp_Ax2(bladeCG, xDir);
+		gp_Ax2 bladeWidthStretchingRS = new gp_Ax2(bladeCG, yDir);
 		
 		List<OCCShape> moddedNacelles = new ArrayList<>();	
 		List<List<OCCShape>> moddedBlades = new ArrayList<List<OCCShape>>();
@@ -292,9 +300,9 @@ public class Test39mds extends Application {
 			double lengthStretchingFactor = nacelleLength/tpNacelleTemplateLenght;
 			double heightStretchingFactor = nacelleMaxDiameter/tpNacelleTemplateHeight;
 			
-			nacelleLengthStretching.SetAffinity(lengthStretchingRS, lengthStretchingFactor);
-			nacelleHeightStretching.SetAffinity(heightStretchingRS, heightStretchingFactor);
-			nacelleWidthStretching.SetAffinity(widthStretchingRS, heightStretchingFactor);
+			nacelleLengthStretching.SetAffinity(nacelleLengthStretchingRS, lengthStretchingFactor);
+			nacelleHeightStretching.SetAffinity(nacelleHeightStretchingRS, heightStretchingFactor);
+			nacelleWidthStretching.SetAffinity(nacelleWidthStretchingRS, heightStretchingFactor);
 			
 			OCCShape xStretchedNacelle = (OCCShape) OCCUtils.theFactory.newShape(
 					TopoDS.ToCompound(
@@ -342,7 +350,7 @@ public class Test39mds extends Application {
 			double propellerDiameter = engine.getPropellerDiameter().doubleValue(SI.METER);
 			double[] bladeRotVec = MyArrayUtils.linspace(0, 2*Math.PI, numberOfBlades + 1);
 			
-			double scaledHubDiameter = heightStretchingFactor*tpHubDiameter*0.5*0.95;
+			double scaledHubRadius = (heightStretchingFactor*tpHubDiameter)/2;
 			double bladeScalingFactor = propellerDiameter/(2*(tpBladeTemplateHeight + tpHubDiameter/2));
 			double scaledHubLength = lengthStretchingFactor*tpHubLength;
 			double scaledHubZCoord = heightStretchingFactor*tpHubCenterZCoord;
@@ -363,19 +371,50 @@ public class Test39mds extends Application {
 			double[] bladeRefPntD = ((OCCVertex) OCCUtils.theFactory.newShape(TopoDS.ToVertex(bladeCompoundExp.Current()))).pnt();
 			gp_Pnt bladeRefPnt = new gp_Pnt(bladeRefPntD[0], bladeRefPntD[1], bladeRefPntD[2]);
 			
-			bladeTranslate0.SetTranslation(bladeRefPnt, new gp_Pnt(0.0, 0.0, scaledHubDiameter));
+			bladeTranslate0.SetTranslation(bladeRefPnt, new gp_Pnt(0.0, 0.0, scaledHubRadius));
 			
 			OCCShape translatedBlade0 = (OCCShape) OCCUtils.theFactory.newShape(
 					TopoDS.ToSolid(
 							new BRepBuilderAPI_Transform(scaledBlade.getShape(), bladeTranslate0, 0).Shape()
 							));	
 			
+			// blade stretching
+			double bladeLengthScaled = bladeScalingFactor*tpBladeTemplateLenght;
+			double totalBladeBaseLength = numberOfBlades*bladeLengthScaled;
+			double scaledHubCircle = 2*Math.PI*scaledHubRadius;
+			
+			System.out.println("Propeller hub radius: " + scaledHubRadius);
+			System.out.println("Propeller hub circle: " + scaledHubCircle);
+			
+			if (totalBladeBaseLength > scaledHubCircle) {
+				System.out.println("... Stretching the blade in order to fit it on the hub ...");
+				
+				double bladeLengthScalingFactor = 0.95*(scaledHubCircle/numberOfBlades)/tpBladeTemplateLenght;
+				
+				System.out.println("Blade stretching factor: " + bladeLengthScalingFactor);
+				
+				bladeXStretch.SetAffinity(bladeLengthStretchingRS, bladeLengthScalingFactor);
+				bladeYStretch.SetAffinity(bladeWidthStretchingRS, bladeLengthScalingFactor);
+				
+				OCCShape bladeXStretched = (OCCShape) OCCUtils.theFactory.newShape(
+						TopoDS.ToSolid(
+								new BRepBuilderAPI_GTransform(translatedBlade0.getShape(), bladeXStretch, 0).Shape()
+								));	
+				
+				OCCShape bladeYStretched = (OCCShape) OCCUtils.theFactory.newShape(
+						TopoDS.ToSolid(
+								new BRepBuilderAPI_GTransform(bladeXStretched.getShape(), bladeYStretch, 0).Shape()
+								));	
+				
+				translatedBlade0 = bladeYStretched;			
+			}
+			
 			gp_Trsf axialMirror = new gp_Trsf();
 			gp_Ax1 symmAxis = new gp_Ax1(new gp_Pnt(0.0, 0.0, 0.0), xDir);
 			
 			List<OCCShape> rotatedBlades = new ArrayList<>();
 			rotatedBlades.add(translatedBlade0);
-			for (int j = 0; j < numberOfBlades; j++) {
+			for (int j = 1; j < bladeRotVec.length - 1; j++) {
 				axialMirror.SetRotation(symmAxis, bladeRotVec[j]);
 				rotatedBlades.add((OCCShape) OCCUtils.theFactory.newShape(
 						TopoDS.ToSolid(
@@ -410,7 +449,7 @@ public class Test39mds extends Application {
 			}
 			
 			moddedBlades.add(translatedBlades);
-		}		
+		}	
 		
 		// -----------------------------
 		// Generate remaining CAD parts
@@ -427,28 +466,24 @@ public class Test39mds extends Application {
 		List<OCCShape> vTailShapes = AircraftCADUtils.getLiftingSurfaceCAD(
 				vTail, WingTipType.ROUNDED, false, false, true);
 		
-//		exportShapes.addAll(fuselageShapes);
-//		exportShapes.addAll(wingShapes);
-//		exportShapes.addAll(hTailShapes);
-//		exportShapes.addAll(vTailShapes);
-//		
-//		exportShapes.addAll(moddedNacelles);
-//		moddedBlades.forEach(bl -> exportShapes.addAll(bl));
-//		OCCUtils.write("Test39mds", FileExtension.STEP, exportShapes);
+		exportShapes.addAll(fuselageShapes);
+		exportShapes.addAll(wingShapes);
+		exportShapes.addAll(hTailShapes);
+		exportShapes.addAll(vTailShapes);
+		
+		exportShapes.addAll(moddedNacelles);
+		moddedBlades.forEach(bl -> exportShapes.addAll(bl));
+		OCCUtils.write("Test39mds", FileExtension.STEP, exportShapes);
 		
 		// ----------------------------------------
 		// Generate the list and the map of solids
 		// ----------------------------------------
-//		aircraftSolids.add((OCCSolid) fuselageShapes.get(0));
-//		aircraftSolids.add((OCCSolid) wingShapes.get(0));
-//		aircraftSolids.add((OCCSolid) hTailShapes.get(0));
-//		aircraftSolids.add((OCCSolid) vTailShapes.get(0));
-//		moddedNacelles.forEach(n -> aircraftSolids.add((OCCSolid) n));
-//		moddedBlades.forEach(bl -> bl.forEach(b -> aircraftSolids.add((OCCSolid) b)));
-		
-		System.out.println(OCCUtils.reportOnShape(moddedBlades.get(0).get(0).getShape(), ""));
-		
-		aircraftSolids.add((OCCSolid) moddedBlades.get(0).get(0));
+		aircraftSolids.add((OCCSolid) fuselageShapes.get(0));
+		aircraftSolids.add((OCCSolid) wingShapes.get(0));
+		aircraftSolids.add((OCCSolid) hTailShapes.get(0));
+		aircraftSolids.add((OCCSolid) vTailShapes.get(0));
+		moddedNacelles.forEach(n -> aircraftSolids.add((OCCSolid) n));
+		moddedBlades.forEach(bl -> bl.forEach(b -> aircraftSolids.add((OCCSolid) b)));
 		
 		// --------------------
 		// Extract the meshes
@@ -456,7 +491,7 @@ public class Test39mds extends Application {
 		List<List<TriangleMesh>> triangleMeshes = aircraftSolids.stream()
 				.map(s -> (new OCCFXMeshExtractor(s.getShape())).getFaces().stream()
 						.map(f -> {
-							OCCFXMeshExtractor.FaceData faceData = new OCCFXMeshExtractor.FaceData(f, false);
+							OCCFXMeshExtractor.FaceData faceData = new OCCFXMeshExtractor.FaceData(f, true);
 							faceData.load();
 							return faceData.getTriangleMesh();
 						})
