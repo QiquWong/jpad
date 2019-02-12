@@ -48,8 +48,6 @@ public interface IACAerodynamicAndStabilityManager_v2 {
 	AerodynamicAnlaysisApproachEnum getCanardAnalysisType();
 	AerodynamicAnlaysisApproachEnum getFuselageAnalysisType();
 	AerodynamicAnlaysisApproachEnum getNacellesAnalysisType();
-	@Nullable
-	Double getLandingGearDragCoefficient();
 	
 	// balance
 	List<Double> getXCGAircraft(); //in MAC perc.

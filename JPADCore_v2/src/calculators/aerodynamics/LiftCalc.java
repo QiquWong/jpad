@@ -1120,8 +1120,7 @@ public class LiftCalc {
 		for(int i=0; i<flapDeflections.size(); i++) {
 			if(flapDeflections.get(i).doubleValue(NonSI.DEGREE_ANGLE) < 0.0) {
 				Double newFlapDeflection = -flapDeflections.get(i).doubleValue(NonSI.DEGREE_ANGLE);
-				flapDeflections.remove(i);
-				flapDeflections.add(i, Amount.valueOf(newFlapDeflection, NonSI.DEGREE_ANGLE));
+				flapDeflections.set(i, Amount.valueOf(newFlapDeflection, NonSI.DEGREE_ANGLE));
 				negativeFlapDeflection[i] = true;
 			}
 		}

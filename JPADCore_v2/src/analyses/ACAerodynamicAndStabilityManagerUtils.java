@@ -50,6 +50,7 @@ import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcCMac;
 import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcDragDistributions;
 import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcHighLiftCurve;
 import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcHighLiftDevicesEffects;
+import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcHighLiftMomentCurve;
 import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcLiftCurve;
 import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcLiftDistributions;
 import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcMachCr;
@@ -1555,7 +1556,6 @@ public class ACAerodynamicAndStabilityManagerUtils {
 			}
 
 			aerodynamicAndStabilityManager.setCurrent3DWingLiftCurve(temporaryLiftCurve);
-
 		}
 	}
 	
@@ -1580,7 +1580,7 @@ public class ACAerodynamicAndStabilityManagerUtils {
 		
 		if ( _theAerodynamicBuilderInterface.getCurrentCondition() == ConditionEnum.TAKE_OFF ||  _theAerodynamicBuilderInterface.getCurrentCondition() == ConditionEnum.LANDING) {
 		
-			for(int i=0; i<liftingSurfaceAerodynamicManager.getMoment3DCurve().get(MethodEnum.SEMIEMPIRICAL).length; i++) {
+			for(int i=0; i<liftingSurfaceAerodynamicManager.getMoment3DCurve().get(MethodEnum.AIRFOIL_DISTRIBUTION).length; i++) {
 				temporaryMomentCurve.add(
 						liftingSurfaceAerodynamicManager.getMoment3DCurve().get(MethodEnum.AIRFOIL_DISTRIBUTION)[i] +
 						liftingSurfaceAerodynamicManager.getDeltaCMc4().get(MethodEnum.SEMIEMPIRICAL)
@@ -1591,6 +1591,58 @@ public class ACAerodynamicAndStabilityManagerUtils {
 			
 		aerodynamicAndStabilityManager.setCurrent3DWingMomentCurve(temporaryMomentCurve);
 	}
+	
+	public static void calculateCurrentHTailMomentCurve(
+			ACAerodynamicAndStabilityManager_v2 aerodynamicAndStabilityManager
+			) {
+
+		IACAerodynamicAndStabilityManager_v2 _theAerodynamicBuilderInterface = aerodynamicAndStabilityManager.getTheAerodynamicBuilderInterface();
+		double currentMachNumber = aerodynamicAndStabilityManager.getCurrentMachNumber();
+		LiftingSurfaceAerodynamicsManager liftingSurfaceAerodynamicManager = aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers().get(ComponentEnum.WING);
+		
+		List<Double> temporaryMomentCurve = new ArrayList<>();
+		
+		if(_theAerodynamicBuilderInterface.isPerformWingAnalyses() == false) {
+		analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcMomentCurve calcMomentCurve = liftingSurfaceAerodynamicManager.new CalcMomentCurve();
+		calcMomentCurve.fromAirfoilDistribution();
+		}
+		
+		if ( _theAerodynamicBuilderInterface.getCurrentCondition() == ConditionEnum.CLIMB ||  _theAerodynamicBuilderInterface.getCurrentCondition() == ConditionEnum.CRUISE) {
+		temporaryMomentCurve = MyArrayUtils.convertDoubleArrayToListDouble(liftingSurfaceAerodynamicManager.getMoment3DCurve().get(MethodEnum.AIRFOIL_DISTRIBUTION));
+		}
+		
+		if ( _theAerodynamicBuilderInterface.getCurrentCondition() == ConditionEnum.TAKE_OFF ||  _theAerodynamicBuilderInterface.getCurrentCondition() == ConditionEnum.LANDING) {
+		
+			for(int i=0; i<liftingSurfaceAerodynamicManager.getMoment3DCurve().get(MethodEnum.AIRFOIL_DISTRIBUTION).length; i++) {
+				temporaryMomentCurve.add(
+						liftingSurfaceAerodynamicManager.getMoment3DCurve().get(MethodEnum.AIRFOIL_DISTRIBUTION)[i] +
+						liftingSurfaceAerodynamicManager.getDeltaCMc4().get(MethodEnum.SEMIEMPIRICAL)
+						);
+			}
+			
+		}
+			
+		aerodynamicAndStabilityManager.setCurrent3DWingMomentCurve(temporaryMomentCurve);
+		
+		//.........................................................................................................................
+		//	ELEVATOR_MOMENT_CURVE_3D
+
+			CalcHighLiftMomentCurve calcHighLiftMomentCurve = aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers().get(ComponentEnum.HORIZONTAL_TAIL).new CalcHighLiftMomentCurve();
+				for(int i=0; i<aerodynamicAndStabilityManager.getDeltaEForEquilibrium().size(); i++) {
+					
+				List<Amount<Angle>> elevatorDeflection = new ArrayList<>();
+				elevatorDeflection.add(aerodynamicAndStabilityManager.getDeltaEForEquilibrium().get(i).to(NonSI.DEGREE_ANGLE));
+				calcHighLiftMomentCurve.semiempirical(
+						aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers().get(ComponentEnum.HORIZONTAL_TAIL).getMoment3DCurve().get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_LIFTING_SURFACE)
+								),
+						elevatorDeflection, 
+						new ArrayList<>(), 
+						aerodynamicAndStabilityManager.getCurrentMachNumber() 
+						);
+				}
+
+		}
 	
 	public static void calculateHorizontalTailLiftCurveWithElevatorDeflection(
 			ACAerodynamicAndStabilityManager_v2 aerodynamicAndStabilityManager
@@ -1756,6 +1808,7 @@ public class ACAerodynamicAndStabilityManagerUtils {
 		}
 		
 		if(_theAerodynamicBuilderInterface.isPerformWingAnalyses() == false) {
+			if(_theAerodynamicBuilderInterface.getTheAircraft().getWing() != null) {
 			//	CD0
 			CalcCD0 calcCD0 = aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers().get(ComponentEnum.WING).new CalcCD0();
 			calcCD0.semiempirical(currentMachNumber, currentAltitude, currentDeltaTemperature);
@@ -1763,9 +1816,11 @@ public class ACAerodynamicAndStabilityManagerUtils {
 			//	CD_WAVE 
 			CalcCDWave calcCDWave = aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers().get(ComponentEnum.WING).new CalcCDWave();
 			calcCDWave.lockKornWithKroo();
-		}
+			}
+			}
 		
 		if(_theAerodynamicBuilderInterface.isPerformHTailAnalyses() == false) {
+			if(_theAerodynamicBuilderInterface.getTheAircraft().getHTail() != null) {
 			//	CD0
 			CalcCD0 calcCD0 = aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers().get(ComponentEnum.HORIZONTAL_TAIL).new CalcCD0();
 			calcCD0.semiempirical(currentMachNumber, currentAltitude, currentDeltaTemperature);
@@ -1774,8 +1829,10 @@ public class ACAerodynamicAndStabilityManagerUtils {
 			CalcCDWave calcCDWave = aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers().get(ComponentEnum.HORIZONTAL_TAIL).new CalcCDWave();
 			calcCDWave.lockKornWithKroo();
 		}
+		}
 		
 		if(_theAerodynamicBuilderInterface.isPerformVTailAnalyses() == false) {
+			if(_theAerodynamicBuilderInterface.getTheAircraft().getVTail() != null) {
 			//	CD0
 			CalcCD0 calcCD0 = aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers().get(ComponentEnum.VERTICAL_TAIL).new CalcCD0();
 			calcCD0.semiempirical(currentMachNumber, currentAltitude, currentDeltaTemperature);
@@ -1784,8 +1841,10 @@ public class ACAerodynamicAndStabilityManagerUtils {
 			CalcCDWave calcCDWave = aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers().get(ComponentEnum.VERTICAL_TAIL).new CalcCDWave();
 			calcCDWave.lockKornWithKroo();
 		}
+		}
 		
 		if(_theAerodynamicBuilderInterface.isPerformCanardAnalyses() == false) {
+			if(_theAerodynamicBuilderInterface.getTheAircraft().getCanard() != null) {
 			//	CD0
 			CalcCD0 calcCD0 = aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers().get(ComponentEnum.CANARD).new CalcCD0();
 			calcCD0.semiempirical(currentMachNumber, currentAltitude, currentDeltaTemperature);
@@ -1793,21 +1852,25 @@ public class ACAerodynamicAndStabilityManagerUtils {
 			//	CD_WAVE 
 			CalcCDWave calcCDWave = aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers().get(ComponentEnum.CANARD).new CalcCDWave();
 			calcCDWave.lockKornWithKroo();
+			}
 		}
 		
 		if(_theAerodynamicBuilderInterface.isPerformFuselageAnalyses() == false) {
+			if(_theAerodynamicBuilderInterface.getTheAircraft().getFuselage() != null) {
 
 			//	CD0_TOTAL
 			analyses.fuselage.FuselageAerodynamicsManager.CalcCD0Total calcCD0Total = fuselageAerodynamicManagers.new CalcCD0Total();
 			calcCD0Total.semiempirical();
 		}
+		}
 		
 		if(_theAerodynamicBuilderInterface.isPerformNacelleAnalyses() == false) {
+			if(_theAerodynamicBuilderInterface.getTheAircraft().getNacelles() != null) {
 			
 			//	CD0_TOTAL
 			analyses.nacelles.NacelleAerodynamicsManager.CalcCD0Total calcCD0Total = nacelleAerodynamicManagers.new CalcCD0Total();
 			calcCD0Total.semiempirical();
-		};
+		}}
 		
 		
 		//OSWALD FACTOR
@@ -1922,7 +1985,7 @@ public class ACAerodynamicAndStabilityManagerUtils {
 		
 		/* TODO: ADD DELTA CD ELEVATOR DEFLECTION WHEN AVAILABLE */ 
 		_theAerodynamicBuilderInterface.getDeltaElevatorList().stream().forEach(de -> {
-			aerodynamicAndStabilityManager.getTotalDragCoefficient().replace(
+			aerodynamicAndStabilityManager.getTotalDragCoefficient().put(
 					de, 
 					aerodynamicAndStabilityManager.getTotalLiftCoefficient().get(de).stream().map(cL -> 
 					cD0TotalAircraft + (Math.pow(cL, 2)*kDragPolarAircraft) + cDWave)
@@ -1990,6 +2053,7 @@ public class ACAerodynamicAndStabilityManagerUtils {
 				
 				Map<ComponentEnum, List<Double>> _momentTemporaryMap = new HashMap<>();
 				//wing
+				if(aerodynamicAndStabilityManager.getTheAerodynamicBuilderInterface().getTheAircraft().getWing() != null) {
 				_momentTemporaryMap.put(
 						ComponentEnum.WING, 
 						MomentCalc.calculateCMWingCurveWithBalanceEquation(
@@ -2015,7 +2079,9 @@ public class ACAerodynamicAndStabilityManagerUtils {
 								aerodynamicAndStabilityManager.getAlphaWingList(),
 								true)
 						);
+				}
 				//canard
+				if(aerodynamicAndStabilityManager.getTheAerodynamicBuilderInterface().getTheAircraft().getCanard() != null) {
 				_momentTemporaryMap.put(
 						ComponentEnum.CANARD, 
 						MomentCalc.calculateCMWingCurveWithBalanceEquation(
@@ -2041,8 +2107,10 @@ public class ACAerodynamicAndStabilityManagerUtils {
 								aerodynamicAndStabilityManager.getAlphaCanardList(),
 								true)
 						);
+				}
 				
 				// htail
+				if(aerodynamicAndStabilityManager.getTheAerodynamicBuilderInterface().getTheAircraft().getHTail() != null) {
 				_momentTemporaryMap.put(
 						ComponentEnum.HORIZONTAL_TAIL, 
 						MomentCalc.calculateCMHTailCurveWithBalanceEquation(
@@ -2080,8 +2148,10 @@ public class ACAerodynamicAndStabilityManagerUtils {
 								_theAerodynamicBuilderInterface.isCalculateWingPendularStability()
 								)
 						);
+				}
 		
 				// fuselage
+				if(aerodynamicAndStabilityManager.getTheAerodynamicBuilderInterface().getTheAircraft().getFuselage() != null) {
 				_momentTemporaryMap.put(
 						ComponentEnum.FUSELAGE, 
 						MomentCalc.calculateCMFuselageCurveWithBalanceEquation(
@@ -2111,8 +2181,9 @@ public class ACAerodynamicAndStabilityManagerUtils {
 								_theAerodynamicBuilderInterface.isCalculateWingPendularStability()
 								)
 						);
-				
+				}
 				// nacelle
+				if(aerodynamicAndStabilityManager.getTheAerodynamicBuilderInterface().getTheAircraft().getNacelles() != null) {
 				_momentTemporaryMap.put(
 						ComponentEnum.NACELLE, 
 						MomentCalc.calculateCMNacelleCurveWithBalanceEquation(
@@ -2142,8 +2213,9 @@ public class ACAerodynamicAndStabilityManagerUtils {
 								_theAerodynamicBuilderInterface.isCalculateWingPendularStability()
 								)
 						);
-				
+				}
 				// landing gear
+				if(aerodynamicAndStabilityManager.getTheAerodynamicBuilderInterface().getTheAircraft().getLandingGears() != null) {
 				_momentTemporaryMap.put(
 						ComponentEnum.LANDING_GEAR,
 						MomentCalc.calculateCMLandingGearCurveWithBalanceEquation(
@@ -2159,11 +2231,12 @@ public class ACAerodynamicAndStabilityManagerUtils {
 								_theAerodynamicBuilderInterface.getZCGLandingGear(), 
 								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getMeanAerodynamicChord(),  
 								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSurfacePlanform(), 
-								_theAerodynamicBuilderInterface.getLandingGearDragCoefficient(),
+								aerodynamicAndStabilityManager.get_deltaCDZeroLandingGear(),
 								aerodynamicAndStabilityManager.getAlphaBodyList(),
 								_theAerodynamicBuilderInterface.isCalculateWingPendularStability()
 								)
 						);
+				}
 				
 				aerodynamicAndStabilityManager.get_totalMomentCoefficientBreakDown().put(
 						xcg,
@@ -2232,7 +2305,7 @@ public class ACAerodynamicAndStabilityManagerUtils {
 												.get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_NACELLE))),
 								aerodynamicAndStabilityManager.getCurrent3DHorizontalTailLiftCurve().get(de),
 								aerodynamicAndStabilityManager.getCurrent3DHorizontalTailMomentCurve().get(de),
-								_theAerodynamicBuilderInterface.getLandingGearDragCoefficient(),
+								aerodynamicAndStabilityManager.get_deltaCDZeroLandingGear(),
 								_theAerodynamicBuilderInterface.getHTailDynamicPressureRatio(), 
 								aerodynamicAndStabilityManager.getAlphaBodyList(),
 								_theAerodynamicBuilderInterface.isCalculateWingPendularStability())						
@@ -2493,7 +2566,7 @@ public class ACAerodynamicAndStabilityManagerUtils {
 											.get(_theAerodynamicBuilderInterface.getComponentTaskList()
 													.get(ComponentEnum.NACELLE)
 													.get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_NACELLE))),
-									_theAerodynamicBuilderInterface.getLandingGearDragCoefficient(),
+									aerodynamicAndStabilityManager.get_deltaCDZeroLandingGear(),
 									_theAerodynamicBuilderInterface.getHTailDynamicPressureRatio(),
 									aerodynamicAndStabilityManager.getAlphaBodyList(),
 									aerodynamicAndStabilityManager.getAlphaWingList(),

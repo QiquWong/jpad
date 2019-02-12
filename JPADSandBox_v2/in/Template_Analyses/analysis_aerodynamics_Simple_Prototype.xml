@@ -121,7 +121,7 @@
 		<wing perform="TRUE"/>
 		<horizontal_tail perform="TRUE"/>
 		<vertical_tail perform="TRUE"/>
-		<canard perform="TRUE"/>
+		<canard perform="FALSE"/>
 		<fuselage perform="TRUE"/>
 		<nacelles perform="TRUE"/>
 		<aircraft perform="TRUE"/>
