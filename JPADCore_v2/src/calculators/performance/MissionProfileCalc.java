@@ -50,6 +50,13 @@ public class MissionProfileCalc {
 	//............................................................................................
 	// INUPT:
 	//............................................................................................
+	
+	public static final int numberOfStepClimb = 10;
+	public static final int numberOfStepCruise = 30;
+	public static final int numberOfStepDescent = 10;
+	public static final int numberOfStepAlternateCruise = 10;
+	public static final int numberOfStepHolding = 10; 
+	
 	// Geomtrical data (from Aircraft Object)
 	private Aircraft theAircraft;
 	
@@ -1316,7 +1323,8 @@ public class MissionProfileCalc {
 					climbCalibrationFactorEmissionIndexSOx,
 					climbCalibrationFactorEmissionIndexH2O
 					);
-			 
+			theClimbCalculator.setNumberOfStepClimb(numberOfStepClimb); 
+			
 			theClimbCalculator.calculateClimbPerformance(
 					initialMassClimb,
 					initialMassClimb,
@@ -1400,7 +1408,7 @@ public class MissionProfileCalc {
 						MyArrayUtils.linspace(
 								0.0,
 								currentCruiseRange.doubleValue(SI.METER),
-								25
+								numberOfStepCruise
 								),
 						SI.METER
 						);
@@ -2091,9 +2099,10 @@ public class MissionProfileCalc {
 						flightIdleCalibrationFactorEmissionIndexSOx,
 						flightIdleCalibrationFactorEmissionIndexH2O
 						);
-
+				theFirstDescentCalculator.setNumberOfStepDescent(numberOfStepDescent);
+				
 				theFirstDescentCalculator.calculateDescentPerformance();
-
+				
 				rangeFirstDescent.addAll(theFirstDescentCalculator.getDescentLengths());			
 				altitudeFirstDescent.addAll(theFirstDescentCalculator.getDescentAltitudes());
 				timeFirstDescent.addAll(theFirstDescentCalculator.getDescentTimes());
@@ -2178,7 +2187,8 @@ public class MissionProfileCalc {
 						climbCalibrationFactorEmissionIndexSOx,
 						climbCalibrationFactorEmissionIndexH2O
 						);
-				 
+				theSecondClimbCalculator.setNumberOfStepClimb(numberOfStepClimb); 
+				
 				theSecondClimbCalculator.calculateClimbPerformance(
 						initialMassSecondClimb,
 						initialMassSecondClimb,
@@ -2264,7 +2274,7 @@ public class MissionProfileCalc {
 							MyArrayUtils.linspace(
 									0.0,
 									currentAlternateCruiseRange.doubleValue(SI.METER),
-									10
+									numberOfStepAlternateCruise
 									),
 							SI.METER
 							);
@@ -3034,7 +3044,8 @@ public class MissionProfileCalc {
 							flightIdleCalibrationFactorEmissionIndexSOx,
 							flightIdleCalibrationFactorEmissionIndexH2O
 							);
-
+					theSecondDescentCalculator.setNumberOfStepDescent(numberOfStepDescent);
+					
 					theSecondDescentCalculator.calculateDescentPerformance();
 
 					rangeSecondDescent.addAll(theSecondDescentCalculator.getDescentLengths());			
@@ -3109,7 +3120,7 @@ public class MissionProfileCalc {
 							MyArrayUtils.linspace(
 									0.0,
 									holdingDuration.doubleValue(NonSI.MINUTE),
-									10
+									numberOfStepHolding
 									),
 							NonSI.MINUTE
 							);

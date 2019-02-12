@@ -54,6 +54,7 @@ public class ClimbCalc {
 	_climbSfcCorrectionFactor, _climbCalibrationFactorEmissionIndexNOx, _climbCalibrationFactorEmissionIndexCO, 
 	_climbCalibrationFactorEmissionIndexHC, _climbCalibrationFactorEmissionIndexSoot, _climbCalibrationFactorEmissionIndexCO2, 
 	_climbCalibrationFactorEmissionIndexSOx, _climbCalibrationFactorEmissionIndexH2O;
+	private int _numberOfStepClimb; 
 	//............................................................................................
 	// Output:
 	private List<RCMap> _rcMapAEO;
@@ -150,6 +151,7 @@ public class ClimbCalc {
 		this._climbCalibrationFactorEmissionIndexCO2 = climbCalibrationFactorEmissionIndexCO2;
 		this._climbCalibrationFactorEmissionIndexSOx = climbCalibrationFactorEmissionIndexSOx;
 		this._climbCalibrationFactorEmissionIndexH2O = climbCalibrationFactorEmissionIndexH2O;
+		this._numberOfStepClimb = 5;
 		
 		this._rcMapAEO = new ArrayList<>();
 		this._rcMapOEI = new ArrayList<>();
@@ -208,7 +210,7 @@ public class ClimbCalc {
 				MyArrayUtils.linspace(
 						initialClimbAltitude.doubleValue(SI.METER),
 						finalClimbAltitude.doubleValue(SI.METER),
-						10
+						_numberOfStepClimb
 						),
 				SI.METER
 				);
@@ -3154,6 +3156,14 @@ public class ClimbCalc {
 
 	public void setClimbTotalEmissionsH2O(Amount<Mass> _climbTotalEmissionsH2O) {
 		this._climbTotalEmissionsH2O = _climbTotalEmissionsH2O;
+	}
+
+	public int getNumberOfStepClimb() {
+		return _numberOfStepClimb;
+	}
+
+	public void setNumberOfStepClimb(int numberOfStepClimb) {
+		this._numberOfStepClimb = numberOfStepClimb;
 	}
 	
 }

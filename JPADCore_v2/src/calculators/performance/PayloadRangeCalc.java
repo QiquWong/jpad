@@ -41,6 +41,12 @@ public class PayloadRangeCalc {
 	//............................................................................................
 	// INUPT:
 	//............................................................................................
+	public static final int numberOfStepClimb = 10;
+	public static final int numberOfStepCruise = 30;
+	public static final int numberOfStepDescent = 10;
+	public static final int numberOfStepAlternateCruise = 10; 
+	public static final int numberOfStepHolding = 10; 
+	
 	// Geomtrical data (from Aircraft Object)
 	private Aircraft theAircraft;
 	
@@ -195,6 +201,8 @@ public class PayloadRangeCalc {
 	private List<Amount<Length>> rangeArray;
 	private List<Double> payloadPassengerNumberArray;
 	private List<Amount<Mass>> payloadMassArray;
+	private List<Amount<Mass>> takeOffMassArray;
+	
 	
 	//--------------------------------------------------------------------------------------------
 	// BUILDER:
@@ -392,7 +400,7 @@ public class PayloadRangeCalc {
 				maxPayload.to(SI.KILOGRAM),
 				vMC
 				);
-		passengersNumberAtMaxPayload = (int) (maxPayload.doubleValue(SI.KILOGRAM)/theAircraft.getCabinConfiguration().getDesignPassengerNumber());
+		passengersNumberAtMaxPayload = (int) (maxPayload.doubleValue(SI.KILOGRAM)/singlePassengerMass.doubleValue(SI.KILOGRAM));
 		requiredMassAtMaxPayload = maximumTakeOffMass.to(SI.KILOGRAM)
 				.minus(operatingEmptyMass.to(SI.KILOGRAM))
 				.minus(maxPayload.to(SI.KILOGRAM));
@@ -495,6 +503,21 @@ public class PayloadRangeCalc {
 		payloadMassArray.add(getPayloadAtMaxFuel());
 		// POINT 5
 		payloadMassArray.add(Amount.valueOf(0.0, SI.KILOGRAM));
+		
+		//--------------------------------------------------------------------------------------
+		// TAKE-OFF MASS ARRAY
+		takeOffMassArray = new ArrayList<Amount<Mass>>();
+
+		// POINT 1
+		takeOffMassArray.add(maxPayload.to(SI.KILOGRAM));
+		// POINT 2
+		takeOffMassArray.add(maxPayload.to(SI.KILOGRAM).plus(requiredMassAtMaxPayload.to(SI.KILOGRAM)));
+		// POINT 3
+		takeOffMassArray.add(designPayload.to(SI.KILOGRAM).plus(requiredMassAtDesignPayload.to(SI.KILOGRAM)));
+		// POINT 4
+		takeOffMassArray.add(payloadAtMaxFuel.to(SI.KILOGRAM).plus(maxFuelMass.to(SI.KILOGRAM)));
+		// POINT 5
+		takeOffMassArray.add(maxFuelMass.to(SI.KILOGRAM));
 
 		
 	}
@@ -650,6 +673,7 @@ public class PayloadRangeCalc {
 					1.0, // climb SOx correction factor (not needed)
 					1.0 // climb H2O correction factor (not needed)
 					);
+			theClimbCalculator.setNumberOfStepClimb(numberOfStepClimb);
 			 
 			theClimbCalculator.calculateClimbPerformance(
 					initialMassClimb,
@@ -678,7 +702,7 @@ public class PayloadRangeCalc {
 					MyArrayUtils.linspace(
 							0.0,
 							currentCruiseRange.doubleValue(SI.METER),
-							50
+							numberOfStepCruise
 							),
 					SI.METER
 					);
@@ -1154,7 +1178,8 @@ public class PayloadRangeCalc {
 					1.0, // fidl SOx correction factor (not needed)
 					1.0 // fidl H2O correction factor (not needed)
 					);
-
+			theFirstDescentCalculator.setNumberOfStepDescent(numberOfStepDescent);
+			
 			theFirstDescentCalculator.calculateDescentPerformance();
 
 			rangeFirstDescent.addAll(theFirstDescentCalculator.getDescentLengths());			
@@ -1190,7 +1215,8 @@ public class PayloadRangeCalc {
 					1.0, // climb SOx correction factor (not needed)
 					1.0 // climb H2O correction factor (not needed)
 					);
-
+			theSecondClimbCalculator.setNumberOfStepClimb(numberOfStepClimb);
+			
 			theSecondClimbCalculator.calculateClimbPerformance(
 					initialMassSecondClimb,
 					initialMassSecondClimb,
@@ -1223,7 +1249,7 @@ public class PayloadRangeCalc {
 						MyArrayUtils.linspace(
 								0.0,
 								currentAlternateCruiseRange.doubleValue(SI.METER),
-								10
+								numberOfStepAlternateCruise
 								),
 						SI.METER
 						);
@@ -1778,7 +1804,8 @@ public class PayloadRangeCalc {
 						1.0, // fidl SOx correction factor (not needed)
 						1.0 // fidl H2O correction factor (not needed)
 						);
-
+				theSecondDescentCalculator.setNumberOfStepDescent(numberOfStepDescent);
+				
 				theSecondDescentCalculator.calculateDescentPerformance();
 
 				rangeSecondDescent.addAll(theSecondDescentCalculator.getDescentLengths());			
@@ -1802,7 +1829,7 @@ public class PayloadRangeCalc {
 						MyArrayUtils.linspace(
 								0.0,
 								holdingDuration.doubleValue(NonSI.MINUTE),
-								10
+								numberOfStepHolding
 								),
 						NonSI.MINUTE
 						);
@@ -2436,13 +2463,20 @@ public class PayloadRangeCalc {
 			i++;
 
 		} while ( Math.abs(
-				(targetFuelMass.to(SI.KILOGRAM).minus(totalFuelUsed.to(SI.KILOGRAM)))
-				.divide(targetFuelMass.to(SI.KILOGRAM))
+				((targetFuelMass.to(SI.KILOGRAM).times(1-fuelReserve)).minus(totalFuelUsed.to(SI.KILOGRAM)))
+				.divide(((targetFuelMass.to(SI.KILOGRAM).times(1-fuelReserve))))
 				.times(100)
 				.getEstimatedValue()
-				)- (fuelReserve*100)
-				>= 0.01
+				) >= 0.01
 				);
+//		while ( Math.abs(
+//				(targetFuelMass.to(SI.KILOGRAM).minus(totalFuelUsed.to(SI.KILOGRAM)))
+//				.divide(targetFuelMass.to(SI.KILOGRAM))
+//				.times(100)
+//				.getEstimatedValue()
+//				)- (fuelReserve*100)
+//				>= 0.01
+//				);
 
 		//----------------------------------------------------------------------
 		if(theFirstDescentCalculator.getDescentMaxIterationErrorFlag() == true) {
@@ -2470,52 +2504,71 @@ public class PayloadRangeCalc {
 	 */
 	public void createPayloadRangeChart(String subFolderPath){
 
-		String[] legendValueSI = new String[1];
-		String[] legendValueImperial = new String[1];
+		List<String> legend = new ArrayList<>();
+		legend.add("Payload");
+		legend.add("Payload and Fuel");
 		
-		legendValueSI[0] = 
-				"Altitude = "
-				+ theOperatingConditions.getAltitudeCruise().to(SI.METER); 
-		legendValueImperial[0] = 
-				"Altitude = "
-				+ theOperatingConditions.getAltitudeCruise().to(NonSI.FOOT);
+		List<Double[]> xListSI = new ArrayList<>();
+		xListSI.add(MyArrayUtils.convertFromDoubleToPrimitive(rangeArray.stream().mapToDouble(r -> r.doubleValue(SI.KILOMETER)).toArray()));
+		xListSI.add(MyArrayUtils.convertFromDoubleToPrimitive(rangeArray.stream().mapToDouble(r -> r.doubleValue(SI.KILOMETER)).toArray()));
+		
+		List<Double[]> xListIMPERIAL = new ArrayList<>();
+		xListIMPERIAL.add(MyArrayUtils.convertFromDoubleToPrimitive(rangeArray.stream().mapToDouble(r -> r.doubleValue(NonSI.NAUTICAL_MILE)).toArray()));
+		xListIMPERIAL.add(MyArrayUtils.convertFromDoubleToPrimitive(rangeArray.stream().mapToDouble(r -> r.doubleValue(NonSI.NAUTICAL_MILE)).toArray()));
+		
+		List<Double[]> yListSI = new ArrayList<>();
+		yListSI.add(MyArrayUtils.convertFromDoubleToPrimitive(payloadMassArray.stream().mapToDouble(r -> r.doubleValue(SI.KILOGRAM)).toArray()));
+		yListSI.add(MyArrayUtils.convertFromDoubleToPrimitive(takeOffMassArray.stream().mapToDouble(r -> r.doubleValue(SI.KILOGRAM)).toArray()));
+		
+		List<Double[]> yListIMPERIAL = new ArrayList<>();
+		yListIMPERIAL.add(MyArrayUtils.convertFromDoubleToPrimitive(payloadMassArray.stream().mapToDouble(r -> r.doubleValue(NonSI.POUND)).toArray()));
+		yListIMPERIAL.add(MyArrayUtils.convertFromDoubleToPrimitive(takeOffMassArray.stream().mapToDouble(r -> r.doubleValue(NonSI.POUND)).toArray()));
+		
+		try {
+			MyChartToFileUtils.plot(
+					xListSI, 
+					yListSI, 
+					"Payload-Range ( OWE = " + operatingEmptyMass.to(SI.KILOGRAM) + ")", "Range", "Masses", 
+					0.0, null, 0.0, null, 
+					"km", "kg", 
+					true, legend, 
+					subFolderPath, "Payload-Range_Mass_SI", 
+					theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
+					);
+			MyChartToFileUtils.plot(
+					xListIMPERIAL, 
+					yListIMPERIAL, 
+					"Payload-Range ( OWE = " + operatingEmptyMass.to(NonSI.POUND) + ")", "Range", "Masses", 
+					0.0, null, 0.0, null, 
+					"nm", "lb", 
+					true, legend, 
+					subFolderPath, "Payload-Range_Mass_IMPERIAL", 
+					theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
+					);
+		} catch (InstantiationException | IllegalAccessException e) {
+			e.printStackTrace();
+		}
 
-		MyChartToFileUtils.plot(
-				rangeArray.stream().mapToDouble(r -> r.doubleValue(SI.KILOMETER)).toArray(),
-				payloadMassArray.stream().mapToDouble(m -> m.doubleValue(SI.KILOGRAM)).toArray(),   
-				null, null, 0.0, null,					    
-				"Range", "Payload", "km", "kg",	    
-				legendValueSI,								
-				subFolderPath, "Payload-Range_Mass_SI",     
-				theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
-				);
-		MyChartToFileUtils.plot(
-				rangeArray.stream().mapToDouble(r -> r.doubleValue(NonSI.NAUTICAL_MILE)).toArray(),
-				payloadMassArray.stream().mapToDouble(m -> m.doubleValue(NonSI.POUND)).toArray(),   
-				null, null, 0.0, null,					    
-				"Range", "Payload", "nm", "lb",	    
-				legendValueImperial,								
-				subFolderPath, "Payload-Range_Mass_IMPERIAL",     
-				theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
-				);
-		MyChartToFileUtils.plot(
+		MyChartToFileUtils.plotNoLegend(
 				rangeArray.stream().mapToDouble(r -> r.doubleValue(SI.KILOMETER)).toArray(),
 				payloadPassengerNumberArray.stream().mapToDouble(m -> m.doubleValue()).toArray(),   
-				null, null, 0.0, null,					    
-				"Range", "Payload", "km", "No. Pass.",	    
-				legendValueSI,								
+				0.0, null, 0.0, null,
+				"Range", "Payload", 
+				"km", "No. Passengers",
 				subFolderPath, "Payload-Range_Passengers_SI",     
 				theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 				);
-		MyChartToFileUtils.plot(
+		
+		MyChartToFileUtils.plotNoLegend(
 				rangeArray.stream().mapToDouble(r -> r.doubleValue(NonSI.NAUTICAL_MILE)).toArray(),
 				payloadPassengerNumberArray.stream().mapToDouble(m -> m.doubleValue()).toArray(),   
-				null, null, 0.0, null,					    
-				"Range", "Payload", "nm", "No. Pass.",	    
-				legendValueImperial,								
+				0.0, null, 0.0, null,
+				"Range", "Payload", 
+				"nm", "No. Passengers",
 				subFolderPath, "Payload-Range_Passengers_IMPERIAL",     
 				theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
-				);         
+				);
+		
 	}
 
 	@Override
@@ -3179,6 +3232,14 @@ public class PayloadRangeCalc {
 
 	public void setPayloadAtMaxFuel(Amount<Mass> payloadAtMaxFuel) {
 		this.payloadAtMaxFuel = payloadAtMaxFuel;
+	}
+
+	public List<Amount<Mass>> getTakeOffMassArray() {
+		return takeOffMassArray;
+	}
+
+	public void setTakeOffMassArray(List<Amount<Mass>> takeOffMassArray) {
+		this.takeOffMassArray = takeOffMassArray;
 	}
 
 }

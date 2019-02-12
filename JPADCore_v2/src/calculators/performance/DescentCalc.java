@@ -55,6 +55,7 @@ public class DescentCalc {
 	_fidlCalibrationFactorEmissionIndexSOx, _fidlCalibrationFactorEmissionIndexH2O;
 
 	private final int maxIterationNumber = 50;
+	private int _numberOfStepDescent; 
 	
 	//............................................................................................
 	// Output:
@@ -184,6 +185,7 @@ public class DescentCalc {
 		this._fidlCalibrationFactorEmissionIndexCO2 = fidlCalibrationFactorEmissionIndexCO2; 
 		this._fidlCalibrationFactorEmissionIndexSOx = fidlCalibrationFactorEmissionIndexSOx; 
 		this._fidlCalibrationFactorEmissionIndexH2O = fidlCalibrationFactorEmissionIndexH2O;
+		this._numberOfStepDescent = 5;
 		
 		this._descentAltitudes = new ArrayList<>();
 		this._descentLengths = new ArrayList<>();
@@ -259,7 +261,7 @@ public class DescentCalc {
 						MyArrayUtils.linspace(
 								_initialDescentAltitude.doubleValue(SI.METER),
 								_endDescentAltitude.doubleValue(SI.METER),
-								10
+								_numberOfStepDescent
 								),
 						SI.METER
 						);
@@ -2536,5 +2538,13 @@ public class DescentCalc {
 
 	public void setInterpolatedEmissionIndexH2OList(List<Double> _interpolatedEmissionIndexH2OList) {
 		this._interpolatedEmissionIndexH2OList = _interpolatedEmissionIndexH2OList;
+	}
+
+	public int getNumberOfStepDescent() {
+		return _numberOfStepDescent;
+	}
+
+	public void setNumberOfStepDescent(int _numberOfStepDescent) {
+		this._numberOfStepDescent = _numberOfStepDescent;
 	}
 }

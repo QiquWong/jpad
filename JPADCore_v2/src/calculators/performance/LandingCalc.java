@@ -566,6 +566,9 @@ public class LandingCalc {
 
 					tFlareAltitude = Amount.valueOf(t, SI.SECOND);
 					timeBreakPoints.add(t);
+					
+					if (sDescent == null)
+						sDescent = Amount.valueOf(0.0, SI.METER);
 					sApproach = Amount.valueOf(x[0] - sDescent.doubleValue(SI.METER), SI.METER);
 					vFlareEffective = Amount.valueOf(x[1], SI.METERS_PER_SECOND);
 					thrustAtFlareStart = 
@@ -777,14 +780,14 @@ public class LandingCalc {
 			}
 			
 			if(Math.abs(rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE)) > targetRateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE))
-				if(Math.abs(rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE) - targetRateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE)) < 50.0)
+				if(Math.abs(rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE) - targetRateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE)) < 75.0)
 					newAlphaDotFlare = alphaDotFlare + 0.02;
 				else if(Math.abs(rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE) - targetRateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE)) < 250.0)
 					newAlphaDotFlare = alphaDotFlare + 0.1;
 				else
 					newAlphaDotFlare = alphaDotFlare + 0.5;
 			else
-				if(Math.abs(rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE) - targetRateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE)) < 50.0)
+				if(Math.abs(rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE) - targetRateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE)) < 75.0)
 					newAlphaDotFlare = alphaDotFlare - 0.02;
 				else if(Math.abs(rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE) - targetRateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE)) < 250.0)
 					newAlphaDotFlare = alphaDotFlare - 0.1;
