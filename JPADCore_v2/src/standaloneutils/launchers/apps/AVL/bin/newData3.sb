@@ -23,8 +23,8 @@
 
   CLtot =   0.00229
   CDtot =   0.02873
-  CDvis =   0.02000     CDind =   0.00873
-  CLff  =   0.01286     CDff  =   0.01588    | Trefftz
+  CDvis =   0.02000     CDind = 0.0087312
+  CLff  =   0.01286     CDff  = 0.0158799    | Trefftz
   CYff  =  -0.00000         e =    0.0003    | Plane  
 
    Elevator        =   0.00000

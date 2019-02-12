@@ -70,8 +70,8 @@ public class AVLExternalJobTest2 {
 				// Instantiate the job executor object
 				AVLExternalJob job = AVLExternalJobTest.job;
 
-				System.out.println("--------------------------------------------- Launch AVL job in a separate process.");
-
+				System.out.println("--------------------------------------------- Launch AVL (Athena Vortex Lattice) job in a separate process.");
+				System.out.println("--------------------------------------------- Version: 3.37");
 				// Establish the path to dir where the executable file resides 
 				String binDirPath;
 				File binDir = AVLTestUtils.getAVLBinDir(args); 
