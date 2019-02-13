@@ -1,0 +1,19 @@
+#
+#  xyz is location of item's own CG
+#  Ixx.. are item's inertias about item's own CG
+#
+#  x back, y right, z up
+#
+#  x,y,z system here must have origin
+#  at same location as AVL input file
+#
+Lunit = 1.0000 m
+Munit = 1.0000 kg
+Tunit = 1.0000 s
+#
+#  mass   x     y     z      Ixx     Iyy     Izz   [ Ixy  Ixz  Iyz ]
+#
+   7112.750    14.00000     0.00000     0.00000      56879.303    2969297.017    2912417.714      0.000  -6560.581      0.000
+     55.500     4.20000    22.00000     1.00000       1180.000        210.000       1390.000      0.000      0.000      0.000
+     55.500     4.20000   -22.00000     1.00000       1180.000        210.000       1390.000      0.000      0.000      0.000
+     12.000    29.00000     0.00000     1.00000        270.000         12.000        282.000      0.000      0.000      0.000

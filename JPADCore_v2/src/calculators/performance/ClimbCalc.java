@@ -54,6 +54,7 @@ public class ClimbCalc {
 	_climbSfcCorrectionFactor, _climbCalibrationFactorEmissionIndexNOx, _climbCalibrationFactorEmissionIndexCO, 
 	_climbCalibrationFactorEmissionIndexHC, _climbCalibrationFactorEmissionIndexSoot, _climbCalibrationFactorEmissionIndexCO2, 
 	_climbCalibrationFactorEmissionIndexSOx, _climbCalibrationFactorEmissionIndexH2O;
+	private int _numberOfStepClimb; 
 	//............................................................................................
 	// Output:
 	private List<RCMap> _rcMapAEO;
@@ -150,6 +151,7 @@ public class ClimbCalc {
 		this._climbCalibrationFactorEmissionIndexCO2 = climbCalibrationFactorEmissionIndexCO2;
 		this._climbCalibrationFactorEmissionIndexSOx = climbCalibrationFactorEmissionIndexSOx;
 		this._climbCalibrationFactorEmissionIndexH2O = climbCalibrationFactorEmissionIndexH2O;
+		this._numberOfStepClimb = 5;
 		
 		this._rcMapAEO = new ArrayList<>();
 		this._rcMapOEI = new ArrayList<>();
@@ -208,7 +210,7 @@ public class ClimbCalc {
 				MyArrayUtils.linspace(
 						initialClimbAltitude.doubleValue(SI.METER),
 						finalClimbAltitude.doubleValue(SI.METER),
-						10
+						_numberOfStepClimb
 						),
 				SI.METER
 				);
@@ -888,6 +890,20 @@ public class ClimbCalc {
 				_machClimb.add(_speedTASClimb.get(i).doubleValue(SI.METERS_PER_SECOND)/speedOfSound);
 			}
 			
+			_rateOfClimbClimb.add(
+					Amount.valueOf(
+							MyMathUtils.getInterpolatedValue1DLinear(
+									MyArrayUtils.convertListOfAmountTodoubleArray(_rcMapAEO.get(i).getSpeedList()
+											.stream().map(v -> v.to(SI.METERS_PER_SECOND)).collect(Collectors.toList())
+											),
+									MyArrayUtils.convertListOfAmountTodoubleArray(_rcMapAEO.get(i).getRCList()
+											.stream().map(rc -> rc.to(SI.METERS_PER_SECOND)).collect(Collectors.toList())
+											),
+									_speedTASClimb.get(i).doubleValue(SI.METERS_PER_SECOND)
+									),
+							SI.METERS_PER_SECOND
+							)
+					);
 			_timeClimb.add(
 					_timeClimb.get(_timeClimb.size()-1)
 					.plus(
@@ -963,20 +979,6 @@ public class ClimbCalc {
 									_speedTASClimb.get(i).doubleValue(SI.METERS_PER_SECOND)
 									),
 							SI.NEWTON
-							)
-					);
-			_rateOfClimbClimb.add(
-					Amount.valueOf(
-							MyMathUtils.getInterpolatedValue1DLinear(
-									MyArrayUtils.convertListOfAmountTodoubleArray(_rcMapAEO.get(i).getSpeedList()
-											.stream().map(v -> v.to(SI.METERS_PER_SECOND)).collect(Collectors.toList())
-											),
-									MyArrayUtils.convertListOfAmountTodoubleArray(_rcMapAEO.get(i).getRCList()
-											.stream().map(rc -> rc.to(SI.METERS_PER_SECOND)).collect(Collectors.toList())
-											),
-									_speedTASClimb.get(i).doubleValue(SI.METERS_PER_SECOND)
-									),
-							SI.METERS_PER_SECOND
 							)
 					);
 			
@@ -2347,7 +2349,8 @@ public class ClimbCalc {
 					0.0, null, 0.0, null,
 					"Maximum Rate of Climb", "Altitude",
 					"m/s", "m",
-					climbFolderPath, "Max_Rate_of_Climb_envelope_AEO_SI",true
+					climbFolderPath, "Max_Rate_of_Climb_envelope_AEO_SI",
+					_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 					);
 			MyChartToFileUtils.plotNoLegend(
 					MyArrayUtils.convertToDoublePrimitive(maxRateOfClimbListAEO_Imperial),
@@ -2355,7 +2358,8 @@ public class ClimbCalc {
 					0.0, null, 0.0, null,
 					"Maximum Rate of Climb", "Altitude",
 					"ft/min", "ft",
-					climbFolderPath, "Max_Rate_of_Climb_envelope_AEO_IMPERIAL",true
+					climbFolderPath, "Max_Rate_of_Climb_envelope_AEO_IMPERIAL",
+					_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 					);
 
 			//.......................................................
@@ -2378,7 +2382,8 @@ public class ClimbCalc {
 					0.0, null, 0.0, null,
 					"Maximum Rate of Climb", "Altitude",
 					"m/s", "m",
-					climbFolderPath, "Max_Rate_of_Climb_envelope_OEI_SI",true
+					climbFolderPath, "Max_Rate_of_Climb_envelope_OEI_SI",
+					_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 					);
 			MyChartToFileUtils.plotNoLegend(
 					MyArrayUtils.convertToDoublePrimitive(maxRateOfClimbListOEI_Imperial),
@@ -2386,7 +2391,8 @@ public class ClimbCalc {
 					0.0, null, 0.0, null,
 					"Maximum Rate of Climb", "Altitude",
 					"ft/min", "ft",
-					climbFolderPath, "Max_Rate_of_Climb_envelope_OEI_IMPEIRAL",true
+					climbFolderPath, "Max_Rate_of_Climb_envelope_OEI_IMPEIRAL",
+					_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 					);
 
 		}
@@ -2415,7 +2421,8 @@ public class ClimbCalc {
 					0.0, null, 0.0, null,
 					"Maximum Climb Angle", "Altitude",
 					"rad", "m",
-					climbFolderPath, "Max_Climb_Angle_envelope_AEO_SI",true
+					climbFolderPath, "Max_Climb_Angle_envelope_AEO_SI",
+					_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 					);
 			MyChartToFileUtils.plotNoLegend(
 					MyArrayUtils.convertToDoublePrimitive(maxClimbAngleListAEO),
@@ -2423,7 +2430,8 @@ public class ClimbCalc {
 					0.0, null, 0.0, null,
 					"Maximum Climb Angle", "Altitude",
 					"rad", "ft",
-					climbFolderPath, "Max_Climb_Angle_envelope_AEO_IMPERIAL",true
+					climbFolderPath, "Max_Climb_Angle_envelope_AEO_IMPERIAL",
+					_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 					);
 			
 			//.......................................................
@@ -2449,7 +2457,8 @@ public class ClimbCalc {
 					0.0, null, 0.0, null,
 					"Maximum Climb Angle", "Altitude",
 					"rad", "m",
-					climbFolderPath, "Max_Climb_Angle_envelope_OEI_SI",true
+					climbFolderPath, "Max_Climb_Angle_envelope_OEI_SI",
+					_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 					);
 			MyChartToFileUtils.plotNoLegend(
 					MyArrayUtils.convertToDoublePrimitive(maxClimbAngleListOEI),
@@ -2457,7 +2466,8 @@ public class ClimbCalc {
 					0.0, null, 0.0, null,
 					"Maximum Climb Angle", "Altitude",
 					"rad", "ft",
-					climbFolderPath, "Max_Climb_Angle_envelope_OEI_IMPERIAL",true
+					climbFolderPath, "Max_Climb_Angle_envelope_OEI_IMPERIAL",
+					_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 					);
 			
 		}
@@ -2543,7 +2553,8 @@ public class ClimbCalc {
 					0.0, null, 0.0, null,
 					"Altitude", "Fuel  used",
 					"m", "kg",
-					climbFolderPath, "Fuel_used_AEO_SI",true
+					climbFolderPath, "Fuel_used_AEO_SI",
+					_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 					);
 			MyChartToFileUtils.plotNoLegend(
 					MyArrayUtils.convertToDoublePrimitive(altitudeList_Imperial),
@@ -2551,7 +2562,8 @@ public class ClimbCalc {
 					0.0, null, 0.0, null,
 					"Altitude", "Fuel  used",
 					"ft", "kg",
-					climbFolderPath, "Fuel_used_AEO_IMPERIAL",true
+					climbFolderPath, "Fuel_used_AEO_IMPERIAL",
+					_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 					);
 			
 		}
@@ -3144,6 +3156,14 @@ public class ClimbCalc {
 
 	public void setClimbTotalEmissionsH2O(Amount<Mass> _climbTotalEmissionsH2O) {
 		this._climbTotalEmissionsH2O = _climbTotalEmissionsH2O;
+	}
+
+	public int getNumberOfStepClimb() {
+		return _numberOfStepClimb;
+	}
+
+	public void setNumberOfStepClimb(int numberOfStepClimb) {
+		this._numberOfStepClimb = numberOfStepClimb;
 	}
 	
 }

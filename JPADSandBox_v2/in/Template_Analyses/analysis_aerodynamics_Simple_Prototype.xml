@@ -43,7 +43,7 @@
 				<number_of_points_semispawise_vertical_tail></number_of_points_semispawise_vertical_tail> <!-- if not set, default value = 30 -->
 				<number_of_points_semispawise_canard></number_of_points_semispawise_canard> <!-- if not set, default value = 30 -->
 				<delta_elevator_array unit="deg"></delta_elevator_array> <!-- if not set, default values = -25.0, -20.0, -15.0, -10.0, -5.0, 0.0, 5.0 -->
-				<delta_rudder_array unit="deg"><delta_rudder_array> <!-- if not set, default values = 5.0, 10.0, 15.0, 20.0, 25.0 -->
+				<delta_rudder_array unit="deg"></delta_rudder_array> <!-- if not set, default values = 5.0, 10.0, 15.0, 20.0, 25.0 -->
 				<delta_canard_control_surface_array unit="deg"></delta_canard_control_surface_array> <!-- if not set, default values = 5.0, 10.0, 15.0, 20.0, 25.0 -->
 				<adimensional_wing_momentum_pole></adimensional_wing_momentum_pole> <!-- if not set, default value = 0.25 -->
 				<adimensional_horizontal_tail_momentum_pole></adimensional_horizontal_tail_momentum_pole> <!-- if not set, default value = 0.25 -->
@@ -73,9 +73,10 @@
 				<wing perform="TRUE" type="SEMIEMPIRICAL"/>
 				<horizontal_tail perform="TRUE" type="SEMIEMPIRICAL"/>
 				<vertical_tail perform="TRUE" type="SEMIEMPIRICAL"/>
+				<vertical_tail perform="TRUE" type="SEMIEMPIRICAL"/>
 				<canard perform="TRUE" type="SEMIEMPIRICAL"/>
 				<fuselage perform="TRUE" type="SEMIEMPIRICAL"/>
-				<nacelle perform="TRUE" type="SEMIEMPIRICAL"/>
+				<nacelles perform="TRUE" type="SEMIEMPIRICAL"/>
 			</components>
 			<aircraft>
 				<canard_wing_downwash constant_gradient="TRUE" method=""/> <!-- constant_gradient: if not set, default value = TRUE -->
@@ -120,7 +121,7 @@
 		<wing perform="TRUE"/>
 		<horizontal_tail perform="TRUE"/>
 		<vertical_tail perform="TRUE"/>
-		<canard perform="TRUE"/>
+		<canard perform="FALSE"/>
 		<fuselage perform="TRUE"/>
 		<nacelles perform="TRUE"/>
 		<aircraft perform="TRUE"/>

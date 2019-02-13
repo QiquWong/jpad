@@ -381,7 +381,7 @@ public class AVLInputGenerator {
 		
 		// transfer the AVL macro input data structures into a formatted string
 		String lines[] = 
-				avlMacro.format() // format one single string with newlines
+				avlMacro.getCommands() // format one single string with newlines
 				.split("\\r?\\n");
 		List<String> content = Arrays.stream(lines).collect(Collectors.toList()); // split in a list of strings
 		

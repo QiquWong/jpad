@@ -54,6 +54,8 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 	//-------------------------------------------------------------------
 	public void importDatabaseFromFile(String databaseFolderPath, String engineDatabaseFileName) {
 		
+		int maxDataIndex = 13; /* number of columns of the engine Excel File */
+		
 		/*
 		 * READING DATA FROM EXCEL FILE ...
 		 */
@@ -84,13 +86,35 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 					row.forEach(cell -> {
 						sheetRowData.add(dataFormatter.formatCellValue(cell));
 					});
-					sheetData.add(sheetRowData.stream().filter(data -> !data.isEmpty()).collect(Collectors.toList()));
+					// TODO: SET 0.0 WHEN DATA IS EMPTY
+//					sheetData.add(sheetRowData.stream().filter(data -> !data.isEmpty()).collect(Collectors.toList()));
+					sheetData.add(sheetRowData.stream().collect(Collectors.toList()));
 				});
-				for(int j=0; j<sheetData.size(); j++)
-					if(sheetData.get(j).isEmpty()) {
+				for(int j=0; j<sheetData.size(); j++) {
+					List<Boolean> isRemove = new ArrayList<>();
+					for (int k=0; k<sheetData.get(j).size(); k++) {
+						if(sheetData.get(j).get(k).isEmpty()) {
+							isRemove.add(true);
+						}
+						else
+							isRemove.add(false);
+					}
+					if (!isRemove.contains(false)) {
 						sheetData.remove(j);
 						j--;
 					}
+				}
+				for(int j=0; j<sheetData.size(); j++) {
+					for(int k=0; k<sheetData.get(j).size(); k++) { 
+						if(sheetData.get(j).get(k).isEmpty()) 
+							sheetData.get(j).set(k, "0.0");
+						if(k >= maxDataIndex) { 
+							sheetData.get(j).remove(k);
+							k--;
+						}
+					}
+				}
+				
 				dataMap.put(workbook.getSheetName(i), sheetData);
 			}
 		} catch (InvalidFormatException e) {
@@ -124,7 +148,7 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 		Map<Integer, MyInterpolatingFunction> interpolatedGroundIdleDataMap = createInterpolatedDataMap(dataMap, "GROUND IDLE");
 		
 		/*
-		 * FILLING SUERCLASS INTERPO FUNCTIONS ...
+		 * FILLING SUERCLASS INTERPOLATING FUNCTIONS ...
 		 */
 		
 		/* TAKE-OFF */
@@ -297,12 +321,14 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 	    List<double[]> interpolationInputDoubleArrayList = new ArrayList<>();
 	    List<double[]> interpolationRepeatedInputDoubleArrayList = new ArrayList<>();
 	    List<Boolean> interpolationInputBooleanList = new ArrayList<>();
+	    List<Integer> interpolationInputIndexList = new ArrayList<>();
 	    for(int i=0; i<numberOfInput; i++) {
 			if(inputDoubleArrayList.get(i).length > 1) {
 				interpolationNumberOfInput += 1;
 				interpolationInputDoubleArrayList.add(inputDoubleArrayList.get(i));
 				interpolationRepeatedInputDoubleArrayList.add(repeatedInputDoubleArrayList.get(i));
 				interpolationInputBooleanList.add(true);
+				interpolationInputIndexList.add(i);
 			}
 			else
 				interpolationInputBooleanList.add(false);
@@ -387,6 +413,7 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 	    		DatabaseInterpolationUtils.createMultiDimensionalMatrix(
 	    				interpolationNumberOfInput,
 	    				i,
+	    				interpolationInputIndexList,
 	    				interpolationInputDoubleArrayList,
 	    				engineDataDoubleArrayList.get(i),
 	    				interpolatingMatrixIndexes,
@@ -407,7 +434,7 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 	    		}
 	    		
 	    		MyInterpolatingFunction interpolatedResponseSurface = new MyInterpolatingFunction();
-	    		interpolatedResponseSurface.interpolateLinear(interpolationInputDoubleArrayList.get(0), engineDataDoubleArrayList.get(i));
+	    		interpolatedResponseSurface.interpolateLinearAtIndex(interpolationInputDoubleArrayList.get(0), interpolationInputIndexList.get(0), engineDataDoubleArrayList.get(i));
 	    		interpolatedResponseSurface.setxMin(inputLowerBounds[0]);
 	    		interpolatedResponseSurface.setyMin(inputLowerBounds[1]);
 	    		interpolatedResponseSurface.setzMin(inputLowerBounds[2]);

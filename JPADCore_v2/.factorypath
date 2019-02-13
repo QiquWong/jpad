@@ -1,3 +1,4 @@
 <factorypath>
-    <factorypathentry kind="VARJAR" id="LIBRARY_FOLDER/freebuilder/freebuilder-1.10.5.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="LIBRARY_FOLDER/freebuilder/freebuilder-2.3.0.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="PLUGIN" id="org.eclipse.jst.ws.annotations.core" enabled="false" runInBatchMode="false"/>
 </factorypath>

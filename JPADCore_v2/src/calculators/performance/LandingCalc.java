@@ -566,6 +566,9 @@ public class LandingCalc {
 
 					tFlareAltitude = Amount.valueOf(t, SI.SECOND);
 					timeBreakPoints.add(t);
+					
+					if (sDescent == null)
+						sDescent = Amount.valueOf(0.0, SI.METER);
 					sApproach = Amount.valueOf(x[0] - sDescent.doubleValue(SI.METER), SI.METER);
 					vFlareEffective = Amount.valueOf(x[1], SI.METERS_PER_SECOND);
 					thrustAtFlareStart = 
@@ -777,15 +780,19 @@ public class LandingCalc {
 			}
 			
 			if(Math.abs(rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE)) > targetRateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE))
-				if(Math.abs(rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE) - targetRateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE)) < 50.0)
+				if(Math.abs(rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE) - targetRateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE)) < 75.0)
 					newAlphaDotFlare = alphaDotFlare + 0.02;
-				else
+				else if(Math.abs(rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE) - targetRateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE)) < 250.0)
 					newAlphaDotFlare = alphaDotFlare + 0.1;
-			else
-				if(Math.abs(rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE) - targetRateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE)) < 50.0)
-					newAlphaDotFlare = alphaDotFlare - 0.02;
 				else
+					newAlphaDotFlare = alphaDotFlare + 0.5;
+			else
+				if(Math.abs(rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE) - targetRateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE)) < 75.0)
+					newAlphaDotFlare = alphaDotFlare - 0.02;
+				else if(Math.abs(rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE) - targetRateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE)) < 250.0)
 					newAlphaDotFlare = alphaDotFlare - 0.1;
+				else
+					newAlphaDotFlare = alphaDotFlare - 0.5;
 
 			if(Math.abs(altitudeAtFlareEnding.doubleValue(SI.METER) - 1e-2) < 1 
 					&& Math.abs(rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE)) < Math.abs(targetRateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE))
@@ -1074,31 +1081,26 @@ public class LandingCalc {
 					// CD:
 					this.cDList.add(cDFunction.value(time.doubleValue(SI.SECOND)));
 					//----------------------------------------------------------------------------------------
-					// EMISSIONS:
-					for(int iEng=0; iEng < thePowerPlant.getEngineNumber(); i++) {
-						
-						//----------------------------------------------------------------------------------------
-						// EMISSIONS NOx:
-						this.emissionNOxList.add(((DynamicsEquationsLanding)ode).emissionNOx(speed, time, alpha, gamma, altitude, deltaTemperature, weight, fuelUsedList.get(i)));
-						//----------------------------------------------------------------------------------------
-						// EMISSIONS CO:
-						this.emissionCOList.add(((DynamicsEquationsLanding)ode).emissionCO(speed, time, alpha, gamma, altitude, deltaTemperature, weight, fuelUsedList.get(i)));
-						//----------------------------------------------------------------------------------------
-						// EMISSIONS HC:
-						this.emissionHCList.add(((DynamicsEquationsLanding)ode).emissionHC(speed, time, gamma, alpha, altitude, deltaTemperature, weight, fuelUsedList.get(i)));
-						//----------------------------------------------------------------------------------------
-						// EMISSIONS Soot:
-						this.emissionSootList.add(((DynamicsEquationsLanding)ode).emissionSoot(speed, time, alpha, gamma, altitude, deltaTemperature, weight, fuelUsedList.get(i)));
-						//----------------------------------------------------------------------------------------
-						// EMISSIONS CO2:
-						this.emissionCO2List.add(((DynamicsEquationsLanding)ode).emissionCO2(speed, time, alpha, gamma, altitude, deltaTemperature, weight, fuelUsedList.get(i)));
-						//----------------------------------------------------------------------------------------
-						// EMISSIONS SOx:
-						this.emissionSOxList.add(((DynamicsEquationsLanding)ode).emissionSOx(speed, time, alpha, gamma, altitude, deltaTemperature, weight, fuelUsedList.get(i)));
-						//----------------------------------------------------------------------------------------
-						// EMISSIONS H2O:
-						this.emissionH2OList.add(((DynamicsEquationsLanding)ode).emissionH2O(speed, time, alpha, gamma, altitude, deltaTemperature, weight, fuelUsedList.get(i)));
-					}
+					// EMISSIONS NOx:
+					this.emissionNOxList.add(((DynamicsEquationsLanding)ode).emissionNOx(speed, time, alpha, gamma, altitude, deltaTemperature, weight, fuelUsedList.get(i)));
+					//----------------------------------------------------------------------------------------
+					// EMISSIONS CO:
+					this.emissionCOList.add(((DynamicsEquationsLanding)ode).emissionCO(speed, time, alpha, gamma, altitude, deltaTemperature, weight, fuelUsedList.get(i)));
+					//----------------------------------------------------------------------------------------
+					// EMISSIONS HC:
+					this.emissionHCList.add(((DynamicsEquationsLanding)ode).emissionHC(speed, time, gamma, alpha, altitude, deltaTemperature, weight, fuelUsedList.get(i)));
+					//----------------------------------------------------------------------------------------
+					// EMISSIONS Soot:
+					this.emissionSootList.add(((DynamicsEquationsLanding)ode).emissionSoot(speed, time, alpha, gamma, altitude, deltaTemperature, weight, fuelUsedList.get(i)));
+					//----------------------------------------------------------------------------------------
+					// EMISSIONS CO2:
+					this.emissionCO2List.add(((DynamicsEquationsLanding)ode).emissionCO2(speed, time, alpha, gamma, altitude, deltaTemperature, weight, fuelUsedList.get(i)));
+					//----------------------------------------------------------------------------------------
+					// EMISSIONS SOx:
+					this.emissionSOxList.add(((DynamicsEquationsLanding)ode).emissionSOx(speed, time, alpha, gamma, altitude, deltaTemperature, weight, fuelUsedList.get(i)));
+					//----------------------------------------------------------------------------------------
+					// EMISSIONS H2O:
+					this.emissionH2OList.add(((DynamicsEquationsLanding)ode).emissionH2O(speed, time, alpha, gamma, altitude, deltaTemperature, weight, fuelUsedList.get(i)));
 				}
 			}
 		}
@@ -1130,7 +1132,9 @@ public class LandingCalc {
 				MyArrayUtils.convertListOfAmountTodoubleArray(speedTASList),
 				0.0, null, 0.0, null,
 				"Time", "Speed", "s", "m/s",
-				simulationDetailsOutputFolder, "Speed_evolution_SI",true);
+				simulationDetailsOutputFolder, "Speed_evolution_SI",
+				createCSV
+				);
 
 
 
@@ -1143,7 +1147,9 @@ public class LandingCalc {
 						),
 				0.0, null, 0.0, null,
 				"Time", "Speed", "s", "kn",
-				simulationDetailsOutputFolder, "Speed_evolution_IMPERIAL",true);
+				simulationDetailsOutputFolder, "Speed_evolution_IMPERIAL",
+				createCSV
+				);
 
 		//.................................................................................
 		// speed v.s. ground distance
@@ -1153,7 +1159,9 @@ public class LandingCalc {
 				MyArrayUtils.convertListOfAmountTodoubleArray(speedTASList),
 				0.0, null, 0.0, null,
 				"Ground Distance", "Speed", "m", "m/s",
-				simulationDetailsOutputFolder, "Speed_vs_GroundDistance_SI",true);
+				simulationDetailsOutputFolder, "Speed_vs_GroundDistance_SI",
+				createCSV
+				);
 
 
 		MyChartToFileUtils.plotNoLegend(
@@ -1169,7 +1177,9 @@ public class LandingCalc {
 						),
 				0.0, null, 0.0, null,
 				"Ground Distance", "Speed", "ft", "kn",
-				simulationDetailsOutputFolder, "Speed_vs_GroundDistance_IMPERIAL",true);
+				simulationDetailsOutputFolder, "Speed_vs_GroundDistance_IMPERIAL",
+				createCSV
+				);
 
 		//.................................................................................
 		// acceleration v.s. time
@@ -1179,7 +1189,9 @@ public class LandingCalc {
 				MyArrayUtils.convertListOfAmountTodoubleArray(accelerationList),
 				0.0, null, -10.0, 10.0,
 				"Time", "Acceleration", "s", "m/(s^2)",
-				simulationDetailsOutputFolder, "Acceleration_evolution_SI",true);
+				simulationDetailsOutputFolder, "Acceleration_evolution_SI",
+				createCSV
+				);
 
 
 		//.................................................................................
@@ -1190,7 +1202,9 @@ public class LandingCalc {
 				MyArrayUtils.convertListOfAmountTodoubleArray(accelerationList),
 				0.0, null, -10.0, 10.0,
 				"Ground Distance", "Acceleration", "m", "m/(s^2)",
-				simulationDetailsOutputFolder, "Acceleration_vs_GroundDistance_SI",true);
+				simulationDetailsOutputFolder, "Acceleration_vs_GroundDistance_SI",
+				createCSV
+				);
 
 
 		MyChartToFileUtils.plotNoLegend(
@@ -1202,7 +1216,9 @@ public class LandingCalc {
 				MyArrayUtils.convertListOfAmountTodoubleArray(accelerationList),
 				0.0, null, -10.0, 10.0,
 				"Ground Distance", "Acceleration", "ft", "m/(s^2)",
-				simulationDetailsOutputFolder, "Acceleration_vs_GroundDistance_IMPERIAL",true);
+				simulationDetailsOutputFolder, "Acceleration_vs_GroundDistance_IMPERIAL",
+				createCSV
+				);
 
 		//.................................................................................
 		// load factor v.s. time
@@ -1211,7 +1227,9 @@ public class LandingCalc {
 				MyArrayUtils.convertToDoublePrimitive(loadFactorList),
 				0.0, null, 0.0, null,
 				"Time", "Load Factor", "s", "",
-				simulationDetailsOutputFolder, "LoadFactor_evolution",true);
+				simulationDetailsOutputFolder, "LoadFactor_evolution",
+				createCSV
+				);
 
 		//.................................................................................
 		// load factor v.s. ground distance
@@ -1221,7 +1239,9 @@ public class LandingCalc {
 				MyArrayUtils.convertToDoublePrimitive(loadFactorList),
 				0.0, null, 0.0, null,
 				"Ground distance", "Load Factor", "m", "",
-				simulationDetailsOutputFolder, "LoadFactor_vs_GroundDistance_SI",true);
+				simulationDetailsOutputFolder, "LoadFactor_vs_GroundDistance_SI",
+				createCSV
+				);
 
 
 		MyChartToFileUtils.plotNoLegend(
@@ -1233,7 +1253,9 @@ public class LandingCalc {
 				MyArrayUtils.convertToDoublePrimitive(loadFactorList),
 				0.0, null, 0.0, null,
 				"Ground distance", "Load Factor", "ft", "",
-				simulationDetailsOutputFolder, "LoadFactor_vs_GroundDistance_IMPERIAL",true);
+				simulationDetailsOutputFolder, "LoadFactor_vs_GroundDistance_IMPERIAL",
+				createCSV
+				);
 
 		//.................................................................................
 		// Rate of Climb v.s. Time
@@ -1243,7 +1265,9 @@ public class LandingCalc {
 				MyArrayUtils.convertListOfAmountTodoubleArray(rateOfClimbList),
 				0.0, null, null, 0.0,
 				"Time", "Rate of Climb", "s", "m/s",
-				simulationDetailsOutputFolder, "RateOfClimb_evolution_SI",true);
+				simulationDetailsOutputFolder, "RateOfClimb_evolution_SI",
+				createCSV
+				);
 
 
 		MyChartToFileUtils.plotNoLegend(
@@ -1255,7 +1279,9 @@ public class LandingCalc {
 						),
 				0.0, null, null, 0.0,
 				"Time", "Rate of Climb", "s", "ft/min",
-				simulationDetailsOutputFolder, "RateOfClimb_evolution_IMPERIAL",true);
+				simulationDetailsOutputFolder, "RateOfClimb_evolution_IMPERIAL",
+				createCSV
+				);
 
 		//.................................................................................
 		// Rate of Climb v.s. Ground distance
@@ -1265,7 +1291,9 @@ public class LandingCalc {
 				MyArrayUtils.convertListOfAmountTodoubleArray(rateOfClimbList),
 				0.0, null, null, 0.0,
 				"Ground distance", "Rate of Climb", "m", "m/s",
-				simulationDetailsOutputFolder, "RateOfClimb_vs_GroundDistance_SI",true);
+				simulationDetailsOutputFolder, "RateOfClimb_vs_GroundDistance_SI",
+				createCSV
+				);
 
 
 		MyChartToFileUtils.plotNoLegend(
@@ -1281,7 +1309,9 @@ public class LandingCalc {
 						),
 				0.0, null, null, 0.0,
 				"Ground distance", "Rate of Climb", "ft", "ft/min",
-				simulationDetailsOutputFolder, "RateOfClimb_vs_GroundDistance_IMPERIAL",true);
+				simulationDetailsOutputFolder, "RateOfClimb_vs_GroundDistance_IMPERIAL",
+				createCSV
+				);
 
 		//.................................................................................
 		// CL v.s. Time
@@ -1290,7 +1320,9 @@ public class LandingCalc {
 				MyArrayUtils.convertToDoublePrimitive(cLList),
 				0.0, null, 0.0, null,
 				"Time", "CL", "s", "",
-				simulationDetailsOutputFolder, "CL_evolution",true);
+				simulationDetailsOutputFolder, "CL_evolution",
+				createCSV
+				);
 
 		//.................................................................................
 		// CL v.s. Ground distance
@@ -1300,7 +1332,9 @@ public class LandingCalc {
 				MyArrayUtils.convertToDoublePrimitive(cLList),
 				0.0, null, 0.0, null,
 				"Ground distance", "CL", "m", "",
-				simulationDetailsOutputFolder, "CL_vs_GroundDistance_SI",true);
+				simulationDetailsOutputFolder, "CL_vs_GroundDistance_SI",
+				createCSV
+				);
 
 
 		MyChartToFileUtils.plotNoLegend(
@@ -1312,7 +1346,9 @@ public class LandingCalc {
 				MyArrayUtils.convertToDoublePrimitive(cLList),
 				0.0, null, 0.0, null,
 				"Ground distance", "CL", "ft", "",
-				simulationDetailsOutputFolder, "CL_vs_GroundDistance_IMPERIAL",true);
+				simulationDetailsOutputFolder, "CL_vs_GroundDistance_IMPERIAL",
+				createCSV
+				);
 
 		//.................................................................................
 		// CD v.s. Time
@@ -1321,7 +1357,9 @@ public class LandingCalc {
 				MyArrayUtils.convertToDoublePrimitive(cDList),
 				0.0, null, 0.0, null,
 				"Time", "CD", "s", "",
-				simulationDetailsOutputFolder, "CD_evolution",true);
+				simulationDetailsOutputFolder, "CD_evolution",
+				createCSV
+				);
 
 		//.................................................................................
 		// CD v.s. Ground distance
@@ -1331,7 +1369,9 @@ public class LandingCalc {
 				MyArrayUtils.convertToDoublePrimitive(cDList),
 				0.0, null, 0.0, null,
 				"Ground distance", "CD", "m", "",
-				simulationDetailsOutputFolder, "CD_vs_GroundDistance_SI",true);
+				simulationDetailsOutputFolder, "CD_vs_GroundDistance_SI",
+				createCSV
+				);
 
 
 		MyChartToFileUtils.plotNoLegend(
@@ -1343,7 +1383,9 @@ public class LandingCalc {
 				MyArrayUtils.convertToDoublePrimitive(cDList),
 				0.0, null, 0.0, null,
 				"Ground distance", "CD", "ft", "",
-				simulationDetailsOutputFolder, "CD_vs_GroundDistance_IMPERIAL",true);
+				simulationDetailsOutputFolder, "CD_vs_GroundDistance_IMPERIAL",
+				createCSV
+				);
 
 		//.................................................................................
 		// Horizontal Forces v.s. Time
@@ -1824,7 +1866,7 @@ public class LandingCalc {
 				0.0, null, 0.0, null, 
 				"Ground distance", "Altitude",
 				"m", "m",
-				trajectoryOutputFolder, "Total_Trajectory_SI",true
+				trajectoryOutputFolder, "Total_Trajectory_SI", createCSV
 				);
 		MyChartToFileUtils.plotNoLegend(
 				MyArrayUtils.convertListOfAmountTodoubleArray(landingGroundDistance),
@@ -1832,7 +1874,7 @@ public class LandingCalc {
 				0.0, null, null, obstacle.doubleValue(SI.METER), 
 				"Ground distance", "Altitude",
 				"m", "m",
-				trajectoryOutputFolder, "Landing_Trajectory_SI",true
+				trajectoryOutputFolder, "Landing_Trajectory_SI", createCSV
 				);
 
 		MyChartToFileUtils.plotNoLegend(
@@ -1845,7 +1887,7 @@ public class LandingCalc {
 				0.0, null, 0.0, null, 
 				"Ground distance", "Altitude",
 				"ft", "ft",
-				trajectoryOutputFolder, "Total_Trajectory_IMPERIAL",true
+				trajectoryOutputFolder, "Total_Trajectory_IMPERIAL", createCSV
 				);
 		MyChartToFileUtils.plotNoLegend(
 				MyArrayUtils.convertListOfAmountTodoubleArray(
@@ -1857,7 +1899,7 @@ public class LandingCalc {
 				0.0, null, null, obstacle.doubleValue(NonSI.FOOT), 
 				"Ground distance", "Altitude",
 				"ft", "ft",
-				trajectoryOutputFolder, "Landing_Trajectory_IMPERIAL",true
+				trajectoryOutputFolder, "Landing_Trajectory_IMPERIAL", createCSV
 				);
 
 		//.................................................................................
@@ -1872,7 +1914,7 @@ public class LandingCalc {
 				0.0, null, 0.0, null, 
 				"Time", "Altitude",
 				"s", "m",
-				trajectoryOutputFolder, "Total_Altitude_evolution_SI",true
+				trajectoryOutputFolder, "Total_Altitude_evolution_SI", createCSV
 				);
 		MyChartToFileUtils.plotNoLegend(
 				MyArrayUtils.convertListOfAmountTodoubleArray(landingTime),
@@ -1880,7 +1922,7 @@ public class LandingCalc {
 				0.0, null, null, obstacle.doubleValue(SI.METER), 
 				"Time", "Altitude",
 				"s", "m",
-				trajectoryOutputFolder, "Landing_Altitude_evolution_SI",true
+				trajectoryOutputFolder, "Landing_Altitude_evolution_SI", createCSV
 				);
 
 		MyChartToFileUtils.plotNoLegend(
@@ -1891,7 +1933,7 @@ public class LandingCalc {
 				0.0, null, 0.0, null, 
 				"Time", "Altitude",
 				"s", "ft",
-				trajectoryOutputFolder, "Total_Altitude_evolution_IMPERIAL",true
+				trajectoryOutputFolder, "Total_Altitude_evolution_IMPERIAL", createCSV
 				);
 		MyChartToFileUtils.plotNoLegend(
 				MyArrayUtils.convertListOfAmountTodoubleArray(landingTime),
@@ -1901,7 +1943,7 @@ public class LandingCalc {
 				0.0, null, null, obstacle.doubleValue(NonSI.FOOT),  
 				"Time", "Altitude",
 				"s", "ft",
-				trajectoryOutputFolder, "Landing_Altitude_evolution_IMPERIAL",true
+				trajectoryOutputFolder, "Landing_Altitude_evolution_IMPERIAL", createCSV
 				);
 
 		System.setOut(originalOut);
@@ -1924,7 +1966,7 @@ public class LandingCalc {
 				0.0, null, yMinThrust, yMaxThrust, 
 				"Time", "Thrust",
 				"s", "N",
-				thrustOutputFolder, "Thrust_evolution_SI",true
+				thrustOutputFolder, "Thrust_evolution_SI", createCSV
 				);
 
 		MyChartToFileUtils.plotNoLegend(
@@ -1935,7 +1977,7 @@ public class LandingCalc {
 				0.0, null, yMinThrust, yMaxThrust, 
 				"Time", "Thrust",
 				"s", "lbf",
-				thrustOutputFolder, "Thrust_evolution_IMPERIAL",true
+				thrustOutputFolder, "Thrust_evolution_IMPERIAL", createCSV
 				);
 
 		//.................................................................................
@@ -1947,7 +1989,7 @@ public class LandingCalc {
 				0.0, null, yMinThrust, yMaxThrust, 
 				"Ground distance", "Thrust",
 				"m", "N",
-				thrustOutputFolder, "Thrust_vs_GroundDistance_SI",true
+				thrustOutputFolder, "Thrust_vs_GroundDistance_SI", createCSV
 				);
 		
 		MyChartToFileUtils.plotNoLegend(
@@ -1962,7 +2004,7 @@ public class LandingCalc {
 				0.0, null, yMinThrust, yMaxThrust,
 				"Ground distance", "Thrust",
 				"ft", "lbf",
-				thrustOutputFolder, "Thrust_vs_GroundDistance_IMPERIAL",true
+				thrustOutputFolder, "Thrust_vs_GroundDistance_IMPERIAL", createCSV
 				);
 
 		//.................................................................................
@@ -1978,7 +2020,7 @@ public class LandingCalc {
 				0.0, null, 0.0, yMaxFuel, 
 				"Time", "Fuel Used",
 				"s", "kg",
-				fuelUsedOutputFolder, "FuelUsed_evolution_SI",true
+				fuelUsedOutputFolder, "FuelUsed_evolution_SI", createCSV
 				);
 
 		MyChartToFileUtils.plotNoLegend(
@@ -1989,7 +2031,7 @@ public class LandingCalc {
 				0.0, null, 0.0, yMaxFuel, 
 				"Time", "Fuel used",
 				"s", "lb",
-				fuelUsedOutputFolder, "FuelUsed_evolution_IMPERIAL",true
+				fuelUsedOutputFolder, "FuelUsed_evolution_IMPERIAL", createCSV
 				);
 
 		//.................................................................................
@@ -2000,7 +2042,7 @@ public class LandingCalc {
 				0.0, null, 0.0, yMaxFuel, 
 				"Ground distance", "Fuel Used",
 				"m", "kg",
-				fuelUsedOutputFolder, "FuelUsed_vs_GroundDistance_SI",true
+				fuelUsedOutputFolder, "FuelUsed_vs_GroundDistance_SI", createCSV
 				);
 
 		MyChartToFileUtils.plotNoLegend(
@@ -2014,7 +2056,7 @@ public class LandingCalc {
 				0.0, null, 0.0, yMaxFuel, 
 				"Ground distance", "Fuel used",
 				"ft", "lb",
-				fuelUsedOutputFolder, "FuelUsed_vs_GroundDistance_IMPERIAL",true
+				fuelUsedOutputFolder, "FuelUsed_vs_GroundDistance_IMPERIAL", createCSV
 				);
 
 		System.setOut(originalOut);

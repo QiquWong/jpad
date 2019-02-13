@@ -12,7 +12,9 @@ import javax.measure.unit.SI;
 
 import aircraft.Aircraft;
 import analyses.OperatingConditions;
+import configuration.enumerations.AnalysisTypeEnum;
 import javaslang.Tuple;
+import standaloneutils.MyUnits;
 import standaloneutils.atmosphere.SpeedCalc;
 import standaloneutils.launchers.SystemCommandExecutor;
 
@@ -28,7 +30,7 @@ public class AVLExternalJob implements IAVLExternalJob {
 	protected File binDirectory;
 	protected File cacheDirectory;
 	protected File outputStabilityDerivativesFile;
-	protected File outputStabilityDerivativesFileBodyAxes;
+	protected File outputStabilityDerivativesBodyAxesFile;
 	
 	Map<String, String> additionalEnvironment = new HashMap<String, String>();
 	
@@ -36,6 +38,7 @@ public class AVLExternalJob implements IAVLExternalJob {
 	protected SystemCommandExecutor systemCommandExecutor;
 	protected StringBuilder stdOut, stdErr;
 	
+	private boolean enabledStabilityAnalysis = false;
 	private AVLOutputStabilityDerivativesFileReader outputStabilityDerivativesFileReader;
 
 //	public static void main(String[] args) throws IOException, InterruptedException {
@@ -431,188 +434,143 @@ public class AVLExternalJob implements IAVLExternalJob {
 					// -------------------------------------- build the aircraft, finally
 					.build();
 			}
-		else // Default aircraft
-			return // assign the aircraft as a collection of wings and bodies
-				new AVLAircraft
-					.Builder()
-					.setDescription("The aircraft - agodemar")
-					.appendWing( //----------------------------------------------- wing 1
-						new AVLWing
-							.Builder()
-							.setDescription("Main wing")
-							.addSections( //-------------------------------------- wing 1 - section 1
-								new AVLWingSection
-									.Builder()
-									.setDescription("Root section")
-									.setAirfoilCoordFile(
-										new File(this.binDirectory.getAbsolutePath() + File.separator 
-											+ "ag38.dat"
-										) // TODO: produce .dat file on the fly
-									)
-									.setOrigin(new Double[]{0.0, 0.0, 0.0})
-									.setChord(3.0)
-									.setTwist(0.0)
-									.build()
-								)
-							.addSections( //-------------------------------------- wing 1 - section 2
-								new AVLWingSection
-									.Builder()
-									.setDescription("Tip section")
-									.setAirfoilCoordFile(
-										new File(this.binDirectory.getAbsolutePath() + File.separator 
-											+ "ag38.dat"
-										) // TODO: produce .dat file on the fly
-									)
-									.setOrigin(new Double[]{0.0, 12.0, 0.0})
-									.setChord(1.5)
-									.setTwist(0.0)
-									.build()
-								)
-							.build()
-						)
-					.appendWing( //----------------------------------------------- wing 2
-						new AVLWing
-							.Builder()
-							.setDescription("Horizontal tail")
-							.setOrigin(new Double[]{15.0, 0.0, 1.25})
-							.addSections( //-------------------------------------- wing 2 - section 1
-								new AVLWingSection
-									.Builder()
-									.setDescription("Root section")
-									.setAirfoilCoordFile(
-										new File(this.binDirectory.getAbsolutePath() + File.separator 
-											+ "ag38.dat"
-										)
-									)
-									.setOrigin(new Double[]{0.0, 0.0, 0.0})
-									.setChord(1.2)
-									.setTwist(0.0)
-									.addControlSurfaces(
-										new AVLWingSectionControlSurface
-											.Builder()
-											.setDescription("Elevator")
-											.setGain(1.0)
-											.setXHinge(0.6)
-											.setHingeVector(new Double[]{0.0, 1.0, 0.0})
-											.setSignDuplicate(1.0)
-											.build()
-									)
-									.build()
-								)
-							.addSections(
-								new AVLWingSection
-									.Builder()
-									.setDescription("Tip section")
-									.setAirfoilCoordFile(
-										new File(this.binDirectory.getAbsolutePath() + File.separator 
-											+ "ag38.dat"
-										) // TODO: produce .dat file on the fly
-									)
-									.setOrigin(new Double[]{0.0, 3.5, 0.0})
-									.setChord(1.2)
-									.setTwist(0.0)
-									.addControlSurfaces(
-											new AVLWingSectionControlSurface
-												.Builder()
-												.setDescription("Elevator")
-												.setGain(1.0)
-												.setXHinge(0.6)
-												.setHingeVector(new Double[]{0.0, 1.0, 0.0})
-												.setSignDuplicate(1.0)
-												.build()
-									)
-									.build()
-								)
-							.build()
-						)
-					.appendBody( //----------------------------------------------- body 1
-						new AVLBody
-							.Builder()
-							.setDescription("theFuselage")
-							.setBodyCoordFile(
-								new File(this.binDirectory.getAbsolutePath() + File.separator 
-									+ "sub.dat"
-								) // TODO: produce .dat file on the fly
-							)
-							/*
-							.setBodySectionInline(
-								// Inline body-section coordinates formatted as airfoil section: 
-								//    x --> X-coordinate of the section parallel to YZ-plane
-								//    y --> radius of the equivalent circular section, 
-								//          i.e. a circle of the same area of body's real section 
-								//          
-								//    This is useful when the real fuselage shape is known and equivalent sections
-								//    are calculated on the fly. Such a 2D array would be filled programmatically
-								//    and the BFIL/<body-section>.dat couple would not be required (no auxiliary file 
-								//    to write).
-								MatrixUtils.createRealMatrix(
-										new double[][]{
-											{1.0, 0.000},
-											{0.9, 0.010},
-											{0.8, 0.015},
-											{0.5, 0.020},
-											{0.2, 0.015},
-											{0.1, 0.010},
-											{0.0, 0.000},
-											{0.1,-0.010},
-											{0.2,-0.015},
-											{0.5,-0.020},
-											{0.8,-0.015},
-											{0.9,-0.010},
-											{1.0, 0.000}
-										}
-								)
-							)
-							*/
-							.build()
-						)
-					// -------------------------------------- build the aircraft, finally
-					.build();
+		else // theAircraft == null
+			return null;
 	}
 	
 	public AVLMassInputData importToMassInputData(Aircraft theAircraft) {
-		// if (theAircraft != null) // TODO
-		return
-			new AVLMassInputData
-					.Builder()
-					.setDescription("(C) Agostino De Marco, agodemar, mass properties")
-					.setLUnit(1.0)
-					.setMUnit(1.0)
-					.addMassProperties( // wing center panel
-						Tuple.of(
-							Tuple.of(200.0, 14.0, 0.0, 0.0), // mass, x, y, z
-							Tuple.of(11700.0, 832.0, 12532.0, 0.0, 0.0, 0.0) // Ixx, Iyy, Izz, Ixy, Ixz, Iyz
-						)
-					)
-					.addMassProperties( // wing R mid panel
-							Tuple.of(
-								Tuple.of(55.5, 4.2, 22.0, 1.0), // mass, x, y, z
-								Tuple.of(1180.0, 210.0, 1390.0, 0.0, 0.0, 0.0) // Ixx, Iyy, Izz, Ixy, Ixz, Iyz
+		// Get masses and inertias from weight+balance analyses
+		double massWing = 0.0;
+//		double ixx = 0.0;
+//		double iyy = 0.0;
+//		double izz = 0.0;
+		double ixxWing = 0.0;
+		double iyyWing = 0.0;
+		double izzWing = 0.0;
+		double ixyWing = 0.0;
+		double ixzWing = 0.0;
+		double iyzWing = 0.0;
+		if (theAircraft != null) {
+			if (theAircraft.getTheAnalysisManager() != null) {
+				// TODO: @masc adjust the following code accordingly
+				System.out.println("---------------------------------------------");
+				System.out.println("Data obtained from get methods of the aircraft.\n");
+
+				if (theAircraft.getTheAnalysisManager().getAnalysisList().contains(AnalysisTypeEnum.WEIGHTS)) {
+					// the weights analysis is done at this time					
+					massWing = theAircraft
+							.getTheAnalysisManager().getTheWeights().getWingMass()
+							.doubleValue(SI.KILOGRAM);
+					System.out.println("massWing = " + massWing + " kg\n");
+
+				}
+				if (theAircraft.getTheAnalysisManager().getAnalysisList().contains(AnalysisTypeEnum.BALANCE)) {
+					
+					//===========================================
+					// ENABLE STABILITY DERIVATIVE CALCULATIONS
+					//===========================================
+					enabledStabilityAnalysis = true;
+					
+					// the balance analysis is done at this time
+					ixxWing = theAircraft
+							.getTheAnalysisManager().getTheBalance().getAircraftInertiaMomentIxx()
+							.doubleValue(MyUnits.KILOGRAM_METER_SQUARED);
+					// TODO: get inertia of the wing
+					System.out.println("IxxWing = " + ixxWing + " kg m^2\n");
+					
+					iyyWing = theAircraft
+							.getTheAnalysisManager().getTheBalance().getAircraftInertiaMomentIyy()
+							.doubleValue(MyUnits.KILOGRAM_METER_SQUARED);
+					// TODO: get inertia of the wing
+					System.out.println("IyyWing = " + iyyWing + " kg m^2\n");
+					
+					izzWing = theAircraft
+							.getTheAnalysisManager().getTheBalance().getAircraftInertiaMomentIzz()
+							.doubleValue(MyUnits.KILOGRAM_METER_SQUARED);
+					// TODO: get inertia of the wing
+					System.out.println("IzzWing = " + izzWing + " kg m^2\n");
+					
+					ixyWing = theAircraft
+							.getTheAnalysisManager().getTheBalance().getAircraftInertiaProductIxy()
+							.doubleValue(MyUnits.KILOGRAM_METER_SQUARED);
+					// TODO: get inertia of the wing
+					System.out.println("IxyWing = " + ixyWing + " kg m^2\n");
+					
+					ixzWing = theAircraft
+							.getTheAnalysisManager().getTheBalance().getAircraftInertiaProductIxz()
+							.doubleValue(MyUnits.KILOGRAM_METER_SQUARED);
+					// TODO: get inertia of the wing
+					System.out.println("IxzWing = " + ixzWing + " kg m^2\n");
+					
+					iyzWing = theAircraft
+							.getTheAnalysisManager().getTheBalance().getAircraftInertiaProductIyz()
+							.doubleValue(MyUnits.KILOGRAM_METER_SQUARED);
+					// TODO: get inertia of the wing
+					System.out.println("IyzWing = " + iyzWing + " kg m^2\n");
+					
+				}
+				System.out.println("---------------------------------------------\n");
+			}
+			// aircraft & aircraft->analysisManager both non null 
+			return
+					new AVLMassInputData
+							.Builder()
+							.setDescription("(C) Agostino De Marco, agodemar, mass properties")
+							.setLUnit(1.0)
+							.setMUnit(1.0)
+							.addMassProperties( // wing center panel
+								Tuple.of( // TODO
+									Tuple.of(massWing, 14.0, 0.0, 0.0), // mass, x, y, z
+									Tuple.of(ixxWing, iyyWing, izzWing, ixyWing, ixzWing, iyzWing) // Ixx, Iyy, Izz, Ixy, Ixz, Iyz
+								)
 							)
-						)
-					.addMassProperties( // wing L mid panel
-							Tuple.of(
-								Tuple.of(55.5, 4.2, -22.0, 1.0), // mass, x, y, z
-								Tuple.of(1180.0, 210.0, 1390.0, 0.0, 0.0, 0.0) // Ixx, Iyy, Izz, Ixy, Ixz, Iyz
-							)
-						)
-					.addMassProperties( // horiz tail
-							Tuple.of(
-								Tuple.of(12.0, 29.0, 0.0, 1.0), // mass, x, y, z
-								Tuple.of(270.0, 12.0, 282.0, 0.0, 0.0, 0.0) // Ixx, Iyy, Izz, Ixy, Ixz, Iyz
-							)
-						)
-					.build();
+							.addMassProperties( // wing R mid panel
+									Tuple.of(
+										Tuple.of(55.5, 4.2, 22.0, 1.0), // mass, x, y, z
+										Tuple.of(1180.0, 210.0, 1390.0, 0.0, 0.0, 0.0) // Ixx, Iyy, Izz, Ixy, Ixz, Iyz
+									)
+								)
+							.addMassProperties( // wing L mid panel
+									Tuple.of(
+										Tuple.of(55.5, 4.2, -22.0, 1.0), // mass, x, y, z
+										Tuple.of(1180.0, 210.0, 1390.0, 0.0, 0.0, 0.0) // Ixx, Iyy, Izz, Ixy, Ixz, Iyz
+									)
+								)
+							.addMassProperties( // horiz tail
+									Tuple.of(
+										Tuple.of(12.0, 29.0, 0.0, 1.0), // mass, x, y, z
+										Tuple.of(270.0, 12.0, 282.0, 0.0, 0.0, 0.0) // Ixx, Iyy, Izz, Ixy, Ixz, Iyz
+									)
+								)
+							.build();
+			
+		} else { 
+			// Aircraft mass & balance not calculated
+			enabledStabilityAnalysis = false;
+			return null;
+		}
 	}
 
 	// TODO: this is the sequence of commands passed to AVL,
 	//       modify them as appropriate
 	//
 	public AVLMacro formRunMacro(OperatingConditions theOperatingConditions) {
+		
+		String massFileName = null;
+		String outputStabilityDerivativesFileName = null;
+		String outputStabilityDerivativesBodyAxesFileName = null;
+		if (this.enabledStabilityAnalysis) {
+			if (this.massFile != null)
+				massFileName = this.massFile.getName();
+			if (this.outputStabilityDerivativesFile != null)
+				outputStabilityDerivativesFileName = this.outputStabilityDerivativesFile.getName();
+			if (this.outputStabilityDerivativesBodyAxesFile != null)
+				outputStabilityDerivativesBodyAxesFileName = this.outputStabilityDerivativesBodyAxesFile.getName();
+		} 
 		return
 			new AVLMacro()
 				.load(this.getInputAVLFile().getName())
-				.mass(this.getInputMassFile().getName())
+				.mass(massFileName) // might be null
 				.mset(0)
 				.plop("g, F")
 				.back()
@@ -626,8 +584,8 @@ public class AVLExternalJob implements IAVLExternalJob {
 						)
 				.back()
 				.runCase()
-				.stabilityDerivatives(this.getOutputStabilityDerivativesFile().getName())
-				.bodyAxisDerivatives(this.getOutputStabilityDerivativesBodyAxesFile().getName())
+				.stabilityDerivatives(outputStabilityDerivativesFileName) // might be null
+				.bodyAxisDerivatives(outputStabilityDerivativesBodyAxesFileName) // might be null
 				.back()
 				.mode()
 				.newEigenmodeCalculation()
@@ -677,10 +635,14 @@ public class AVLExternalJob implements IAVLExternalJob {
 		System.out.println("Input AVL file name: " + this.getInputAVLFile().getName());
 
 		// Write out the mass file
-		AVLInputGenerator.writeDataToMassFile(massData, this.getInputMassFile().getAbsolutePath());
-
-		System.out.println("Input Mass file full path: " + this.getInputMassFile());
-		System.out.println("Input Mass file name: " + this.getInputMassFile().getName());
+		if (massData != null) {
+			AVLInputGenerator.writeDataToMassFile(massData, this.getInputMassFile().getAbsolutePath());
+			System.out.println("Input Mass file full path: " + this.getInputMassFile());
+			System.out.println("Input Mass file name: " + this.getInputMassFile().getName());
+		} else {
+			this.enabledStabilityAnalysis = false;
+			System.out.println("Mass input not written.");
+		}
 
 		// Write out the run file
 		AVLInputGenerator.writeDataToRunFile(avlMacro, this.getInputRunFile().getAbsolutePath());
@@ -753,12 +715,12 @@ public class AVLExternalJob implements IAVLExternalJob {
 
 	@Override
 	public File getOutputStabilityDerivativesBodyAxesFile() {
-		return this.outputStabilityDerivativesFileBodyAxes;
+		return this.outputStabilityDerivativesBodyAxesFile;
 	}
 
 	@Override
 	public void setOutputStabilityDerivativesBodyAxesFile(File file) {
-		this.outputStabilityDerivativesFileBodyAxes = file;
+		this.outputStabilityDerivativesBodyAxesFile = file;
 	}
 	
 	@Override
@@ -844,6 +806,14 @@ public class AVLExternalJob implements IAVLExternalJob {
 	@Override
 	public StringBuilder getStdErr() {
 		return stdErr;
+	}
+
+	public boolean isEnabledStabilityAnalysis() {
+		return enabledStabilityAnalysis;
+	}
+
+	public void setEnabledStabilityAnalysis(boolean enabledStabilityAnalysis) {
+		this.enabledStabilityAnalysis = enabledStabilityAnalysis;
 	}
 
 }

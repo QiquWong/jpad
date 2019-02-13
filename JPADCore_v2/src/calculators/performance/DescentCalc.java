@@ -55,6 +55,7 @@ public class DescentCalc {
 	_fidlCalibrationFactorEmissionIndexSOx, _fidlCalibrationFactorEmissionIndexH2O;
 
 	private final int maxIterationNumber = 50;
+	private int _numberOfStepDescent; 
 	
 	//............................................................................................
 	// Output:
@@ -184,6 +185,7 @@ public class DescentCalc {
 		this._fidlCalibrationFactorEmissionIndexCO2 = fidlCalibrationFactorEmissionIndexCO2; 
 		this._fidlCalibrationFactorEmissionIndexSOx = fidlCalibrationFactorEmissionIndexSOx; 
 		this._fidlCalibrationFactorEmissionIndexH2O = fidlCalibrationFactorEmissionIndexH2O;
+		this._numberOfStepDescent = 5;
 		
 		this._descentAltitudes = new ArrayList<>();
 		this._descentLengths = new ArrayList<>();
@@ -259,7 +261,7 @@ public class DescentCalc {
 						MyArrayUtils.linspace(
 								_initialDescentAltitude.doubleValue(SI.METER),
 								_endDescentAltitude.doubleValue(SI.METER),
-								10
+								_numberOfStepDescent
 								),
 						SI.METER
 						);
@@ -750,7 +752,10 @@ public class DescentCalc {
 		}
 		
 		_thrustPerStep.add(interpolatedThrustList.get(0));
-		_throttlePerStep.add(_thrustPerStep.get(0).doubleValue(SI.NEWTON) / _theAircraft.getPowerPlant().getT0Total().doubleValue(SI.NEWTON));
+		_throttlePerStep.add(
+				_thrustPerStep.get(0).doubleValue(SI.NEWTON) 
+				/ _cruiseThrustFromDatabase.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
+				);
 		_interpolatedSFCList.add(
 				(_sfcCruiseList.get(0)*weightCruise.get(0))
 				+ (_sfcFlightIdleList.get(0)*weightFlightIdle.get(0))
@@ -789,7 +794,7 @@ public class DescentCalc {
 				);
 		
 		/* Step by step calculation */
-		for(int i=1; i<_descentAltitudes.size()-1; i++) {
+		for(int i=1; i<_descentAltitudes.size(); i++) {
 			sigmaList.add(
 					OperatingConditions.getAtmosphere(
 							_descentAltitudes.get(i).doubleValue(SI.METER),
@@ -843,7 +848,7 @@ public class DescentCalc {
 							Amount.valueOf(
 									( (horizontalSpeedListTAS.get(i).doubleValue(SI.METERS_PER_SECOND)
 											+ horizontalSpeedListTAS.get(i-1).doubleValue(SI.METERS_PER_SECOND)) / 2 )
-									*(_descentTimes.get(i).doubleValue(SI.SECOND) - _descentTimes.get(i).doubleValue(SI.SECOND)),
+									*(_descentTimes.get(i).doubleValue(SI.SECOND) - _descentTimes.get(i-1).doubleValue(SI.SECOND)),
 									SI.METER
 									)
 							.to(NonSI.NAUTICAL_MILE)
@@ -1185,7 +1190,7 @@ public class DescentCalc {
 					*0.454
 					*0.224809
 					/60
-					*sfcCruiseList.get(i)
+					*_sfcCruiseList.get(i)
 					);
 			
 			_fuelFlowFlightIdleList.add(
@@ -1194,7 +1199,7 @@ public class DescentCalc {
 					*0.454
 					*0.224809
 					/60
-					*sfcFlightIdleList.get(i)
+					*_sfcFlightIdleList.get(i)
 					);
 			_emissionIndexNOxCruiseList.add(i, cruiseEmissionNOxIndexListTemp.stream().mapToDouble(e -> e).average().getAsDouble());
 			_emissionIndexNOxFlightIdleList.add(i, flightIdleEmissionNOxIndexListTemp.stream().mapToDouble(e -> e).average().getAsDouble());
@@ -1298,15 +1303,21 @@ public class DescentCalc {
 					_interpolatedEmissionIndexSOxList.remove(i);
 					_interpolatedEmissionIndexH2OList.remove(i);
 					_fuelUsedPerStep.remove(i);
-					_aircraftMassPerStep.remove(i);
-					_cLSteps.remove(i);
-					_cDSteps.remove(i);
-					_efficiencyPerStep.remove(i);
-					_dragPerStep.remove(i);
+					_emissionNOxPerStep.remove(i);
+					_emissionCOPerStep.remove(i);
+					_emissionHCPerStep.remove(i);
+					_emissionSootPerStep.remove(i);
+					_emissionCO2PerStep.remove(i);
+					_emissionSOxPerStep.remove(i);
+					_emissionH2OPerStep.remove(i);
 				}
 				
 				_thrustPerStep.add(i, interpolatedThrustList.get(i));
-				_throttlePerStep.add(i, _thrustPerStep.get(i).doubleValue(SI.NEWTON) / _theAircraft.getPowerPlant().getT0Total().doubleValue(SI.NEWTON));
+				_throttlePerStep.add(
+						i, 
+						_thrustPerStep.get(i).doubleValue(SI.NEWTON) / 
+						_cruiseThrustFromDatabase.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
+						);
 				_interpolatedSFCList.add(
 						(_sfcCruiseList.get(i)*weightCruise.get(i))
 						+ (_sfcFlightIdleList.get(i)*weightFlightIdle.get(i))
@@ -1439,6 +1450,8 @@ public class DescentCalc {
 										)
 								)
 						);
+				
+				_aircraftMassPerStep.remove(i);
 				_aircraftMassPerStep.add(
 						i,
 						_aircraftMassPerStep.get(i-1)
@@ -1447,6 +1460,8 @@ public class DescentCalc {
 								SI.KILOGRAM)
 								)
 						);
+				
+				_cLSteps.remove(i);
 				_cLSteps.add(
 						i,
 						LiftCalc.calculateLiftCoeff(
@@ -1462,6 +1477,8 @@ public class DescentCalc {
 								_theOperatingConditions.getDeltaTemperatureCruise()
 								)
 						);
+				
+				_cDSteps.remove(i);
 				_cDSteps.add(
 						i,
 						MyMathUtils.getInterpolatedValue1DLinear(
@@ -1479,11 +1496,15 @@ public class DescentCalc {
 										)
 								)
 						);
+				
+				_efficiencyPerStep.remove(i);
 				_efficiencyPerStep.add(
 						i,
 						_cLSteps.get(i)
 						/_cDSteps.get(i)
 						);
+				
+				_dragPerStep.remove(i);
 				_dragPerStep.add(
 						i,
 						DragCalc.calculateDragAtSpeed(
@@ -1517,14 +1538,14 @@ public class DescentCalc {
 		
 		_totalDescentLength = _descentLengths.get(_descentLengths.size()-1).to(NonSI.NAUTICAL_MILE); 
 		_totalDescentTime = _descentTimes.get(_descentTimes.size()-1).to(NonSI.MINUTE);
-		_totalDescentFuelUsed = _fuelUsedPerStep.get(_fuelUsedPerStep.size()).to(SI.KILOGRAM);
-		_totalDescentNOxEmissions = _emissionNOxPerStep.get(_emissionNOxPerStep.size()).to(SI.KILOGRAM);
-		_totalDescentCOEmissions = _emissionCOPerStep.get(_emissionNOxPerStep.size()).to(SI.KILOGRAM);
-		_totalDescentHCEmissions = _emissionHCPerStep.get(_emissionNOxPerStep.size()).to(SI.KILOGRAM);
-		_totalDescentSootEmissions = _emissionSootPerStep.get(_emissionNOxPerStep.size()).to(SI.KILOGRAM);
-		_totalDescentCO2Emissions = _emissionCO2PerStep.get(_emissionNOxPerStep.size()).to(SI.KILOGRAM);
-		_totalDescentSOxEmissions = _emissionSOxPerStep.get(_emissionNOxPerStep.size()).to(SI.KILOGRAM);
-		_totalDescentH2OEmissions = _emissionH2OPerStep.get(_emissionNOxPerStep.size()).to(SI.KILOGRAM);
+		_totalDescentFuelUsed = _fuelUsedPerStep.get(_fuelUsedPerStep.size()-1).to(SI.KILOGRAM);
+		_totalDescentNOxEmissions = _emissionNOxPerStep.get(_emissionNOxPerStep.size()-1).to(SI.KILOGRAM);
+		_totalDescentCOEmissions = _emissionCOPerStep.get(_emissionNOxPerStep.size()-1).to(SI.KILOGRAM);
+		_totalDescentHCEmissions = _emissionHCPerStep.get(_emissionNOxPerStep.size()-1).to(SI.KILOGRAM);
+		_totalDescentSootEmissions = _emissionSootPerStep.get(_emissionNOxPerStep.size()-1).to(SI.KILOGRAM);
+		_totalDescentCO2Emissions = _emissionCO2PerStep.get(_emissionNOxPerStep.size()-1).to(SI.KILOGRAM);
+		_totalDescentSOxEmissions = _emissionSOxPerStep.get(_emissionNOxPerStep.size()-1).to(SI.KILOGRAM);
+		_totalDescentH2OEmissions = _emissionH2OPerStep.get(_emissionNOxPerStep.size()-1).to(SI.KILOGRAM);
 		
 	}
 	
@@ -2517,5 +2538,13 @@ public class DescentCalc {
 
 	public void setInterpolatedEmissionIndexH2OList(List<Double> _interpolatedEmissionIndexH2OList) {
 		this._interpolatedEmissionIndexH2OList = _interpolatedEmissionIndexH2OList;
+	}
+
+	public int getNumberOfStepDescent() {
+		return _numberOfStepDescent;
+	}
+
+	public void setNumberOfStepDescent(int _numberOfStepDescent) {
+		this._numberOfStepDescent = _numberOfStepDescent;
 	}
 }

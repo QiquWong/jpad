@@ -10,6 +10,6 @@ public enum MissionPhasesEnum {
 	ALTERNATE_CRUISE,
 	SECOND_DESCENT,
 	HOLDING,
-	LANDING;
+	APPROACH_AND_LANDING;
 	
 }

@@ -93,6 +93,8 @@ public class MyUnits {
 	public static final Unit CENTS_PER_GALLON = (Currency.USD.divide(100)).divide(NonSI.GALLON_LIQUID_US);
 	public static final Unit G_PER_KN = SI.GRAM.divide(SI.NEWTON.divide(1000.0));
 	
+	public static final Unit KILOWATT_HOUR = SI.KILO(SI.WATT).times(NonSI.HOUR);
+	public static final Unit HORSEPOWER_HOUR = NonSI.HORSEPOWER.times(NonSI.HOUR);
 	
 	/**
 	 * Method that converts a price per kilogram (US$/Kg) to a price per pound (US$/lb)

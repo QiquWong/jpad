@@ -12,8 +12,6 @@ import javax.measure.quantity.Velocity;
 import org.inferred.freebuilder.FreeBuilder;
 import org.jscience.physics.amount.Amount;
 
-import com.sun.istack.internal.Nullable;
-
 import aircraft.Aircraft;
 import configuration.enumerations.PerformanceEnum;
 import configuration.enumerations.PerformancePlotEnum;
@@ -34,6 +32,7 @@ public interface IACPerformanceManager {
 	Amount<Mass> getMaximumTakeOffMass();
 	Amount<Mass> getOperatingEmptyMass();
 	Amount<Mass> getMaximumFuelMass();
+	Amount<Mass> getMaximumPayload();
 	Amount<Mass> getSinglePassengerMass();
 	//..............................................................................
 	// Aerodynamics
@@ -119,10 +118,8 @@ public interface IACPerformanceManager {
 	Amount<Length> getAlternateCruiseAltitude();
 	Amount<Duration> getHoldingDuration();
 	Amount<Length> getHoldingAltitude();
-	double getHoldingMachNumber();
 	double getFuelReserve();
 	Amount<Length> getFirstGuessCruiseLength();
-	@Nullable
 	Amount<Mass> getFirstGuessInitialMissionFuelMass();
 	//..............................................................................
 	// Calibration factors:
@@ -140,7 +137,6 @@ public interface IACPerformanceManager {
 	double getTakeOffCalibrationFactorSFC();
 	double getAprCalibrationFactorSFC();
 	double getClimbCalibrationFactorSFC();
-	double getContinuousCalibrationFactorSFC();
 	double getCruiseCalibrationFactorSFC();
 	double getFlightIdleCalibrationFactorSFC();
 	double getGroundIdleCalibrationFactorSFC();
@@ -149,7 +145,6 @@ public interface IACPerformanceManager {
 	double getTakeOffCalibrationFactorEmissionIndexNOx();
 	double getAprCalibrationFactorEmissionIndexNOx();
 	double getClimbCalibrationFactorEmissionIndexNOx();
-	double getContinuousCalibrationFactorEmissionIndexNOx();
 	double getCruiseCalibrationFactorEmissionIndexNOx();
 	double getFlightIdleCalibrationFactorEmissionIndexNOx();
 	double getGroundIdleCalibrationFactorEmissionIndexNOx();
@@ -158,7 +153,6 @@ public interface IACPerformanceManager {
 	double getTakeOffCalibrationFactorEmissionIndexCO();
 	double getAprCalibrationFactorEmissionIndexCO();
 	double getClimbCalibrationFactorEmissionIndexCO();
-	double getContinuousCalibrationFactorEmissionIndexCO();
 	double getCruiseCalibrationFactorEmissionIndexCO();
 	double getFlightIdleCalibrationFactorEmissionIndexCO();
 	double getGroundIdleCalibrationFactorEmissionIndexCO();
@@ -167,7 +161,6 @@ public interface IACPerformanceManager {
 	double getTakeOffCalibrationFactorEmissionIndexHC();
 	double getAprCalibrationFactorEmissionIndexHC();
 	double getClimbCalibrationFactorEmissionIndexHC();
-	double getContinuousCalibrationFactorEmissionIndexHC();
 	double getCruiseCalibrationFactorEmissionIndexHC();
 	double getFlightIdleCalibrationFactorEmissionIndexHC();
 	double getGroundIdleCalibrationFactorEmissionIndexHC();
@@ -176,7 +169,6 @@ public interface IACPerformanceManager {
 	double getTakeOffCalibrationFactorEmissionIndexSoot();
 	double getAprCalibrationFactorEmissionIndexSoot();
 	double getClimbCalibrationFactorEmissionIndexSoot();
-	double getContinuousCalibrationFactorEmissionIndexSoot();
 	double getCruiseCalibrationFactorEmissionIndexSoot();
 	double getFlightIdleCalibrationFactorEmissionIndexSoot();
 	double getGroundIdleCalibrationFactorEmissionIndexSoot();
@@ -185,7 +177,6 @@ public interface IACPerformanceManager {
 	double getTakeOffCalibrationFactorEmissionIndexCO2();
 	double getAprCalibrationFactorEmissionIndexCO2();
 	double getClimbCalibrationFactorEmissionIndexCO2();
-	double getContinuousCalibrationFactorEmissionIndexCO2();
 	double getCruiseCalibrationFactorEmissionIndexCO2();
 	double getFlightIdleCalibrationFactorEmissionIndexCO2();
 	double getGroundIdleCalibrationFactorEmissionIndexCO2();
@@ -194,7 +185,6 @@ public interface IACPerformanceManager {
 	double getTakeOffCalibrationFactorEmissionIndexSOx();
 	double getAprCalibrationFactorEmissionIndexSOx();
 	double getClimbCalibrationFactorEmissionIndexSOx();
-	double getContinuousCalibrationFactorEmissionIndexSOx();
 	double getCruiseCalibrationFactorEmissionIndexSOx();
 	double getFlightIdleCalibrationFactorEmissionIndexSOx();
 	double getGroundIdleCalibrationFactorEmissionIndexSOx();
@@ -203,7 +193,6 @@ public interface IACPerformanceManager {
 	double getTakeOffCalibrationFactorEmissionIndexH2O();
 	double getAprCalibrationFactorEmissionIndexH2O();
 	double getClimbCalibrationFactorEmissionIndexH2O();
-	double getContinuousCalibrationFactorEmissionIndexH2O();
 	double getCruiseCalibrationFactorEmissionIndexH2O();
 	double getFlightIdleCalibrationFactorEmissionIndexH2O();
 	double getGroundIdleCalibrationFactorEmissionIndexH2O();
