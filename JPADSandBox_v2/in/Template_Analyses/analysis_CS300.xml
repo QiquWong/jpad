@@ -70,7 +70,8 @@
 			landing="FALSE"
 			payload_range="FALSE"
 			V_n_diagram="FALSE"
-			mission_profile="TRUE"
+			noise_trajectories="TRUE"
+			mission_profile="FALSE"
 		/>
 		-->
 		<!--

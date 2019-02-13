@@ -25,7 +25,7 @@
 					<cL0_landing_configuration>1.8291</cL0_landing_configuration>
 					<delta_CD0_flap_take_off></delta_CD0_flap_take_off>
 					<delta_CD0_flap_landing></delta_CD0_flap_landing>
-					<delta_CD0_landing_gears></delta_CD0_landing_gears>
+					<delta_CD0_landing_gears>0.015</delta_CD0_landing_gears>
 					<!-- the following data are used only if parabolicDragPolar flag is set to TRUE. In any other case, they can be left blank -->
 					<cD0></cD0>
 					<oswald_cruise></oswald_cruise> 

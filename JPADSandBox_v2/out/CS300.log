@@ -1,26 +1,26 @@
 -------------------
 Complete Analysis Test
 -------------------
-AIRCRAFT INPUT ===> C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\aircraft_CS300.xml
-ANALYSES INPUT ===> C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Analyses\analysis_CS300.xml
-OPERATING CONDITIONS INPUT ===> C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Analyses\operating_conditions_CS300.xml
-AIRFOILS ===> C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\lifting_surfaces\airfoils
-FUSELAGES ===> C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\fuselages
-LIFTING SURFACES ===> C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\lifting_surfaces
-ENGINES ===> C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\engines
-NACELLES ===> C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\nacelles
-LANDING GEARS ===> C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\landing_gears
-CABIN CONFIGURATIONS ===> C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\cabin_configurations
+AIRCRAFT INPUT ===> D:\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\aircraft_CS300.xml
+ANALYSES INPUT ===> D:\JPAD\jpad\JPADSandBox_v2\in\Template_Analyses\analysis_CS300.xml
+OPERATING CONDITIONS INPUT ===> D:\JPAD\jpad\JPADSandBox_v2\in\Template_Analyses\operating_conditions_CS300.xml
+AIRFOILS ===> D:\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\lifting_surfaces\airfoils
+FUSELAGES ===> D:\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\fuselages
+LIFTING SURFACES ===> D:\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\lifting_surfaces
+ENGINES ===> D:\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\engines
+NACELLES ===> D:\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\nacelles
+LANDING GEARS ===> D:\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\landing_gears
+CABIN CONFIGURATIONS ===> D:\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\cabin_configurations
 --------------
-11 [main] INFO ncsa.hdf.hdf5lib.H5 - HDF5 library: jhdf5
-11 [main] INFO ncsa.hdf.hdf5lib.H5 -  successfully loaded from java.library.path
-De-serializing file: C:\Users\oem\JPAD\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterAerodynamicDatabase.xml ...
+10 [main] INFO ncsa.hdf.hdf5lib.H5 - HDF5 library: jhdf5
+10 [main] INFO ncsa.hdf.hdf5lib.H5 -  successfully loaded from java.library.path
+De-serializing file: D:\JPAD\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterAerodynamicDatabase.xml ...
 database.databasefunctions.aerodynamics.AerodynamicDatabaseReader de-serialization complete
-De-serializing file: C:\Users\oem\JPAD\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterHighLiftDatabase.xml ...
+De-serializing file: D:\JPAD\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterHighLiftDatabase.xml ...
 database.databasefunctions.aerodynamics.HighLiftDatabaseReader de-serialization complete
-De-serializing file: C:\Users\oem\JPAD\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterFusDesDatabase.xml ...
+De-serializing file: D:\JPAD\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterFusDesDatabase.xml ...
 database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader de-serialization complete
-De-serializing file: C:\Users\oem\JPAD\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterVeDSCDatabase.xml ...
+De-serializing file: D:\JPAD\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterVeDSCDatabase.xml ...
 database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serialization complete
 
 
@@ -1373,7 +1373,8 @@ database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serializati
 	Altitude TakeOff: 0.0 ft
 	ISA Deviation TakeOff: 0.0 ?
 	Throttle TakeOff: 1.0
-	Slat deflections Take-off: [15.0 deg, 15.0 deg, 15.0 deg, 15.0 deg, 15.0 deg, 15.0 deg]
+	Flap deflections Take-off: [15.0 deg, 15.0 deg]
+	Slat deflections Take-off: [15.0 deg, 15.0 deg, 15.0 deg, 15.0 deg]
 	.....................................
 	Alpha current Landing: 0.0 deg
 	Beta current Landing: 0.0 deg
@@ -1381,7 +1382,8 @@ database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serializati
 	Altitude Landing: 0.0 ft
 	ISA Deviation Landing: 0.0 ?
 	Throttle Landing: 1.0
-	Slat deflections Landing: [40.0 deg, 40.0 deg, 25.0 deg, 25.0 deg, 25.0 deg, 25.0 deg]
+	Flap deflections Landing: [40.0 deg, 40.0 deg]
+	Slat deflections Landing: [25.0 deg, 25.0 deg, 25.0 deg, 25.0 deg]
 
 	.....................................
 	CLIMB
@@ -1446,11 +1448,49 @@ database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serializati
 	Running requested analyses ... 
 
 
-		Weights Analysis :: START
-		Weights Analysis :: COMPLETE
+		Performance Analysis :: START
+De-serializing file: D:\JPAD\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterVeDSCDatabase.xml ...
+database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serialization complete
 
-		Balance Analysis :: START
-		Balance Analysis :: COMPLETE 
+-----------------------------------------------------------
+CLmaxTO = 2.36
+CL0 = 1.2407
+VsTO = 61.505636598394076 m/s
+VRot = 64.58091842831376 m/s
+-----------------------------------------------------------
 
-		Aerodynamic and Stability Analysis (TAKE-OFF) :: START
-WARNING (IMPORT AERODYNAMIC AND STABILITY DATA): THE COMPONENT 'CANARD' HAS NOT BEEN DEFINED! IMPOSSIBLE TO READ THE PLOT LIST!
+---------------------------------------------------
+NoiseTrajectoryCalc :: TAKE-OFF ODE integration :: cutback = false:: throttle cutback = null
+
+
+	RUNNING SIMULATION ...
+
+
+=================================================
+Integration #1
+
+
+java.lang.reflect.InvocationTargetException
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at com.sun.javafx.application.LauncherImpl.launchApplicationWithArgs(LauncherImpl.java:389)
+	at com.sun.javafx.application.LauncherImpl.launchApplication(LauncherImpl.java:328)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at sun.launcher.LauncherHelper$FXHelper.main(LauncherHelper.java:767)
+Caused by: org.apache.commons.math3.exception.NumberIsTooSmallException: minimal step size (1,00E-20) reached, integration needs 9,44E-21
+	at org.apache.commons.math3.ode.nonstiff.AdaptiveStepsizeIntegrator.filterStep(AdaptiveStepsizeIntegrator.java:328)
+	at org.apache.commons.math3.ode.nonstiff.EmbeddedRungeKuttaIntegrator.integrate(EmbeddedRungeKuttaIntegrator.java:293)
+	at org.apache.commons.math3.ode.AbstractIntegrator.integrate(AbstractIntegrator.java:252)
+	at calculators.performance.TakeOffNoiseTrajectoryCalc.calculateNoiseTakeOffTrajectory(TakeOffNoiseTrajectoryCalc.java:1077)
+	at analyses.ACPerformanceManager$CalcNoiseTrajectories.calculateTakeOffNoiseTrajectory(ACPerformanceManager.java:7268)
+	at analyses.ACPerformanceManager.calculate(ACPerformanceManager.java:3160)
+	at analyses.ACAnalysisManager.calculatePerformances(ACAnalysisManager.java:1906)
+	at analyses.ACAnalysisManager.doAnalysis(ACAnalysisManager.java:1610)
+	at sandbox2.vt.analyses.CompleteAnalysisTest.main(CompleteAnalysisTest.java:331)
+	... 11 more
+Exception running application sandbox2.vt.analyses.CompleteAnalysisTest
