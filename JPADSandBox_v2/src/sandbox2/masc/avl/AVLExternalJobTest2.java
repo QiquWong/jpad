@@ -40,6 +40,8 @@ public class AVLExternalJobTest2 {
 		public static OperatingConditions theOperatingConditions;
 		
 		public static AVLExternalJob job = new AVLExternalJob();
+		
+		public static String baseName = "newData3";	// BaseName of AVL input files
 
 		//-------------------------------------------------------------	
 		public static void main(String[] args) throws InvalidFormatException, IOException, InterruptedException, HDF5LibraryException {
@@ -79,7 +81,7 @@ public class AVLExternalJobTest2 {
 					binDirPath = binDir.getAbsolutePath();
 					job.setBinDirectory(binDir);
 					System.out.println("\n\n\tAVL bin dir given by user.");
-					System.out.println("\tDir exists? " + binDir.exists() + "\n\n");
+					System.out.println("\tDoes dir exist? " + binDir.exists() + "\n\n");
 					if (!binDir.exists()) {
 						System.err.println("AVL bin dir not found!");
 						System.err.println("TERMINATING");
@@ -110,7 +112,7 @@ public class AVLExternalJobTest2 {
 				//-----------------------------------------------------------------------------------------------------
 				// Handle file names according to a given base-name
 				// Must assign this to avoid NullPointerException
-				job.setBaseName("newData3");
+				job.setBaseName(baseName);
 				
 				// gather files and clean up before execution
 				List<String> fileNames = new ArrayList<>();
@@ -132,7 +134,7 @@ public class AVLExternalJobTest2 {
 					}
 				});
 				// TODO delete all files like <base-name>_airfoil*.dat
-				
+
 				// Assign the main .avl input file
 				job.setInputAVLFile(new File(binDirPath + File.separator + job.getBaseName()+".avl"));
 
@@ -207,7 +209,7 @@ public class AVLExternalJobTest2 {
 					// Use AVLOutputStabilityDerivativesFileReader object
 					AVLOutputStabilityDerivativesFileReader reader = new AVLOutputStabilityDerivativesFileReader(job.getOutputStabilityDerivativesFile());
 					
-					System.out.println("The AVL output file is available? " + reader.isFileAvailable());
+					System.out.println("Is the AVL output file available? " + reader.isFileAvailable());
 					System.out.println("The AVL output file to read: " + reader.getTheFile());
 					
 					// parse the file and build map of variables & values

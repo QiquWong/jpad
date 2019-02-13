@@ -441,17 +441,27 @@ public class AVLExternalJob implements IAVLExternalJob {
 	public AVLMassInputData importToMassInputData(Aircraft theAircraft) {
 		// Get masses and inertias from weight+balance analyses
 		double massWing = 0.0;
-		double ixx = 0.0;
+//		double ixx = 0.0;
+//		double iyy = 0.0;
+//		double izz = 0.0;
+		double ixxWing = 0.0;
+		double iyyWing = 0.0;
+		double izzWing = 0.0;
+		double ixyWing = 0.0;
+		double ixzWing = 0.0;
+		double iyzWing = 0.0;
 		if (theAircraft != null) {
 			if (theAircraft.getTheAnalysisManager() != null) {
-				
 				// TODO: @masc adjust the following code accordingly
+				System.out.println("---------------------------------------------");
+				System.out.println("Data obtained from get methods of the aircraft.\n");
 
 				if (theAircraft.getTheAnalysisManager().getAnalysisList().contains(AnalysisTypeEnum.WEIGHTS)) {
-					// the weights analysis is done at this time
+					// the weights analysis is done at this time					
 					massWing = theAircraft
 							.getTheAnalysisManager().getTheWeights().getWingMass()
 							.doubleValue(SI.KILOGRAM);
+					System.out.println("massWing = " + massWing + " kg\n");
 
 				}
 				if (theAircraft.getTheAnalysisManager().getAnalysisList().contains(AnalysisTypeEnum.BALANCE)) {
@@ -462,14 +472,44 @@ public class AVLExternalJob implements IAVLExternalJob {
 					enabledStabilityAnalysis = true;
 					
 					// the balance analysis is done at this time
-					ixx = theAircraft
+					ixxWing = theAircraft
 							.getTheAnalysisManager().getTheBalance().getAircraftInertiaMomentIxx()
 							.doubleValue(MyUnits.KILOGRAM_METER_SQUARED);
-
-					System.out.println("\n\n\n\n");
-					System.out.println("Ixx = " + ixx + "kg m^2");
-					System.out.println("\n\n\n\n");
+					// TODO: get inertia of the wing
+					System.out.println("IxxWing = " + ixxWing + " kg m^2\n");
+					
+					iyyWing = theAircraft
+							.getTheAnalysisManager().getTheBalance().getAircraftInertiaMomentIyy()
+							.doubleValue(MyUnits.KILOGRAM_METER_SQUARED);
+					// TODO: get inertia of the wing
+					System.out.println("IyyWing = " + iyyWing + " kg m^2\n");
+					
+					izzWing = theAircraft
+							.getTheAnalysisManager().getTheBalance().getAircraftInertiaMomentIzz()
+							.doubleValue(MyUnits.KILOGRAM_METER_SQUARED);
+					// TODO: get inertia of the wing
+					System.out.println("IzzWing = " + izzWing + " kg m^2\n");
+					
+					ixyWing = theAircraft
+							.getTheAnalysisManager().getTheBalance().getAircraftInertiaProductIxy()
+							.doubleValue(MyUnits.KILOGRAM_METER_SQUARED);
+					// TODO: get inertia of the wing
+					System.out.println("IxyWing = " + ixyWing + " kg m^2\n");
+					
+					ixzWing = theAircraft
+							.getTheAnalysisManager().getTheBalance().getAircraftInertiaProductIxz()
+							.doubleValue(MyUnits.KILOGRAM_METER_SQUARED);
+					// TODO: get inertia of the wing
+					System.out.println("IxzWing = " + ixzWing + " kg m^2\n");
+					
+					iyzWing = theAircraft
+							.getTheAnalysisManager().getTheBalance().getAircraftInertiaProductIyz()
+							.doubleValue(MyUnits.KILOGRAM_METER_SQUARED);
+					// TODO: get inertia of the wing
+					System.out.println("IyzWing = " + iyzWing + " kg m^2\n");
+					
 				}
+				System.out.println("---------------------------------------------\n");
 			}
 			// aircraft & aircraft->analysisManager both non null 
 			return
@@ -481,7 +521,7 @@ public class AVLExternalJob implements IAVLExternalJob {
 							.addMassProperties( // wing center panel
 								Tuple.of( // TODO
 									Tuple.of(massWing, 14.0, 0.0, 0.0), // mass, x, y, z
-									Tuple.of(ixx, 832.0, 12532.0, 0.0, 0.0, 0.0) // Ixx, Iyy, Izz, Ixy, Ixz, Iyz
+									Tuple.of(ixxWing, iyyWing, izzWing, ixyWing, ixzWing, iyzWing) // Ixx, Iyy, Izz, Ixy, Ixz, Iyz
 								)
 							)
 							.addMassProperties( // wing R mid panel
