@@ -1607,20 +1607,7 @@ public class ACAerodynamicAndStabilityManagerUtils {
 		calcMomentCurve.fromAirfoilDistribution();
 		}
 		
-		if ( _theAerodynamicBuilderInterface.getCurrentCondition() == ConditionEnum.CLIMB ||  _theAerodynamicBuilderInterface.getCurrentCondition() == ConditionEnum.CRUISE) {
 		temporaryMomentCurve = MyArrayUtils.convertDoubleArrayToListDouble(liftingSurfaceAerodynamicManager.getMoment3DCurve().get(MethodEnum.AIRFOIL_DISTRIBUTION));
-		}
-		
-		if ( _theAerodynamicBuilderInterface.getCurrentCondition() == ConditionEnum.TAKE_OFF ||  _theAerodynamicBuilderInterface.getCurrentCondition() == ConditionEnum.LANDING) {
-		
-			for(int i=0; i<liftingSurfaceAerodynamicManager.getMoment3DCurve().get(MethodEnum.AIRFOIL_DISTRIBUTION).length; i++) {
-				temporaryMomentCurve.add(
-						liftingSurfaceAerodynamicManager.getMoment3DCurve().get(MethodEnum.AIRFOIL_DISTRIBUTION)[i] +
-						liftingSurfaceAerodynamicManager.getDeltaCMc4().get(MethodEnum.SEMIEMPIRICAL)
-						);
-			}
-			
-		}
 			
 		aerodynamicAndStabilityManager.setCurrent3DWingMomentCurve(temporaryMomentCurve);
 		
@@ -1628,10 +1615,10 @@ public class ACAerodynamicAndStabilityManagerUtils {
 		//	ELEVATOR_MOMENT_CURVE_3D
 
 			CalcHighLiftMomentCurve calcHighLiftMomentCurve = aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers().get(ComponentEnum.HORIZONTAL_TAIL).new CalcHighLiftMomentCurve();
-				for(int i=0; i<aerodynamicAndStabilityManager.getDeltaEForEquilibrium().size(); i++) {
+			for(int i=0; i<aerodynamicAndStabilityManager.getTheAerodynamicBuilderInterface().getDeltaElevatorList().size(); i++) {
 					
 				List<Amount<Angle>> elevatorDeflection = new ArrayList<>();
-				elevatorDeflection.add(aerodynamicAndStabilityManager.getDeltaEForEquilibrium().get(i).to(NonSI.DEGREE_ANGLE));
+				elevatorDeflection.add(aerodynamicAndStabilityManager.getTheAerodynamicBuilderInterface().getDeltaElevatorList().get(i).to(NonSI.DEGREE_ANGLE));
 				calcHighLiftMomentCurve.semiempirical(
 						aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers().get(ComponentEnum.HORIZONTAL_TAIL).getMoment3DCurve().get(
 								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_LIFTING_SURFACE)
@@ -1640,6 +1627,12 @@ public class ACAerodynamicAndStabilityManagerUtils {
 						new ArrayList<>(), 
 						aerodynamicAndStabilityManager.getCurrentMachNumber() 
 						);
+			
+				aerodynamicAndStabilityManager.getCurrent3DHorizontalTailMomentCurve().put(
+						elevatorDeflection.get(0), 
+						MyArrayUtils.convertDoubleArrayToListDouble(
+								aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers().get(ComponentEnum.HORIZONTAL_TAIL).getMomentCoefficient3DCurveHighLift().get(MethodEnum.SEMIEMPIRICAL))
+					);
 				}
 
 		}
@@ -1690,6 +1683,8 @@ public class ACAerodynamicAndStabilityManagerUtils {
 			});
 
 		}
+	
+
 	
 	public static void calculateVerticalTailLiftCurveWithRudderDeflection(
 			ACAerodynamicAndStabilityManager_v2 aerodynamicAndStabilityManager

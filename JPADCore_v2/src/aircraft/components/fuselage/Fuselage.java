@@ -1985,6 +1985,7 @@ public class Fuselage {
 		sectionsYZ.clear();
 		sectionsYZStations.clear();
 	}
+	
 
 	public static Fuselage importFromXML(String pathToXML) {
 

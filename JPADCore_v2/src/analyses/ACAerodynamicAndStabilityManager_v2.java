@@ -2421,6 +2421,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 				calculateHorizontalTailData();
 				
 				ACAerodynamicAndStabilityManagerUtils.calculateHorizontalTailLiftCurveWithElevatorDeflection(this);
+				ACAerodynamicAndStabilityManagerUtils.calculateCurrentHTailMomentCurve(this);
 			}
 		}
 
