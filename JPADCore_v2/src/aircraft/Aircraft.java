@@ -552,6 +552,7 @@ public class Aircraft {
 			theFuselage.setYApexConstructionAxes(yApexFuselage);
 			theFuselage.setZApexConstructionAxes(zApexFuselage);
 		}
+
 		
 		//---------------------------------------------------------------------------------
 		// CABIN CONFIGURATION
@@ -724,6 +725,7 @@ public class Aircraft {
 			theCanard.setZApexConstructionAxes(zApexCanard);
 			theCanard.setRiggingAngle(riggingAngleCanard);
 		}
+		
 		
 		//---------------------------------------------------------------------------------
 		// POWER PLANT
