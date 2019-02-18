@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jpad_config>
+	<!-- 
+		plot=FALSE -> enters the plot tag.
+		plot=FALSE -> plot nothing.
+		
+		- All the variables which have "METHOD" as attirubte, can be calculated with the deifned method 
+		- IF THE MOMENTIUM POLE IS NOT ASSIGNED (wing/HTail/VTail), IT WILL BE ASSUMED AS THE Xac CALCUALTED USING THE METHOD "DEYOUNG_HARPER"
+	-->
+    <analysis>
+        <dynamic_stability 
+			id="IRON - DYNAMIC STABILITY CRUISE"
+			weights_from_previous_analysis="true"
+			balance_from_previous_analysis="true"
+			aerodynamics_from_previous_analysis="false"
+			>
+			<weights/>
+			<balance/>
+			
+			<aerodynamics parabolicDragPolar="FALSE">
+				<xcg value="-0.22" parabolicDragPolar="TRUE"><!-- if TRUE uses a parabolic drag polar with wave drag correction; otherwise it reads the polar_curves tag -->
+					<cLmax_clean_configuration>1.85</cLmax_clean_configuration>
+					<cL_alpha_clean_configuration unit="1/°">0.116</cL_alpha_clean_configuration>
+					<cLmax_take_off_configuration>2.86</cLmax_take_off_configuration> 
+					<cL_alpha_take_off unit="1/°">0.1031</cL_alpha_take_off>  
+					<cL0_take_off_configuration>1.6358</cL0_take_off_configuration> 
+					<!---->
+					<cLmax_landing_configuration>3.1</cLmax_landing_configuration>
+					<cL_alpha_landing unit="1/°">0.0888</cL_alpha_landing>
+					<cL0_landing_configuration>1.866</cL0_landing_configuration>
+					<!---->
+					<delta_CD0_flap_take_off>0.0125</delta_CD0_flap_take_off>
+					<delta_CD0_flap_landing>0.0325</delta_CD0_flap_landing>
+					<delta_CD0_landing_gears>0.015</delta_CD0_landing_gears>
+					<!-- the following data are used only if parabolicDragPolar flag is set to TRUE. In any other case, they can be left blank -->
+					<cD0>0.0280</cD0>
+					<oswald_cruise>0.83</oswald_cruise> 
+					<oswald_climb>0.83</oswald_climb>
+					<oswald_take_off>0.80</oswald_take_off>
+					<oswald_landing>0.80</oswald_landing>
+				</xcg>
+				
+			</aerodynamics>
+			
+			<global_data>		
+			</global_data>
+			
+			<!-- choose which analysys has to be done --> 
+			<longitudinal perform="TRUE"/>
+			<lateral_directional perform="TRUE"/>
+        </dynamic_stability>
+    </analysis>
+	
+	<!-- choose which plot has to be done --> 
+	<plot>
+		<longitudinal perform="TRUE"/>
+		<lateral_directional perform="TRUE"/>
+	</plot>
+</jpad_config>

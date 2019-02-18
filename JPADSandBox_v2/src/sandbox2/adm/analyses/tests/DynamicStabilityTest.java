@@ -317,12 +317,12 @@ public class DynamicStabilityTest {
 			////////////////////////////////////////////////////////////////////////
 			// Printing results (activating system.out)
 			System.setOut(originalOut);
-			System.out.println("\n\n\tPrinting results ... \n\n");
-			System.out.println(theAircraft.getTheAnalysisManager().toString());
-			System.out.println("\n\n\tDone!! \n\n");
+			System.out.println("\n\n\tNOT Printing results ... \n\n");
+			//System.out.println(theAircraft.getTheAnalysisManager().toString());
+			//System.out.println("\n\n\tDone!! \n\n");
 			
 			long estimatedTime = System.currentTimeMillis() - startTime;
-			System.out.println("\n\n\t TIME ESTIMATED = " + (estimatedTime/1000) + " seconds");
+			System.out.println("\n\n\tTIME ESTIMATED = " + (estimatedTime/1000) + " seconds");
 			
 			System.setOut(filterStream);
 			

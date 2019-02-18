@@ -60,6 +60,20 @@
 			file_landing_condition="analysis_aerodynamics_Prototype_LOOP1_updated_landing.xml"
 	/>
 	-->
+
+	<!--
+	<dynamic_stability
+			plot="TRUE"
+			create_CSV="TRUE"
+			take_off="FALSE"
+			climb="FALSE"
+			file_cruise_condition="analysis_dynamics_IRON_CANARD_cruise.xml"
+			cruise="TRUE"
+			descent="FALSE"
+			landing="FALSE"
+	/>
+	-->
+	
 	<!--
 	<performance
 			file="analysis_performance_IRON_CANARD.xml"

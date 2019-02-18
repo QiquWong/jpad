@@ -64,6 +64,20 @@
 			file_landing_condition=""
 	/>
 	-->
+	
+	<!--
+	<dynamic_stability
+			plot="TRUE"
+			create_CSV="TRUE"
+			take_off="FALSE"
+			climb="FALSE"
+			cruise="TRUE"
+			file_cruise_condition="analysis_dynamics_IRON_CANARD_cruise.xml"
+			landing="FALSE"
+	>
+	</dynamic_stability>
+	-->
+	
 	<performance
 			file="analysis_performance_IRON_CANARD_LOOP2_FINAL_no_riblets.xml"
 			plot="TRUE"
