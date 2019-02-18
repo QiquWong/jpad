@@ -69,15 +69,8 @@ public class StabilityCalculators {
 	// method 
 	public void calculateCLWithElevatorDeflection (Amount<Angle> deflection){
 		
+		// TODO ??? @manuela ???
 		
 	}
-
-	
-	
-	
-	
-	
-	
-	
 	
 }

@@ -27,15 +27,18 @@ public interface IACAnalysisManager {
 	Map<ComponentEnum, MethodEnum> getMethodsMapBalance();
 	List<PerformanceEnum> getTaskListPerfromance();
 	List<ConditionEnum> getTaskListAerodynamicAndStability();
+	List<ConditionEnum> getTaskListDynamicStability();
 	Map<CostsEnum, MethodEnum> getTaskListCosts();
 	boolean isPlotWeights();
 	boolean isPlotBalance();
 	boolean isPlotAerodynamicAndStability();
+	boolean isPlotDynamicStability();
 	boolean isPlotPerformance();
 	boolean isPlotCosts();
 	boolean isCreateCSVWeights();
 	boolean isCreateCSVBalance();
 	boolean isCreateCSVAerodynamicAndStability();
+	boolean isCreateCSVDynamicStability();
 	boolean isCreateCSVPerformance();
 	boolean isCreateCSVCosts();
 	
