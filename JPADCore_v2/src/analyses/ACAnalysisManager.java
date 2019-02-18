@@ -54,6 +54,7 @@ public class ACAnalysisManager {
 	private ACWeightsManager _theWeights;
 	private ACBalanceManager _theBalance;
 	private Map<ConditionEnum, ACAerodynamicAndStabilityManager_v2> _theAerodynamicAndStability;
+	private Map<ConditionEnum, ACDynamicStabilityManager> _theDynamicStability;
 	private ACPerformanceManager _thePerformance;
 	private ACCostsManager _theCosts;
 	
@@ -75,6 +76,10 @@ public class ACAnalysisManager {
 	private static File _aerodynamicAndStabilityClimbFileComplete;
 	private static File _aerodynamicAndStabilityCruiseFileComplete;
 	private static File _aerodynamicAndStabilityLandingFileComplete;
+	private static File _dynamicStabilityTakeOffFileComplete;
+	private static File _dynamicStabilityClimbFileComplete;
+	private static File _dynamicStabilityCruiseFileComplete;
+	private static File _dynamicStabilityLandingFileComplete;
 	private static File _performanceFileComplete;
 	private static File _costsFileComplete;
 
@@ -955,6 +960,92 @@ public class ACAnalysisManager {
 		}
 		
 		//-------------------------------------------------------------------------------------------
+		// DYNAMIC STABILITY ANALYSIS:
+		List<ConditionEnum> taskListDynamicStability = new ArrayList<ConditionEnum>();
+		Boolean plotDynamicStability = Boolean.FALSE;
+		Boolean createCSVDynamicStability = Boolean.FALSE;
+
+		NodeList dynamicStabilityTag = MyXMLReaderUtils
+				.getXMLNodeListByPath(reader.getXmlDoc(), "//dynamic_stability");
+		Node dynamicStabilityNode = dynamicStabilityTag.item(0);
+		
+		if(dynamicStabilityNode != null) {
+			
+			analysisList.add(AnalysisTypeEnum.DYNAMIC_STABILITY);
+			
+			String plotDynamicStabilityString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//dynamic_stability/@plot");
+			if(plotDynamicStabilityString.equalsIgnoreCase("FALSE")
+					|| plotDynamicStabilityString == null)
+				plotDynamicStability = Boolean.FALSE;
+			else if(plotDynamicStabilityString.equalsIgnoreCase("TRUE"))
+				plotDynamicStability = Boolean.TRUE;
+			
+			String createCSVDynamicStabilityString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//dynamic_stability/@create_CSV");
+			if(createCSVDynamicStabilityString.equalsIgnoreCase("FALSE")
+					|| createCSVDynamicStabilityString == null)
+				createCSVDynamicStability = Boolean.FALSE;
+			else if(createCSVDynamicStabilityString.equalsIgnoreCase("TRUE"))
+				createCSVDynamicStability = Boolean.TRUE;
+
+			//---------------------------------------------------------------------------------------------------------
+			// TAKE-OFF CONDITION
+			String dynamicStabilityTakeOff = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//dynamic_stability/@take_off_condition");
+			
+			if(dynamicStabilityTakeOff != null)  {		
+				
+				Boolean takeOffConditionFlag = null;
+				if(dynamicStabilityTakeOff.equalsIgnoreCase("TRUE")) {
+					takeOffConditionFlag = Boolean.TRUE;
+				}
+				else if(dynamicStabilityTakeOff.equalsIgnoreCase("FALSE") 
+						|| dynamicStabilityTakeOff == null) {
+					takeOffConditionFlag = Boolean.FALSE;
+				}
+				
+				if(takeOffConditionFlag == Boolean.TRUE) 
+					taskListDynamicStability.add(ConditionEnum.TAKE_OFF);
+
+				String dynamicStabilityTakeOffFile = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//dynamic_stability/@file_take_off_condition");
+				
+				_dynamicStabilityTakeOffFileComplete = new File(
+						MyConfiguration.getDir(FoldersEnum.INPUT_DIR)
+						+ File.separator 
+						+ "Template_Analyses"
+						+ File.separator
+						+ dynamicStabilityTakeOffFile
+						);
+			}
+			
+			// TODO @agodemar
+			
+			
+			//---------------------------------------------------------------------------------------------------------
+			// CLIMB CONDITION
+			
+			//---------------------------------------------------------------------------------------------------------
+			// CRUISE CONDITION
+
+			//---------------------------------------------------------------------------------------------------------
+			// LANDING CONDITION
+			
+		} else {
+			System.err.println("WARNING (IMPORT ANALYSIS DATA - DYNAMIC STABILITY): CANNOT BE PERFORMED IF <dynamic_stability/> TAG IS NOT DEFINED. TERMINATING ...");
+			System.exit(1);
+		}
+		
+		//-------------------------------------------------------------------------------------------
 		// PERFORMANCE ANALYSIS:
 
 		List<PerformanceEnum> taskListPerformance = new ArrayList<PerformanceEnum>();
@@ -1597,6 +1688,82 @@ public class ACAnalysisManager {
 			System.setOut(filterStream);
 		}
 		////////////////////////////////////////////////////////////////
+		if (this._theAnalysisManagerInterface.getAnalysisList().contains(AnalysisTypeEnum.DYNAMIC_STABILITY)) {
+			
+			_theDynamicStability = new HashMap<>();
+			
+			_theDynamicStability.put(ConditionEnum.TAKE_OFF, new ACDynamicStabilityManager());
+			_theDynamicStability.put(ConditionEnum.CLIMB, new ACDynamicStabilityManager());
+			_theDynamicStability.put(ConditionEnum.CRUISE, new ACDynamicStabilityManager());
+			_theDynamicStability.put(ConditionEnum.LANDING, new ACDynamicStabilityManager());
+			
+			if(_theAnalysisManagerInterface.getTaskListDynamicStability().contains(ConditionEnum.TAKE_OFF)) {
+				System.setOut(originalOut);
+				System.out.println("\t\tDynamic Stability Analysis (TAKE-OFF) :: START");
+				System.setOut(filterStream);
+				_theDynamicStability.remove(ConditionEnum.TAKE_OFF);
+				_theDynamicStability.put(
+						ConditionEnum.TAKE_OFF,
+						ACDynamicStabilityManager.importFromXML(
+								_dynamicStabilityTakeOffFileComplete.getAbsolutePath(),
+								aircraft,
+								theOperatingConditions,
+								ConditionEnum.TAKE_OFF
+								)
+						);
+			}			
+			if(_theAnalysisManagerInterface.getTaskListDynamicStability().contains(ConditionEnum.CLIMB)) {
+				System.setOut(originalOut);
+				System.out.println("\t\tDynamic Stability Analysis (CLIMB) :: START");
+				System.setOut(filterStream);
+				_theDynamicStability.remove(ConditionEnum.CLIMB);
+				_theDynamicStability.put(
+						ConditionEnum.CLIMB,
+						ACDynamicStabilityManager.importFromXML(
+								_dynamicStabilityClimbFileComplete.getAbsolutePath(),
+								aircraft,
+								theOperatingConditions,
+								ConditionEnum.CLIMB
+								)
+						);
+			}			
+			if(_theAnalysisManagerInterface.getTaskListDynamicStability().contains(ConditionEnum.CRUISE)) {
+				System.setOut(originalOut);
+				System.out.println("\t\tDynamic Stability Analysis (CRUISE) :: START");
+				System.setOut(filterStream);
+				_theDynamicStability.remove(ConditionEnum.CRUISE);
+				_theDynamicStability.put(
+						ConditionEnum.CLIMB,
+						ACDynamicStabilityManager.importFromXML(
+								_dynamicStabilityCruiseFileComplete.getAbsolutePath(),
+								aircraft,
+								theOperatingConditions,
+								ConditionEnum.CRUISE
+								)
+						);
+			}			
+			if(_theAnalysisManagerInterface.getTaskListDynamicStability().contains(ConditionEnum.LANDING)) {
+				System.setOut(originalOut);
+				System.out.println("\t\tDynamic Stability Analysis (LANDING) :: START");
+				System.setOut(filterStream);
+				_theDynamicStability.remove(ConditionEnum.LANDING);
+				_theDynamicStability.put(
+						ConditionEnum.LANDING,
+						ACDynamicStabilityManager.importFromXML(
+								_dynamicStabilityLandingFileComplete.getAbsolutePath(),
+								aircraft,
+								theOperatingConditions,
+								ConditionEnum.LANDING
+								)
+						);
+			}			
+			calculateDynamicStability(aircraft, resultsFolderPath);
+			_executedAnalysesMap.put(AnalysisTypeEnum.DYNAMIC_STABILITY, true);
+			System.setOut(originalOut);
+			System.out.println("\t\tDynamic Stability Analysis :: COMPLETE\n");
+			System.setOut(filterStream);			
+		}
+		////////////////////////////////////////////////////////////////
 		if (this._theAnalysisManagerInterface.getAnalysisList().contains(AnalysisTypeEnum.PERFORMANCE)) {
 			System.setOut(originalOut);
 			System.out.println("\t\tPerformance Analysis :: START");
@@ -1899,6 +2066,19 @@ public class ACAnalysisManager {
 			aircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.LANDING).calculate(resultsFolderPath);
 
 	}
+
+	public void calculateDynamicStability(Aircraft aircraft, String resultsFolderPath) {
+
+		if(_theAnalysisManagerInterface.getTaskListDynamicStability().contains(ConditionEnum.TAKE_OFF)) 
+			aircraft.getTheAnalysisManager().getTheDynamicStability().get(ConditionEnum.TAKE_OFF).calculate(resultsFolderPath);
+		if(_theAnalysisManagerInterface.getTaskListDynamicStability().contains(ConditionEnum.CLIMB)) 
+			aircraft.getTheAnalysisManager().getTheDynamicStability().get(ConditionEnum.CLIMB).calculate(resultsFolderPath);
+		if(_theAnalysisManagerInterface.getTaskListDynamicStability().contains(ConditionEnum.CRUISE)) 
+			aircraft.getTheAnalysisManager().getTheDynamicStability().get(ConditionEnum.CRUISE).calculate(resultsFolderPath);
+		if(_theAnalysisManagerInterface.getTaskListDynamicStability().contains(ConditionEnum.LANDING)) 
+			aircraft.getTheAnalysisManager().getTheDynamicStability().get(ConditionEnum.LANDING).calculate(resultsFolderPath);
+
+	}	
 	
 	public void calculatePerformances(Aircraft aircraft, String resultsFolderPath) {
 
@@ -2069,6 +2249,14 @@ public class ACAnalysisManager {
 		this._theAerodynamicAndStability = theAerodynamicAndStability;
 	}
 
+	public Map<ConditionEnum, ACDynamicStabilityManager> getTheDynamicStability() {
+		return _theDynamicStability;
+	}
+
+	public void setTheDynamicStability(Map<ConditionEnum, ACDynamicStabilityManager> theDynamicStability) {
+		this._theDynamicStability = theDynamicStability;
+	}
+	
 	public ACPerformanceManager getThePerformance() {
 		return _thePerformance;
 	}
@@ -2205,6 +2393,11 @@ public class ACAnalysisManager {
 		setTheAnalysisManagerInterface(IACAnalysisManager.Builder.from(_theAnalysisManagerInterface).addAllTaskListAerodynamicAndStability(_taskListAerodynamicAndStability).build());
 	}
 
+	public List<ConditionEnum> getTaskListDynamicStability() {
+		return _theAnalysisManagerInterface.getTaskListDynamicStability();
+	}
+	
+	
 	public Map<CostsEnum, MethodEnum> getTaskListCosts() {
 		return _theAnalysisManagerInterface.getTaskListCosts();
 	}

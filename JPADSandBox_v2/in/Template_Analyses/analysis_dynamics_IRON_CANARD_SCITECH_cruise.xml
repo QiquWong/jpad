@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jpad_config>
+	<!-- 
+		plot=FALSE -> enters the plot tag.
+		plot=FALSE -> plot nothing.
+		
+		- All the variables which have "METHOD" as attirubte, can be calculated with the deifned method 
+		- IF THE MOMENTIUM POLE IS NOT ASSIGNED (wing/HTail/VTail), IT WILL BE ASSUMED AS THE Xac CALCUALTED USING THE METHOD "DEYOUNG_HARPER"
+	-->
+    <analysis>
+        <dynamic_stability 
+			id="IRON - DYNAMIC STABILITY CRUISE"
+			balance_from_previous_analysis="true"
+			aerodynamics_and_stability_from_previous_analysis="true"
+			>
+			<global_data>
+			
+			</global_data>
+			
+			<!-- choose which analysys has to be done --> 
+			<longitudinal perform="TRUE"/>
+			<lateral_directional perform="TRUE"/>
+        </dynamics_stability>
+    </analysis>
+	
+	<!-- choose which plot has to be done --> 
+	<plot>
+		<longitudinal perform="TRUE"/>
+		<lateral_directional perform="TRUE"/>
+	
+	</plot>
+</jpad_config>
