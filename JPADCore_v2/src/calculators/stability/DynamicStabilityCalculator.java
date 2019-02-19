@@ -32,7 +32,7 @@ public class DynamicStabilityCalculator {
 	}
 	
 	/**
-	 *   calculates i° EigenVector from a square matrix 4x4 (such as [A_Lon] and [A_LD])
+	 *   calculates iï¿½ EigenVector from a square matrix 4x4 (such as [A_Lon] and [A_LD])
 	 * @param aMatrix
 	 * @param index
 	 * @return

@@ -1,4 +1,4 @@
-package sandbox2.adm.analyses.tests;
+package sandbox2.adm.analyses;
 
 import java.io.File;
 import java.io.IOException;

@@ -31,12 +31,16 @@ public interface IACDynamicStabilityManager {
 
 	//..............................................................................
 	// Weights
+	Amount<Mass> getMaximumTakeOffMass();
 	Amount<Mass> getOperatingEmptyMass();
-	Amount<Mass> getDesignFuelMass();
+	Amount<Mass> getMaximumFuelMass();
+	Amount<Mass> getMaximumPayload();
+	Amount<Mass> getSinglePassengerMass();
 
 	//..............................................................................
 	// Aerodynamics
 	List<Double> getXcgPositionList();
+	// Maps are: <xcg, variable>
 	Map<Double, Double> getCLmaxClean();
 	Map<Double, Amount<?>> getCLAlphaClean();
 	Map<Double, Double> getCLmaxTakeOff();
@@ -56,6 +60,51 @@ public interface IACDynamicStabilityManager {
 	Map<Double, double[]> getPolarCDTakeOff();
 	Map<Double, double[]> getPolarCLLanding();
 	Map<Double, double[]> getPolarCDLanding();
+
+	Map<Double, Double> getIXX();
+	Map<Double, Double> getIYY();
+	Map<Double, Double> getIZZ();
+	Map<Double, Double> getIXZ();
+
+	Map<Double, Double> getCDrag0();
+	Map<Double, Double> getCDragAlpha0();
+	Map<Double, Double> getCDragMach0();
+	
+	Map<Double, Double> getCLift0();
+	Map<Double, Double> getCLiftAlpha0();
+	Map<Double, Double> getCLiftAlphaDot0();
+	Map<Double, Double> getCLiftMach0();
+	Map<Double, Double> getCLiftQ0();
+	Map<Double, Double> getCLiftDeltaT();
+	Map<Double, Double> getCLiftDeltaE();
+	
+	Map<Double, Double> getCPitchAlpha0();
+	Map<Double, Double> getCPitchAlphaDot0();
+	Map<Double, Double> getCPitchMach0();
+	Map<Double, Double> getCPitchQ0();
+	Map<Double, Double> getCPitchDeltaT();
+	Map<Double, Double> getCPitchDeltaE();
+	
+	Map<Double, Double> getCThrustFix();
+	Map<Double, Double> getKVThrust();
+	
+	Map<Double, Double> getCSideBeta();
+	Map<Double, Double> getCSideP();
+	Map<Double, Double> getCSideR();
+	Map<Double, Double> getCSideDeltaA();
+	Map<Double, Double> getCSideDeltaR();
+
+	Map<Double, Double> getCRollBeta();
+	Map<Double, Double> getCRollP();
+	Map<Double, Double> getCRollR();
+	Map<Double, Double> getCRollDeltaA();
+	Map<Double, Double> getCRollDeltaR();
+	
+	Map<Double, Double> getCYawBeta();
+	Map<Double, Double> getCYawP();
+	Map<Double, Double> getCYawR();
+	Map<Double, Double> getCYawDeltaA();
+	Map<Double, Double> getCYawDeltaR();
 	
 	//..............................................................................
 	// Plot and Task Maps

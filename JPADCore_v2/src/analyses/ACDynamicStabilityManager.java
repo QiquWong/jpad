@@ -54,52 +54,52 @@ public class ACDynamicStabilityManager {
 	Propulsion propulsion_system = Propulsion.CONSTANT_TRUST;  // propulsion regime type 
 
 	double rho0;         						// air density
-	double surf;								// wing area
+	double reference_area;						// wing area
 	double mass; 								// total mass
 	double cbar; 								// mean aerodynamic chord
-	double bbar; 								// wingspan
+	double wing_span; 							// wingspan
 	double u0; 								    // speed of the aircraft
-	double q0;               				    // dynamic pressure
-	double m0;               				    // Mach number
+	double qbar0;               			    // dynamic pressure
+	double mach0;               			    // Mach number
 	double gamma0;          					// ramp angle
-	double theta0_rad = Math.toRadians(gamma0); // Euler angle [rad] (assuming gamma0 = theta0)
+	double theta0 = Math.toRadians(gamma0); 	// Euler angle [rad] (assuming gamma0 = theta0)
 	double iXX; 								// lateral-directional moment of inertia (IXX)
 	double iYY; 								// longitudinal moment of inertia  (IYY)
 	double iZZ; 								// lateral-directional moment of inertia (IZZ)
 	double iXZ; 								// lateral-directional product of inertia (IXZ)
-	double cd0; 								// drag coefficient at null incidence (Cdº) of the aircraft
-	double cdAlpha0; 							// linear drag gradient (CdAlphaº) of the aircraft
-	double cdM0; 								// drag coefficient with respect to Mach (CdMº) of the aircraft
-	double cl0; 								// lift coefficient at null incidence (Clº) of the aircraft
-	double clAlpha0; 							// linear lift gradient (ClAlphaº) of the aircraft
-	double clAlpha_dot0; 						// linear lift gradient time derivative (ClAlpha_dotº) of the aircraft
-	double clM0;								// lift coefficient with respect to Mach (ClMº) of the aircraft
-	double clQ0; 								// lift coefficient with respect to q (ClQº) of the aircraft
-	double clDelta_T; 							// lift coefficient with respect to delta_T (ClDelta_Tº) of the aircraft
-	double clDelta_E; 							// lift coefficient with respect to delta_E (ClDelta_Eº) of the aircraft
-	double cMAlpha0; 							// pitching moment coefficient with respect to Alpha (CmAlphaº) of the aircraft
-	double cMAlpha_dot0; 						// pitching moment coefficient time derivative (CmAlpha_dotº) of the aircraft
-	double cM_m0; 							    // pitching moment coefficient with respect to Mach number
-	double cMq; 							    // pitching moment coefficient with respect to q
-	double cMDelta_T; 							// pitching moment coefficient with respect to delta_T (CMDelta_Tº) of the aircraft
-	double cMDelta_E;							// pitching moment coefficient with respect to delta_E (CMDelta_Eº) of the aircraft
-	double cTfix; 							    // thrust coefficient at a fixed point ( U0 = u , delta_T = 1 )
+	double cDrag0; 								// drag coefficient at null incidence (Cdï¿½) of the aircraft
+	double cDrag_alpha0; 						// linear drag gradient (CdAlphaï¿½) of the aircraft
+	double cDrag_Mach0; 						// drag coefficient with respect to Mach (CdMï¿½) of the aircraft
+	double cL0; 								// lift coefficient at null incidence (Clï¿½) of the aircraft
+	double cL_alpha0; 							// linear lift gradient (ClAlphaï¿½) of the aircraft
+	double cL_alpha_dot0; 						// linear lift gradient time derivative (ClAlpha_dotï¿½) of the aircraft
+	double cL_Mach0;							// lift coefficient with respect to Mach (ClMï¿½) of the aircraft
+	double cL_q0; 								// lift coefficient with respect to q (ClQï¿½) of the aircraft
+	double cL_delta_T; 							// lift coefficient with respect to delta_T (ClDelta_Tï¿½) of the aircraft
+	double cL_delta_E; 							// lift coefficient with respect to delta_E (ClDelta_Eï¿½) of the aircraft
+	double cm_alpha0; 							// pitching moment coefficient with respect to Alpha (CmAlphaï¿½) of the aircraft
+	double cm_alpha_dot0; 						// pitching moment coefficient time derivative (CmAlpha_dotï¿½) of the aircraft
+	double cm_Mach0; 						    // pitching moment coefficient with respect to Mach number
+	double cm_q; 							    // pitching moment coefficient with respect to q
+	double cm_delta_T; 							// pitching moment coefficient with respect to delta_T (CMDelta_Tï¿½) of the aircraft
+	double cm_delta_E;							// pitching moment coefficient with respect to delta_E (CMDelta_Eï¿½) of the aircraft
+	double c_Tfix; 							    // thrust coefficient at a fixed point ( U0 = u , delta_T = 1 )
 	double kv; 							        // scale factor of the effect on the propulsion due to the speed
-	double cyBeta; 							    // lateral force coefficient with respect to beta (CyBeta) of the aircraft
-	double cyP; 							    // lateral force coefficient with respect to p (CyP) of the aircraft
-	double cyR; 							    // lateral force coefficient with respect to r (CyR) of the aircraft
-	double cyDelta_A; 							// lateral force coefficient with respect to delta_A (CyDelta_A) of the aircraft
-	double cyDelta_R; 							// lateral force coefficient with respect to delta_R (CyDelta_R) of the aircraft
-	double cLBeta; 							    // rolling moment coefficient with respect to beta (CLBeta) of the aircraft
-	double cLP; 							    // rolling moment coefficient with respect to a p (CLP) of the aircraft
-	double cLR; 							    // rolling moment coefficient with respect to a r (CLR) of the aircraft
-	double cLDelta_A; 							// rolling moment coefficient with respect to a delta_A (CLDelta_A) of the aircraft
-	double cLDelta_R; 							// rolling moment coefficient with respect to a delta_R (CLDelta_R) of the aircraft
-	double cNBeta; 							    // yawing moment coefficient with respect to a beta (CNBeta) of the aircraft
-	double cNP; 							    // yawing moment coefficient with respect to p (CNP) of the aircraft
-	double cNR; 							    // yawing moment coefficient with respect to r (CNR) of the aircraft
-	double cNDelta_A; 						    // yawing moment coefficient with respect to delta_A (CNDelta_A) of the aircraft
-	double cNDelta_R; 					        // yawing moment coefficient with respect to delta_R (CNDelta_R) of the aircraft
+	double cY_beta; 						    // lateral force coefficient with respect to beta (CyBeta) of the aircraft
+	double cY_p; 							    // lateral force coefficient with respect to p (CyP) of the aircraft
+	double cY_r; 							    // lateral force coefficient with respect to r (CyR) of the aircraft
+	double cY_delta_A; 							// lateral force coefficient with respect to delta_A (CyDelta_A) of the aircraft
+	double cY_delta_R; 							// lateral force coefficient with respect to delta_R (CyDelta_R) of the aircraft
+	double cRoll_beta; 						    // rolling moment coefficient with respect to beta (CLBeta) of the aircraft
+	double cRoll_p; 						    // rolling moment coefficient with respect to a p (CLP) of the aircraft
+	double cRoll_r; 						    // rolling moment coefficient with respect to a r (CLR) of the aircraft
+	double cRoll_delta_A; 						// rolling moment coefficient with respect to a delta_A (CLDelta_A) of the aircraft
+	double cRoll_delta_R; 						// rolling moment coefficient with respect to a delta_R (CLDelta_R) of the aircraft
+	double cYaw_beta; 						    // yawing moment coefficient with respect to a beta (CNBeta) of the aircraft
+	double cYaw_p; 							    // yawing moment coefficient with respect to p (CNP) of the aircraft
+	double cYaw_r; 							    // yawing moment coefficient with respect to r (CNR) of the aircraft
+	double cYaw_delta_A; 					    // yawing moment coefficient with respect to delta_A (CNDelta_A) of the aircraft
+	double cYaw_delta_R; 				        // yawing moment coefficient with respect to delta_R (CNDelta_R) of the aircraft
 
 	double x_u_CT;                      // dimensional derivative of force component X with respect to "u" for Constant Thrust
 	double x_u_CP;                      // dimensional derivative of force component X with respect to "u" for Constant Power
@@ -378,6 +378,52 @@ public class ACDynamicStabilityManager {
 		Map<Double,double[]> polarCDTakeOff  = new HashMap<>();
 		Map<Double,double[]> polarCLLanding  = new HashMap<>();
 		Map<Double,double[]> polarCDLanding  = new HashMap<>();
+		
+		Map<Double, Double> iXX = new HashMap<>();
+		Map<Double, Double> iYY = new HashMap<>();
+		Map<Double, Double> iZZ = new HashMap<>();
+		Map<Double, Double> iXZ = new HashMap<>();
+
+		Map<Double, Double> cDrag0 = new HashMap<>();
+		Map<Double, Double> cDragAlpha0 = new HashMap<>();
+		Map<Double, Double> cDragMach0 = new HashMap<>();
+		
+		Map<Double, Double> cLift0 = new HashMap<>();
+		Map<Double, Double> cLiftAlpha0 = new HashMap<>();
+		Map<Double, Double> cLiftAlphaDot0 = new HashMap<>();
+		Map<Double, Double> cLiftMach0 = new HashMap<>();
+		Map<Double, Double> cLiftQ0 = new HashMap<>();
+		Map<Double, Double> cLiftDeltaT = new HashMap<>();
+		Map<Double, Double> cLiftDeltaE = new HashMap<>();
+		
+		Map<Double, Double> cPitchAlpha0 = new HashMap<>();
+		Map<Double, Double> cPitchAlphaDot0 = new HashMap<>();
+		Map<Double, Double> cPitchMach0 = new HashMap<>();
+		Map<Double, Double> cPitchQ0 = new HashMap<>();
+		Map<Double, Double> cPitchDeltaT = new HashMap<>();
+		Map<Double, Double> cPitchDeltaE = new HashMap<>();
+		
+		Map<Double, Double> cThrustFix = new HashMap<>();
+		Map<Double, Double> kVThrust = new HashMap<>();
+		
+		Map<Double, Double> cSideBeta = new HashMap<>();
+		Map<Double, Double> cSideP = new HashMap<>();
+		Map<Double, Double> cSideR = new HashMap<>();
+		Map<Double, Double> cSideDeltaA = new HashMap<>();
+		Map<Double, Double> cSideDeltaR = new HashMap<>();
+
+		Map<Double, Double> cRollBeta = new HashMap<>();
+		Map<Double, Double> cRollP = new HashMap<>();
+		Map<Double, Double> cRollR = new HashMap<>();
+		Map<Double, Double> cRollDeltaA = new HashMap<>();
+		Map<Double, Double> cRollDeltaR = new HashMap<>();
+		
+		Map<Double, Double> cYawBeta = new HashMap<>();
+		Map<Double, Double> cYawP = new HashMap<>();
+		Map<Double, Double> cYawR = new HashMap<>();
+		Map<Double, Double> cYawDeltaA = new HashMap<>();
+		Map<Double, Double> cYawDeltaR = new HashMap<>();
+		
 		
 		if(readAerodynamicsFromPreviousAnalysisFlag == Boolean.TRUE) {
 			if(theAircraft.getTheAnalysisManager() != null) {
@@ -718,9 +764,68 @@ public class ACDynamicStabilityManager {
 				.setId(id)
 				.setTheAircraft(theAircraft)
 				.setTheOperatingConditions(theOperatingConditions)
-				.setCurrentCondition(ConditionEnum.CRUISE)						// TODO
-				.setDesignFuelMass(Amount.valueOf(1000.0, SI.KILOGRAM))			// TODO
-				.setOperatingEmptyMass(Amount.valueOf(3000.0, SI.KILOGRAM))		// TODO
+				.setMaximumTakeOffMass(maximumTakeOffMass.to(SI.KILOGRAM))
+				.setOperatingEmptyMass(operatingEmptyMass.to(SI.KILOGRAM))
+				.setMaximumFuelMass(maximumFuelMass.to(SI.KILOGRAM))
+				.setMaximumPayload(maximumPayload.to(SI.KILOGRAM))
+				.setSinglePassengerMass(singlePassengerMass.to(SI.KILOGRAM))
+				.addAllXcgPositionList(centerOfGravityList)
+				.putAllCLmaxClean(cLmaxClean)
+				.putAllCLAlphaClean(cLAlphaClean)
+				.putAllCLAlphaTakeOff(cLAlphaTakeOff)
+				.putAllCLAlphaLanding(cLAlphaLanding)
+				.putAllCLmaxTakeOff(cLmaxTakeOff)
+				.putAllCLZeroTakeOff(cLZeroTakeOff)
+				.putAllCLmaxLanding(cLmaxLanding)
+				.putAllCLZeroLanding(cLZeroLanding)
+				.putAllDeltaCD0LandingGears(deltaCD0LandingGears)
+				.putAllDeltaCD0FlapTakeOff(deltaCD0TakeOff)
+				.putAllDeltaCD0FlapLanding(cLZeroLanding)
+				.putAllPolarCLCruise(polarCLCruise)
+				.putAllPolarCDCruise(polarCDCruise)
+				.putAllPolarCLClimb(polarCLClimb)
+				.putAllPolarCDClimb(polarCDClimb)
+				.putAllPolarCLTakeOff(polarCLTakeOff)
+				.putAllPolarCDTakeOff(polarCDTakeOff)
+				.putAllPolarCLLanding(polarCLLanding)
+				.putAllPolarCDLanding(polarCDLanding)
+				.putAllIXX(iXX) // TODO ...
+				.putAllIYY(iYY)
+				.putAllIZZ(iZZ)
+				.putAllIXZ(iXZ)
+				.putAllCDrag0(cDrag0)
+				.putAllCDragAlpha0(cDragAlpha0)
+				.putAllCDragMach0(cDragMach0)
+				.putAllCLift0(cLift0)
+				.putAllCLiftAlpha0(cLiftAlpha0)
+				.putAllCLiftAlphaDot0(cLiftAlphaDot0)
+				.putAllCLiftMach0(cLiftMach0)
+				.putAllCLiftQ0(cLiftQ0)
+				.putAllCLiftDeltaE(cLiftDeltaE)
+				.putAllCLiftDeltaT(cLiftDeltaT)
+				.putAllCPitchAlpha0(cPitchAlpha0)
+				.putAllCPitchAlphaDot0(cPitchAlphaDot0)
+				.putAllCPitchMach0(cPitchMach0)
+				.putAllCPitchQ0(cPitchQ0)
+				.putAllCPitchDeltaE(cPitchDeltaE)
+				.putAllCPitchDeltaT(cPitchDeltaT)
+				.putAllCThrustFix(cThrustFix)
+				.putAllKVThrust(kVThrust)
+				.putAllCSideBeta(cSideBeta)
+				.putAllCSideP(cSideP)
+				.putAllCSideR(cSideR)
+				.putAllCSideDeltaA(cSideDeltaA)
+				.putAllCSideDeltaR(cSideDeltaR)
+				.putAllCRollBeta(cRollBeta)
+				.putAllCRollP(cRollP)
+				.putAllCRollR(cRollR)
+				.putAllCRollDeltaA(cRollDeltaA)
+				.putAllCRollDeltaR(cRollDeltaR)
+				.putAllCYawBeta(cYawBeta)
+				.putAllCYawP(cYawP)
+				.putAllCYawR(cYawR)
+				.putAllCYawDeltaA(cYawDeltaA)
+				.putAllCYawDeltaR(cYawDeltaR)
 				// TODO: add the rest...
 				.build();
 
@@ -795,8 +900,8 @@ public class ACDynamicStabilityManager {
 						}
 
 						if ((i == 3) && (j == 1)) {
-							surf = Double.parseDouble(value);
-							System.out.println(" surf         = " + surf);
+							reference_area = Double.parseDouble(value);
+							System.out.println(" surf         = " + reference_area);
 						}
 
 						if ((i == 4) && (j == 1)) {
@@ -810,21 +915,21 @@ public class ACDynamicStabilityManager {
 						}
 
 						if ((i == 6) && (j == 1)) {
-							bbar = Double.parseDouble(value);
-							System.out.println(" bbar         = " + bbar  );
+							wing_span = Double.parseDouble(value);
+							System.out.println(" bbar         = " + wing_span  );
 						}
 
 						if ((i == 7) && (j == 1)) {
 							u0 = Double.parseDouble(value);
 							System.out.println(" u0           = " + u0);
-							q0 = ACDynamicStabilityManagerUtils.calcDynamicPressure(rho0, u0);
-							System.out.println(" q0           = " + df.format(q0));
+							qbar0 = ACDynamicStabilityManagerUtils.calcDynamicPressure(rho0, u0);
+							System.out.println(" q0           = " + df.format(qbar0));
 						}
 
 
 						if ((i == 8) && (j == 1)) {
-							m0 = Double.parseDouble(value);
-							System.out.println(" m0           = " + m0);
+							mach0 = Double.parseDouble(value);
+							System.out.println(" m0           = " + mach0);
 						}
 
 						if ((i == 9) && (j == 1)) {
@@ -833,8 +938,8 @@ public class ACDynamicStabilityManager {
 						}
 
 						if ((i == 10) && (j == 1)) {
-							theta0_rad  = Double.parseDouble(value);
-							System.out.println(" theta0_rad   = " + theta0_rad );
+							theta0  = Double.parseDouble(value);
+							System.out.println(" theta0_rad   = " + theta0 );
 						}
 
 						if ((i == 11) && (j == 1)) {
@@ -858,88 +963,88 @@ public class ACDynamicStabilityManager {
 						}
 
 						if ((i == 15) && (j == 1)) {
-							cd0 = Double.parseDouble(value);
-							System.out.println(" cd0          = " + cd0);
+							cDrag0 = Double.parseDouble(value);
+							System.out.println(" cd0          = " + cDrag0);
 						}
 
 						if ((i == 16) && (j == 1)) {
-							cdAlpha0  = Double.parseDouble(value);
-							System.out.println(" cdAlpha0     = " + cdAlpha0 );
+							cDrag_alpha0  = Double.parseDouble(value);
+							System.out.println(" cdAlpha0     = " + cDrag_alpha0 );
 						}
 
 						if ((i == 17) && (j == 1)) {
-							cdM0  = Double.parseDouble(value);
-							System.out.println(" cdM0         = " + cdM0 );
+							cDrag_Mach0  = Double.parseDouble(value);
+							System.out.println(" cdM0         = " + cDrag_Mach0 );
 						}
 
 						if ((i == 18) && (j == 1)) {
-							cl0 = Double.parseDouble(value);
-							System.out.println(" cl0          = " + cl0);
+							cL0 = Double.parseDouble(value);
+							System.out.println(" cl0          = " + cL0);
 						}
 
 						if ((i == 19) && (j == 1)) {
-							clAlpha0 = Double.parseDouble(value);
-							System.out.println(" clAlpha0     = " + clAlpha0);
+							cL_alpha0 = Double.parseDouble(value);
+							System.out.println(" clAlpha0     = " + cL_alpha0);
 						}
 
 						if ((i == 20) && (j == 1)) {
-							clAlpha_dot0 = Double.parseDouble(value);
-							System.out.println(" clAlpha_dot0 = " + clAlpha_dot0);
+							cL_alpha_dot0 = Double.parseDouble(value);
+							System.out.println(" clAlpha_dot0 = " + cL_alpha_dot0);
 						}
 
 						if ((i == 21) && (j == 1)) {
-							clM0 = Double.parseDouble(value);
-							System.out.println(" clM0         = " + clM0);
+							cL_Mach0 = Double.parseDouble(value);
+							System.out.println(" clM0         = " + cL_Mach0);
 						}
 						
 						if ((i == 22) && (j == 1)) {
-							clQ0 = Double.parseDouble(value);
-							System.out.println(" clQ0         = " + clQ0);
+							cL_q0 = Double.parseDouble(value);
+							System.out.println(" clQ0         = " + cL_q0);
 						}
 
 						if ((i == 23) && (j == 1)) {
-							clDelta_T = Double.parseDouble(value);
-							System.out.println(" clDelta_T    = " + clDelta_T);
+							cL_delta_T = Double.parseDouble(value);
+							System.out.println(" clDelta_T    = " + cL_delta_T);
 						}
 
 						if ((i == 24) && (j == 1)) {
-							clDelta_E = Double.parseDouble(value);
-							System.out.println(" clDelta_E    = " + clDelta_E);
+							cL_delta_E = Double.parseDouble(value);
+							System.out.println(" clDelta_E    = " + cL_delta_E);
 						}
 
 						if ((i == 25) && (j == 1)) {
-							cMAlpha0 = Double.parseDouble(value);
-							System.out.println(" cMAlpha0     = " + cMAlpha0);
+							cm_alpha0 = Double.parseDouble(value);
+							System.out.println(" cMAlpha0     = " + cm_alpha0);
 						}
 
 						if ((i == 26) && (j == 1)) {
-							cMAlpha_dot0 = Double.parseDouble(value);
-							System.out.println(" cMAlpha_dot0 = " + cMAlpha_dot0);
+							cm_alpha_dot0 = Double.parseDouble(value);
+							System.out.println(" cMAlpha_dot0 = " + cm_alpha_dot0);
 						}
 
 						if ((i == 27) && (j == 1)) {
-							cM_m0 = Double.parseDouble(value);
-							System.out.println(" cM_m0        = " + cM_m0);
+							cm_Mach0 = Double.parseDouble(value);
+							System.out.println(" cM_m0        = " + cm_Mach0);
 						}
 
 						if ((i == 28) && (j == 1)) {
-							cMq = Double.parseDouble(value);
-							System.out.println(" cMq          = " + cMq);
+							cm_q = Double.parseDouble(value);
+							System.out.println(" cMq          = " + cm_q);
 						}
 
 						if ((i == 29) && (j == 1)) {
-							cMDelta_T = Double.parseDouble(value);
-							System.out.println(" cMDelta_T    = " + cMDelta_T);
+							cm_delta_T = Double.parseDouble(value);
+							System.out.println(" cMDelta_T    = " + cm_delta_T);
 						}
 
 						if ((i == 30) && (j == 1)) {
-							cMDelta_E = Double.parseDouble(value);
-							System.out.println(" cMDelta_E    = " + cMDelta_E);
+							cm_delta_E = Double.parseDouble(value);
+							System.out.println(" cMDelta_E    = " + cm_delta_E);
 						}
 
 						if ((i == 31) && (j == 1)) {
-							cTfix = Double.parseDouble(value);
-							System.out.println(" cTfix        = " + cTfix);
+							c_Tfix = Double.parseDouble(value);
+							System.out.println(" cTfix        = " + c_Tfix);
 						}
 
 						if ((i == 32) && (j == 1)) {
@@ -948,78 +1053,78 @@ public class ACDynamicStabilityManager {
 						}
 
 						if ((i == 33) && (j == 1)) {
-							cyBeta = Double.parseDouble(value);
-							System.out.println(" cyBeta       = " + cyBeta);
+							cY_beta = Double.parseDouble(value);
+							System.out.println(" cyBeta       = " + cY_beta);
 						}
 
 						if ((i == 34) && (j == 1)) {
-							cyP = Double.parseDouble(value);
-							System.out.println(" cyP          = " + cyP);
+							cY_p = Double.parseDouble(value);
+							System.out.println(" cyP          = " + cY_p);
 						}
 
 						if ((i == 35) && (j == 1)) {
-							cyR = Double.parseDouble(value);
-							System.out.println(" cyR          = " + cyR);
+							cY_r = Double.parseDouble(value);
+							System.out.println(" cyR          = " + cY_r);
 						}
 
 						if ((i == 36) && (j == 1)) {
-							cyDelta_A = Double.parseDouble(value);
-							System.out.println(" cyDelta_A    = " + cyDelta_A);
+							cY_delta_A = Double.parseDouble(value);
+							System.out.println(" cyDelta_A    = " + cY_delta_A);
 						}
 
 						if ((i == 37) && (j == 1)) {
-							cyDelta_R = Double.parseDouble(value);
-							System.out.println(" cyDelta_R    = " + cyDelta_R);
+							cY_delta_R = Double.parseDouble(value);
+							System.out.println(" cyDelta_R    = " + cY_delta_R);
 						}
 
 						if ((i == 38) && (j == 1)) {
-							cLBeta = Double.parseDouble(value);
-							System.out.println(" cLBeta       = " + cLBeta);
+							cRoll_beta = Double.parseDouble(value);
+							System.out.println(" cLBeta       = " + cRoll_beta);
 						}
 
 						if ((i == 39) && (j == 1)) {
-							cLP = Double.parseDouble(value);
-							System.out.println(" cLP          = " + cLP);
+							cRoll_p = Double.parseDouble(value);
+							System.out.println(" cLP          = " + cRoll_p);
 						}
 
 						if ((i == 40) && (j == 1)) {
-							cLR = Double.parseDouble(value);
-							System.out.println(" cLR          = " + cLR);
+							cRoll_r = Double.parseDouble(value);
+							System.out.println(" cLR          = " + cRoll_r);
 						}
 
 						if ((i == 41) && (j == 1)) {
-							cLDelta_A = Double.parseDouble(value);
-							System.out.println(" cLDelta_A    = " + cLDelta_A);
+							cRoll_delta_A = Double.parseDouble(value);
+							System.out.println(" cLDelta_A    = " + cRoll_delta_A);
 						}
 
 						if ((i == 42) && (j == 1)) {
-							cLDelta_R = Double.parseDouble(value);
-							System.out.println(" cLDelta_R    = " + cLDelta_R);
+							cRoll_delta_R = Double.parseDouble(value);
+							System.out.println(" cLDelta_R    = " + cRoll_delta_R);
 						}
 
 						if ((i == 43) && (j == 1)) {
-							cNBeta = Double.parseDouble(value);
-							System.out.println(" cNBeta       = " + cNBeta);
+							cYaw_beta = Double.parseDouble(value);
+							System.out.println(" cNBeta       = " + cYaw_beta);
 						}
 
 						if ((i == 44) && (j == 1)) {
-							cNP = Double.parseDouble(value);
-							System.out.println(" cNP          = " + cNP);
+							cYaw_p = Double.parseDouble(value);
+							System.out.println(" cNP          = " + cYaw_p);
 						}
 
 						if ((i == 45) && (j == 1)) {
-							cNR = Double.parseDouble(value);
-							System.out.println(" cNR          = " + cNR);
+							cYaw_r = Double.parseDouble(value);
+							System.out.println(" cNR          = " + cYaw_r);
 						}
 
 						if ((i == 46) && (j == 1)) {
-							cNDelta_A = Double.parseDouble(value);
-							System.out.println(" cNDelta_A    = " + cNDelta_A);
+							cYaw_delta_A = Double.parseDouble(value);
+							System.out.println(" cNDelta_A    = " + cYaw_delta_A);
 						}
 
 						if ((i == 47) && (j == 1)) {
-							cNDelta_R = Double.parseDouble(value);
-							System.out.println(" cNDelta_R    = " + cNDelta_R);
+							cYaw_delta_R = Double.parseDouble(value);
+							System.out.println(" cNDelta_R    = " + cYaw_delta_R);
 						}
 
 						break;
@@ -1054,8 +1159,8 @@ public class ACDynamicStabilityManager {
 						}
 
 						if ((i == 3) && (j == 1)) {
-							surf = Double.parseDouble(value);
-							System.out.println(" surf         = " + surf);
+							reference_area = Double.parseDouble(value);
+							System.out.println(" surf         = " + reference_area);
 						}
 
 						if ((i == 4) && (j == 1)) {
@@ -1069,21 +1174,21 @@ public class ACDynamicStabilityManager {
 						}
 
 						if ((i == 6) && (j == 1)) {
-							bbar = Double.parseDouble(value);
-							System.out.println(" bbar         = " + bbar  );
+							wing_span = Double.parseDouble(value);
+							System.out.println(" bbar         = " + wing_span  );
 						}
 
 						if ((i == 7) && (j == 1)) {
 							u0 = Double.parseDouble(value);
 							System.out.println(" u0           = " + u0);
-							q0 = ACDynamicStabilityManagerUtils.calcDynamicPressure(rho0, u0);
-							System.out.println(" q0           = " + df.format(q0));
+							qbar0 = ACDynamicStabilityManagerUtils.calcDynamicPressure(rho0, u0);
+							System.out.println(" q0           = " + df.format(qbar0));
 						}
 
 
 						if ((i == 8) && (j == 1)) {
-							m0 = Double.parseDouble(value);
-							System.out.println(" m0           = " + m0);
+							mach0 = Double.parseDouble(value);
+							System.out.println(" m0           = " + mach0);
 						}
 
 						if ((i == 9) && (j == 1)) {
@@ -1092,8 +1197,8 @@ public class ACDynamicStabilityManager {
 						}
 
 						if ((i == 10) && (j == 1)) {
-							theta0_rad  = Double.parseDouble(value);
-							System.out.println(" theta0_rad   = " + theta0_rad );
+							theta0  = Double.parseDouble(value);
+							System.out.println(" theta0_rad   = " + theta0 );
 						}
 
 						if ((i == 11) && (j == 1)) {
@@ -1117,88 +1222,88 @@ public class ACDynamicStabilityManager {
 						}
 
 						if ((i == 15) && (j == 1)) {
-							cd0 = Double.parseDouble(value);
-							System.out.println(" cd0          = " + cd0);
+							cDrag0 = Double.parseDouble(value);
+							System.out.println(" cd0          = " + cDrag0);
 						}
 
 						if ((i == 16) && (j == 1)) {
-							cdAlpha0  = Double.parseDouble(value);
-							System.out.println(" cdAlpha0     = " + cdAlpha0 );
+							cDrag_alpha0  = Double.parseDouble(value);
+							System.out.println(" cdAlpha0     = " + cDrag_alpha0 );
 						}
 
 						if ((i == 17) && (j == 1)) {
-							cdM0  = Double.parseDouble(value);
-							System.out.println(" cdM0         = " + cdM0 );
+							cDrag_Mach0  = Double.parseDouble(value);
+							System.out.println(" cdM0         = " + cDrag_Mach0 );
 						}
 
 						if ((i == 18) && (j == 1)) {
-							cl0 = Double.parseDouble(value);
-							System.out.println(" cl0          = " + cl0);
+							cL0 = Double.parseDouble(value);
+							System.out.println(" cl0          = " + cL0);
 						}
 
 						if ((i == 19) && (j == 1)) {
-							clAlpha0 = Double.parseDouble(value);
-							System.out.println(" clAlpha0     = " + clAlpha0);
+							cL_alpha0 = Double.parseDouble(value);
+							System.out.println(" clAlpha0     = " + cL_alpha0);
 						}
 
 						if ((i == 20) && (j == 1)) {
-							clAlpha_dot0 = Double.parseDouble(value);
-							System.out.println(" clAlpha_dot0 = " + clAlpha_dot0);
+							cL_alpha_dot0 = Double.parseDouble(value);
+							System.out.println(" clAlpha_dot0 = " + cL_alpha_dot0);
 						}
 
 						if ((i == 21) && (j == 1)) {
-							clM0 = Double.parseDouble(value);
-							System.out.println(" clM0         = " + clM0);
+							cL_Mach0 = Double.parseDouble(value);
+							System.out.println(" clM0         = " + cL_Mach0);
 						}
 						
 						if ((i == 22) && (j == 1)) {
-							clQ0 = Double.parseDouble(value);
-							System.out.println(" clQ0         = " + clQ0);
+							cL_q0 = Double.parseDouble(value);
+							System.out.println(" clQ0         = " + cL_q0);
 						}
 
 						if ((i == 23) && (j == 1)) {
-							clDelta_T = Double.parseDouble(value);
-							System.out.println(" clDelta_T    = " + clDelta_T);
+							cL_delta_T = Double.parseDouble(value);
+							System.out.println(" clDelta_T    = " + cL_delta_T);
 						}
 
 						if ((i == 24) && (j == 1)) {
-							clDelta_E = Double.parseDouble(value);
-							System.out.println(" clDelta_E    = " + clDelta_E);
+							cL_delta_E = Double.parseDouble(value);
+							System.out.println(" clDelta_E    = " + cL_delta_E);
 						}
 
 						if ((i == 25) && (j == 1)) {
-							cMAlpha0 = Double.parseDouble(value);
-							System.out.println(" cMAlpha0     = " + cMAlpha0);
+							cm_alpha0 = Double.parseDouble(value);
+							System.out.println(" cMAlpha0     = " + cm_alpha0);
 						}
 
 						if ((i == 26) && (j == 1)) {
-							cMAlpha_dot0 = Double.parseDouble(value);
-							System.out.println(" cMAlpha_dot0 = " + cMAlpha_dot0);
+							cm_alpha_dot0 = Double.parseDouble(value);
+							System.out.println(" cMAlpha_dot0 = " + cm_alpha_dot0);
 						}
 
 						if ((i == 27) && (j == 1)) {
-							cM_m0 = Double.parseDouble(value);
-							System.out.println(" cM_m0        = " + cM_m0);
+							cm_Mach0 = Double.parseDouble(value);
+							System.out.println(" cM_m0        = " + cm_Mach0);
 						}
 
 						if ((i == 28) && (j == 1)) {
-							cMq = Double.parseDouble(value);
-							System.out.println(" cMq          = " + cMq);
+							cm_q = Double.parseDouble(value);
+							System.out.println(" cMq          = " + cm_q);
 						}
 
 						if ((i == 29) && (j == 1)) {
-							cMDelta_T = Double.parseDouble(value);
-							System.out.println(" cMDelta_T    = " + cMDelta_T);
+							cm_delta_T = Double.parseDouble(value);
+							System.out.println(" cMDelta_T    = " + cm_delta_T);
 						}
 
 						if ((i == 30) && (j == 1)) {
-							cMDelta_E = Double.parseDouble(value);
-							System.out.println(" cMDelta_E    = " + cMDelta_E);
+							cm_delta_E = Double.parseDouble(value);
+							System.out.println(" cMDelta_E    = " + cm_delta_E);
 						}
 
 						if ((i == 31) && (j == 1)) {
-							cTfix = Double.parseDouble(value);
-							System.out.println(" cTfix        = " + cTfix);
+							c_Tfix = Double.parseDouble(value);
+							System.out.println(" cTfix        = " + c_Tfix);
 						}
 
 						if ((i == 32) && (j == 1)) {
@@ -1207,78 +1312,78 @@ public class ACDynamicStabilityManager {
 						}
 
 						if ((i == 33) && (j == 1)) {
-							cyBeta = Double.parseDouble(value);
-							System.out.println(" cyBeta       = " + cyBeta);
+							cY_beta = Double.parseDouble(value);
+							System.out.println(" cyBeta       = " + cY_beta);
 						}
 
 						if ((i == 34) && (j == 1)) {
-							cyP = Double.parseDouble(value);
-							System.out.println(" cyP          = " + cyP);
+							cY_p = Double.parseDouble(value);
+							System.out.println(" cyP          = " + cY_p);
 						}
 
 						if ((i == 35) && (j == 1)) {
-							cyR = Double.parseDouble(value);
-							System.out.println(" cyR          = " + cyR);
+							cY_r = Double.parseDouble(value);
+							System.out.println(" cyR          = " + cY_r);
 						}
 
 						if ((i == 36) && (j == 1)) {
-							cyDelta_A = Double.parseDouble(value);
-							System.out.println(" cyDelta_A    = " + cyDelta_A);
+							cY_delta_A = Double.parseDouble(value);
+							System.out.println(" cyDelta_A    = " + cY_delta_A);
 						}
 
 						if ((i == 37) && (j == 1)) {
-							cyDelta_R = Double.parseDouble(value);
-							System.out.println(" cyDelta_R    = " + cyDelta_R);
+							cY_delta_R = Double.parseDouble(value);
+							System.out.println(" cyDelta_R    = " + cY_delta_R);
 						}
 
 						if ((i == 38) && (j == 1)) {
-							cLBeta = Double.parseDouble(value);
-							System.out.println(" cLBeta       = " + cLBeta);
+							cRoll_beta = Double.parseDouble(value);
+							System.out.println(" cLBeta       = " + cRoll_beta);
 						}
 
 						if ((i == 39) && (j == 1)) {
-							cLP = Double.parseDouble(value);
-							System.out.println(" cLP          = " + cLP);
+							cRoll_p = Double.parseDouble(value);
+							System.out.println(" cLP          = " + cRoll_p);
 						}
 
 						if ((i == 40) && (j == 1)) {
-							cLR = Double.parseDouble(value);
-							System.out.println(" cLR          = " + cLR);
+							cRoll_r = Double.parseDouble(value);
+							System.out.println(" cLR          = " + cRoll_r);
 						}
 
 						if ((i == 41) && (j == 1)) {
-							cLDelta_A = Double.parseDouble(value);
-							System.out.println(" cLDelta_A    = " + cLDelta_A);
+							cRoll_delta_A = Double.parseDouble(value);
+							System.out.println(" cLDelta_A    = " + cRoll_delta_A);
 						}
 
 						if ((i == 42) && (j == 1)) {
-							cLDelta_R = Double.parseDouble(value);
-							System.out.println(" cLDelta_R    = " + cLDelta_R);
+							cRoll_delta_R = Double.parseDouble(value);
+							System.out.println(" cLDelta_R    = " + cRoll_delta_R);
 						}
 
 						if ((i == 43) && (j == 1)) {
-							cNBeta = Double.parseDouble(value);
-							System.out.println(" cNBeta       = " + cNBeta);
+							cYaw_beta = Double.parseDouble(value);
+							System.out.println(" cNBeta       = " + cYaw_beta);
 						}
 
 						if ((i == 44) && (j == 1)) {
-							cNP = Double.parseDouble(value);
-							System.out.println(" cNP          = " + cNP);
+							cYaw_p = Double.parseDouble(value);
+							System.out.println(" cNP          = " + cYaw_p);
 						}
 
 						if ((i == 45) && (j == 1)) {
-							cNR = Double.parseDouble(value);
-							System.out.println(" cNR          = " + cNR);
+							cYaw_r = Double.parseDouble(value);
+							System.out.println(" cNR          = " + cYaw_r);
 						}
 
 						if ((i == 46) && (j == 1)) {
-							cNDelta_A = Double.parseDouble(value);
-							System.out.println(" cNDelta_A    = " + cNDelta_A);
+							cYaw_delta_A = Double.parseDouble(value);
+							System.out.println(" cNDelta_A    = " + cYaw_delta_A);
 						}
 
 						if ((i == 47) && (j == 1)) {
-							cNDelta_R = Double.parseDouble(value);
-							System.out.println(" cNDelta_R    = " + cNDelta_R);
+							cYaw_delta_R = Double.parseDouble(value);
+							System.out.println(" cNDelta_R    = " + cYaw_delta_R);
 						}
 
 						break;
@@ -1354,30 +1459,30 @@ public class ACDynamicStabilityManager {
 			////////////////////          LONGITUDINAL DYNAMICS          \\\\\\\\\\\\\\\\\\\\
 
 			// Calculates the longitudinal Stability and Control DERIVATIVES \\
-			x_u_CT  = ACDynamicStabilityManagerUtils.calcX_u_CT(rho0, surf, mass, u0, q0, cd0, m0, cdM0);
-			x_u_CP  = ACDynamicStabilityManagerUtils.calcX_u_CP(rho0, surf, mass, u0, q0, cd0, cM_m0, cdM0, cl0, gamma0);
-			x_w     = ACDynamicStabilityManagerUtils.calcX_w(rho0, surf, mass, u0, q0, cl0, cdAlpha0);
+			x_u_CT  = ACDynamicStabilityManagerUtils.calcX_u_CT(rho0, reference_area, mass, u0, qbar0, cDrag0, mach0, cDrag_Mach0);
+			x_u_CP  = ACDynamicStabilityManagerUtils.calcX_u_CP(rho0, reference_area, mass, u0, qbar0, cDrag0, cm_Mach0, cDrag_Mach0, cL0, gamma0);
+			x_w     = ACDynamicStabilityManagerUtils.calcX_w(rho0, reference_area, mass, u0, qbar0, cL0, cDrag_alpha0);
 			x_w_dot = 0;
 			x_q     = 0;
-			z_u     = ACDynamicStabilityManagerUtils.calcZ_u(rho0, surf, mass, u0, q0, cM_m0, cl0, clM0);
-			z_w     = ACDynamicStabilityManagerUtils.calcZ_w(rho0, surf, mass, u0, q0, cM_m0, cd0, clAlpha0);
-			z_w_dot = ACDynamicStabilityManagerUtils.calcZ_w_dot(rho0, surf, mass, cbar, clAlpha_dot0);
-			z_q     = ACDynamicStabilityManagerUtils.calcZ_q(rho0, surf, mass, u0, q0, cbar, clQ0);
-			m_u     = ACDynamicStabilityManagerUtils.calcM_u(rho0, surf, mass, u0, q0, cbar, cdM0, iYY, cM_m0);
-			m_w     = ACDynamicStabilityManagerUtils.calcM_w(rho0, surf, mass, u0, q0, cbar, iYY, cMAlpha0);
-			m_w_dot = ACDynamicStabilityManagerUtils.calcM_w_dot(rho0, surf, cbar, iYY, cMAlpha_dot0);
-			m_q     = ACDynamicStabilityManagerUtils.calcM_q(rho0, mass, u0, q0, surf, cbar, iYY, cMq);
+			z_u     = ACDynamicStabilityManagerUtils.calcZ_u(rho0, reference_area, mass, u0, qbar0, cm_Mach0, cL0, cL_Mach0);
+			z_w     = ACDynamicStabilityManagerUtils.calcZ_w(rho0, reference_area, mass, u0, qbar0, cm_Mach0, cDrag0, cL_alpha0);
+			z_w_dot = ACDynamicStabilityManagerUtils.calcZ_w_dot(rho0, reference_area, mass, cbar, cL_alpha_dot0);
+			z_q     = ACDynamicStabilityManagerUtils.calcZ_q(rho0, reference_area, mass, u0, qbar0, cbar, cL_q0);
+			m_u     = ACDynamicStabilityManagerUtils.calcM_u(rho0, reference_area, mass, u0, qbar0, cbar, cDrag_Mach0, iYY, cm_Mach0);
+			m_w     = ACDynamicStabilityManagerUtils.calcM_w(rho0, reference_area, mass, u0, qbar0, cbar, iYY, cm_alpha0);
+			m_w_dot = ACDynamicStabilityManagerUtils.calcM_w_dot(rho0, reference_area, cbar, iYY, cm_alpha_dot0);
+			m_q     = ACDynamicStabilityManagerUtils.calcM_q(rho0, mass, u0, qbar0, reference_area, cbar, iYY, cm_q);
 
-			x_delta_T_CT  = ACDynamicStabilityManagerUtils.calcX_delta_T_CT (rho0, surf, mass, u0, q0, cTfix, kv);
-			x_delta_T_CP  = ACDynamicStabilityManagerUtils.calcX_delta_T_CP (rho0, surf, mass, u0, q0, cTfix, kv);
-			x_delta_T_CMF = ACDynamicStabilityManagerUtils.calcX_delta_T_CMF (rho0, surf, mass, u0, q0, cTfix, kv);
-			x_delta_T_RJ  = ACDynamicStabilityManagerUtils.calcX_delta_T_RJ (rho0, surf, mass, u0, q0, cTfix, kv);
-			x_delta_T_CT  = ACDynamicStabilityManagerUtils.calcX_delta_T_CT (rho0, surf, mass, u0, q0, cTfix, kv);
+			x_delta_T_CT  = ACDynamicStabilityManagerUtils.calcX_delta_T_CT (rho0, reference_area, mass, u0, qbar0, c_Tfix, kv);
+			x_delta_T_CP  = ACDynamicStabilityManagerUtils.calcX_delta_T_CP (rho0, reference_area, mass, u0, qbar0, c_Tfix, kv);
+			x_delta_T_CMF = ACDynamicStabilityManagerUtils.calcX_delta_T_CMF (rho0, reference_area, mass, u0, qbar0, c_Tfix, kv);
+			x_delta_T_RJ  = ACDynamicStabilityManagerUtils.calcX_delta_T_RJ (rho0, reference_area, mass, u0, qbar0, c_Tfix, kv);
+			x_delta_T_CT  = ACDynamicStabilityManagerUtils.calcX_delta_T_CT (rho0, reference_area, mass, u0, qbar0, c_Tfix, kv);
 			x_delta_E     = 0;
-			z_delta_T     = ACDynamicStabilityManagerUtils.calcZ_delta_T (rho0, surf, mass, u0, q0, clDelta_T);
-			z_delta_E     = ACDynamicStabilityManagerUtils.calcZ_delta_E (rho0, surf, mass, u0, q0, clDelta_E);
-			m_delta_T     = ACDynamicStabilityManagerUtils.calcM_delta_T (rho0, surf, cbar, u0, q0, iYY, cMDelta_T);
-			m_delta_E     = ACDynamicStabilityManagerUtils.calcM_delta_E (rho0, surf, cbar, u0, q0, iYY, cMDelta_E);
+			z_delta_T     = ACDynamicStabilityManagerUtils.calcZ_delta_T (rho0, reference_area, mass, u0, qbar0, cL_delta_T);
+			z_delta_E     = ACDynamicStabilityManagerUtils.calcZ_delta_E (rho0, reference_area, mass, u0, qbar0, cL_delta_E);
+			m_delta_T     = ACDynamicStabilityManagerUtils.calcM_delta_T (rho0, reference_area, cbar, u0, qbar0, iYY, cm_delta_T);
+			m_delta_E     = ACDynamicStabilityManagerUtils.calcM_delta_E (rho0, reference_area, cbar, u0, qbar0, iYY, cm_delta_E);
 
 			// Prints out the LONGITUDINAL STABILITY AND CONTROL DERIVATIVES LIST \\
 			System.out.println("_________________________________________________________________\n");
@@ -1410,8 +1515,8 @@ public class ACDynamicStabilityManager {
 			System.out.println("_________________________________________________________________\n");
 			System.out.println("MATRIX [A_LON]: \n");
 
-			aLon = ACDynamicStabilityManagerUtils.build_A_Lon_matrix (propulsion_system, rho0, surf, mass, cbar, u0, q0, cd0, m0, cdM0, cl0,
-					clM0, cdAlpha0, gamma0, theta0_rad,clAlpha0, clAlpha_dot0, cMAlpha0, cMAlpha_dot0, clQ0, iYY, cM_m0, cMq);
+			aLon = ACDynamicStabilityManagerUtils.build_A_Lon_matrix (propulsion_system, rho0, reference_area, mass, cbar, u0, qbar0, cDrag0, mach0, cDrag_Mach0, cL0,
+					cL_Mach0, cDrag_alpha0, gamma0, theta0,cL_alpha0, cL_alpha_dot0, cm_alpha0, cm_alpha_dot0, cL_q0, iYY, cm_Mach0, cm_q);
 			
 			System.out.println(df.format(aLon[0][0])+"\t\t"+df.format(aLon[0][1])+"\t\t"+df.format(aLon[0][2])+"\t\t"+df.format(aLon[0][3])+"\n");
 			System.out.println(df.format(aLon[1][0])+"\t\t"+df.format(aLon[1][1])+"\t\t"+df.format(aLon[1][2])+"\t\t"+df.format(aLon [1][3])+"\n");
@@ -1421,9 +1526,9 @@ public class ACDynamicStabilityManager {
 			System.out.println("_________________________________________________________________\n");
 			System.out.println("MATRIX [B_LON]: \n");
 
-			bLon = ACDynamicStabilityManagerUtils.build_B_Lon_matrix (propulsion_system, rho0, surf, mass, cbar, u0, q0, cd0, m0, cdM0, cl0,
-					cdAlpha0, gamma0, theta0_rad, clAlpha0, clAlpha_dot0, cMAlpha0, cMAlpha_dot0, clQ0, iYY, cM_m0, cMq, cTfix,
-					kv, clDelta_T, clDelta_E, cMDelta_T, cMDelta_E);
+			bLon = ACDynamicStabilityManagerUtils.build_B_Lon_matrix (propulsion_system, rho0, reference_area, mass, cbar, u0, qbar0, cDrag0, mach0, cDrag_Mach0, cL0,
+					cDrag_alpha0, gamma0, theta0, cL_alpha0, cL_alpha_dot0, cm_alpha0, cm_alpha_dot0, cL_q0, iYY, cm_Mach0, cm_q, c_Tfix,
+					kv, cL_delta_T, cL_delta_E, cm_delta_T, cm_delta_E);
 
 			System.out.println(df.format(bLon[0][0])+"\t\t"+df.format(bLon[0][1])+"\n");
 			System.out.println(df.format(bLon[1][0])+"\t\t"+df.format(bLon[1][1])+"\n");
@@ -1435,8 +1540,8 @@ public class ACDynamicStabilityManager {
 
 			System.out.println("_________________________________________________________________\n");
 			System.out.println("LONGITUDINAL EIGENVALUES\n");
-			System.out.println("  SHORT PERIOD: "+df.format(lonEigenvaluesMatrix[0][0])+" ± j"+df.format(lonEigenvaluesMatrix[0][1])+"\n");
-			System.out.println("  PHUGOID:      "+df.format(lonEigenvaluesMatrix[2][0])+" ± j"+df.format(lonEigenvaluesMatrix[2][1])+"\n");
+			System.out.println("  SHORT PERIOD: "+df.format(lonEigenvaluesMatrix[0][0])+" ï¿½ j"+df.format(lonEigenvaluesMatrix[0][1])+"\n");
+			System.out.println("  PHUGOID:      "+df.format(lonEigenvaluesMatrix[2][0])+" ï¿½ j"+df.format(lonEigenvaluesMatrix[2][1])+"\n");
 
 			// Generates and prints out the EigenVectors of [A_Lon] matrix \\
 			System.out.println("_________________________________________________________________\n");
@@ -1482,21 +1587,21 @@ public class ACDynamicStabilityManager {
 	        ////////////////////          LATERAL-DIRECTIONAL DYNAMICS          \\\\\\\\\\\\\\\\\\\\
 			
 			// Calculates the lateral-directional Stability and Control DERIVATIVES \\
-			y_beta = ACDynamicStabilityManagerUtils.calcY_beta (rho0, surf, mass, u0, q0, cyBeta);
-			y_p    = ACDynamicStabilityManagerUtils.calcY_p (rho0, surf, mass, u0, q0, bbar, cyP);
-			y_r    = ACDynamicStabilityManagerUtils.calcY_r (rho0, surf, mass, u0, q0, bbar, cyR);
-			l_beta = ACDynamicStabilityManagerUtils.calcL_beta (rho0, surf, bbar, iXX, u0, q0, cLBeta);
-			l_p    = ACDynamicStabilityManagerUtils.calcL_p (rho0, surf, bbar, iXX, u0, q0, cLP);
-			l_r    = ACDynamicStabilityManagerUtils.calcL_r (rho0, surf, bbar, iXX, u0, q0, cLR);
-			n_beta = ACDynamicStabilityManagerUtils.calcN_beta (rho0, surf, bbar, iZZ, u0, q0, cNBeta);
-			n_p    = ACDynamicStabilityManagerUtils.calcN_p (rho0, surf, bbar, iZZ, u0, q0, cNP);
-			n_r    = ACDynamicStabilityManagerUtils.calcN_r (rho0, surf, bbar, iZZ, u0, q0, cNR);
-			y_delta_A = ACDynamicStabilityManagerUtils.calcY_delta_A (rho0, surf, mass, u0, q0, cyDelta_A);
-			y_delta_R = ACDynamicStabilityManagerUtils.calcY_delta_R (rho0, surf, mass, u0, q0, cyDelta_R);
-			l_delta_A = ACDynamicStabilityManagerUtils.calcL_delta_A (rho0, surf, bbar, iXX, u0, q0, cLDelta_A);
-			l_delta_R = ACDynamicStabilityManagerUtils.calcL_delta_R (rho0, surf, bbar, iXX, u0, q0, cLDelta_R);
-			n_delta_A = ACDynamicStabilityManagerUtils.calcN_delta_A (rho0, surf, bbar, iZZ, u0, q0, cNDelta_A);
-			n_delta_R = ACDynamicStabilityManagerUtils.calcN_delta_R (rho0, surf, bbar, iZZ, u0, q0, cNDelta_R);
+			y_beta = ACDynamicStabilityManagerUtils.calcY_beta (rho0, reference_area, mass, u0, qbar0, cY_beta);
+			y_p    = ACDynamicStabilityManagerUtils.calcY_p (rho0, reference_area, mass, u0, qbar0, wing_span, cY_p);
+			y_r    = ACDynamicStabilityManagerUtils.calcY_r (rho0, reference_area, mass, u0, qbar0, wing_span, cY_r);
+			l_beta = ACDynamicStabilityManagerUtils.calcL_beta (rho0, reference_area, wing_span, iXX, u0, qbar0, cRoll_beta);
+			l_p    = ACDynamicStabilityManagerUtils.calcL_p (rho0, reference_area, wing_span, iXX, u0, qbar0, cRoll_p);
+			l_r    = ACDynamicStabilityManagerUtils.calcL_r (rho0, reference_area, wing_span, iXX, u0, qbar0, cRoll_r);
+			n_beta = ACDynamicStabilityManagerUtils.calcN_beta (rho0, reference_area, wing_span, iZZ, u0, qbar0, cYaw_beta);
+			n_p    = ACDynamicStabilityManagerUtils.calcN_p (rho0, reference_area, wing_span, iZZ, u0, qbar0, cYaw_p);
+			n_r    = ACDynamicStabilityManagerUtils.calcN_r (rho0, reference_area, wing_span, iZZ, u0, qbar0, cYaw_r);
+			y_delta_A = ACDynamicStabilityManagerUtils.calcY_delta_A (rho0, reference_area, mass, u0, qbar0, cY_delta_A);
+			y_delta_R = ACDynamicStabilityManagerUtils.calcY_delta_R (rho0, reference_area, mass, u0, qbar0, cY_delta_R);
+			l_delta_A = ACDynamicStabilityManagerUtils.calcL_delta_A (rho0, reference_area, wing_span, iXX, u0, qbar0, cRoll_delta_A);
+			l_delta_R = ACDynamicStabilityManagerUtils.calcL_delta_R (rho0, reference_area, wing_span, iXX, u0, qbar0, cRoll_delta_R);
+			n_delta_A = ACDynamicStabilityManagerUtils.calcN_delta_A (rho0, reference_area, wing_span, iZZ, u0, qbar0, cYaw_delta_A);
+			n_delta_R = ACDynamicStabilityManagerUtils.calcN_delta_R (rho0, reference_area, wing_span, iZZ, u0, qbar0, cYaw_delta_R);
 
 			// Prints out the LATERAL-DIRECTIONAL STABILITY AND CONTROL DERIVATIVES LIST \\
 			System.out.println("_________________________________________________________________\n");
@@ -1522,9 +1627,9 @@ public class ACDynamicStabilityManager {
 			System.out.println("_________________________________________________________________\n");
 			System.out.println("MATRIX [A_LD]: \n");
 
-			aLD = ACDynamicStabilityManagerUtils.build_A_LD_matrix (rho0, surf, mass, cbar, bbar, u0, q0, 
-					theta0_rad, iXX, iZZ, iXZ, cyBeta, cyP, cyR, cyDelta_A, cyDelta_R, cLBeta,
-					cLP, cLR, cLDelta_A, cLDelta_R, cNBeta, cNP, cNR, cNDelta_A, cNDelta_R);
+			aLD = ACDynamicStabilityManagerUtils.build_A_LD_matrix (rho0, reference_area, mass, cbar, wing_span, u0, qbar0, 
+					theta0, iXX, iZZ, iXZ, cY_beta, cY_p, cY_r, cY_delta_A, cY_delta_R, cRoll_beta,
+					cRoll_p, cRoll_r, cRoll_delta_A, cRoll_delta_R, cYaw_beta, cYaw_p, cYaw_r, cYaw_delta_A, cYaw_delta_R);
 
 			System.out.println(df.format(aLD[0][0])+"\t\t"+df.format(aLD[0][1])+"\t\t"+df.format(aLD[0][2])+"\t\t"+df.format(aLD[0][3])+"\n");
 			System.out.println(df.format(aLD[1][0])+"\t\t"+df.format(aLD[1][1])+"\t\t"+df.format(aLD[1][2])+"\t\t"+df.format(aLD [1][3])+"\n");
@@ -1534,8 +1639,8 @@ public class ACDynamicStabilityManager {
 			System.out.println("_________________________________________________________________\n");
 			System.out.println("MATRIX [B_LD]: \n");
 
-			bLD = ACDynamicStabilityManagerUtils.build_B_LD_matrix (rho0, surf, mass, cbar, bbar, u0, q0, 
-					iXX, iZZ, iXZ, cyDelta_A, cyDelta_R, cLDelta_A, cLDelta_R, cNDelta_A, cNDelta_R);
+			bLD = ACDynamicStabilityManagerUtils.build_B_LD_matrix (rho0, reference_area, mass, cbar, wing_span, u0, qbar0, 
+					iXX, iZZ, iXZ, cY_delta_A, cY_delta_R, cRoll_delta_A, cRoll_delta_R, cYaw_delta_A, cYaw_delta_R);
 
 			System.out.println(df.format(bLD[0][0])+"\t\t"+df.format(bLD[0][1])+"\n");
 			System.out.println(df.format(bLD[1][0])+"\t\t"+df.format(bLD[1][1])+"\n");
@@ -1548,7 +1653,7 @@ public class ACDynamicStabilityManager {
 			System.out.println("_________________________________________________________________\n");
 			System.out.println("LATERAL-DIRECTIONAL EIGENVALUES\n");
 			System.out.println("  ROLL:       "+df.format(ldEigenvaluesMatrix[2][0])+"\n");
-			System.out.println("  DUTCH-ROLL: "+df.format(ldEigenvaluesMatrix[0][0])+" ± j"+df.format(ldEigenvaluesMatrix[0][1])+"\n");
+			System.out.println("  DUTCH-ROLL: "+df.format(ldEigenvaluesMatrix[0][0])+" ï¿½ j"+df.format(ldEigenvaluesMatrix[0][1])+"\n");
 			System.out.println("  SPIRAL:     "+df.format(ldEigenvaluesMatrix[3][0])+"\n");
 			
 			// Generates and prints out the EigenVectors of [A_Ld] matrix \\
