@@ -103,6 +103,7 @@ public class TakeOffCalc {
 	private boolean isAborted;
 	private boolean isTailStrike;
 	private double cLalphaFlap;
+	private boolean rotationSpeedWarningFlag;
 
 	// output lists
 	private List<Double> alphaDot, gammaDot, cL, cD, loadFactor, fuelFlow, mach;
@@ -412,7 +413,7 @@ public class TakeOffCalc {
 		if(vMC != null) {
 			if(1.05*vMC.doubleValue(SI.METERS_PER_SECOND) > (kRot*vSTakeOff.doubleValue(SI.METERS_PER_SECOND))
 					) {
-				System.err.println("WARNING: (SIMULATION - TAKE-OFF) THE CHOSEN VRot IS LESS THAN 1.05*VMC. THIS LATTER WILL BE USED ...");
+				rotationSpeedWarningFlag = true;
 				vRot = vMC.to(SI.METERS_PER_SECOND).times(1.05);
 			}
 			else
@@ -910,9 +911,6 @@ public class TakeOffCalc {
 			
 			i++;
 		}
-		
-		if(isTailStrike)
-			System.err.println("WARNING: (SIMULATION - TAKE-OFF) TAIL STRIKE !! ");
 		
 		if(vFailure == null)
 			manageOutputData(0.75, continuousOutputModel);
@@ -4786,6 +4784,14 @@ public class TakeOffCalc {
 
 	public void setAlphaDotStepHandler(List<Double> alphaDotStepHandler) {
 		this.alphaDotStepHandler = alphaDotStepHandler;
+	}
+
+	public boolean isRotationSpeedWarningFlag() {
+		return rotationSpeedWarningFlag;
+	}
+
+	public void setRotationSpeedWarningFlag(boolean rotationSpeedWarningFlag) {
+		this.rotationSpeedWarningFlag = rotationSpeedWarningFlag;
 	}
 
 }

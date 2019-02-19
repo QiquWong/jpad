@@ -787,7 +787,7 @@ public class MissionProfileCalc {
 	//--------------------------------------------------------------------------------------------
 	// METHODS:
 
-	private void initializePhasesLists(boolean isCruiseLoop, boolean isAlternateCruiseLoop) {
+	private void initializePhasesLists(boolean isFuelWeightLoop, boolean isCruiseLoop, boolean isAlternateCruiseLoop) {
 
 		if(isCruiseLoop == false && isAlternateCruiseLoop == false) {
 
@@ -1069,7 +1069,7 @@ public class MissionProfileCalc {
 		this.fuelEnergyHolding = new ArrayList<>();
 		this.batteryEnergyHolding = new ArrayList<>();
 
-		if(isCruiseLoop == false && isAlternateCruiseLoop == false) {
+		if(isCruiseLoop == false && isAlternateCruiseLoop == false && isFuelWeightLoop == false) {
 
 			//......................................................................
 			// LANDING
@@ -1110,6 +1110,8 @@ public class MissionProfileCalc {
 	
 	public void calculateProfiles(Amount<Velocity> vMC) {
 
+		initializePhasesLists(false, false, false);
+		
 		initialMissionMass = operatingEmptyMass
 				.plus(singlePassengerMass.times(deisgnPassengersNumber))
 				.plus(firstGuessInitialFuelMass); 
@@ -1149,7 +1151,8 @@ public class MissionProfileCalc {
 
 		do {
 			
-			initializePhasesLists(false, false);
+			if(i>0)
+				initializePhasesLists(true, false, false);
 
 			if(i >= 1)
 				initialFuelMass = newInitialFuelMass;
@@ -1405,7 +1408,7 @@ public class MissionProfileCalc {
 
 			for (int iCruise=0; iCruise < 5; iCruise++) {
 				
-				initializePhasesLists(true, false);
+				initializePhasesLists(true, true, false);
 				
 				List<Amount<Length>> cruiseSteps = MyArrayUtils.convertDoubleArrayToListOfAmount( 
 						MyArrayUtils.linspace(
@@ -2271,7 +2274,7 @@ public class MissionProfileCalc {
 
 				for (int iAlternate=0; iAlternate < 5; iAlternate++) {
 					
-					initializePhasesLists(false, true);
+					initializePhasesLists(true ,false, true);
 					
 					List<Amount<Length>> alternateCruiseSteps = MyArrayUtils.convertDoubleArrayToListOfAmount( 
 							MyArrayUtils.linspace(
@@ -3840,8 +3843,8 @@ public class MissionProfileCalc {
 							SI.KILOGRAM
 							);
 
-					// only if iAlternate=0 and iCruise=0 (just one time to reduce computational time)
-					if(iAlternate == 0 && iCruise == 0) {
+					// only if iAlternate=0 and iCruise=0 i=0 (just one time to reduce computational time)
+					if(iAlternate == 0 && iCruise == 0 && i==0) {
 						theLandingCalculator = new LandingCalc(
 								holdingAltitude,
 								theOperatingConditions.getAltitudeLanding(), 
@@ -4069,12 +4072,14 @@ public class MissionProfileCalc {
 				>= 0.01
 				);
 		
-		if(theFirstDescentCalculator.getDescentMaxIterationErrorFlag() == true) {
-			System.err.println("WARNING: (ITERATIVE LOOP CRUISE/IDLE - FIRST DESCENT) MAX NUMBER OF ITERATION REACHED. THE RATE OF DESCENT MAY DIFFER FROM THE SPECIFIED ONE...");					
-		}
-		if(theSecondDescentCalculator.getDescentMaxIterationErrorFlag() == true) {
-			System.err.println("WARNING: (ITERATIVE LOOP CRUISE/IDLE - SECOND DESCENT) MAX NUMBER OF ITERATION REACHED. THE RATE OF DESCENT MAY DIFFER FROM THE SPECIFIED ONE...");					
-		}
+		if(theTakeOffCalculator.isRotationSpeedWarningFlag() == true)
+			System.err.println("WARNING: (MISSION PROFILE :: SIMULATION - TAKE-OFF) THE CHOSEN VRot IS LESS THAN 1.05*VMC. THIS LATTER WILL BE USED ...");
+		if(theTakeOffCalculator.isTailStrike() == true)
+			System.err.println("WARNING: (MISSION PROFILE :: SIMULATION - TAKE-OFF) TAIL STRIKE !! ");
+		if(theFirstDescentCalculator.getDescentMaxIterationErrorFlag() == true) 
+			System.err.println("WARNING: (MISSION PROFILE :: ITERATIVE LOOP CRUISE/IDLE - FIRST DESCENT) MAX NUMBER OF ITERATION REACHED. THE RATE OF DESCENT MAY DIFFER FROM THE SPECIFIED ONE...");					
+		if(theSecondDescentCalculator.getDescentMaxIterationErrorFlag() == true) 
+			System.err.println("WARNING: (MISSION PROFILE :: ITERATIVE LOOP CRUISE/IDLE - SECOND DESCENT) MAX NUMBER OF ITERATION REACHED. THE RATE OF DESCENT MAY DIFFER FROM THE SPECIFIED ONE...");					
 		
 		//-------------------------------------------------------------------------------------------------
 		// MANAGING OUTPUT DATA:

@@ -794,7 +794,7 @@ public class LandingNoiseTrajectoryCalc {
 					break;
 			}
 			
-			if(Math.abs(rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE)) > targetRateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE))
+			if(Math.abs(rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE)) > Math.abs(targetRateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE)))
 				if(Math.abs(rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE) - targetRateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE)) < 50.0)
 					newAlphaDotFlare = alphaDotFlare + 0.02;
 				else

@@ -339,7 +339,7 @@ public class PayloadRangeCalc {
 	//--------------------------------------------------------------------------------------------
 	// METHODS:
 
-	private void initializePhasesLists(boolean isCruiseLoop, boolean isAlternateCruiseLoop) {
+	private void initializePhasesLists(boolean isFuelWeightLoop, boolean isCruiseLoop, boolean isAlternateCruiseLoop) {
 
 		if(isCruiseLoop == false && isAlternateCruiseLoop == false) {
 			//----------------------------------------------------------------------
@@ -378,10 +378,13 @@ public class PayloadRangeCalc {
 		// HOLDING
 		this.rangeHolding = new ArrayList<>();
 		this.fuelUsedHolding = new ArrayList<>();
-		//......................................................................
-		// LANDING
-		this.rangeLanding = new ArrayList<>();
-		this.fuelUsedLanding = new ArrayList<>();
+		
+		if(isCruiseLoop == false && isAlternateCruiseLoop == false && isFuelWeightLoop == false) {
+			//......................................................................
+			// LANDING
+			this.rangeLanding = new ArrayList<>();
+			this.fuelUsedLanding = new ArrayList<>();
+		}
 	}
 	
 	/******************************************************************************************
@@ -398,7 +401,8 @@ public class PayloadRangeCalc {
 		rangeAtMaxPayload = calcRangeAtGivenPayload(
 				maximumTakeOffMass.to(SI.KILOGRAM),
 				maxPayload.to(SI.KILOGRAM),
-				vMC
+				vMC,
+				1
 				);
 		passengersNumberAtMaxPayload = (int) (maxPayload.doubleValue(SI.KILOGRAM)/singlePassengerMass.doubleValue(SI.KILOGRAM));
 		requiredMassAtMaxPayload = maximumTakeOffMass.to(SI.KILOGRAM)
@@ -409,7 +413,8 @@ public class PayloadRangeCalc {
 		rangeAtDesignPayload = calcRangeAtGivenPayload(
 				maximumTakeOffMass.to(SI.KILOGRAM),
 				singlePassengerMass.to(SI.KILOGRAM).times(theAircraft.getCabinConfiguration().getDesignPassengerNumber()),
-				vMC
+				vMC,
+				2
 				);
 		designPayload = singlePassengerMass.to(SI.KILOGRAM).times(theAircraft.getCabinConfiguration().getDesignPassengerNumber());
 		passengersNumberAtDesignPayload = theAircraft.getCabinConfiguration().getDesignPassengerNumber();
@@ -426,7 +431,8 @@ public class PayloadRangeCalc {
 				maximumTakeOffMass.to(SI.KILOGRAM)
 				.minus(operatingEmptyMass.to(SI.KILOGRAM))
 				.minus(maxFuelMass.to(SI.KILOGRAM)),
-				vMC
+				vMC,
+				3
 				);
 		payloadAtMaxFuel = maximumTakeOffMass.to(SI.KILOGRAM)
 				.minus(operatingEmptyMass.to(SI.KILOGRAM))
@@ -447,7 +453,8 @@ public class PayloadRangeCalc {
 					rangeAtZeroPayload = calcRangeAtGivenPayload(
 							operatingEmptyMass.plus(getMaxFuelMass()),
 							Amount.valueOf(0.0, SI.KILOGRAM),
-							vMC
+							vMC,
+							4
 							);
 				}
 				else {
@@ -525,9 +532,12 @@ public class PayloadRangeCalc {
 	private Amount<Length> calcRangeAtGivenPayload(
 			Amount<Mass> maxTakeOffMassCurrent,
 			Amount<Mass> payloadMass,
-			Amount<Velocity> vMC
+			Amount<Velocity> vMC,
+			int conditionIndex
 			) {	
 
+		initializePhasesLists(false, false, false);
+		
 		//----------------------------------------------------------------------
 		// ERROR FLAGS
 		boolean cruiseMaxMachNumberErrorFlag = false;
@@ -562,7 +572,7 @@ public class PayloadRangeCalc {
 		
 		do {
 			
-			initializePhasesLists(false, false);
+			initializePhasesLists(true, false, false);
 
 			if(i > 100) {
 				System.err.println("WARNING: (PAYLOAD-RANGE) MAXIMUM NUMBER OF ITERATION REACHED");
@@ -696,7 +706,7 @@ public class PayloadRangeCalc {
 					SI.KILOGRAM
 					);
 
-			initializePhasesLists(true, false);
+			initializePhasesLists(true, true, false);
 
 			List<Amount<Length>> cruiseSteps = MyArrayUtils.convertDoubleArrayToListOfAmount( 
 					MyArrayUtils.linspace(
@@ -1243,7 +1253,7 @@ public class PayloadRangeCalc {
 
 			for (int iAlternate=0; iAlternate < 5; iAlternate++) {
 
-				initializePhasesLists(false, true);
+				initializePhasesLists(true, false, true);
 
 				List<Amount<Length>> alternateCruiseSteps = MyArrayUtils.convertDoubleArrayToListOfAmount( 
 						MyArrayUtils.linspace(
@@ -2332,61 +2342,63 @@ public class PayloadRangeCalc {
 						SI.KILOGRAM
 						);
 
-				theLandingCalculator = new LandingCalc(
-						holdingAltitude,
-						theOperatingConditions.getAltitudeLanding(), 
-						theOperatingConditions.getDeltaTemperatureLanding(), 
-						approachAngle, 
-						intialMassLanding,
-						theAircraft.getPowerPlant(),
-						polarCLLanding,
-						polarCDLanding, 
-						theAircraft.getWing().getAspectRatio(), 
-						theAircraft.getWing().getSurfacePlanform(),
-						freeRollDuration,
-						mu, 
-						muBrake,
-						wingToGroundDistance, 
-						kCLmaxLanding, 
-						cLmaxLanding, 
-						cLZeroLanding, 
-						cLAlphaLanding, 
-						theOperatingConditions.getThrottleLanding(), 
-						cruiseCalibrationFactorThrust,
-						flightIdleCalibrationFactorThrust,
-						groundIdleCalibrationFactorThrust,
-						cruiseCalibrationFactorSFC,
-						flightIdleCalibrationFactorSFC,
-						groundIdleCalibrationFactorSFC,
-						1.0, // cruise NOx correction factor (not needed)
-						1.0, // cruise CO correction factor (not needed)
-						1.0, // cruise HC correction factor (not needed)
-						1.0, // cruise Soot correction factor (not needed)
-						1.0, // cruise CO2 correction factor (not needed)
-						1.0, // cruise SOx correction factor (not needed)
-						1.0, // cruise H2O correction factor (not needed)
-						1.0, // fidl NOx correction factor (not needed)
-						1.0, // fidl CO correction factor (not needed)
-						1.0, // fidl HC correction factor (not needed)
-						1.0, // fidl Soot correction factor (not needed)
-						1.0, // fidl CO2 correction factor (not needed)
-						1.0, // fidl SOx correction factor (not needed)
-						1.0, // fidl H2O correction factor (not needed)
-						1.0, // gidl NOx correction factor (not needed)
-						1.0, // gidl CO correction factor (not needed)
-						1.0, // gidl HC correction factor (not needed)
-						1.0, // gidl Soot correction factor (not needed)
-						1.0, // gidl CO2 correction factor (not needed)
-						1.0, // gidl SOx correction factor (not needed)
-						1.0, // gidl H2O correction factor (not needed)
-						theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
-						);
+				// only if iAlternate=0 and iCruise=0 i=0 (just one time to reduce computational time)
+				if(iAlternate == 0 && i==0) {
+					theLandingCalculator = new LandingCalc(
+							holdingAltitude,
+							theOperatingConditions.getAltitudeLanding(), 
+							theOperatingConditions.getDeltaTemperatureLanding(), 
+							approachAngle, 
+							intialMassLanding,
+							theAircraft.getPowerPlant(),
+							polarCLLanding,
+							polarCDLanding, 
+							theAircraft.getWing().getAspectRatio(), 
+							theAircraft.getWing().getSurfacePlanform(),
+							freeRollDuration,
+							mu, 
+							muBrake,
+							wingToGroundDistance, 
+							kCLmaxLanding, 
+							cLmaxLanding, 
+							cLZeroLanding, 
+							cLAlphaLanding, 
+							theOperatingConditions.getThrottleLanding(), 
+							cruiseCalibrationFactorThrust,
+							flightIdleCalibrationFactorThrust,
+							groundIdleCalibrationFactorThrust,
+							cruiseCalibrationFactorSFC,
+							flightIdleCalibrationFactorSFC,
+							groundIdleCalibrationFactorSFC,
+							1.0, // cruise NOx correction factor (not needed)
+							1.0, // cruise CO correction factor (not needed)
+							1.0, // cruise HC correction factor (not needed)
+							1.0, // cruise Soot correction factor (not needed)
+							1.0, // cruise CO2 correction factor (not needed)
+							1.0, // cruise SOx correction factor (not needed)
+							1.0, // cruise H2O correction factor (not needed)
+							1.0, // fidl NOx correction factor (not needed)
+							1.0, // fidl CO correction factor (not needed)
+							1.0, // fidl HC correction factor (not needed)
+							1.0, // fidl Soot correction factor (not needed)
+							1.0, // fidl CO2 correction factor (not needed)
+							1.0, // fidl SOx correction factor (not needed)
+							1.0, // fidl H2O correction factor (not needed)
+							1.0, // gidl NOx correction factor (not needed)
+							1.0, // gidl CO correction factor (not needed)
+							1.0, // gidl HC correction factor (not needed)
+							1.0, // gidl Soot correction factor (not needed)
+							1.0, // gidl CO2 correction factor (not needed)
+							1.0, // gidl SOx correction factor (not needed)
+							1.0, // gidl H2O correction factor (not needed)
+							theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
+							);
 
-				theLandingCalculator.calculateLanding(true);
+					theLandingCalculator.calculateLanding(true);
 
-				rangeLanding.addAll(theLandingCalculator.getGroundDistanceList());			
-				fuelUsedLanding.addAll(theLandingCalculator.getFuelUsedList());
-
+					rangeLanding.addAll(theLandingCalculator.getGroundDistanceList());			
+					fuelUsedLanding.addAll(theLandingCalculator.getFuelUsedList());
+				}
 				//.....................................................................
 				// CHECK ON TOTAL ALTERNATE RANGE
 				Amount<Length> totalAlternateRange = Amount.valueOf(
@@ -2469,23 +2481,18 @@ public class PayloadRangeCalc {
 				.getEstimatedValue()
 				) >= 0.01
 				);
-//		while ( Math.abs(
-//				(targetFuelMass.to(SI.KILOGRAM).minus(totalFuelUsed.to(SI.KILOGRAM)))
-//				.divide(targetFuelMass.to(SI.KILOGRAM))
-//				.times(100)
-//				.getEstimatedValue()
-//				)- (fuelReserve*100)
-//				>= 0.01
-//				);
 
 		//----------------------------------------------------------------------
-		if(theFirstDescentCalculator.getDescentMaxIterationErrorFlag() == true) {
-			System.err.println("WARNING: (ITERATIVE LOOP CRUISE/IDLE - FIRST DESCENT) MAX NUMBER OF ITERATION REACHED. THE RATE OF DESCENT MAY DIFFER FROM THE SPECIFIED ONE...");					
-		}
-		if(theSecondDescentCalculator.getDescentMaxIterationErrorFlag() == true) {
-			System.err.println("WARNING: (ITERATIVE LOOP CRUISE/IDLE - SECOND DESCENT) MAX NUMBER OF ITERATION REACHED. THE RATE OF DESCENT MAY DIFFER FROM THE SPECIFIED ONE...");					
-		}
-
+		if(theTakeOffCalculator.isRotationSpeedWarningFlag() == true)
+			System.err.println("WARNING: (PAYLOAD-RANGE (POINT " + conditionIndex + ") :: SIMULATION - TAKE-OFF) THE CHOSEN VRot IS LESS THAN 1.05*VMC. THIS LATTER WILL BE USED ...");
+		if(theTakeOffCalculator.isTailStrike() == true)
+			System.err.println("WARNING: (PAYLOAD-RANGE (POINT " + conditionIndex + ") :: SIMULATION - TAKE-OFF) TAIL STRIKE !! ");
+		if(theFirstDescentCalculator.getDescentMaxIterationErrorFlag() == true) 
+			System.err.println("WARNING: (PAYLOAD-RANGE (POINT " + conditionIndex + ") :: ITERATIVE LOOP CRUISE/IDLE - FIRST DESCENT) MAX NUMBER OF ITERATION REACHED. THE RATE OF DESCENT MAY DIFFER FROM THE SPECIFIED ONE...");					
+		if(theSecondDescentCalculator.getDescentMaxIterationErrorFlag() == true) 
+			System.err.println("WARNING: (PAYLOAD-RANGE (POINT " + conditionIndex + ") :: ITERATIVE LOOP CRUISE/IDLE - SECOND DESCENT) MAX NUMBER OF ITERATION REACHED. THE RATE OF DESCENT MAY DIFFER FROM THE SPECIFIED ONE...");					
+		
+		
 		return Amount.valueOf(
 				rangeTakeOff.get(rangeTakeOff.size()-1).doubleValue(NonSI.NAUTICAL_MILE)
 				+ rangeClimb.get(rangeClimb.size()-1).doubleValue(NonSI.NAUTICAL_MILE)

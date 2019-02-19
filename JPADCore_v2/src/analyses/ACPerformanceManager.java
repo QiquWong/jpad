@@ -4736,6 +4736,11 @@ public class ACPerformanceManager {
 			// SIMULATION
 			_theTakeOffCalculatorMap.get(xcg).calculateTakeOffDistanceODE(null, false, false, vMC);
 			
+			if(_theTakeOffCalculatorMap.get(xcg).isRotationSpeedWarningFlag() == true)
+				System.err.println("WARNING: (SIMULATION - TAKE-OFF) THE CHOSEN VRot IS LESS THAN 1.05*VMC. THIS LATTER WILL BE USED ...");
+			if(_theTakeOffCalculatorMap.get(xcg).isTailStrike() == true)
+				System.err.println("WARNING: (SIMULATION - TAKE-OFF) TAIL STRIKE !! ");
+			
 			// Distances:
 			_groundRollDistanceTakeOffMap.put(
 					xcg, 
