@@ -431,7 +431,7 @@ public class MyXMLReaderUtils {
 		}
 		return outputStrings;
 	}
-	
+
 	public static String getXMLPropertyByPath(Document doc, XPath xpath, String expression) {
 
 		try {
@@ -454,12 +454,13 @@ public class MyXMLReaderUtils {
 
 		} catch (XPathExpressionException ex1) {
 
+			System.err.println("########################## MyXMLReaderUtils :: getXMLPropertyByPath");
 			ex1.printStackTrace();
 			return null; // ??
 		}
 	} // end-of-getXMLPropertyByPath:
 
-	
+
 	/**
 	 * Get the first occurrence of a property for a given XPath search string
 	 * into a _node_
@@ -479,14 +480,15 @@ public class MyXMLReaderUtils {
 			Node importedNode = doc.importNode(node, true);
 			doc.appendChild(importedNode);
 			List<String> props = MyXMLReaderUtils.getXMLPropertiesByPath(doc, expression);
-			System.out.println("getXMLPropertyByPath :: properties found: " + props.size());
-			System.out.println("props[0] " + props.get(0));
+			//System.out.println("getXMLPropertyByPath :: properties found: " + props.size());
+			//System.out.println("props[0] " + props.get(0));
 			if (props.size() == 0)
 				return null;
 			else
 				return props.get(0);
-			
+
 		} catch (ParserConfigurationException e) {
+			System.err.println("########################## MyXMLReaderUtils :: getXMLPropertyByPath");
 			e.printStackTrace();
 			return null;
 		}
@@ -511,18 +513,19 @@ public class MyXMLReaderUtils {
 			Document doc = builder.newDocument();
 			Node importedNode = doc.importNode(node, true);
 			doc.appendChild(importedNode);
-			
+
 			List<String> attributes = MyXMLReaderUtils.getXMLPropertiesByPath(doc, path+"/@"+ attribute);
-					
-			System.out.println("getXMLAttributeByPath :: attributes \""+ attribute +"\" found: " + attributes.size());
-			
-			System.out.println("props[0] " + attributes.get(0));
+
+			//System.out.println("getXMLAttributeByPath :: attributes \""+ attribute +"\" found: " + attributes.size());
+			//System.out.println("props[0] " + attributes.get(0));
+
 			if (attributes.size() == 0)
 				return null;
 			else
 				return attributes.get(0);
-			
+
 		} catch (ParserConfigurationException e) {
+			System.err.println("########################## MyXMLReaderUtils :: getXMLAttributesByPath");
 			e.printStackTrace();
 			return null;
 		}
@@ -547,18 +550,19 @@ public class MyXMLReaderUtils {
 			Document doc = builder.newDocument();
 			Node importedNode = doc.importNode(node, true);
 			doc.appendChild(importedNode);
-			
+
 			List<String> attributes = MyXMLReaderUtils.getXMLPropertiesByPath(doc, path+"/@"+ attribute);
-					
-			System.out.println("getXMLAttributeByPath :: attributes \""+ attribute +"\" found: " + attributes.size());
+
+			//System.out.println("getXMLAttributeByPath :: attributes \""+ attribute +"\" found: " + attributes.size());
 			return attributes;
-			
+
 		} catch (ParserConfigurationException e) {
+			System.err.println("########################## MyXMLReaderUtils :: getXMLAttributesByPath");
 			e.printStackTrace();
 			return null;
 		}
 	}
-	
+
 	public static NodeList getXMLNodeListByPath(Document doc, String expression) {
 		try {
 			XPathFactory xpathFactory = XPathFactory.newInstance();
@@ -665,7 +669,53 @@ public class MyXMLReaderUtils {
 		}
 	} // end-of-getXMLNodeListByPath:
 
-	
+	/*
+	 * Get the node list of property values for a given XPath expression
+	 * @param node
+	 * @param xpath
+	 * @param string expression
+	 * @return list of nodes (NodeList)
+	 */
+	public static NodeList getXMLNodeListByPath(Node node, XPath xpath, String expression) {
+
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		factory.setNamespaceAware(true);
+		DocumentBuilder builder;
+		try {
+			builder = factory.newDocumentBuilder();
+			Document doc = builder.newDocument();
+			Node importedNode = doc.importNode(node, true);
+			doc.appendChild(importedNode);
+			XPathExpression expr =
+					xpath.compile(expression);
+			// evaluate expression result on XML document
+			List<String> list_elements = new ArrayList<>();
+			NodeList nodes = (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
+
+			for (int i = 0; i < nodes.getLength(); i++)
+				list_elements.add(nodes.item(i).getNodeValue());
+
+			return nodes;
+
+		} catch (XPathExpressionException | ParserConfigurationException ex1) {
+
+			ex1.printStackTrace();
+			return null; // ??
+		}
+	} // end-of-getXMLNodeListByPath:
+
+	/*
+	 * Get the node list of property values for a given XPath expression
+	 * @param node
+	 * @param string expression
+	 * @return list of nodes (NodeList)
+	 */
+	public static NodeList getXMLNodeListByPath(Node node, String expression) {
+		XPathFactory xpathFactory = XPathFactory.newInstance();
+		XPath xpath = xpathFactory.newXPath();
+		return MyXMLReaderUtils.getXMLNodeListByPath(node, xpath, expression);
+	}
+
 	public static Double getXMLDoubleByPath(Document xmlDoc, XPath xpath, String expression) {
 		String valueStr = MyXMLReaderUtils.getXMLPropertyByPath(xmlDoc, xpath, expression + "/text()");
 		if ((valueStr != null) && (!valueStr.equals(""))) {
@@ -685,7 +735,7 @@ public class MyXMLReaderUtils {
 		XPath xpath = xpathFactory.newXPath();
 		return MyXMLReaderUtils.getXMLDoubleByPath(xmlDoc, xpath, expression);
 	}
-	
+
 
 	/*
 	 * Get the quantity from XML path; unit attribute is mandatory; if search fails return null
@@ -707,7 +757,7 @@ public class MyXMLReaderUtils {
 			try {
 
 				Amount<?> quantity = null;
-				
+
 				if(unitStr.startsWith("1/", 0)) {
 					if(unitStr.equalsIgnoreCase("1/deg"))
 						unitStr = "1/°";
@@ -718,9 +768,9 @@ public class MyXMLReaderUtils {
 					Double value = Double.parseDouble(valueStr);
 					quantity = Amount.valueOf(value, Unit.valueOf(unitStr));
 				}
-				
+
 				return quantity;
-				
+
 			} catch (NumberFormatException | AmountException e) {
 				e.printStackTrace();
 				return null;
@@ -739,12 +789,12 @@ public class MyXMLReaderUtils {
 			// evaluate expression result on XML document
 			String valueStr = MyXMLReaderUtils.getXMLPropertyByPath(xmlDoc, xpath, expression + "/text()");
 			String unitStr = MyXMLReaderUtils.getXMLPropertyByPath(xmlDoc, xpath, expression + "/@unit");
-			
+
 			if ((valueStr != null) && (!valueStr.equals("")) && (unitStr != null)) {
 
-					Double value = Double.parseDouble(valueStr);
-					Amount<?> quantity = Amount.valueOf(value, Unit.valueOf(unitStr));
-					return quantity;
+				Double value = Double.parseDouble(valueStr);
+				Amount<?> quantity = Amount.valueOf(value, Unit.valueOf(unitStr));
+				return quantity;
 			} else
 				return null;
 
@@ -752,12 +802,97 @@ public class MyXMLReaderUtils {
 			e.printStackTrace();
 			return null;
 		} catch (XPathExpressionException ex1) {
-				System.err.println("########################## MyXMLReaderUtils :: getXMLAmountWithUnitByPath");
-				ex1.printStackTrace();
-				return null; // ??
+			System.err.println("########################## MyXMLReaderUtils :: getXMLAmountWithUnitByPath");
+			ex1.printStackTrace();
+			return null; // ??
 		}
 	}
-	
+
+	/*
+	 * Get the quantity from XML node with a "value" attribute; unit attribute is mandatory; if search fails return null
+	 * <p>
+	 * Example:
+	 *     <chord value="105" unit="cm"/>
+	 * <p>
+	 * @param xmlDoc     the Document object
+	 * @param expression XPath expression
+	 * @return           amount, dimensions according to unit attribute value
+	 */	
+	public static Amount<?> getXMLAmountFromAttributeValueWithUnitByPath(Document xmlDoc, String expression) {
+		try {
+
+			XPathFactory xpathFactory = XPathFactory.newInstance();
+			XPath xpath = xpathFactory.newXPath();
+			XPathExpression expr =
+					xpath.compile(expression);
+			// evaluate expression result on XML document
+			String valueStr = MyXMLReaderUtils.getXMLAttributeByPath(xmlDoc, expression, "value");
+			String unitStr = MyXMLReaderUtils.getXMLAttributeByPath(xmlDoc, expression, "unit");
+			if ((valueStr != null) && (!valueStr.equals("")) && (unitStr != null)) {
+				Double value = Double.parseDouble(valueStr);
+				Amount<?> quantity = Amount.valueOf(value, Unit.valueOf(unitStr));
+				return quantity;
+			} else
+				return null;
+
+		} catch (NumberFormatException | AmountException e) {
+			e.printStackTrace();
+			return null;
+		} catch (XPathExpressionException ex1) {
+			System.err.println("########################## MyXMLReaderUtils :: getXMLAmountFromAttributeWithUnitByPath");
+			ex1.printStackTrace();
+			return null; // ??
+		}
+	}	
+
+	/*
+	 * Get the quantity from XML node with a "value" attribute; unit attribute is mandatory; if search fails return null
+	 * <p>
+	 * Example:
+	 *     <chord value="105" unit="cm"/>
+	 * <p>
+	 * @param node       a node to start searching from
+	 * @param expression XPath expression
+	 * @return           amount, dimensions according to unit attribute value, null if all fails
+	 */	
+	public static Amount<?> getXMLAmountFromAttributeValueWithUnitByPath(Node node, String expression) {
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		factory.setNamespaceAware(true);
+		DocumentBuilder builder;
+		try {
+			builder = factory.newDocumentBuilder();
+			Document doc = builder.newDocument();
+			Node importedNode = doc.importNode(node, true);
+			doc.appendChild(importedNode);
+			return getXMLAmountFromAttributeValueWithUnitByPath(doc, expression);
+
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	/*
+	 * Get the Double value from XML node with a "value" attribute
+	 * <p>
+	 * Example:
+	 *     <xbar value="0.55"/>
+	 * <p>
+	 * @param xmlDoc     the Document object
+	 * @param expression XPath expression
+	 * @return           double parsed, null if parsing fails "value" attribute not present, null if all fails
+	 */	
+	public static Double getXMLDoubleFromAttributeValueByPath(Node node, String expression) {
+		try {
+			return Double.parseDouble(MyXMLReaderUtils.getXMLAttributeByPath(node, expression, "value"));
+		} catch (NumberFormatException e) {
+			System.err.println("########################## MyXMLReaderUtils :: getXMLDoubleFromAttributeValueByPath");
+			e.printStackTrace();
+			return null;
+		}
+	}	
+
+
 	/*
 	 * Get a length quantity from XML path; unit attribute is not mandatory, if not present
 	 * the numeric value is assumed as SI.METRE ; if search fails return null
@@ -907,7 +1042,7 @@ public class MyXMLReaderUtils {
 		} else
 			return null;
 	}
-	
+
 	/*
 	 * Get a time quantity from XML path; unit attribute is not mandatory, if not present
 	 * the numeric value is assumed as SI.SECOND ; if search fails return null
@@ -950,7 +1085,7 @@ public class MyXMLReaderUtils {
 			return null;
 	}
 
-	
+
 	public static Amount<Angle> getXMLAmountAngleByPath(Document xmlDoc, XPath xpath, String expression) {
 
 		String valueStr = MyXMLReaderUtils.getXMLPropertyByPath(xmlDoc, xpath, expression + "/text()");
@@ -994,7 +1129,7 @@ public class MyXMLReaderUtils {
 			return null;
 		}
 	}
-	
+
 
 	@SuppressWarnings("unchecked")
 	public static Amount<?> getXMLAmountOnePerSecondByPath(Document xmlDoc, XPath xpath, String expression) {
@@ -1037,16 +1172,16 @@ public class MyXMLReaderUtils {
 			XPath xpath = xpathFactory.newXPath();
 			Amount<?> quantity = MyXMLReaderUtils.getXMLAmountOnePerSecondByPath(xmlDoc, xpath, expression);
 			return quantity;
-			
+
 		} catch (NumberFormatException | AmountException e) {
 			e.printStackTrace();
 			return null;
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public static Amount<?> getXMLAmountOnePerSecondSquaredByPath(Document xmlDoc, XPath xpath, String expression) {
-		
+
 		String valueStr = MyXMLReaderUtils.getXMLPropertyByPath(xmlDoc, xpath, expression + "/text()");
 		String unitStr = MyXMLReaderUtils.getXMLPropertyByPath(xmlDoc, xpath, expression + "/@unit");
 
@@ -1087,25 +1222,25 @@ public class MyXMLReaderUtils {
 			XPath xpath = xpathFactory.newXPath();
 			Amount<?> quantity = MyXMLReaderUtils.getXMLAmountOnePerSecondSquaredByPath(xmlDoc, xpath, expression);
 			return quantity;
-			
+
 		} catch (NumberFormatException | AmountException e) {
 			e.printStackTrace();
 			return null;
 		}
 	}
-	
 
-	
-	
-	
+
+
+
+
 	// TODO: implement similar functions, such as:
 	// getXMLAmountSurfaceByPath
 	// getXMLAmountVolumeByPath
 	// getXMLAmountAngleByPath
 	// getXMLAmountMassByPath
 	// etc
-	
-	
+
+
 
 	/**
 	 * Group together actions needed to import an xml document
@@ -1142,11 +1277,11 @@ public class MyXMLReaderUtils {
 	}
 
 	public static Double[] importFromValueNodeDoubleArray(Node node) {
-		
+
 		return MyArrayUtils.convertListOfDoubleToDoubleArray(importFromValueNodeListDouble(node));
-		
+
 	}
-	
+
 	public static List<Double> importFromValueNodeListDouble(Node node) {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setNamespaceAware(true);
@@ -1164,7 +1299,7 @@ public class MyXMLReaderUtils {
 			e.printStackTrace();
 			return null;
 		}
-		
+
 	}
-	
+
 }

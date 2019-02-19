@@ -12,8 +12,8 @@ NACELLES ===> D:\agodemar\github\jpad\JPADSandBox_v2\in\Template_Aircraft\nacell
 LANDING GEARS ===> D:\agodemar\github\jpad\JPADSandBox_v2\in\Template_Aircraft\landing_gears
 CABIN CONFIGURATIONS ===> D:\agodemar\github\jpad\JPADSandBox_v2\in\Template_Aircraft\cabin_configurations
 --------------
-18 [main] INFO ncsa.hdf.hdf5lib.H5 - HDF5 library: jhdf5
-19 [main] INFO ncsa.hdf.hdf5lib.H5 -  successfully loaded from java.library.path
+72 [main] INFO ncsa.hdf.hdf5lib.H5 - HDF5 library: jhdf5
+72 [main] INFO ncsa.hdf.hdf5lib.H5 -  successfully loaded from java.library.path
 De-serializing file: D:\agodemar\github\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterAerodynamicDatabase.xml ...
 database.databasefunctions.aerodynamics.AerodynamicDatabaseReader de-serialization complete
 De-serializing file: D:\agodemar\github\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterHighLiftDatabase.xml ...
@@ -1586,10 +1586,7 @@ database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serializati
 		Balance Analysis :: COMPLETE 
 
 		Dynamic Stability Analysis (CRUISE) :: START
-Exception in thread "main" java.lang.IllegalStateException: Not set: [currentCondition]
-	at com.google.common.base.Preconditions.checkState(Preconditions.java:200)
-	at analyses.IACDynamicStabilityManager_Builder.build(IACDynamicStabilityManager_Builder.java:5426)
-	at analyses.IACDynamicStabilityManager$Builder.build(IACDynamicStabilityManager.java:1)
-	at analyses.ACDynamicStabilityManager.importFromXML(ACDynamicStabilityManager.java:830)
-	at analyses.ACAnalysisManager.doAnalysis(ACAnalysisManager.java:1832)
-	at sandbox2.adm.analyses.DynamicStabilityTest.main(DynamicStabilityTest.java:312)
+File D:\agodemar\github\jpad\JPADSandBox_v2\in\Template_Analyses\analysis_dynamics_IRON_CANARD_cruise.xml found.
+Parsing ...
+File D:\agodemar\github\jpad\JPADSandBox_v2\in\Template_Analyses\analysis_dynamics_IRON_CANARD_cruise.xml parsed.
+Reading dynamic stability analysis data ...

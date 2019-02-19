@@ -9,6 +9,7 @@ import org.inferred.freebuilder.FreeBuilder;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.Aircraft;
+import analyses.ACDynamicStabilityManagerUtils.PropulsionTypeEnum;
 import configuration.enumerations.ConditionEnum;
 import standaloneutils.MyInterpolatingFunction;
 
@@ -19,15 +20,13 @@ public interface IACDynamicStabilityManager {
 	// FROM INPUT (Passed from ACAnalysisManager)
 	//==============================================================================
 
+	String getId();
 	Aircraft getTheAircraft();
 	OperatingConditions getTheOperatingConditions();
-	ConditionEnum getCurrentCondition();
 	
 	//==============================================================================
 	// FROM INPUT (Passed from XML file)
 	//==============================================================================
-	
-	String getId();
 
 	//..............................................................................
 	// Weights
@@ -37,6 +36,8 @@ public interface IACDynamicStabilityManager {
 	Amount<Mass> getMaximumPayload();
 	Amount<Mass> getSinglePassengerMass();
 
+	PropulsionTypeEnum getPropulsionSystem();
+	
 	//..............................................................................
 	// Aerodynamics
 	List<Double> getXcgPositionList();

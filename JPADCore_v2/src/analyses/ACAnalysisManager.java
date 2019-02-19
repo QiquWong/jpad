@@ -1568,10 +1568,10 @@ public class ACAnalysisManager {
 				.append("\tAircraft Analysis Manager\n")
 				.append("\t-------------------------------------\n")
 				.append("\tAircraft in exam: " + _theAnalysisManagerInterface.getTheAircraft().getId() + "\n")
-				.append("\t·····································\n")
+				.append("\tï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½\n")
 				.append("\tPositive limit load factor: " + _theAnalysisManagerInterface.getPositiveLimitLoadFactor() + "\n")
 				.append("\tNegative limit load factor: " + _theAnalysisManagerInterface.getNegativeLimitLoadFactor() + "\n")
-				.append("\t·····································\n")
+				.append("\tï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½\n")
 				.append("\tn Ultimate " + _nUltimate + "\n")
 				.append("\tV dive (TAS): " + _vDive + "\n")
 				.append("\tV dive (EAS): " + _vDiveEAS + "\n")
@@ -1581,7 +1581,7 @@ public class ACAnalysisManager {
 				.append("\tV max cruise (EAS): " + _vMaxCruiseEAS + "\n")
 				.append("\tV optimum cruise: " + _vOptimumCruise + "\n")
 				.append("\tMax dynamic pressure: " + _maxDynamicPressure + "\n")
-				.append("\t·····································\n")
+				.append("\tï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½\n")
 				;
 		if(_executedAnalysesMap.get(AnalysisTypeEnum.WEIGHTS) == true)
 			sb.append(_theAnalysisManagerInterface.getTheAircraft().getTheAnalysisManager().getTheWeights().toString());
@@ -1821,7 +1821,7 @@ public class ACAnalysisManager {
 			if(_theAnalysisManagerInterface.getTaskListDynamicStability().contains(ConditionEnum.CRUISE)) {
 				System.setOut(originalOut);
 				System.out.println("\t\tDynamic Stability Analysis (CRUISE) :: START");
-				System.setOut(filterStream);
+				//System.setOut(filterStream); // TODO
 				_theDynamicStability.remove(ConditionEnum.CRUISE);
 				_theDynamicStability.put(
 						ConditionEnum.CRUISE,

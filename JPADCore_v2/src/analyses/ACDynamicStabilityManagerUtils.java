@@ -2,7 +2,7 @@ package analyses;
 
 public class ACDynamicStabilityManagerUtils {
 
-	public enum Propulsion { CONSTANT_TRUST, CONSTANT_POWER, CONSTANT_MASS_FLOW, RAMJET }
+	public enum PropulsionTypeEnum { CONSTANT_TRUST, CONSTANT_POWER, CONSTANT_MASS_FLOW, RAMJET }
 	
 	public static double calcDynamicPressure(double rho0, double u0) {
 		
@@ -31,9 +31,9 @@ public class ACDynamicStabilityManagerUtils {
 	 * @param mass total mass
 	 * @param u0 speed of the aircraft
 	 * @param q0 dynamic pressure
-	 * @param cd0 drag coefficient at null incidence (Cdº) of the aircraft
+	 * @param cd0 drag coefficient at null incidence (Cdï¿½) of the aircraft
 	 * @param m0 Mach number
-	 * @param cdM0 drag coefficient with respect to Mach (CdMº) of the aircraft
+	 * @param cdM0 drag coefficient with respect to Mach (CdMï¿½) of the aircraft
 	 * @return X_uCT dimensional derivative [s^(-1)]
 	 */
 	public static double calcX_u_CT (double rho0, double surf, double mass, double u0, double q0,
@@ -52,12 +52,12 @@ public class ACDynamicStabilityManagerUtils {
 	 * @param mass total mass
 	 * @param u0 speed of the aircraft
 	 * @param q0 dynamic pressure
-	 * @param cd0 drag coefficient at null incidence (Cdº) of the aircraft
+	 * @param cd0 drag coefficient at null incidence (Cdï¿½) of the aircraft
 	 * @param m0 Mach number
-	 * @param cdM0 drag coefficient with respect to Mach (CdMº) of the aircraft
-	 * @param cl0 lift coefficient at null incidence (Clº) of the aircraft
+	 * @param cdM0 drag coefficient with respect to Mach (CdMï¿½) of the aircraft
+	 * @param cl0 lift coefficient at null incidence (Clï¿½) of the aircraft
 	 * @param gamma0 ramp angle
-	 * @return XªuCP dimensional derivative [s^(-1)]
+	 * @return Xï¿½uCP dimensional derivative [s^(-1)]
 	 */
 	public static double calcX_u_CP (double rho0, double surf, double mass, double u0, double q0,
 			double cd0, double m0, double cdM0, double cl0, double gamma0) {
@@ -75,9 +75,9 @@ public class ACDynamicStabilityManagerUtils {
 	 * @param mass total mass
 	 * @param u0 speed of the aircraft 
 	 * @param q0 dynamic pressure
-	 * @param cl0 lift coefficient at null incidence (Clº) of the aircraft
-	 * @param cdAlpha0 linear drag gradient (CdAlphaº) of the aircraft
-	 * @return Xªw dimensional derivative [s^(-1)]
+	 * @param cl0 lift coefficient at null incidence (Clï¿½) of the aircraft
+	 * @param cdAlpha0 linear drag gradient (CdAlphaï¿½) of the aircraft
+	 * @return Xï¿½w dimensional derivative [s^(-1)]
 	 */
 	public static double calcX_w (double rho0, double surf, double mass, double u0, double q0,
 			double cl0, double cdAlpha0) {
@@ -96,9 +96,9 @@ public class ACDynamicStabilityManagerUtils {
 	 * @param u0 speed of the aircraft 
 	 * @param q0 dynamic pressure
 	 * @param m0 Mach number
-	 * @param cl0 lift coefficient at null incidence (Clº) of the aircraft
-	 * @param clM0 lift coefficient with respect to Mach (ClMº) of the aircraft
-	 * @return Zªu dimensional derivative [s^(-1)]
+	 * @param cl0 lift coefficient at null incidence (Clï¿½) of the aircraft
+	 * @param clM0 lift coefficient with respect to Mach (ClMï¿½) of the aircraft
+	 * @return Zï¿½u dimensional derivative [s^(-1)]
 	 */
 	public static double calcZ_u (double rho0, double surf, double mass, double u0, double q0, double m0,
 			double cl0, double clM0) {
@@ -117,9 +117,9 @@ public class ACDynamicStabilityManagerUtils {
 	 * @param u0 speed of the aircraft 
 	 * @param q0 dynamic pressure
 	 * @param m0 Mach number
-	 * @param cd0 drag coefficient at null incidence (Cdº) of the aircraft
-	 * @param clAlpha0 linear lift gradient (ClAlphaº) of the aircraft
-	 * @return Zªw dimensional derivative [s^(-1)]
+	 * @param cd0 drag coefficient at null incidence (Cdï¿½) of the aircraft
+	 * @param clAlpha0 linear lift gradient (ClAlphaï¿½) of the aircraft
+	 * @return Zï¿½w dimensional derivative [s^(-1)]
 	 */
 	public static double calcZ_w (double rho0, double surf, double mass, double u0, double q0, double m0,
 			double cd0, double clAlpha0) {
@@ -136,8 +136,8 @@ public class ACDynamicStabilityManagerUtils {
 	 * @param surf wing area
 	 * @param mass total mass
 	 * @param cbar mean aerodynamic chord
-	 * @param clAlpha_dot0 linear lift gradient time derivative (ClAlpha_dotº) of the aircraft
-	 * @return Zªw_dot adimensional derivative
+	 * @param clAlpha_dot0 linear lift gradient time derivative (ClAlpha_dotï¿½) of the aircraft
+	 * @return Zï¿½w_dot adimensional derivative
 	 */
 	public static double calcZ_w_dot (double rho0, double surf, double mass, double cbar,
 			double clAlpha_dot0) {
@@ -155,8 +155,8 @@ public class ACDynamicStabilityManagerUtils {
 	 * @param u0 speed of the aircraft
 	 * @param q0 dynamic pressure
 	 * @param cbar mean aerodynamic chord
-	 * @param clQ0 lift coefficient with respect to q (ClQº) of the aircraft
-	 * @return Zªq dimensional derivative [s^(-1)]
+	 * @param clQ0 lift coefficient with respect to q (ClQï¿½) of the aircraft
+	 * @return Zï¿½q dimensional derivative [s^(-1)]
 	 */
 	public static double calcZ_q (double rho0, double surf, double mass, double u0, double q0, double cbar,
 			double clQ0) {
@@ -177,7 +177,7 @@ public class ACDynamicStabilityManagerUtils {
 	 * @param m0 Mach number
 	 * @param iYY longitudinal moment of inertia  (IYY)
 	 * @param cM_m0 pitching moment coefficient with respect to Mach number
-	 * @return cMªu dimensional derivative [m^(-1) * s^(-1)]
+	 * @return cMï¿½u dimensional derivative [m^(-1) * s^(-1)]
 	 */
 	public static double calcM_u (double rho0, double surf, double mass, double u0, double q0, double cbar,
 			double m0, double iYY, double cM_m0) {
@@ -197,8 +197,8 @@ public class ACDynamicStabilityManagerUtils {
 	 * @param q0 dynamic pressure
 	 * @param cbar mean aerodynamic chord
 	 * @param iYY longitudinal moment of inertia  (IYY)
-	 * @param cMAlpha0 pitching moment coefficient with respect to Alpha (CmAlphaº) of the aircraft
-	 * @return calcMªw dimensional derivative [m^(-1) * s^(-1)]
+	 * @param cMAlpha0 pitching moment coefficient with respect to Alpha (CmAlphaï¿½) of the aircraft
+	 * @return calcMï¿½w dimensional derivative [m^(-1) * s^(-1)]
 	 */
 	public static double calcM_w (double rho0, double surf, double mass, double u0, double q0, double cbar,
 			double iYY, double cMAlpha0) {
@@ -216,8 +216,8 @@ public class ACDynamicStabilityManagerUtils {
 	 * @param surf wing area
 	 * @param cbar mean aerodynamic chord
 	 * @param iYY longitudinal moment of inertia  (IYY)
-	 * @param cMAlpha_dot0 pitching moment coefficient with respect to Alpha (CmAlphaº) of the aircraft_dot
-	 * @return calcMªw_dot dimensional derivative [m^(-1)]
+	 * @param cMAlpha_dot0 pitching moment coefficient with respect to Alpha (CmAlphaï¿½) of the aircraft_dot
+	 * @return calcMï¿½w_dot dimensional derivative [m^(-1)]
 	 */
 	public static double calcM_w_dot (double rho0, double surf, double cbar,
 			double iYY, double cMAlpha_dot0) {
@@ -237,7 +237,7 @@ public class ACDynamicStabilityManagerUtils {
 	 * @param surf wing area
 	 * @param cbar mean aerodynamic chord
 	 * @param iYY longitudinal moment of inertia  (IYY)
-	 * @return calcMªq dimensional derivative [s^(-1)]
+	 * @return calcMï¿½q dimensional derivative [s^(-1)]
 	 */
 	public static double calcM_q (double rho0, double mass, double u0, double q0, double surf, double cbar,
 			double iYY, double cMq) {
@@ -259,7 +259,7 @@ public class ACDynamicStabilityManagerUtils {
 	 * @param q0 dynamic pressure
 	 * @param cTfix thrust coefficient at a fixed point ( U0 = u , delta_T = 1 )
 	 * @param kv scale factor of the effect on the propulsion due to the speed
-	 * @return Xªdelta_T_CT dimensional derivative [m * s^(-2)]
+	 * @return Xï¿½delta_T_CT dimensional derivative [m * s^(-2)]
 	 */
 	public static double calcX_delta_T_CT (double rho0, double surf, double mass, double u0, double q0,
 			double cTfix, double kv) {
@@ -280,7 +280,7 @@ public class ACDynamicStabilityManagerUtils {
 	 * @param q0 dynamic pressure
 	 * @param cTfix thrust coefficient at a fixed point ( U0 = u , delta_T = 1 )
 	 * @param kv scale factor of the effect on the propulsion due to the speed
-	 * @return Xªdelta_T_CP dimensional derivative [m * s^(-2)]
+	 * @return Xï¿½delta_T_CP dimensional derivative [m * s^(-2)]
 	 */
 	public static double calcX_delta_T_CP (double rho0, double surf, double mass, double u0, double q0,
 			double cTfix, double kv) {
@@ -300,7 +300,7 @@ public class ACDynamicStabilityManagerUtils {
 	 * @param q0 dynamic pressure
 	 * @param cTfix thrust coefficient at a fixed point ( U0 = u , delta_T = 1 )
 	 * @param kv scale factor of the effect on the propulsion due to the speed
-	 * @return Xªdelta_T_CMF dimensional derivative [m * s^(-2)]
+	 * @return Xï¿½delta_T_CMF dimensional derivative [m * s^(-2)]
 	 */
 	public static double calcX_delta_T_CMF (double rho0, double surf, double mass, double u0, double q0,
 			double cTfix, double kv) {
@@ -320,7 +320,7 @@ public class ACDynamicStabilityManagerUtils {
 	 * @param q0 dynamic pressure
 	 * @param cTfix thrust coefficient at a fixed point ( U0 = u , delta_T = 1 )
 	 * @param kv scale factor of the effect on the propulsion due to the speed
-	 * @return Xªdelta_T_RJ dimensional derivative [m * s^(-2)]
+	 * @return Xï¿½delta_T_RJ dimensional derivative [m * s^(-2)]
 	 */
 	public static double calcX_delta_T_RJ (double rho0, double surf, double mass, double u0, double q0,
 			double cTfix, double kv) {
@@ -338,8 +338,8 @@ public class ACDynamicStabilityManagerUtils {
 	 * @param mass total mass
 	 * @param u0 speed of the aircraft 
 	 * @param q0 dynamic pressure
-	 * @param clDelta_T lift coefficient with respect to delta_T (ClDelta_Tº) of the aircraft 
-	 * @return Zªdelta_T dimensional derivative [m * s^(-2)]
+	 * @param clDelta_T lift coefficient with respect to delta_T (ClDelta_Tï¿½) of the aircraft 
+	 * @return Zï¿½delta_T dimensional derivative [m * s^(-2)]
 	 */
 	public static double calcZ_delta_T (double rho0, double surf, double mass, double u0, double q0,
 			double clDelta_T) {
@@ -356,8 +356,8 @@ public class ACDynamicStabilityManagerUtils {
 	 * @param mass total mass
 	 * @param u0 speed of the aircraft 
 	 * @param q0 dynamic pressure
-	 * @param clDelta_E lift coefficient with respect to delta_E (ClDelta_Eº) of the aircraft  
-	 * @return Zªdelta_E dimensional derivative [m * s^(-2)]
+	 * @param clDelta_E lift coefficient with respect to delta_E (ClDelta_Eï¿½) of the aircraft  
+	 * @return Zï¿½delta_E dimensional derivative [m * s^(-2)]
 	 */
 	public static double calcZ_delta_E (double rho0, double surf, double mass, double u0, double q0,
 			double clDelta_E) {
@@ -376,7 +376,7 @@ public class ACDynamicStabilityManagerUtils {
 	 * @param surf wing area
 	 * @param cbar mean aerodynamic chord
 	 * @param iYY longitudinal moment of inertia  (IYY)
-	 * @return calcMªdelta_T dimensional derivative [s^(-2)]
+	 * @return calcMï¿½delta_T dimensional derivative [s^(-2)]
 	 */
 	public static double calcM_delta_T (double rho0, double surf, double cbar, double u0, double q0,
 			double iYY, double cMDelta_T) {
@@ -395,7 +395,7 @@ public class ACDynamicStabilityManagerUtils {
 	 * @param surf wing area
 	 * @param cbar mean aerodynamic chord
 	 * @param iYY longitudinal moment of inertia  (IYY)
-	 * @return calcMªdelta_E dimensional derivative [s^(-2)]
+	 * @return calcMï¿½delta_E dimensional derivative [s^(-2)]
 	 */
 	public static double calcM_delta_E (double rho0, double surf, double cbar, double u0, double q0,
 			double iYY, double cMDelta_E) {
@@ -419,20 +419,20 @@ public class ACDynamicStabilityManagerUtils {
 	 * @param gamma0 ramp angle
 	 * @param theta0_rad Euler angle [rad] (assuming gamma0 = theta0)
 	 * @param iYY longitudinal moment of inertia  (IYY)
-	 * @param cd0 drag coefficient at null incidence (Cdº) of the aircraft
-	 * @param cdM0 drag coefficient with respect to Mach (CdMº) of the aircraft
-	 * @param cdAlpha0 linear drag gradient (CdAlphaº) of the aircraft
-	 * @param cl0 lift coefficient at null incidence (Clº) of the aircraft
-	 * @param clAlpha0 linear lift gradient (ClAlphaº) of the aircraft
-	 * @param clAlpha_dot0 linear lift gradient time derivative (ClAlpha_dotº) of the aircraft
-	 * @param clQ0 lift coefficient with respect to q (ClQº) of the aircraft
-	 * @param cMAlpha0 pitching moment coefficient with respect to Alpha (CmAlphaº) of the aircraft
-	 * @param cMAlpha0_dot pitching moment coefficient time derivative (CmAlpha_dotº) of the aircraft
+	 * @param cd0 drag coefficient at null incidence (Cdï¿½) of the aircraft
+	 * @param cdM0 drag coefficient with respect to Mach (CdMï¿½) of the aircraft
+	 * @param cdAlpha0 linear drag gradient (CdAlphaï¿½) of the aircraft
+	 * @param cl0 lift coefficient at null incidence (Clï¿½) of the aircraft
+	 * @param clAlpha0 linear lift gradient (ClAlphaï¿½) of the aircraft
+	 * @param clAlpha_dot0 linear lift gradient time derivative (ClAlpha_dotï¿½) of the aircraft
+	 * @param clQ0 lift coefficient with respect to q (ClQï¿½) of the aircraft
+	 * @param cMAlpha0 pitching moment coefficient with respect to Alpha (CmAlphaï¿½) of the aircraft
+	 * @param cMAlpha0_dot pitching moment coefficient time derivative (CmAlpha_dotï¿½) of the aircraft
 	 * @param cM_m0 pitching moment coefficient with respect to Mach number
 	 * @param cMq pitching moment coefficient with respect to q
 	 * @return matrix [A_Lon]
 	 */
-	public static double[][] build_A_Lon_matrix (Propulsion propulsion_system,
+	public static double[][] build_A_Lon_matrix (PropulsionTypeEnum propulsion_system,
 			double rho0, double surf, double mass, double cbar, double u0, double q0,
 			double cd0, double m0, double cdM0, double cl0,	double clM0, double cdAlpha0,
 			double gamma0, double theta0_rad, double clAlpha0, double clAlpha_dot0,
@@ -441,7 +441,7 @@ public class ACDynamicStabilityManagerUtils {
 		
 		double [][] aLon = new double [4][4];
 		
-		// Propulsion type in the Xªu calculation 
+		// Propulsion type in the Xï¿½u calculation 
 		switch (propulsion_system)
 			{
 			case CONSTANT_TRUST:
@@ -508,30 +508,30 @@ public class ACDynamicStabilityManagerUtils {
 	 * @param cbar mean aerodynamic chord
 	 * @param u0 speed of the aircraft
 	 * @param q0 dynamic pressure
-	 * @param cd0 drag coefficient at null incidence (Cdº) of the aircraft
+	 * @param cd0 drag coefficient at null incidence (Cdï¿½) of the aircraft
 	 * @param m0 Mach number
-	 * @param cdM0 drag coefficient with respect to Mach (CdMº) of the aircraft
-	 * @param cl0 lift coefficient at null incidence (Clº) of the aircraft
-	 * @param cdAlpha0 linear drag gradient (CdAlphaº) of the aircraft
+	 * @param cdM0 drag coefficient with respect to Mach (CdMï¿½) of the aircraft
+	 * @param cl0 lift coefficient at null incidence (Clï¿½) of the aircraft
+	 * @param cdAlpha0 linear drag gradient (CdAlphaï¿½) of the aircraft
 	 * @param gamma0 ramp angle
 	 * @param theta0_rad Euler angle [rad] (assuming gamma0 = theta0)
-	 * @param clAlpha0 linear lift gradient (ClAlphaº) of the aircraft
-	 * @param clAlpha_dot0 linear lift gradient time derivative (ClAlpha_dotº) of the aircraft
-	 * @param cMAlpha0 pitching moment coefficient with respect to Alpha (CmAlphaº) of the aircraft
-	 * @param cMAlpha0_dot pitching moment coefficient time derivative (CmAlpha_dotº) of the aircraft
-	 * @param clQ0 lift coefficient with respect to q (ClQº) of the aircraft
+	 * @param clAlpha0 linear lift gradient (ClAlphaï¿½) of the aircraft
+	 * @param clAlpha_dot0 linear lift gradient time derivative (ClAlpha_dotï¿½) of the aircraft
+	 * @param cMAlpha0 pitching moment coefficient with respect to Alpha (CmAlphaï¿½) of the aircraft
+	 * @param cMAlpha0_dot pitching moment coefficient time derivative (CmAlpha_dotï¿½) of the aircraft
+	 * @param clQ0 lift coefficient with respect to q (ClQï¿½) of the aircraft
 	 * @param iYY longitudinal moment of inertia  (IYY)
 	 * @param cM_m0 pitching moment coefficient with respect to Mach number
 	 * @param cMq pitching moment coefficient with respect to q
 	 * @param cTfix thrust coefficient at a fixed point ( U0 = u , delta_T = 1 )
 	 * @param kv scale factor of the effect on the propulsion due to the speed
-	 * @param clDelta_T lift coefficient with respect to delta_T (ClDelta_Tº) of the aircraft
-	 * @param clDelta_E lift coefficient with respect to delta_E (ClDelta_Eº) of the aircraft
-	 * @param cMDelta_T pitching moment coefficient with respect to delta_T (CMDelta_Tº) of the aircraft
-	 * @param cMDelta_E pitching moment coefficient with respect to delta_E (CMDelta_Eº) of the aircraft
+	 * @param clDelta_T lift coefficient with respect to delta_T (ClDelta_Tï¿½) of the aircraft
+	 * @param clDelta_E lift coefficient with respect to delta_E (ClDelta_Eï¿½) of the aircraft
+	 * @param cMDelta_T pitching moment coefficient with respect to delta_T (CMDelta_Tï¿½) of the aircraft
+	 * @param cMDelta_E pitching moment coefficient with respect to delta_E (CMDelta_Eï¿½) of the aircraft
 	 * @return
 	 */
-	public static double[][] build_B_Lon_matrix (Propulsion propulsion_system, double rho0, 
+	public static double[][] build_B_Lon_matrix (PropulsionTypeEnum propulsion_system, double rho0, 
 			double surf, double mass, double cbar, double u0, double q0, double cd0, double m0, double cdM0,
 			double cl0,	double cdAlpha0, double gamma0, double theta0_rad, double clAlpha0,
 			double clAlpha_dot0, double cMAlpha0, double cMAlpha_dot0, double clQ0, double iYY,
@@ -540,7 +540,7 @@ public class ACDynamicStabilityManagerUtils {
 		
 		double [][] bLon = new double [4][2];
 		
-		// Propulsion type in the Xªdelta_T calculation
+		// Propulsion type in the Xï¿½delta_T calculation
 		switch (propulsion_system)
 		{
 		case CONSTANT_TRUST:
@@ -560,7 +560,7 @@ public class ACDynamicStabilityManagerUtils {
 			break;
 		}
 		
-		// Coefficient kª calculation
+		// Coefficient kï¿½ calculation
 		double k = calcM_w_dot (rho0, surf, cbar, iYY, cMAlpha_dot0)/(1 - calcZ_w_dot (rho0, surf,
 				    mass, cbar, clAlpha_dot0));
 		
@@ -601,7 +601,7 @@ public class ACDynamicStabilityManagerUtils {
 	 * @param u0 speed of the aircraft
 	 * @param q0 dynamic pressure
 	 * @param cyBeta lateral force coefficient with respect to beta (CyBeta) of the aircraft
-	 * @return Yªbeta dimensional derivative [m * s^(-2)]
+	 * @return Yï¿½beta dimensional derivative [m * s^(-2)]
 	 */
 	public static double calcY_beta (double rho0, double surf, double mass, double u0, double q0,
 			double cyBeta) {
@@ -620,7 +620,7 @@ public class ACDynamicStabilityManagerUtils {
 	 * @param q0 dynamic pressure
 	 * @param bbar wingspan
 	 * @param cyP lateral force coefficient with respect to p (CyP) of the aircraft
-	 * @return Yªp dimensional derivative [m * s^(-1)]
+	 * @return Yï¿½p dimensional derivative [m * s^(-1)]
 	 */
 	public static double calcY_p (double rho0, double surf, double mass, double u0, double q0,
 			double bbar, double cyP) {
@@ -639,7 +639,7 @@ public class ACDynamicStabilityManagerUtils {
 	 * @param q0 dynamic pressure
 	 * @param bbar wingspan
 	 * @param cyR lateral force coefficient with respect to r (CyR) of the aircraft
-	 * @return Yªr dimensional derivative [m * s^(-1)]
+	 * @return Yï¿½r dimensional derivative [m * s^(-1)]
 	 */
 	public static double calcY_r (double rho0, double surf, double mass, double u0, double q0,
 			double bbar, double cyR) {
@@ -658,7 +658,7 @@ public class ACDynamicStabilityManagerUtils {
 	 * @param q0 dynamic pressure
 	 * @param iXX lateral-directional moment of inertia I_xx
 	 * @param cLBeta rolling moment coefficient with respect to beta (CLBeta) of the aircraft
-	 * @return Lªbeta dimensional derivative [s^(-2)]
+	 * @return Lï¿½beta dimensional derivative [s^(-2)]
 	 */
 	public static double calcL_beta (double rho0, double surf, double bbar, double iXX,
 			double u0, double q0, double cLBeta) {
@@ -677,7 +677,7 @@ public class ACDynamicStabilityManagerUtils {
 	 * @param q0 dynamic pressure
 	 * @param iXX lateral-directional moment of inertia I_xx
 	 * @param cLP rolling moment coefficient with respect to a p (CLP) of the aircraft
-	 * @return Lªp dimensional derivative [s^(-1)]
+	 * @return Lï¿½p dimensional derivative [s^(-1)]
 	 */
 	public static double calcL_p (double rho0, double surf, double bbar, double iXX,
 			double u0, double q0, double cLP) {
@@ -696,7 +696,7 @@ public class ACDynamicStabilityManagerUtils {
 	 * @param q0 dynamic pressure
 	 * @param iXX lateral-directional moment of inertia I_xx
 	 * @param cLR rolling moment coefficient with respect to a r (CLR) of the aircraft
-	 * @return Lªr dimensional derivative [s^(-1)]
+	 * @return Lï¿½r dimensional derivative [s^(-1)]
 	 */
 	public static double calcL_r (double rho0, double surf, double bbar, double iXX,
 			double u0, double q0, double cLR) {
@@ -715,7 +715,7 @@ public class ACDynamicStabilityManagerUtils {
 	 * @param q0 dynamic pressure
 	 * @param iZZ lateral-directional moment of inertia I_zz
 	 * @param cNBeta yawing moment coefficient with respect to a beta (CNBeta) of the aircraft
-	 * @return Nªbeta dimensional derivative [s^(-2)]
+	 * @return Nï¿½beta dimensional derivative [s^(-2)]
 	 */
 	public static double calcN_beta (double rho0, double surf, double bbar, double iZZ,
 			double u0, double q0, double cNBeta) {
@@ -734,7 +734,7 @@ public class ACDynamicStabilityManagerUtils {
 	 * @param q0 dynamic pressure
 	 * @param iZZ lateral-directional moment of inertia I_zz
 	 * @param cNP yawing moment coefficient with respect to p (CNP) of the aircraft
-	 * @return Nªp dimensional derivative [s^(-1)]
+	 * @return Nï¿½p dimensional derivative [s^(-1)]
 	 */
 	public static double calcN_p (double rho0, double surf, double bbar, double iZZ,
 			double u0, double q0, double cNP) {
@@ -753,7 +753,7 @@ public class ACDynamicStabilityManagerUtils {
 	 * @param q0 dynamic pressure
 	 * @param iZZ lateral-directional moment of inertia I_zz
 	 * @param cNR yawing moment coefficient with respect to p (CNP) of the aircraft
-	 * @return Nªr dimensional derivative [s^(-1)]
+	 * @return Nï¿½r dimensional derivative [s^(-1)]
 	 */
 	public static double calcN_r (double rho0, double surf, double bbar, double iZZ,
 			double u0, double q0, double cNR) {
@@ -773,7 +773,7 @@ public class ACDynamicStabilityManagerUtils {
 	 * @param u0 speed of the aircraft
 	 * @param q0 dynamic pressure
 	 * @param cyDelta_A lateral force coefficient with respect to delta_A (CyDelta_A) of the aircraft
-	 * @return Yªdelta_A dimensional derivative [m * s^(-2)]
+	 * @return Yï¿½delta_A dimensional derivative [m * s^(-2)]
 	 */
 	public static double calcY_delta_A (double rho0, double surf, double mass, double u0, double q0,
 			double cyDelta_A) {
@@ -791,7 +791,7 @@ public class ACDynamicStabilityManagerUtils {
 	 * @param u0 speed of the aircraft
 	 * @param q0 dynamic pressure
 	 * @param cyDelta_R lateral force coefficient with respect to delta_R (CyDelta_R) of the aircraft
-	 * @return Yªdelta_R dimensional derivative [m * s^(-2)]
+	 * @return Yï¿½delta_R dimensional derivative [m * s^(-2)]
 	 */
 	public static double calcY_delta_R (double rho0, double surf, double mass, double u0, double q0,
 			double cyDelta_R) {
@@ -810,7 +810,7 @@ public class ACDynamicStabilityManagerUtils {
 	 * @param q0 dynamic pressure
 	 * @param iXX lateral-directional moment of inertia I_xx
 	 * @param cLDelta_A rolling moment coefficient with respect to a delta_A (CLDelta_A) of the aircraft
-	 * @return Lªdelta_A dimensional derivative [s^(-2)]
+	 * @return Lï¿½delta_A dimensional derivative [s^(-2)]
 	 */
 	public static double calcL_delta_A (double rho0, double surf, double bbar, double iXX,
 			double u0, double q0, double cLDelta_A) {
@@ -829,7 +829,7 @@ public class ACDynamicStabilityManagerUtils {
 	 * @param q0 dynamic pressure
 	 * @param iXX lateral-directional moment of inertia I_xx
 	 * @param cLDelta_R rolling moment coefficient with respect to a delta_R (CLDelta_R) of the aircraft
-	 * @return Lªdelta_R dimensional derivative [s^(-2)]
+	 * @return Lï¿½delta_R dimensional derivative [s^(-2)]
 	 */
 	public static double calcL_delta_R (double rho0, double surf, double bbar, double iXX,
 			double u0, double q0, double cLDelta_R) {
@@ -848,7 +848,7 @@ public class ACDynamicStabilityManagerUtils {
 	 * @param q0 dynamic pressure
 	 * @param iZZ lateral-directional moment of inertia I_zz
 	 * @param cNDelta_A yawing moment coefficient with respect to delta_A (CNDelta_A) of the aircraft
-	 * @return Nªdelta_A dimensional derivative [s^(-2)]
+	 * @return Nï¿½delta_A dimensional derivative [s^(-2)]
 	 */
 	public static double calcN_delta_A (double rho0, double surf, double bbar, double iZZ,
 			double u0, double q0, double cNDelta_A) {
@@ -867,7 +867,7 @@ public class ACDynamicStabilityManagerUtils {
 	 * @param q0 dynamic pressure
 	 * @param iZZ lateral-directional moment of inertia I_zz
 	 * @param cNDelta_R yawing moment coefficient with respect to delta_R (CNDelta_R) of the aircraft
-	 * @return Nªdelta_R dimensional derivative [s^(-2)]
+	 * @return Nï¿½delta_R dimensional derivative [s^(-2)]
 	 */
 	public static double calcN_delta_R (double rho0, double surf, double bbar, double iZZ,
 			double u0, double q0, double cNDelta_R) {

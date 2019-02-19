@@ -26,15 +26,19 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jscience.physics.amount.Amount;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import aircraft.Aircraft;
-import analyses.ACDynamicStabilityManagerUtils.Propulsion;
+import analyses.ACDynamicStabilityManagerUtils.PropulsionTypeEnum;
 import calculators.aerodynamics.DragCalc;
 import calculators.stability.DynamicStabilityCalculator;
 import configuration.enumerations.ConditionEnum;
 import configuration.enumerations.PerformanceEnum;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyArrayUtils;
+import standaloneutils.MyUnits;
+import standaloneutils.MyXLSUtils;
 import standaloneutils.MyXMLReaderUtils;
 import writers.JPADStaticWriteUtils;
 
@@ -46,12 +50,10 @@ public class ACDynamicStabilityManager {
 	// INPUT DATA (IMPORTED AND CALCULATED)
 	private IACDynamicStabilityManager _theDynamicStabilityManagerInterface;
 
-
+	PropulsionTypeEnum propulsion_system = PropulsionTypeEnum.CONSTANT_TRUST;
 	//------------------------------------------------------------------------------
 	// OUTPUT DATA
 	//..............................................................................
-
-	Propulsion propulsion_system = Propulsion.CONSTANT_TRUST;  // propulsion regime type 
 
 	double rho0;         						// air density
 	double reference_area;						// wing area
@@ -202,6 +204,9 @@ public class ACDynamicStabilityManager {
 				.getXMLPropertyByPath(
 						reader.getXmlDoc(), reader.getXpath(),
 						"//@id");
+		
+		PropulsionTypeEnum propulsionSystem = PropulsionTypeEnum.valueOf(
+				reader.getXMLAttributeByPath("//dynamic_stability/propulsion_system", "type"));
 
 		//---------------------------------------------------------------------------------------
 		// WEIGHTS FROM FILE INSTRUCTION
@@ -307,27 +312,27 @@ public class ACDynamicStabilityManager {
 		else {
 			//...............................................................
 			// MAXIMUM TAKE-OFF MASS
-			String maximumTakeOffMassProperty = reader.getXMLPropertyByPath("//performance/weights/maximum_take_off_mass");
+			String maximumTakeOffMassProperty = reader.getXMLPropertyByPath("//dynamic_stability/weights/maximum_take_off_mass");
 			if(maximumTakeOffMassProperty != null)
-				maximumTakeOffMass = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//performance/weights/maximum_take_off_mass");
+				maximumTakeOffMass = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//dynamic_stability/weights/maximum_take_off_mass");
 
 			//...............................................................
 			// OPERATING EMPTY MASS
-			String operatingEmptyMassProperty = reader.getXMLPropertyByPath("//performance/weights/operating_empty_mass");
+			String operatingEmptyMassProperty = reader.getXMLPropertyByPath("//dynamic_stability/weights/operating_empty_mass");
 			if(operatingEmptyMassProperty != null)
-				operatingEmptyMass = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//performance/weights/operating_empty_mass");
+				operatingEmptyMass = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//dynamic_stability/weights/operating_empty_mass");
 
 			//...............................................................
 			// MAXIMUM FUEL MASS
-			String maximumFuelMassProperty = reader.getXMLPropertyByPath("//performance/weights/maximum_fuel_mass");
+			String maximumFuelMassProperty = reader.getXMLPropertyByPath("//dynamic_stability/weights/maximum_fuel_mass");
 			if(maximumFuelMassProperty != null)
-				maximumFuelMass = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//performance/weights/maximum_fuel_mass");
+				maximumFuelMass = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//dynamic_stability/weights/maximum_fuel_mass");
 			
 			//...............................................................
 			// MAXIMUM PAYLOAD
-			String maximumPayloadProperty = reader.getXMLPropertyByPath("//performance/weights/maximum_payload");
+			String maximumPayloadProperty = reader.getXMLPropertyByPath("//dynamic_stability/weights/maximum_payload");
 			if(maximumPayloadProperty != null)
-				maximumPayload = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//performance/weights/maximum_payload");
+				maximumPayload = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//dynamic_stability/weights/maximum_payload");
 			else
 				maximumPayload =  Amount.valueOf( 
 						(theAircraft.getCabinConfiguration().getDesignPassengerNumber()*121)+700,
@@ -336,11 +341,62 @@ public class ACDynamicStabilityManager {
 
 			//...............................................................
 			// SINGLE PASSENGER MASS
-			String singlePassengerMassProperty = reader.getXMLPropertyByPath("//performance/weights/single_passenger_mass");
+			String singlePassengerMassProperty = reader.getXMLPropertyByPath("//dynamic_stability/weights/single_passenger_mass");
 			if(singlePassengerMassProperty != null)
-				singlePassengerMass = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//performance/weights/single_passenger_mass");
+				singlePassengerMass = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//dynamic_stability/weights/single_passenger_mass");
 		}
 		
+		//===========================================================================================
+		// READING INERTIA DATA ...
+		/********************************************************************************************/
+		Map<Double, Double> iXX = new HashMap<>();
+		Map<Double, Double> iYY = new HashMap<>();
+		Map<Double, Double> iZZ = new HashMap<>();
+		Map<Double, Double> iXZ = new HashMap<>();
+		
+		if (readBalanceFromPreviousAnalysisFlag == Boolean.TRUE) {
+			
+			// TODO @agodemar
+		}
+		else {
+			
+			// get the node <aerodynamics/>
+			Node nodeBalance = MyXMLReaderUtils
+					.getXMLNodeListByPath(reader.getXmlDoc(), "//analysis/dynamic_stability/balance")
+					.item(0);
+			
+			// get the node list of <xcg/>'s
+			NodeList xcgNodelist = MyXMLReaderUtils
+					.getXMLNodeListByPath(nodeBalance, "/xcg");
+			
+			for(int i = 0; i < xcgNodelist.getLength(); i++) {
+
+				Node node = xcgNodelist.item(i);
+				Double xcg = MyXMLReaderUtils.getXMLDoubleFromAttributeValueByPath(node, "/");
+
+				iXX
+					.put(xcg, MyXMLReaderUtils.getXMLAmountFromAttributeValueWithUnitByPath(node, "/iXX")
+						.doubleValue(MyUnits.KILOGRAM_METER_SQUARED));
+				iYY
+					.put(xcg, MyXMLReaderUtils.getXMLAmountFromAttributeValueWithUnitByPath(node, "/iYY")
+						.doubleValue(MyUnits.KILOGRAM_METER_SQUARED));
+				iZZ
+					.put(xcg, MyXMLReaderUtils.getXMLAmountFromAttributeValueWithUnitByPath(node, "/iZZ")
+							.doubleValue(MyUnits.KILOGRAM_METER_SQUARED));
+				iXZ
+					.put(xcg, MyXMLReaderUtils.getXMLAmountFromAttributeValueWithUnitByPath(node, "/iXZ")
+						.doubleValue(MyUnits.KILOGRAM_METER_SQUARED));
+				
+				System.out.println("xcg = " + xcg);
+				System.out.println("IXX = " + iXX.get(xcg));
+				System.out.println("IYY = " + iYY.get(xcg));
+				System.out.println("IZZ = " + iZZ.get(xcg));
+				System.out.println("IXZ = " + iXZ.get(xcg));
+				
+			}
+			
+			
+		}
 		
 		//===========================================================================================
 		// READING AERODYNAMICS DATA ...
@@ -352,17 +408,17 @@ public class ACDynamicStabilityManager {
 		
 		List<Double> centerOfGravityList = new ArrayList<>();
 		
-		Map<Double,Double> cLmaxClean  = new HashMap<>();
+		Map<Double,Double> cLmaxClean = new HashMap<>();
 		Map<Double,Amount<?>> cLAlphaClean  = new HashMap<>();
-		Map<Double,Amount<?>> cLAlphaTakeOff  = new HashMap<>();
-		Map<Double,Amount<?>> cLAlphaLanding  = new HashMap<>();
-		Map<Double,Double> cLmaxTakeOff  = new HashMap<>();
-		Map<Double,Double> cLZeroTakeOff  = new HashMap<>();
-		Map<Double,Double> cLmaxLanding  = new HashMap<>();
-		Map<Double,Double> cLZeroLanding  = new HashMap<>();
-		Map<Double,Double> deltaCD0TakeOff  = new HashMap<>();
-		Map<Double,Double> deltaCD0Landing  = new HashMap<>();
-		Map<Double,Double> deltaCD0LandingGears  = new HashMap<>();
+		Map<Double,Amount<?>> cLAlphaTakeOff = new HashMap<>();
+		Map<Double,Amount<?>> cLAlphaLanding = new HashMap<>();
+		Map<Double,Double> cLmaxTakeOff = new HashMap<>();
+		Map<Double,Double> cLZeroTakeOff = new HashMap<>();
+		Map<Double,Double> cLmaxLanding = new HashMap<>();
+		Map<Double,Double> cLZeroLanding = new HashMap<>();
+		Map<Double,Double> deltaCD0TakeOff = new HashMap<>();
+		Map<Double,Double> deltaCD0Landing = new HashMap<>();
+		Map<Double,Double> deltaCD0LandingGears = new HashMap<>();
 		
 		Map<Double, Double> cD0 = new HashMap<>();
 		Map<Double,Double> oswaldCruise = new HashMap<>();
@@ -370,20 +426,15 @@ public class ACDynamicStabilityManager {
 		Map<Double,Double> oswaldTakeOff = new HashMap<>();
 		Map<Double,Double> oswaldLanding = new HashMap<>();
 
-		Map<Double,double[]> polarCLCruise  = new HashMap<>();
-		Map<Double,double[]> polarCDCruise  = new HashMap<>();
-		Map<Double,double[]> polarCLClimb  = new HashMap<>();
-		Map<Double,double[]> polarCDClimb  = new HashMap<>();
-		Map<Double,double[]> polarCLTakeOff  = new HashMap<>();
-		Map<Double,double[]> polarCDTakeOff  = new HashMap<>();
-		Map<Double,double[]> polarCLLanding  = new HashMap<>();
-		Map<Double,double[]> polarCDLanding  = new HashMap<>();
+		Map<Double,double[]> polarCLCruise = new HashMap<>();
+		Map<Double,double[]> polarCDCruise = new HashMap<>();
+		Map<Double,double[]> polarCLClimb = new HashMap<>();
+		Map<Double,double[]> polarCDClimb = new HashMap<>();
+		Map<Double,double[]> polarCLTakeOff = new HashMap<>();
+		Map<Double,double[]> polarCDTakeOff = new HashMap<>();
+		Map<Double,double[]> polarCLLanding = new HashMap<>();
+		Map<Double,double[]> polarCDLanding = new HashMap<>();
 		
-		Map<Double, Double> iXX = new HashMap<>();
-		Map<Double, Double> iYY = new HashMap<>();
-		Map<Double, Double> iZZ = new HashMap<>();
-		Map<Double, Double> iXZ = new HashMap<>();
-
 		Map<Double, Double> cDrag0 = new HashMap<>();
 		Map<Double, Double> cDragAlpha0 = new HashMap<>();
 		Map<Double, Double> cDragMach0 = new HashMap<>();
@@ -424,7 +475,6 @@ public class ACDynamicStabilityManager {
 		Map<Double, Double> cYawDeltaA = new HashMap<>();
 		Map<Double, Double> cYawDeltaR = new HashMap<>();
 		
-		
 		if(readAerodynamicsFromPreviousAnalysisFlag == Boolean.TRUE) {
 			if(theAircraft.getTheAnalysisManager() != null) {
 				if(theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability() != null) {
@@ -436,11 +486,12 @@ public class ACDynamicStabilityManager {
 		}
 		else { // read aero data from xml, not from previous analysis
 			
+			
 			Boolean parabolicDragPolarFlag = Boolean.FALSE;
 			String paraboliDragPolarProperty = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
-							"//@parabolicDragPolar");
+							"//dynamic_stability/aerodynamics/@parabolicDragPolar");
 			if(paraboliDragPolarProperty.equalsIgnoreCase("TRUE"))
 				parabolicDragPolarFlag = Boolean.TRUE;
 			else if(paraboliDragPolarProperty.equalsIgnoreCase("FALSE"))
@@ -452,6 +503,21 @@ public class ACDynamicStabilityManager {
 
 			//...............................................................
 			// Xcg LIST
+			
+			
+			// Treat <xcg/> as a NodeList under node <aerodynamics/>
+			
+			// get the node <aerodynamics/>
+			Node nodeAerodynamics = MyXMLReaderUtils
+					.getXMLNodeListByPath(reader.getXmlDoc(), "//dynamic_stability/aerodynamics")
+					.item(0);
+			
+			// get the node list of <xcg/>'s
+			NodeList xcgNodelist = MyXMLReaderUtils
+					.getXMLNodeListByPath(nodeAerodynamics, "//xcg");
+			
+			// TODO refactor the following code in order to treat dynamic_stability/aerodynamics/xcg as a node list
+			
 			List<String> xCGListProperty = MyXMLReaderUtils.getXMLPropertiesByPath(reader.getXmlDoc(), reader.getXpath(),"//xcg/@value");
 			if(!xCGListProperty.isEmpty())
 				xCGListProperty.stream().forEach(xcg -> centerOfGravityList.add(Double.valueOf(xcg)));
@@ -743,6 +809,86 @@ public class ACDynamicStabilityManager {
 				});
 			}
 			
+			assert centerOfGravityList.size() == xcgNodelist.getLength() : "Inconsistent <xcg/> nodes!";
+
+			for(int i = 0; i < xcgNodelist.getLength(); i++) {
+				
+				Double xcg = centerOfGravityList.get(i);
+				Node node = xcgNodelist.item(i);
+				
+				cDrag0
+					.put(xcg, MyXMLReaderUtils.getXMLDoubleFromAttributeValueByPath(node, "//cD0"));
+				cDragAlpha0
+					.put(xcg, MyXMLReaderUtils.getXMLDoubleFromAttributeValueByPath(node, "//cD_Alpha0"));
+				cDragMach0
+					.put(xcg, MyXMLReaderUtils.getXMLDoubleFromAttributeValueByPath(node, "//cD_Mach0"));
+				cLift0
+					.put(xcg, MyXMLReaderUtils.getXMLDoubleFromAttributeValueByPath(node, "//cL0"));
+				cLiftAlpha0
+					.put(xcg, MyXMLReaderUtils.getXMLDoubleFromAttributeValueByPath(node, "//cL_Alpha0"));
+				cLiftAlphaDot0
+					.put(xcg, MyXMLReaderUtils.getXMLDoubleFromAttributeValueByPath(node, "//cL_Alpha_dot0"));
+				cLiftMach0
+					.put(xcg, MyXMLReaderUtils.getXMLDoubleFromAttributeValueByPath(node, "//cL_Mach0"));
+				cLiftQ0
+					.put(xcg, MyXMLReaderUtils.getXMLDoubleFromAttributeValueByPath(node, "//cL_q0"));
+				cLiftDeltaT
+					.put(xcg, MyXMLReaderUtils.getXMLDoubleFromAttributeValueByPath(node, "//cL_delta_T"));
+				cLiftDeltaE
+					.put(xcg, MyXMLReaderUtils.getXMLDoubleFromAttributeValueByPath(node, "//cL_delta_E"));
+
+				cPitchAlpha0
+					.put(xcg, MyXMLReaderUtils.getXMLDoubleFromAttributeValueByPath(node, "//cm_alpha0"));
+				cPitchAlphaDot0
+					.put(xcg, MyXMLReaderUtils.getXMLDoubleFromAttributeValueByPath(node, "//cm_alpha_dot0"));
+				cPitchMach0
+					.put(xcg, MyXMLReaderUtils.getXMLDoubleFromAttributeValueByPath(node, "//cm_Mach0"));
+				cPitchQ0
+					.put(xcg, MyXMLReaderUtils.getXMLDoubleFromAttributeValueByPath(node, "//cm_q"));
+				cPitchDeltaE
+					.put(xcg, MyXMLReaderUtils.getXMLDoubleFromAttributeValueByPath(node, "//cm_delta_E"));
+				cPitchDeltaT
+					.put(xcg, MyXMLReaderUtils.getXMLDoubleFromAttributeValueByPath(node, "//cm_delta_T"));
+				
+				cThrustFix
+					.put(xcg, MyXMLReaderUtils.getXMLDoubleFromAttributeValueByPath(node, "//c_Tfix"));
+				kVThrust
+					.put(xcg, MyXMLReaderUtils.getXMLDoubleFromAttributeValueByPath(node, "//k_TV"));
+				
+				cSideBeta
+					.put(xcg, MyXMLReaderUtils.getXMLDoubleFromAttributeValueByPath(node, "//cY_beta"));
+				cSideP
+					.put(xcg, MyXMLReaderUtils.getXMLDoubleFromAttributeValueByPath(node, "//cY_p"));
+				cSideR
+					.put(xcg, MyXMLReaderUtils.getXMLDoubleFromAttributeValueByPath(node, "//cY_r"));
+				cSideDeltaA
+					.put(xcg, MyXMLReaderUtils.getXMLDoubleFromAttributeValueByPath(node, "//cY_delta_A"));
+				cSideDeltaR
+					.put(xcg, MyXMLReaderUtils.getXMLDoubleFromAttributeValueByPath(node, "//cY_delta_R"));
+
+				cRollBeta
+					.put(xcg, MyXMLReaderUtils.getXMLDoubleFromAttributeValueByPath(node, "//cRoll_beta"));
+				cRollP
+					.put(xcg, MyXMLReaderUtils.getXMLDoubleFromAttributeValueByPath(node, "//cRoll_p"));
+				cRollR
+					.put(xcg, MyXMLReaderUtils.getXMLDoubleFromAttributeValueByPath(node, "//cRoll_r"));
+				cRollDeltaA
+					.put(xcg, MyXMLReaderUtils.getXMLDoubleFromAttributeValueByPath(node, "//cRoll_delta_A"));
+				cRollDeltaR
+					.put(xcg, MyXMLReaderUtils.getXMLDoubleFromAttributeValueByPath(node, "//cRoll_delta_R"));
+
+				cYawBeta
+					.put(xcg, MyXMLReaderUtils.getXMLDoubleFromAttributeValueByPath(node, "//cYaw_beta"));
+				cYawP
+					.put(xcg, MyXMLReaderUtils.getXMLDoubleFromAttributeValueByPath(node, "//cYaw_p"));
+				cYawR
+					.put(xcg, MyXMLReaderUtils.getXMLDoubleFromAttributeValueByPath(node, "//cYaw_r"));
+				cYawDeltaA
+					.put(xcg, MyXMLReaderUtils.getXMLDoubleFromAttributeValueByPath(node, "//cYaw_delta_A"));
+				cYawDeltaR				
+					.put(xcg, MyXMLReaderUtils.getXMLDoubleFromAttributeValueByPath(node, "//cYaw_delta_A"));
+			}
+			
 			// TODO @agodemar read necessary data for dynamic stability analysis
 			
 			
@@ -764,11 +910,12 @@ public class ACDynamicStabilityManager {
 				.setId(id)
 				.setTheAircraft(theAircraft)
 				.setTheOperatingConditions(theOperatingConditions)
+				.setPropulsionSystem(propulsionSystem)
 				.setMaximumTakeOffMass(maximumTakeOffMass.to(SI.KILOGRAM))
 				.setOperatingEmptyMass(operatingEmptyMass.to(SI.KILOGRAM))
 				.setMaximumFuelMass(maximumFuelMass.to(SI.KILOGRAM))
 				.setMaximumPayload(maximumPayload.to(SI.KILOGRAM))
-				.setSinglePassengerMass(singlePassengerMass.to(SI.KILOGRAM))
+				.setSinglePassengerMass(singlePassengerMass.to(SI.KILOGRAM))	
 				.addAllXcgPositionList(centerOfGravityList)
 				.putAllCLmaxClean(cLmaxClean)
 				.putAllCLAlphaClean(cLAlphaClean)
@@ -873,7 +1020,7 @@ public class ACDynamicStabilityManager {
 					///////////// 1st sheet /////////////
 					case 0:
 						if ((i == 1) && (j == 1)) {
-							propulsion_system = Propulsion.valueOf(value);
+							propulsion_system = PropulsionTypeEnum.valueOf(value);
 							switch (propulsion_system)
 							{
 							case CONSTANT_TRUST:
@@ -1132,7 +1279,7 @@ public class ACDynamicStabilityManager {
 						///////////// 2nd sheet /////////////
 					case 1:	
 						if ((i == 1) && (j == 1)) {
-							propulsion_system = Propulsion.valueOf(value);
+							propulsion_system = PropulsionTypeEnum.valueOf(value);
 							switch (propulsion_system)
 							{
 							case CONSTANT_TRUST:
