@@ -71,7 +71,8 @@ public class LandingCalc {
 	tObstacle = Amount.valueOf(10000.0, SI.SECOND),  	  // initialization to an impossible time
 	tFlareAltitude = Amount.valueOf(10000.0, SI.SECOND),  // initialization to an impossible time
 	tTouchDown = Amount.valueOf(10000.0, SI.SECOND), 	  // initialization to an impossible time
-	tZeroGamma = Amount.valueOf(10000.0, SI.SECOND); 	  // initialization to an impossible time
+	tZeroGamma = Amount.valueOf(10000.0, SI.SECOND), 	  // initialization to an impossible time
+	tErrorRC = Amount.valueOf(10000.0, SI.SECOND); 	      // initialization to an impossible time
 	private Amount<Mass> maxLandingMass; 
 	private Amount<Velocity> vSLanding, vApproach, vFlare, vTouchDown, vWind, rateOfDescentAtFlareEnding;
 	private Amount<Length> wingToGroundDistance, obstacle, intialAltitude, altitudeAtFlareEnding, hFlare, fieldAltitude;
@@ -96,7 +97,7 @@ public class LandingCalc {
 	groundIdleCalibrationFactorEmissionIndexCO2, groundIdleCalibrationFactorEmissionIndexSOx, groundIdleCalibrationFactorEmissionIndexH2O;
 	private Amount<?> cLalphaLND;
 	private MyInterpolatingFunction mu, muBrake, thrustFlareFunction;
-	private boolean targetRDandAltitudeFlag, maximumFlareCLFlag;
+	private boolean targetRDandAltitudeFlag, maximumFlareCLFlag, positiveRCFlag;
 	private boolean createCSV;
 
 	private FirstOrderIntegrator theIntegrator;
@@ -383,8 +384,10 @@ public class LandingCalc {
 		tFlareAltitude = Amount.valueOf(10000.0, SI.SECOND);		// initialization to an impossible time
 		tTouchDown = Amount.valueOf(10000.0, SI.SECOND);	        // initialization to an impossible time
 		tZeroGamma = Amount.valueOf(10000.0, SI.SECOND);	        // initialization to an impossible time
+		tErrorRC = Amount.valueOf(10000.0, SI.SECOND);	            // initialization to an impossible time
 		
 		maximumFlareCLFlag = false;
+		positiveRCFlag = false;
 	}
 
 	/***************************************************************************************
@@ -425,13 +428,40 @@ public class LandingCalc {
 			theIntegrator = new HighamHall54Integrator(
 					1e-10,
 					1,
-					1e-10,
-					1e-10
+					1e-7,
+					1e-7
 					);
 			ode = new DynamicsEquationsLanding();
 			
 			initialize();
+			
+			EventHandler ehCheckPositiveRateOfClimb = new EventHandler() {
 
+				@Override
+				public void init(double t0, double[] y0, double t) {
+
+				}
+
+				@Override
+				public void resetState(double t, double[] y) {
+
+				}
+
+				// Discrete event, switching function
+				@Override
+				public double g(double t, double[] x) {
+					return t - tErrorRC.doubleValue(SI.SECOND);
+				}
+
+				@Override
+				public Action eventOccurred(double t, double[] x, boolean increasing) {
+					// Handle an event and choose what to do next.
+					System.out.println("\n\tPOSITIVE RATE OF CLIMB :: ERROR ... REDUCING ALPHA DOT");
+					System.out.println("\n\tswitching function changes sign at t = " + t);
+					positiveRCFlag = true;
+					return  Action.STOP;
+				}
+			};
 			EventHandler ehCheckStop = new EventHandler() {
 
 				@Override
@@ -689,6 +719,7 @@ public class LandingCalc {
 			theIntegrator.addEventHandler(ehCheckFlareAltitude, 1.0, 1e-3, 20);
 			theIntegrator.addEventHandler(ehCheckTouchDown, 1.0, 1e-3, 20);
 			theIntegrator.addEventHandler(ehCheckStop, 1.0, 1e-10, 50);
+			theIntegrator.addEventHandler(ehCheckPositiveRateOfClimb, 1.0, 1e-3, 20);
 
 			// handle detailed info
 			StepHandler stepHandler = new StepHandler() {
@@ -751,7 +782,10 @@ public class LandingCalc {
 									)
 							/ ( weight.doubleValue(SI.NEWTON)*Math.cos(gamma.doubleValue(SI.RADIAN))	)
 							);
-
+					//----------------------------------------------------------------------------------------
+					// RATE OF CLIMB CHECK:
+					if(xDot[3] > 0.0)
+						tErrorRC = time;
 				}
 			};
 			theIntegrator.addStepHandler(stepHandler);
@@ -779,20 +813,15 @@ public class LandingCalc {
 					break;
 			}
 			
-			if(Math.abs(rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE)) > targetRateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE))
-				if(Math.abs(rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE) - targetRateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE)) < 75.0)
-					newAlphaDotFlare = alphaDotFlare + 0.02;
-				else if(Math.abs(rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE) - targetRateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE)) < 250.0)
-					newAlphaDotFlare = alphaDotFlare + 0.1;
-				else
-					newAlphaDotFlare = alphaDotFlare + 0.5;
+			if(positiveRCFlag == false) {
+				if(Math.abs(rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE)) > Math.abs(targetRateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE)))
+					if(Math.abs(rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE) - targetRateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE)) < 250.0)
+						newAlphaDotFlare = alphaDotFlare + 0.1;
+					else
+						newAlphaDotFlare = alphaDotFlare + 0.5;
+			}
 			else
-				if(Math.abs(rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE) - targetRateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE)) < 75.0)
-					newAlphaDotFlare = alphaDotFlare - 0.02;
-				else if(Math.abs(rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE) - targetRateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE)) < 250.0)
-					newAlphaDotFlare = alphaDotFlare - 0.1;
-				else
-					newAlphaDotFlare = alphaDotFlare - 0.5;
+				newAlphaDotFlare = alphaDotFlare - 0.05;
 
 			if(Math.abs(altitudeAtFlareEnding.doubleValue(SI.METER) - 1e-2) < 1 
 					&& Math.abs(rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE)) < Math.abs(targetRateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE))
@@ -977,11 +1006,19 @@ public class LandingCalc {
 					this.speedTASList.add(Amount.valueOf(x[1], SI.METERS_PER_SECOND));
 					//----------------------------------------------------------------------------------------
 					// SPEED CAS:
-					double sigma = AtmosphereCalc.getDensity(altitude.doubleValue(SI.METER), deltaTemperature.doubleValue(SI.CELSIUS)/1.225);
+					double sigma = 0.0;
+					if(altitude.doubleValue(SI.METER) < 0.0)
+						sigma = AtmosphereCalc.getDensity(0.0, deltaTemperature.doubleValue(SI.CELSIUS)/1.225);
+					else
+						sigma = AtmosphereCalc.getDensity(altitude.doubleValue(SI.METER), deltaTemperature.doubleValue(SI.CELSIUS)/1.225);
 					this.speedCASList.add(speed.times(Math.sqrt(sigma)));
 					//----------------------------------------------------------------------------------------
 					// MACH:
-					double speedOfSound = AtmosphereCalc.getSpeedOfSound(altitude.doubleValue(SI.METER), deltaTemperature.doubleValue(SI.CELSIUS));
+					double speedOfSound = 0.0;
+					if (altitude.doubleValue(SI.METER) < 0.0)
+						speedOfSound = AtmosphereCalc.getSpeedOfSound(0.0, deltaTemperature.doubleValue(SI.CELSIUS));
+					else
+						speedOfSound = AtmosphereCalc.getSpeedOfSound(altitude.doubleValue(SI.METER), deltaTemperature.doubleValue(SI.CELSIUS));
 					this.machList.add(speed.doubleValue(SI.METERS_PER_SECOND) / speedOfSound);
 					//----------------------------------------------------------------------------------------
 					// THRUST HORIZONTAL:
@@ -4836,6 +4873,22 @@ public class LandingCalc {
 
 	public void setEmissionH2OList(List<Amount<Mass>> emissionH2OList) {
 		this.emissionH2OList = emissionH2OList;
+	}
+
+	public Amount<Duration> gettErrorRC() {
+		return tErrorRC;
+	}
+
+	public void settErrorRC(Amount<Duration> tErrorRC) {
+		this.tErrorRC = tErrorRC;
+	}
+
+	public boolean isPositiveRCFlag() {
+		return positiveRCFlag;
+	}
+
+	public void setPositiveRCFlag(boolean positiveRCFlag) {
+		this.positiveRCFlag = positiveRCFlag;
 	}
 
 }
