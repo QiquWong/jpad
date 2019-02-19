@@ -1129,11 +1129,11 @@ public class TakeOffNoiseTrajectoryCalc {
 		
 		if (targetSpeedFlag == true)
 			if(cutback==false && phiCutback==null)
-				manageOutputData(1.0, 1.0, timeHistories, continuousOutputModel);
+				manageOutputData(0.5, 1.0, timeHistories, continuousOutputModel);
 			else if(cutback==true && phiCutback==null)
-				manageOutputData(1.0, TakeOffNoiseTrajectoryCalc.this.getPhiCutback(), timeHistories, continuousOutputModel);
+				manageOutputData(0.5, TakeOffNoiseTrajectoryCalc.this.getPhiCutback(), timeHistories, continuousOutputModel);
 			else if(cutback==true && phiCutback!=null)
-				manageOutputData(1.0, phiCutback, timeHistories, continuousOutputModel);
+				manageOutputData(0.5, phiCutback, timeHistories, continuousOutputModel);
 
 		System.out.println("\n---------------------------END!!-------------------------------\n\n");
 	}
@@ -1260,6 +1260,14 @@ public class TakeOffNoiseTrajectoryCalc {
 				Amount<Angle> gamma = Amount.valueOf(x[2], NonSI.DEGREE_ANGLE);
 				Amount<Length> altitude = Amount.valueOf(x[3], SI.METER);
 				
+				List<Amount<Force>> totalThrustList = ((DynamicsEquationsTakeOffNoiseTrajectory)ode).thrust(speed, time, gamma, altitude, deltaTemperature);
+				List<Amount<Force>> totalThrustListHorizontal = new ArrayList<>();
+				List<Amount<Force>> totalThrustListVertical = new ArrayList<>();
+				for(int j=0; j<totalThrustList.size(); j++) 
+					totalThrustListHorizontal.add(totalThrustList.get(j).times(Math.cos(thePowerPlant.getEngineList().get(j).getTiltingAngle().doubleValue(SI.RADIAN))));
+				for(int j=0; j<totalThrustList.size(); j++) 
+					totalThrustListVertical.add(totalThrustList.get(j).times(Math.sin(thePowerPlant.getEngineList().get(j).getTiltingAngle().doubleValue(SI.RADIAN))));
+				
 				//========================================================================================
 				// PICKING UP ALL DATA AT EVERY STEP (RECOGNIZING IF THE TAKE-OFF IS CONTINUED OR ABORTED)
 				//----------------------------------------------------------------------------------------
@@ -1294,7 +1302,7 @@ public class TakeOffNoiseTrajectoryCalc {
 					//----------------------------------------------------------------------------------------
 					// THRUST HORIZONTAL:
 					thrustHorizontalList.add(Amount.valueOf(
-							((DynamicsEquationsTakeOffNoiseTrajectory)ode).thrust(speed, time, gamma, altitude, deltaTemperature)
+							totalThrustListHorizontal
 							.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
 							*Math.cos(
 									Amount.valueOf(
@@ -1306,7 +1314,7 @@ public class TakeOffNoiseTrajectoryCalc {
 					//----------------------------------------------------------------------------------------
 					// THRUST VERTICAL:
 					thrustVerticalList.add(Amount.valueOf(
-							((DynamicsEquationsTakeOffNoiseTrajectory)ode).thrust(speed, time, gamma, altitude, deltaTemperature)
+							totalThrustListVertical
 							.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
 							*Math.sin(
 									Amount.valueOf(
@@ -2368,10 +2376,18 @@ public class TakeOffNoiseTrajectoryCalc {
 					);
 			Amount<Angle> alpha = alpha(time, speed, altitude, deltaTemperature, gamma, weight);
 
+			List<Amount<Force>> thrustList = thrust(speed, time, gamma, altitude, deltaTemperature);
+			List<Amount<Force>> thrustListHorizontal = new ArrayList<>();
+			List<Amount<Force>> thrustListVertical = new ArrayList<>();
+			for(int i=0; i<thrustList.size(); i++) 
+				thrustListHorizontal.add(thrustList.get(i).times(Math.cos(thePowerPlant.getEngineList().get(i).getTiltingAngle().doubleValue(SI.RADIAN))));
+			for(int i=0; i<thrustList.size(); i++) 
+				thrustListVertical.add(thrustList.get(i).times(Math.sin(thePowerPlant.getEngineList().get(i).getTiltingAngle().doubleValue(SI.RADIAN))));
+			
 			if( t < tEndRot.doubleValue(SI.SECOND)) {
 				xDot[0] = speed.doubleValue(SI.METERS_PER_SECOND);
 				xDot[1] = (g0/weight.doubleValue(SI.NEWTON))
-						*( thrust(speed, time, gamma, altitude, deltaTemperature).stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum() 
+						*( thrustListHorizontal.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum() 
 								- drag(speed, alpha, gamma, time, altitude, deltaTemperature).doubleValue(SI.NEWTON)
 								- (mu(speed)
 										*(weight.doubleValue(SI.NEWTON) 
@@ -2386,7 +2402,7 @@ public class TakeOffNoiseTrajectoryCalc {
 			else {
 				xDot[0] = speed.doubleValue(SI.METERS_PER_SECOND);
 				xDot[1] = (g0/weight.doubleValue(SI.NEWTON))
-						*( (thrust(speed, time, gamma, altitude, deltaTemperature).stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
+						*( (thrustListHorizontal.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
 								*Math.cos(alpha.doubleValue(SI.RADIAN))
 								) 
 								- drag(speed, alpha, gamma, time, altitude, deltaTemperature).doubleValue(SI.NEWTON) 
@@ -2396,7 +2412,7 @@ public class TakeOffNoiseTrajectoryCalc {
 								);
 				xDot[2] = 57.3*(g0/(weight.doubleValue(SI.NEWTON)*speed.doubleValue(SI.METERS_PER_SECOND)))
 						*( lift(speed, alpha, gamma, altitude, deltaTemperature).doubleValue(SI.NEWTON) 
-								+ ( thrust(speed, time, gamma, altitude, deltaTemperature).stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
+								+ ( thrustListVertical.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
 										*Math.sin(alpha.doubleValue(SI.RADIAN))
 										)
 								- ( weight.doubleValue(SI.NEWTON)

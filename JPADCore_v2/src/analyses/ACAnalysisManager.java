@@ -958,7 +958,7 @@ public class ACAnalysisManager {
 				System.exit(1);
 			}
 		}
-		
+
 		//-------------------------------------------------------------------------------------------
 		// DYNAMIC STABILITY ANALYSIS:
 		List<ConditionEnum> taskListDynamicStability = new ArrayList<ConditionEnum>();
@@ -968,11 +968,11 @@ public class ACAnalysisManager {
 		NodeList dynamicStabilityTag = MyXMLReaderUtils
 				.getXMLNodeListByPath(reader.getXmlDoc(), "//dynamic_stability");
 		Node dynamicStabilityNode = dynamicStabilityTag.item(0);
-		
+
 		if(dynamicStabilityNode != null) {
-			
+
 			analysisList.add(AnalysisTypeEnum.DYNAMIC_STABILITY);
-			
+
 			String plotDynamicStabilityString = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
@@ -982,7 +982,7 @@ public class ACAnalysisManager {
 				plotDynamicStability = Boolean.FALSE;
 			else if(plotDynamicStabilityString.equalsIgnoreCase("TRUE"))
 				plotDynamicStability = Boolean.TRUE;
-			
+
 			String createCSVDynamicStabilityString = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
@@ -999,9 +999,9 @@ public class ACAnalysisManager {
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
 							"//dynamic_stability/@take_off_condition");
-			
+
 			if(dynamicStabilityTakeOff != null)  {		
-				
+
 				Boolean takeOffConditionFlag = null;
 				if(dynamicStabilityTakeOff.equalsIgnoreCase("TRUE")) {
 					takeOffConditionFlag = Boolean.TRUE;
@@ -1010,7 +1010,7 @@ public class ACAnalysisManager {
 						|| dynamicStabilityTakeOff == null) {
 					takeOffConditionFlag = Boolean.FALSE;
 				}
-				
+
 				if(takeOffConditionFlag == Boolean.TRUE) 
 					taskListDynamicStability.add(ConditionEnum.TAKE_OFF);
 
@@ -1018,7 +1018,7 @@ public class ACAnalysisManager {
 						.getXMLPropertyByPath(
 								reader.getXmlDoc(), reader.getXpath(),
 								"//dynamic_stability/@file_take_off_condition");
-				
+
 				_dynamicStabilityTakeOffFileComplete = new File(
 						MyConfiguration.getDir(FoldersEnum.INPUT_DIR)
 						+ File.separator 
@@ -1027,16 +1027,16 @@ public class ACAnalysisManager {
 						+ dynamicStabilityTakeOffFile
 						);
 			}
-			
+
 			//---------------------------------------------------------------------------------------------------------
 			// CLIMB CONDITION
 			String dynamicStabilityClimb = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
 							"//dynamic_stability/@climb_condition");
-			
+
 			if(dynamicStabilityClimb != null)  {		
-				
+
 				Boolean climbConditionFlag = null;
 				if(dynamicStabilityClimb.equalsIgnoreCase("TRUE")) {
 					climbConditionFlag = Boolean.TRUE;
@@ -1045,7 +1045,7 @@ public class ACAnalysisManager {
 						|| dynamicStabilityClimb == null) {
 					climbConditionFlag = Boolean.FALSE;
 				}
-				
+
 				if(climbConditionFlag == Boolean.TRUE) 
 					taskListDynamicStability.add(ConditionEnum.CLIMB);
 
@@ -1053,7 +1053,7 @@ public class ACAnalysisManager {
 						.getXMLPropertyByPath(
 								reader.getXmlDoc(), reader.getXpath(),
 								"//dynamic_stability/@file_climb_condition");
-				
+
 				_dynamicStabilityClimbFileComplete = new File(
 						MyConfiguration.getDir(FoldersEnum.INPUT_DIR)
 						+ File.separator 
@@ -1062,16 +1062,16 @@ public class ACAnalysisManager {
 						+ dynamicStabilityClimbFile
 						);
 			}
-			
+
 			//---------------------------------------------------------------------------------------------------------
 			// CRUISE CONDITION
 			String dynamicStabilityCruise = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
 							"//dynamic_stability/@cruise_condition");
-			
+
 			if(dynamicStabilityCruise != null)  {		
-				
+
 				Boolean cruiseConditionFlag = null;
 				if(dynamicStabilityCruise.equalsIgnoreCase("TRUE")) {
 					cruiseConditionFlag = Boolean.TRUE;
@@ -1080,7 +1080,7 @@ public class ACAnalysisManager {
 						|| dynamicStabilityCruise == null) {
 					cruiseConditionFlag = Boolean.FALSE;
 				}
-				
+
 				if(cruiseConditionFlag == Boolean.TRUE) 
 					taskListDynamicStability.add(ConditionEnum.CRUISE);
 
@@ -1088,7 +1088,7 @@ public class ACAnalysisManager {
 						.getXMLPropertyByPath(
 								reader.getXmlDoc(), reader.getXpath(),
 								"//dynamic_stability/@file_cruise_condition");
-				
+
 				_dynamicStabilityCruiseFileComplete = new File(
 						MyConfiguration.getDir(FoldersEnum.INPUT_DIR)
 						+ File.separator 
@@ -1104,9 +1104,9 @@ public class ACAnalysisManager {
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
 							"//dynamic_stability/@landing_condition");
-			
+
 			if(dynamicStabilityLanding != null)  {		
-				
+
 				Boolean landingConditionFlag = null;
 				if(dynamicStabilityLanding.equalsIgnoreCase("TRUE")) {
 					landingConditionFlag = Boolean.TRUE;
@@ -1115,7 +1115,7 @@ public class ACAnalysisManager {
 						|| dynamicStabilityLanding == null) {
 					landingConditionFlag = Boolean.FALSE;
 				}
-				
+
 				if(landingConditionFlag == Boolean.TRUE) 
 					taskListDynamicStability.add(ConditionEnum.CRUISE);
 
@@ -1123,7 +1123,7 @@ public class ACAnalysisManager {
 						.getXMLPropertyByPath(
 								reader.getXmlDoc(), reader.getXpath(),
 								"//dynamic_stability/@file_landing_condition");
-				
+
 				_dynamicStabilityLandingFileComplete = new File(
 						MyConfiguration.getDir(FoldersEnum.INPUT_DIR)
 						+ File.separator 
@@ -1132,12 +1132,8 @@ public class ACAnalysisManager {
 						+ dynamicStabilityLandingFile
 						);
 			}
-			
-		} else {
-			System.err.println("WARNING (IMPORT ANALYSIS DATA - DYNAMIC STABILITY): CANNOT BE PERFORMED IF <dynamic_stability/> TAG IS NOT DEFINED. TERMINATING ...");
-			System.exit(1);
 		}
-		
+			
 		//-------------------------------------------------------------------------------------------
 		// PERFORMANCE ANALYSIS:
 

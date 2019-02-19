@@ -1102,6 +1102,14 @@ public class TakeOffCalc {
 				Amount<Angle> gamma = Amount.valueOf(x[2], NonSI.DEGREE_ANGLE);
 				Amount<Length> altitude = Amount.valueOf(x[3], SI.METER);
 				
+				List<Amount<Force>> totalThrustList = ((DynamicsEquationsTakeOff)ode).thrust(speed, time, gamma, altitude, deltaTemperature);
+				List<Amount<Force>> totalThrustListHorizontal = new ArrayList<>();
+				List<Amount<Force>> totalThrustListVertical = new ArrayList<>();
+				for(int j=0; j<totalThrustList.size(); j++) 
+					totalThrustListHorizontal.add(totalThrustList.get(j).times(Math.cos(thePowerPlant.getEngineList().get(j).getTiltingAngle().doubleValue(SI.RADIAN))));
+				for(int j=0; j<totalThrustList.size(); j++) 
+					totalThrustListVertical.add(totalThrustList.get(j).times(Math.sin(thePowerPlant.getEngineList().get(j).getTiltingAngle().doubleValue(SI.RADIAN))));
+				
 				//========================================================================================
 				// PICKING UP ALL DATA AT EVERY STEP (RECOGNIZING IF THE TAKE-OFF IS CONTINUED OR ABORTED)
 				//----------------------------------------------------------------------------------------
@@ -1148,7 +1156,7 @@ public class TakeOffCalc {
 				//----------------------------------------------------------------------------------------
 				// THRUST HORIZONTAL:
 				this.thrustHorizontal.add(Amount.valueOf(
-						((DynamicsEquationsTakeOff)ode).thrust(speed, times.get(i), gamma, altitude, deltaTemperature)
+						totalThrustListHorizontal
 						.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
 						*Math.cos(
 								Amount.valueOf(
@@ -1160,7 +1168,7 @@ public class TakeOffCalc {
 				//----------------------------------------------------------------------------------------
 				// THRUST VERTICAL:
 				this.thrustVertical.add(Amount.valueOf(
-						((DynamicsEquationsTakeOff)ode).thrust(speed, times.get(i), gamma, altitude, deltaTemperature)
+						totalThrustListVertical
 						.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
 						*Math.sin(
 								Amount.valueOf(
@@ -2421,31 +2429,19 @@ public class TakeOffCalc {
 					(maxTakeOffMass.doubleValue(SI.KILOGRAM) - x[4])*g0,
 					SI.NEWTON
 					);
-			
-//			if(time.doubleValue(SI.SECOND) > tEndHold.doubleValue(SI.SECOND)) {
-//				System.out.println("\n\tTime: " + time);
-//				System.out.println("\tDistance: " + x[0] + " m");
-//				System.out.println("\tSpeed: " + speed);
-//				System.out.println("\tGamma: " + gamma);
-//				System.out.println("\tAltitude: " + altitude);
-//				System.out.println("\tAlpha: " + alpha);
-//				System.out.println("\tCL: " + cL(speed, alpha, gamma, time, weight, altitude, deltaTemperature));
-//				System.out.println("\tLoad Factor: " + 
-//						(  ((DynamicsEquationsTakeOff)ode).lift(speed, alpha, gamma, time, altitude, deltaTemperature, weight).doubleValue(SI.NEWTON)
-//								+ (  ((DynamicsEquationsTakeOff)ode).thrust(speed, time, gamma, altitude, deltaTemperature)
-//										.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
-//										*Math.sin(alpha.doubleValue(SI.RADIAN))
-//										)
-//								)
-//						/ ( weight.doubleValue(SI.NEWTON)*Math.cos(gamma.doubleValue(SI.RADIAN))	)
-//						);
-//			}
+			List<Amount<Force>> thrustList = thrust(speed, time, gamma, altitude, deltaTemperature);
+			List<Amount<Force>> thrustListHorizontal = new ArrayList<>();
+			List<Amount<Force>> thrustListVertical = new ArrayList<>();
+			for(int i=0; i<thrustList.size(); i++) 
+				thrustListHorizontal.add(thrustList.get(i).times(Math.cos(thePowerPlant.getEngineList().get(i).getTiltingAngle().doubleValue(SI.RADIAN))));
+			for(int i=0; i<thrustList.size(); i++) 
+				thrustListVertical.add(thrustList.get(i).times(Math.sin(thePowerPlant.getEngineList().get(i).getTiltingAngle().doubleValue(SI.RADIAN))));
 			
 			if(isAborted == false) {
 				if( time.doubleValue(SI.SECOND) < tEndRot.doubleValue(SI.SECOND)) {
 					xDot[0] = speed.doubleValue(SI.METERS_PER_SECOND);
 					xDot[1] = (g0/weight.doubleValue(SI.NEWTON))
-							*(thrust(speed, time, gamma, altitude, deltaTemperature).stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
+							*( thrustListHorizontal.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
 									- drag(speed, alpha, gamma, time, altitude, deltaTemperature, weight).doubleValue(SI.NEWTON)
 									- (mu(speed)*(weight.doubleValue(SI.NEWTON) - lift(speed, alpha, gamma, time, altitude, deltaTemperature, weight).doubleValue(SI.NEWTON)))
 									);
@@ -2456,13 +2452,14 @@ public class TakeOffCalc {
 				else {
 					xDot[0] = speed.doubleValue(SI.METERS_PER_SECOND);
 					xDot[1] = (g0/weight.doubleValue(SI.NEWTON))
-							*(thrust(speed, time, gamma, altitude, deltaTemperature).stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()* Math.cos(alpha.doubleValue(SI.RADIAN)) 
+							*( thrustListHorizontal.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
+									*Math.cos(alpha.doubleValue(SI.RADIAN)) 
 									- drag(speed, alpha, gamma, time, altitude, deltaTemperature, weight).doubleValue(SI.NEWTON) 
 									- weight.doubleValue(SI.NEWTON)*Math.sin(gamma.doubleValue(SI.RADIAN))
 									);
 					xDot[2] = 57.3*(g0/(weight.doubleValue(SI.NEWTON)*speed.doubleValue(SI.METERS_PER_SECOND)))
 							*(lift(speed, alpha, gamma, time, altitude, deltaTemperature, weight).doubleValue(SI.NEWTON) 
-									+ (thrust(speed, time, gamma, altitude, deltaTemperature).stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
+									+ ( thrustListVertical.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
 											*Math.sin(alpha.doubleValue(SI.RADIAN))
 											)
 									- weight.doubleValue(SI.NEWTON)*Math.cos(gamma.doubleValue(SI.RADIAN))

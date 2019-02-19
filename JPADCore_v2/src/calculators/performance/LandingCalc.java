@@ -929,6 +929,14 @@ public class LandingCalc {
 						NonSI.DEGREE_ANGLE
 						);
 
+				List<Amount<Force>> totalThrustList = ((DynamicsEquationsLanding)ode).thrust(speed, time, alpha, gamma, altitude, deltaTemperature, weight);
+				List<Amount<Force>> totalThrustListHorizontal = new ArrayList<>();
+				List<Amount<Force>> totalThrustListVertical = new ArrayList<>();
+				for(int j=0; j<totalThrustList.size(); j++) 
+					totalThrustListHorizontal.add(totalThrustList.get(j).times(Math.cos(thePowerPlant.getEngineList().get(j).getTiltingAngle().doubleValue(SI.RADIAN))));
+				for(int j=0; j<totalThrustList.size(); j++) 
+					totalThrustListVertical.add(totalThrustList.get(j).times(Math.sin(thePowerPlant.getEngineList().get(j).getTiltingAngle().doubleValue(SI.RADIAN))));
+				
 				if(time.doubleValue(SI.SECOND) >= tTouchDown.doubleValue(SI.SECOND))
 					gamma = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
 				
@@ -978,7 +986,7 @@ public class LandingCalc {
 					//----------------------------------------------------------------------------------------
 					// THRUST HORIZONTAL:
 					this.thrustHorizontalList.add(Amount.valueOf(
-							((DynamicsEquationsLanding)ode).thrust(speed, time, alpha, gamma, altitude, deltaTemperature, weight)
+							totalThrustListHorizontal
 							.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
 							*Math.cos(alpha.doubleValue(SI.RADIAN)),
 							SI.NEWTON)
@@ -986,7 +994,7 @@ public class LandingCalc {
 					//----------------------------------------------------------------------------------------
 					// THRUST VERTICAL:
 					this.thrustVerticalList.add(Amount.valueOf(
-							((DynamicsEquationsLanding)ode).thrust(speed, time, alpha, gamma, altitude, deltaTemperature, weight)
+							totalThrustListVertical
 							.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
 							*Math.sin(alpha.doubleValue(SI.RADIAN)),
 							SI.NEWTON)
@@ -2096,10 +2104,18 @@ public class LandingCalc {
 					);
 			Amount<Angle> alpha = alpha(time, speed, altitude, deltaTemperature, gamma, weight);
 
+			List<Amount<Force>> thrustList = thrust(speed, time, alpha, gamma, altitude, deltaTemperature, weight);
+			List<Amount<Force>> thrustListHorizontal = new ArrayList<>();
+			List<Amount<Force>> thrustListVertical = new ArrayList<>();
+			for(int i=0; i<thrustList.size(); i++) 
+				thrustListHorizontal.add(thrustList.get(i).times(Math.cos(thePowerPlant.getEngineList().get(i).getTiltingAngle().doubleValue(SI.RADIAN))));
+			for(int i=0; i<thrustList.size(); i++) 
+				thrustListVertical.add(thrustList.get(i).times(Math.sin(thePowerPlant.getEngineList().get(i).getTiltingAngle().doubleValue(SI.RADIAN))));
+			
 			if( t < tTouchDown.doubleValue(SI.SECOND)) {
 				xDot[0] = speed.doubleValue(SI.METERS_PER_SECOND);
 				xDot[1] = (g0/weight.doubleValue(SI.NEWTON))*(
-						(thrust(speed, time, alpha, gamma, altitude, deltaTemperature, weight).stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
+						(thrustListHorizontal.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
 								*Math.cos(alpha.doubleValue(SI.RADIAN))
 								) 
 						- drag(speed, alpha, gamma, altitude, deltaTemperature).doubleValue(SI.NEWTON) 
@@ -2107,7 +2123,7 @@ public class LandingCalc {
 						); 
 				xDot[2] = 57.3*(g0/(weight.doubleValue(SI.NEWTON)*speed.doubleValue(SI.METERS_PER_SECOND)))*(
 						lift(speed, alpha, gamma, altitude, deltaTemperature).doubleValue(SI.NEWTON) 
-						+ (thrust(speed, time, alpha, gamma, altitude, deltaTemperature, weight).stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
+						+ (thrustListVertical.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
 								*Math.sin(alpha.doubleValue(SI.RADIAN))
 								)
 						- (weight.doubleValue(SI.NEWTON)*Math.cos(gamma.doubleValue(SI.RADIAN)))
@@ -2120,7 +2136,7 @@ public class LandingCalc {
 				
 				xDot[0] = speed.doubleValue(SI.METERS_PER_SECOND);
 				xDot[1] = (g0/weight.doubleValue(SI.NEWTON))
-						*(thrust(speed, time, alpha, gamma, altitude, deltaTemperature, weight).stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum() 
+						*(thrustListHorizontal.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum() 
 								- drag(speed, alpha, gamma, altitude, deltaTemperature).doubleValue(SI.NEWTON)
 								- (mu(speed)*(weight.doubleValue(SI.NEWTON) - lift(speed, alpha, gamma, altitude, deltaTemperature).doubleValue(SI.NEWTON)))
 								);
@@ -2132,7 +2148,7 @@ public class LandingCalc {
 				
 				xDot[0] = speed.doubleValue(SI.METERS_PER_SECOND);
 				xDot[1] = (g0/weight.doubleValue(SI.NEWTON))
-						*(thrust(speed, time, alpha, gamma, altitude, deltaTemperature, weight).stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum() 
+						*(thrustListHorizontal.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum() 
 								- drag(speed, alpha, gamma, altitude, deltaTemperature).doubleValue(SI.NEWTON)
 								- (muBrake(speed)*(weight.doubleValue(SI.NEWTON) - lift(speed, alpha, gamma, altitude, deltaTemperature).doubleValue(SI.NEWTON)))
 								);

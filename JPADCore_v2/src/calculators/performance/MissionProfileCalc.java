@@ -1068,41 +1068,44 @@ public class MissionProfileCalc {
 		this.batteryPowerHolding = new ArrayList<>();
 		this.fuelEnergyHolding = new ArrayList<>();
 		this.batteryEnergyHolding = new ArrayList<>();
-		
-		//......................................................................
-		// LANDING
-		this.rangeLanding = new ArrayList<>();
-		this.altitudeLanding = new ArrayList<>();
-		this.timeLanding = new ArrayList<>();
-		this.fuelUsedLanding = new ArrayList<>();
-		this.aircraftMassLanding = new ArrayList<>();
-		this.emissionNOxLanding = new ArrayList<>();
-		this.emissionCOLanding = new ArrayList<>();
-		this.emissionHCLanding = new ArrayList<>();
-		this.emissionSootLanding = new ArrayList<>();
-		this.emissionCO2Landing = new ArrayList<>();
-		this.emissionSOxLanding = new ArrayList<>();
-		this.emissionH2OLanding = new ArrayList<>();
-		this.speedTASLanding = new ArrayList<>();
-		this.speedCASLanding = new ArrayList<>();
-		this.machLanding = new ArrayList<>();
-		this.cLLanding = new ArrayList<>();
-		this.cDLanding = new ArrayList<>();
-		this.efficiencyLanding = new ArrayList<>();		
-		this.dragLanding = new ArrayList<>();
-		this.totalThrustLanding = new ArrayList<>();
-		this.thermicThrustLanding = new ArrayList<>();
-		this.electricThrustLanding = new ArrayList<>();
-		this.throttleLanding = new ArrayList<>();
-		this.sfcLanding = new ArrayList<>();
-		this.fuelFlowLanding = new ArrayList<>();
-		this.rateOfClimbLanding = new ArrayList<>();
-		this.climbAngleLanding = new ArrayList<>();
-		this.fuelPowerLanding = new ArrayList<>();
-		this.batteryPowerLanding = new ArrayList<>();
-		this.fuelEnergyLanding = new ArrayList<>();
-		this.batteryEnergyLanding = new ArrayList<>();
-		
+
+		if(isCruiseLoop == false && isAlternateCruiseLoop == false) {
+
+			//......................................................................
+			// LANDING
+			this.rangeLanding = new ArrayList<>();
+			this.altitudeLanding = new ArrayList<>();
+			this.timeLanding = new ArrayList<>();
+			this.fuelUsedLanding = new ArrayList<>();
+			this.aircraftMassLanding = new ArrayList<>();
+			this.emissionNOxLanding = new ArrayList<>();
+			this.emissionCOLanding = new ArrayList<>();
+			this.emissionHCLanding = new ArrayList<>();
+			this.emissionSootLanding = new ArrayList<>();
+			this.emissionCO2Landing = new ArrayList<>();
+			this.emissionSOxLanding = new ArrayList<>();
+			this.emissionH2OLanding = new ArrayList<>();
+			this.speedTASLanding = new ArrayList<>();
+			this.speedCASLanding = new ArrayList<>();
+			this.machLanding = new ArrayList<>();
+			this.cLLanding = new ArrayList<>();
+			this.cDLanding = new ArrayList<>();
+			this.efficiencyLanding = new ArrayList<>();		
+			this.dragLanding = new ArrayList<>();
+			this.totalThrustLanding = new ArrayList<>();
+			this.thermicThrustLanding = new ArrayList<>();
+			this.electricThrustLanding = new ArrayList<>();
+			this.throttleLanding = new ArrayList<>();
+			this.sfcLanding = new ArrayList<>();
+			this.fuelFlowLanding = new ArrayList<>();
+			this.rateOfClimbLanding = new ArrayList<>();
+			this.climbAngleLanding = new ArrayList<>();
+			this.fuelPowerLanding = new ArrayList<>();
+			this.batteryPowerLanding = new ArrayList<>();
+			this.fuelEnergyLanding = new ArrayList<>();
+			this.batteryEnergyLanding = new ArrayList<>();
+
+		}
 	}
 	
 	public void calculateProfiles(Amount<Velocity> vMC) {
@@ -3823,7 +3826,7 @@ public class MissionProfileCalc {
 					}
 
 					//--------------------------------------------------------------------
-					// LANDING
+					// LANDING 
 					Amount<Mass> intialMassLanding = Amount.valueOf(
 							initialMissionMass.doubleValue(SI.KILOGRAM)
 							- theTakeOffCalculator.getFuelUsed().get(theTakeOffCalculator.getFuelUsed().size()-1).doubleValue(SI.KILOGRAM)
@@ -3837,123 +3840,125 @@ public class MissionProfileCalc {
 							SI.KILOGRAM
 							);
 
-					theLandingCalculator = new LandingCalc(
-							holdingAltitude,
-							theOperatingConditions.getAltitudeLanding(), 
-							theOperatingConditions.getDeltaTemperatureLanding(), 
-							approachAngle, 
-							intialMassLanding,
-							theAircraft.getPowerPlant(),
-							polarCLLanding,
-							polarCDLanding, 
-							theAircraft.getWing().getAspectRatio(), 
-							theAircraft.getWing().getSurfacePlanform(),
-							freeRollDuration,
-							mu, 
-							muBrake,
-							wingToGroundDistance, 
-							kCLmaxLanding, 
-							cLmaxLanding, 
-							cLZeroLanding, 
-							cLAlphaLanding, 
-							theOperatingConditions.getThrottleLanding(), 
-							cruiseCalibrationFactorThrust,
-							flightIdleCalibrationFactorThrust,
-							groundIdleCalibrationFactorThrust,
-							cruiseCalibrationFactorSFC,
-							flightIdleCalibrationFactorSFC,
-							groundIdleCalibrationFactorSFC,
-							cruiseCalibrationFactorEmissionIndexNOx,
-							cruiseCalibrationFactorEmissionIndexCO,
-							cruiseCalibrationFactorEmissionIndexHC,
-							cruiseCalibrationFactorEmissionIndexSoot,
-							cruiseCalibrationFactorEmissionIndexCO2,
-							cruiseCalibrationFactorEmissionIndexSOx,
-							cruiseCalibrationFactorEmissionIndexH2O,
-							flightIdleCalibrationFactorEmissionIndexNOx,
-							flightIdleCalibrationFactorEmissionIndexCO,
-							flightIdleCalibrationFactorEmissionIndexHC,
-							flightIdleCalibrationFactorEmissionIndexSoot,
-							flightIdleCalibrationFactorEmissionIndexCO2,
-							flightIdleCalibrationFactorEmissionIndexSOx,
-							flightIdleCalibrationFactorEmissionIndexH2O,
-							groundIdleCalibrationFactorEmissionIndexNOx,
-							groundIdleCalibrationFactorEmissionIndexCO,
-							groundIdleCalibrationFactorEmissionIndexHC,
-							groundIdleCalibrationFactorEmissionIndexSoot,
-							groundIdleCalibrationFactorEmissionIndexCO2,
-							groundIdleCalibrationFactorEmissionIndexSOx,
-							groundIdleCalibrationFactorEmissionIndexH2O,
-							theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
-							);
+					// only if iAlternate=0 and iCruise=0 (just one time to reduce computational time)
+					if(iAlternate == 0 && iCruise == 0) {
+						theLandingCalculator = new LandingCalc(
+								holdingAltitude,
+								theOperatingConditions.getAltitudeLanding(), 
+								theOperatingConditions.getDeltaTemperatureLanding(), 
+								approachAngle, 
+								intialMassLanding,
+								theAircraft.getPowerPlant(),
+								polarCLLanding,
+								polarCDLanding, 
+								theAircraft.getWing().getAspectRatio(), 
+								theAircraft.getWing().getSurfacePlanform(),
+								freeRollDuration,
+								mu, 
+								muBrake,
+								wingToGroundDistance, 
+								kCLmaxLanding, 
+								cLmaxLanding, 
+								cLZeroLanding, 
+								cLAlphaLanding, 
+								theOperatingConditions.getThrottleLanding(), 
+								cruiseCalibrationFactorThrust,
+								flightIdleCalibrationFactorThrust,
+								groundIdleCalibrationFactorThrust,
+								cruiseCalibrationFactorSFC,
+								flightIdleCalibrationFactorSFC,
+								groundIdleCalibrationFactorSFC,
+								cruiseCalibrationFactorEmissionIndexNOx,
+								cruiseCalibrationFactorEmissionIndexCO,
+								cruiseCalibrationFactorEmissionIndexHC,
+								cruiseCalibrationFactorEmissionIndexSoot,
+								cruiseCalibrationFactorEmissionIndexCO2,
+								cruiseCalibrationFactorEmissionIndexSOx,
+								cruiseCalibrationFactorEmissionIndexH2O,
+								flightIdleCalibrationFactorEmissionIndexNOx,
+								flightIdleCalibrationFactorEmissionIndexCO,
+								flightIdleCalibrationFactorEmissionIndexHC,
+								flightIdleCalibrationFactorEmissionIndexSoot,
+								flightIdleCalibrationFactorEmissionIndexCO2,
+								flightIdleCalibrationFactorEmissionIndexSOx,
+								flightIdleCalibrationFactorEmissionIndexH2O,
+								groundIdleCalibrationFactorEmissionIndexNOx,
+								groundIdleCalibrationFactorEmissionIndexCO,
+								groundIdleCalibrationFactorEmissionIndexHC,
+								groundIdleCalibrationFactorEmissionIndexSoot,
+								groundIdleCalibrationFactorEmissionIndexCO2,
+								groundIdleCalibrationFactorEmissionIndexSOx,
+								groundIdleCalibrationFactorEmissionIndexH2O,
+								theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
+								);
 
-					theLandingCalculator.calculateLanding(true);
+						theLandingCalculator.calculateLanding(true);
 
-					rangeLanding.addAll(theLandingCalculator.getGroundDistanceList());			
-					altitudeLanding.addAll(theLandingCalculator.getVerticalDistanceList());
-					timeLanding.addAll(theLandingCalculator.getTimeList());
-					fuelUsedLanding.addAll(theLandingCalculator.getFuelUsedList());
-					aircraftMassLanding.addAll(
-							theLandingCalculator.getWeightList().stream()
-							.map(w -> Amount.valueOf(
-									w.doubleValue(SI.NEWTON)/AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
-									SI.KILOGRAM)
-									)
-							.collect(Collectors.toList())
-							);
-					emissionNOxLanding.addAll(theLandingCalculator.getEmissionNOxList());
-					emissionCOLanding.addAll(theLandingCalculator.getEmissionCOList());
-					emissionHCLanding.addAll(theLandingCalculator.getEmissionHCList());
-					emissionSootLanding.addAll(theLandingCalculator.getEmissionSootList());
-					emissionCO2Landing.addAll(theLandingCalculator.getEmissionCO2List());
-					emissionSOxLanding.addAll(theLandingCalculator.getEmissionSOxList());
-					emissionH2OLanding.addAll(theLandingCalculator.getEmissionH2OList());
-					speedTASLanding.addAll(theLandingCalculator.getSpeedTASList());
-					speedCASLanding.addAll(theLandingCalculator.getSpeedCASList());
-					machLanding.addAll(theLandingCalculator.getMachList());
-					cLLanding.addAll(theLandingCalculator.getcLList());
-					cDLanding.addAll(theLandingCalculator.getcDList());
-					dragLanding.addAll(theLandingCalculator.getDragList());
-					totalThrustLanding.addAll(theLandingCalculator.getThrustList());
-					throttleLanding.addAll(timeLanding.stream().map(t -> theOperatingConditions.getThrottleLanding()).collect(Collectors.toList()));
-					fuelFlowLanding.addAll(theLandingCalculator.getFuelFlowList());
-					rateOfClimbLanding.addAll(theLandingCalculator.getRateOfClimbList());
-					climbAngleLanding.addAll(theLandingCalculator.getGammaList());
-					
-					for(int iLanding=0; iLanding<timeLanding.size(); iLanding++) {
-						/* WHEN THE HYBRIDAZION FACTOR WILL BE AVAILABLE USE IT TO CALCULATE THERMIC AND ELECTRIC THRUSTS FROM THE TOTAL */ 
-						thermicThrustLanding.add(totalThrustLanding.get(iLanding));
-						electricThrustLanding.add(Amount.valueOf(0.0, SI.NEWTON));
-						sfcLanding.add(
-								(fuelFlowLanding.get(iLanding)/totalThrustLanding.get(iLanding).doubleValue(SI.NEWTON))
-								/(0.224809)
-								/(0.454/3600)
-								);
-						efficiencyLanding.add(cLLanding.get(iLanding)/cDLanding.get(iLanding));		
-						fuelPowerLanding.add(
-								Amount.valueOf(
-										thermicThrustLanding.get(iLanding).doubleValue(SI.NEWTON)
-										* speedTASLanding.get(iLanding).doubleValue(SI.METERS_PER_SECOND),
-										SI.WATT
+						rangeLanding.addAll(theLandingCalculator.getGroundDistanceList());			
+						altitudeLanding.addAll(theLandingCalculator.getVerticalDistanceList());
+						timeLanding.addAll(theLandingCalculator.getTimeList());
+						fuelUsedLanding.addAll(theLandingCalculator.getFuelUsedList());
+						aircraftMassLanding.addAll(
+								theLandingCalculator.getWeightList().stream()
+								.map(w -> Amount.valueOf(
+										w.doubleValue(SI.NEWTON)/AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
+										SI.KILOGRAM)
 										)
+								.collect(Collectors.toList())
 								);
-						batteryPowerLanding.add(
-								Amount.valueOf(
-										electricThrustLanding.get(iLanding).doubleValue(SI.NEWTON)
-										* speedTASLanding.get(iLanding).doubleValue(SI.METERS_PER_SECOND),
-										SI.WATT
-										)
-								);
-						fuelEnergyLanding.add(
-								Amount.valueOf(
-										fuelPowerLanding.get(iLanding).doubleValue(SI.WATT)
-										* timeLanding.get(iLanding).doubleValue(SI.SECOND),
-										SI.JOULE
-										)
-								);
-						batteryEnergyLanding.add(Amount.valueOf(0.0, SI.JOULE));
+						emissionNOxLanding.addAll(theLandingCalculator.getEmissionNOxList());
+						emissionCOLanding.addAll(theLandingCalculator.getEmissionCOList());
+						emissionHCLanding.addAll(theLandingCalculator.getEmissionHCList());
+						emissionSootLanding.addAll(theLandingCalculator.getEmissionSootList());
+						emissionCO2Landing.addAll(theLandingCalculator.getEmissionCO2List());
+						emissionSOxLanding.addAll(theLandingCalculator.getEmissionSOxList());
+						emissionH2OLanding.addAll(theLandingCalculator.getEmissionH2OList());
+						speedTASLanding.addAll(theLandingCalculator.getSpeedTASList());
+						speedCASLanding.addAll(theLandingCalculator.getSpeedCASList());
+						machLanding.addAll(theLandingCalculator.getMachList());
+						cLLanding.addAll(theLandingCalculator.getcLList());
+						cDLanding.addAll(theLandingCalculator.getcDList());
+						dragLanding.addAll(theLandingCalculator.getDragList());
+						totalThrustLanding.addAll(theLandingCalculator.getThrustList());
+						throttleLanding.addAll(timeLanding.stream().map(t -> theOperatingConditions.getThrottleLanding()).collect(Collectors.toList()));
+						fuelFlowLanding.addAll(theLandingCalculator.getFuelFlowList());
+						rateOfClimbLanding.addAll(theLandingCalculator.getRateOfClimbList());
+						climbAngleLanding.addAll(theLandingCalculator.getGammaList());
+
+						for(int iLanding=0; iLanding<timeLanding.size(); iLanding++) {
+							/* WHEN THE HYBRIDAZION FACTOR WILL BE AVAILABLE USE IT TO CALCULATE THERMIC AND ELECTRIC THRUSTS FROM THE TOTAL */ 
+							thermicThrustLanding.add(totalThrustLanding.get(iLanding));
+							electricThrustLanding.add(Amount.valueOf(0.0, SI.NEWTON));
+							sfcLanding.add(
+									(fuelFlowLanding.get(iLanding)/totalThrustLanding.get(iLanding).doubleValue(SI.NEWTON))
+									/(0.224809)
+									/(0.454/3600)
+									);
+							efficiencyLanding.add(cLLanding.get(iLanding)/cDLanding.get(iLanding));		
+							fuelPowerLanding.add(
+									Amount.valueOf(
+											thermicThrustLanding.get(iLanding).doubleValue(SI.NEWTON)
+											* speedTASLanding.get(iLanding).doubleValue(SI.METERS_PER_SECOND),
+											SI.WATT
+											)
+									);
+							batteryPowerLanding.add(
+									Amount.valueOf(
+											electricThrustLanding.get(iLanding).doubleValue(SI.NEWTON)
+											* speedTASLanding.get(iLanding).doubleValue(SI.METERS_PER_SECOND),
+											SI.WATT
+											)
+									);
+							fuelEnergyLanding.add(
+									Amount.valueOf(
+											fuelPowerLanding.get(iLanding).doubleValue(SI.WATT)
+											* timeLanding.get(iLanding).doubleValue(SI.SECOND),
+											SI.JOULE
+											)
+									);
+							batteryEnergyLanding.add(Amount.valueOf(0.0, SI.JOULE));
+						}
 					}
-					
 					//.....................................................................
 					// CHECK ON TOTAL ALTERNATE RANGE
 					Amount<Length> totalAlternateRange = Amount.valueOf(
