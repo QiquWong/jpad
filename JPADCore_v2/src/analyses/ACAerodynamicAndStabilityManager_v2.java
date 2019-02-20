@@ -150,25 +150,25 @@ public class ACAerodynamicAndStabilityManager_v2 {
 	private Map<Double, Amount<?>> _cYr; // xcg, cYr
 
 	// longitudinal static stability
-	private Map<Double, List<Double>> _canardEquilibriumLiftCoefficient; //xcg, CLc_e
-	private Map<Double, List<Double>> _canardEquilibriumDragCoefficient; // xcg, CDc_e
-	private Map<Double, List<Double>> _wingEquilibriumLiftCoefficient; //xcg, CLw_e
-	private Map<Double, List<Double>> _wingEquilibriumDragCoefficient; // xcg, CDw_e
-	private Map<Double, List<Double>> _horizontalTailEquilibriumLiftCoefficient; //xcg, CLh_e
-	private Map<Double, List<Double>> _horizontalTailEquilibriumDragCoefficient; // xcg, CDh_e
-	private Map<Double, List<Double>> _totalEquilibriumLiftCoefficient; //xcg, CL_e
-	private Map<Double, List<Double>> _totalEquilibriumDragCoefficient; //xcg, CD_e
-	private Map<Double, List<Double>> _totalEquilibriumEfficiencyMap; // xcg, efficiency curve
-	private Map<Double, List<Amount<Angle>>> _deltaEEquilibrium; //xcg, de_e
-	private Map<Double, Double> _totalEquilibriumMaximumEfficiencyMap; // xcg, max efficiency
-	private Map<Double, Double> _totalEquilibriumCurrentEfficiencyMap; // xcg, efficiency @ current CL
-	private Map<Double, Double> _neutralPointPositionMap; // xcg, N0
-	private Map<Double, Double> _staticStabilityMarginMap; // xcg, SSM
-	private Map<Double, Double> _maximumTrimmedLiftingCoefficientMap; // xcg, CLmax_trim
-	private Map<Double, Amount<?>> _cLAlphaEquilibriumMap; // xcg, CL_alpha_e
-	private Map<Double, Double> _cLZeroEquilibriumMap; // xcg, CL_zero_e
-	private Map<Double, Amount<?>> _cMAlphaEquilibriumMap; // xcg, CM_alpha_e
-	private Map<Double, Double> _cDZeroTotalEquilibriumMap; // xcg, CD_zero_e
+	private Map<Double, List<Double>> _canardEquilibriumLiftCoefficient = new HashMap<>(); //xcg, CLc_e
+	private Map<Double, List<Double>> _canardEquilibriumDragCoefficient = new HashMap<>(); // xcg, CDc_e
+	private Map<Double, List<Double>> _wingEquilibriumLiftCoefficient = new HashMap<>(); //xcg, CLw_e
+	private Map<Double, List<Double>> _wingEquilibriumDragCoefficient = new HashMap<>(); // xcg, CDw_e
+	private Map<Double, List<Double>> _horizontalTailEquilibriumLiftCoefficient = new HashMap<>(); //xcg, CLh_e
+	private Map<Double, List<Double>> _horizontalTailEquilibriumDragCoefficient = new HashMap<>(); // xcg, CDh_e
+	private Map<Double, List<Double>> _totalEquilibriumLiftCoefficient = new HashMap<>(); //xcg, CL_e
+	private Map<Double, List<Double>> _totalEquilibriumDragCoefficient = new HashMap<>(); //xcg, CD_e
+	private Map<Double, List<Double>> _totalEquilibriumEfficiencyMap = new HashMap<>(); // xcg, efficiency curve
+	private Map<Double, List<Amount<Angle>>> _deltaEEquilibrium = new HashMap<>(); //xcg, de_e
+	private Map<Double, Double> _totalEquilibriumMaximumEfficiencyMap = new HashMap<>(); // xcg, max efficiency
+	private Map<Double, Double> _totalEquilibriumCurrentEfficiencyMap = new HashMap<>(); // xcg, efficiency @ current CL
+	private Map<Double, Double> _neutralPointPositionMap = new HashMap<>(); // xcg, N0
+	private Map<Double, Double> _staticStabilityMarginMap = new HashMap<>(); // xcg, SSM
+	private Map<Double, Double> _maximumTrimmedLiftingCoefficientMap = new HashMap<>(); // xcg, CLmax_trim
+	private Map<Double, Amount<?>> _cLAlphaEquilibriumMap = new HashMap<>(); // xcg, CL_alpha_e
+	private Map<Double, Double> _cLZeroEquilibriumMap = new HashMap<>(); // xcg, CL_zero_e
+	private Map<Double, Amount<?>> _cMAlphaEquilibriumMap = new HashMap<>(); // xcg, CM_alpha_e
+	private Map<Double, Double> _cDZeroTotalEquilibriumMap = new HashMap<>(); // xcg, CD_zero_e
 	private Double _deltaCDZeroLandingGear = 0.0;
 	private Double _deltaCDZeroExcrescences = 0.0;
 	private Double _deltaCDZeroInterferences = 0.0;
