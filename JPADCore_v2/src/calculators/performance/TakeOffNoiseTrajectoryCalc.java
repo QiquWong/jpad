@@ -90,7 +90,7 @@ public class TakeOffNoiseTrajectoryCalc {
 	private Amount<Mass> maxTakeOffMass; 
 	private Amount<Velocity> vSTakeOff, vRot, vLO, vWind, v1, v2, vClimb;
 	private Amount<Length> wingToGroundDistance, obstacle, xEndSimulation, cutbackAltitude;
-	private Amount<Angle> alphaGround;
+	private Amount<Angle> alphaGround, fuselageUpsweepAngle;
 	private List<Amount<Angle>> alpha;
 	private List<Amount<Duration>> time;
 	private List<Amount<Acceleration>> acceleration;
@@ -101,6 +101,9 @@ public class TakeOffNoiseTrajectoryCalc {
 	private Double phiCutback;
 	private Amount<?> cLalphaFlap;
 	private MyInterpolatingFunction mu, deltaCD0LandingGearRetractionSlope, deltaThrustCutbackSlope;
+	
+	private boolean isTailStrike;
+	private boolean rotationSpeedWarningFlag;
 	
 	private FirstOrderIntegrator theIntegrator;
 	private FirstOrderDifferentialEquations ode;
@@ -141,6 +144,7 @@ public class TakeOffNoiseTrajectoryCalc {
 			double deltaCD0OEI,
 			double aspectRatio,
 			Amount<Area> surface,
+			Amount<Angle> fuselageUpsweepAngle,
 			Amount<Duration> dtHold,
 			Amount<Duration> dtLandingGearRetraction,
 			Amount<Duration> dtThrustCutback,
@@ -168,6 +172,7 @@ public class TakeOffNoiseTrajectoryCalc {
 				Math.sqrt(aspectRatio*surface.doubleValue(SI.SQUARE_METRE)),
 				SI.METER
 				);
+		this.fuselageUpsweepAngle = fuselageUpsweepAngle;
 		this.thePowerPlant = thePowerPlant;
 		this.polarCLTakeOff = polarCLTakeOff;
 		this.polarCDTakeOff = polarCDTakeOff;
@@ -291,6 +296,7 @@ public class TakeOffNoiseTrajectoryCalc {
 		tObstacle = Amount.valueOf(10000.0, SI.SECOND);	// initialization to an impossible time
 		tZeroAcceleration = Amount.valueOf(10000.0, SI.SECOND);	// initialization to an impossible time
 		
+		isTailStrike = false;
 		phiCutback = null;
 		
 	}
@@ -315,10 +321,12 @@ public class TakeOffNoiseTrajectoryCalc {
 
 		targetSpeedFlag = false;
 		StepHandler continuousOutputModel = null;
+		rotationSpeedWarningFlag = false;
 
 		if(vMC != null) {
 			if(1.05*vMC.doubleValue(SI.METERS_PER_SECOND) > (kRot*vSTakeOff.doubleValue(SI.METERS_PER_SECOND))
 					) {
+				rotationSpeedWarningFlag = true;
 				vRot = vMC.to(SI.METERS_PER_SECOND).times(1.05);
 			}
 			else
@@ -2701,6 +2709,10 @@ public class TakeOffNoiseTrajectoryCalc {
 				
 			}
 			
+			if(alpha.doubleValue(NonSI.DEGREE_ANGLE) >= fuselageUpsweepAngle.doubleValue(NonSI.DEGREE_ANGLE)) {
+				isTailStrike = true;
+			}
+			
 			return alpha;
 		}
 	}
@@ -3445,6 +3457,22 @@ public class TakeOffNoiseTrajectoryCalc {
 
 	public void setCertificationPointsThrustMap(Map<Double, Amount<Force>> certificationPointsThrustMap) {
 		this.certificationPointsThrustMap = certificationPointsThrustMap;
+	}
+
+	public boolean isTailStrike() {
+		return isTailStrike;
+	}
+
+	public void setTailStrike(boolean isTailStrike) {
+		this.isTailStrike = isTailStrike;
+	}
+
+	public boolean isRotationSpeedWarningFlag() {
+		return rotationSpeedWarningFlag;
+	}
+
+	public void setRotationSpeedWarningFlag(boolean rotationSpeedWarningFlag) {
+		this.rotationSpeedWarningFlag = rotationSpeedWarningFlag;
 	}
 
 }

@@ -1568,10 +1568,10 @@ public class ACAnalysisManager {
 				.append("\tAircraft Analysis Manager\n")
 				.append("\t-------------------------------------\n")
 				.append("\tAircraft in exam: " + _theAnalysisManagerInterface.getTheAircraft().getId() + "\n")
-				.append("\t�������������������������������������\n")
+				.append("\t...............................................................................................................\n")
 				.append("\tPositive limit load factor: " + _theAnalysisManagerInterface.getPositiveLimitLoadFactor() + "\n")
 				.append("\tNegative limit load factor: " + _theAnalysisManagerInterface.getNegativeLimitLoadFactor() + "\n")
-				.append("\t�������������������������������������\n")
+				.append("\t...............................................................................................................\n")
 				.append("\tn Ultimate " + _nUltimate + "\n")
 				.append("\tV dive (TAS): " + _vDive + "\n")
 				.append("\tV dive (EAS): " + _vDiveEAS + "\n")
@@ -1581,7 +1581,7 @@ public class ACAnalysisManager {
 				.append("\tV max cruise (EAS): " + _vMaxCruiseEAS + "\n")
 				.append("\tV optimum cruise: " + _vOptimumCruise + "\n")
 				.append("\tMax dynamic pressure: " + _maxDynamicPressure + "\n")
-				.append("\t�������������������������������������\n")
+				.append("\t...............................................................................................................\n")
 				;
 		if(_executedAnalysesMap.get(AnalysisTypeEnum.WEIGHTS) == true)
 			sb.append(_theAnalysisManagerInterface.getTheAircraft().getTheAnalysisManager().getTheWeights().toString());
@@ -1680,9 +1680,9 @@ public class ACAnalysisManager {
 					aircraft,
 					theOperatingConditions
 					);
+			System.setOut(originalOut);
 			calculateWeights(aircraft, theOperatingConditions, resultsFolderPath); 
 			_executedAnalysesMap.put(AnalysisTypeEnum.WEIGHTS, true);
-			System.setOut(originalOut);
 			System.out.println("\t\tWeights Analysis :: COMPLETE\n");
 			System.setOut(filterStream);
 		}
@@ -1695,9 +1695,9 @@ public class ACAnalysisManager {
 					_balanceFileComplete.getAbsolutePath(),
 					aircraft
 					);
+			System.setOut(originalOut);
 			calculateBalance(aircraft, resultsFolderPath);
 			_executedAnalysesMap.put(AnalysisTypeEnum.BALANCE, true);
-			System.setOut(originalOut);
 			System.out.println("\t\tBalance Analysis :: COMPLETE \n");
 			System.setOut(filterStream);
 		}
@@ -1865,10 +1865,9 @@ public class ACAnalysisManager {
 					aircraft,
 					theOperatingConditions
 					);
-//			System.setOut(originalOut);
+			System.setOut(originalOut);
 			calculatePerformances(aircraft, resultsFolderPath);
 			_executedAnalysesMap.put(AnalysisTypeEnum.PERFORMANCE, true);
-			System.setOut(originalOut);
 			System.out.println("\t\tPerformance Analysis :: COMPLETE \n");
 			System.setOut(filterStream);
 		}
@@ -1883,9 +1882,9 @@ public class ACAnalysisManager {
 					theOperatingConditions, 
 					_theAnalysisManagerInterface.getTaskListCosts()
 					);
+			System.setOut(originalOut);
 			calculateCosts(aircraft, resultsFolderPath);
 			_executedAnalysesMap.put(AnalysisTypeEnum.COSTS, true);
-			System.setOut(originalOut);
 			System.out.println("\t\tCosts Analysis :: COMPLETE \n");
 			System.setOut(filterStream);
 		}
@@ -2089,8 +2088,21 @@ public class ACAnalysisManager {
 	
 	public void calculateWeights(Aircraft aircraft, OperatingConditions operatingConditions, String resultsFolderPath) {
 
+		final PrintStream originalOut = System.out;
+		PrintStream filterStream = new PrintStream(new OutputStream() {
+		    public void write(int b) {
+		         // write nothing
+		    }
+		});
+		
 		// Evaluate aircraft masses
+		System.setOut(originalOut);
+		System.out.println("\t\t\tClass II mass breakdown :: START");
+		System.setOut(filterStream);
 		aircraft.getTheAnalysisManager().getTheWeights().calculateAllMasses(aircraft, operatingConditions, _theAnalysisManagerInterface.getMethodsMapWeights());
+		System.setOut(originalOut);
+		System.out.println("\t\t\tClass II mass breakdown :: COMPLETE");
+		System.setOut(filterStream);
 
 		// Plot and print
 		try {
@@ -2101,8 +2113,15 @@ public class ACAnalysisManager {
 			aircraft.getTheAnalysisManager().getTheWeights().toXLSFile(
 					weightsFolderPath
 					+ "Weights");
-			if(_theAnalysisManagerInterface.isPlotWeights() == true)
+			if(_theAnalysisManagerInterface.isPlotWeights() == true) {
+				System.setOut(originalOut);
+				System.out.println("\t\t\tClass II mass breakdown plot :: START");
+				System.setOut(filterStream);
 				aircraft.getTheAnalysisManager().getTheWeights().plotWeightBreakdown(weightsFolderPath);
+				System.setOut(originalOut);
+				System.out.println("\t\t\tClass II mass breakdown plot :: COMPLETE");
+				System.setOut(filterStream);
+			}
 			
 		} catch (InvalidFormatException e) {
 			e.printStackTrace();
@@ -2114,8 +2133,21 @@ public class ACAnalysisManager {
 
 	public void calculateBalance(Aircraft aircraft, String resultsFolderPath) {
 
+		final PrintStream originalOut = System.out;
+		PrintStream filterStream = new PrintStream(new OutputStream() {
+		    public void write(int b) {
+		         // write nothing
+		    }
+		});
+		
 		// Estimate center of gravity location
+		System.setOut(originalOut);
+		System.out.println("\t\t\tCenter of gravity positions and inertias estimation :: START");
+		System.setOut(filterStream);
 		aircraft.getTheAnalysisManager().getTheBalance().calculate(_theAnalysisManagerInterface.getMethodsMapBalance());
+		System.setOut(originalOut);
+		System.out.println("\t\t\tCenter of gravity positions and inertias estimation :: COMPLETE");
+		System.setOut(filterStream);
 		
 		// Plot
 		try {
@@ -2126,8 +2158,15 @@ public class ACAnalysisManager {
 			aircraft.getTheAnalysisManager().getTheBalance().toXLSFile(
 					balanceFolderPath
 					+ "Balance");
-			if(_theAnalysisManagerInterface.isPlotBalance() == Boolean.TRUE)
+			if(_theAnalysisManagerInterface.isPlotBalance() == Boolean.TRUE) {
+				System.setOut(originalOut);
+				System.out.println("\t\t\tBalance analysis plot :: START");
+				System.setOut(filterStream);
 				aircraft.getTheAnalysisManager().getTheBalance().createCharts(balanceFolderPath);
+				System.setOut(originalOut);
+				System.out.println("\t\t\tBalance analysis plot :: COMPLETE");
+				System.setOut(filterStream);
+			}
 		} catch (InvalidFormatException e) {
 			e.printStackTrace();
 		} catch (IOException e) {

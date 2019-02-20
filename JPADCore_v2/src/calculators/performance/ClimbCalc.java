@@ -348,7 +348,7 @@ public class ClimbCalc {
 		//..................................................................................................
 		if(performCeilings == true) {
 			
-			_ceilingMapAEO = PerformanceCalcUtils.calculateCeiling(_rcMapAEO);
+			_ceilingMapAEO = PerformanceCalcUtils.calculateCeiling(_rcMapAEO, false);
 			
 			//..................................................................................................
 			// COLLECTING RESULTS
@@ -494,7 +494,7 @@ public class ClimbCalc {
 			//..................................................................................................
 			if(performCeilings == true) {
 
-				_ceilingMapOEI = PerformanceCalcUtils.calculateCeiling(_rcMapOEI);
+				_ceilingMapOEI = PerformanceCalcUtils.calculateCeiling(_rcMapOEI, true);
 
 				//..................................................................................................
 				// COLLECTING RESULTS

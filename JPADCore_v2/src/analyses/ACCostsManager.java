@@ -3,6 +3,8 @@ package analyses;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -1091,6 +1093,15 @@ public class ACCostsManager {
 
 	public void calculate(String resultsFolderPath) {
 		
+		final PrintStream originalOut = System.out;
+		PrintStream filterStream = new PrintStream(new OutputStream() {
+		    public void write(int b) {
+		         // write nothing
+		    }
+		});
+		
+		System.setOut(filterStream);
+		
 		initializeAnalysis();
 	
 		String costsFolderPath = JPADStaticWriteUtils.createNewFolder(
@@ -1108,8 +1119,15 @@ public class ACCostsManager {
 			
 			CalcCapitalDOC calcCapitalDOC = new CalcCapitalDOC();
 			
-			if(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CAPITAL).equals(MethodEnum.AEA)) 
+			if(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CAPITAL).equals(MethodEnum.AEA)) {
+				System.setOut(originalOut);
+				System.out.println("\t\t\tCapital DOC calculation :: START");
+				System.setOut(filterStream);	
 				calcCapitalDOC.calculateDOCCapitalAEA();
+				System.setOut(originalOut);
+				System.out.println("\t\t\tCapital DOC calculation :: COMPLETE");
+				System.setOut(filterStream);
+			}
 			
 		}
 		
@@ -1119,11 +1137,25 @@ public class ACCostsManager {
 			
 			CalcCrewDOC calcCrewDOC = new CalcCrewDOC();
 			
-			if(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CREW).equals(MethodEnum.AEA)) 
+			if(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CREW).equals(MethodEnum.AEA)) { 
+				System.setOut(originalOut);
+				System.out.println("\t\t\tCrew DOC calculation :: START");
+				System.setOut(filterStream);
 				calcCrewDOC.calculateDOCCrewAEA();
+				System.setOut(originalOut);
+				System.out.println("\t\t\tCrew DOC calculation :: START");
+				System.setOut(filterStream);
+			}
 			
-			else if(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CREW).equals(MethodEnum.ATA)) 
+			else if(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CREW).equals(MethodEnum.ATA)) { 
+				System.setOut(originalOut);
+				System.out.println("\t\t\tCrew DOC calculation :: START");
+				System.setOut(filterStream);
 				calcCrewDOC.calculateDOCCrewATA();
+				System.setOut(originalOut);
+				System.out.println("\t\t\tCrew DOC calculation :: START");
+				System.setOut(filterStream);
+			}
 			
 		}
 		
@@ -1133,8 +1165,15 @@ public class ACCostsManager {
 			
 			CalcFuelDOC calcFuelDOC = new CalcFuelDOC();
 			
-			if(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_FUEL).equals(MethodEnum.AEA)) 
+			if(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_FUEL).equals(MethodEnum.AEA)) { 
+				System.setOut(originalOut);
+				System.out.println("\t\t\tFuel DOC calculation :: START");
+				System.setOut(filterStream);
 				calcFuelDOC.calculateDOCFuelAEA();
+				System.setOut(originalOut);
+				System.out.println("\t\t\tFuel DOC calculation :: START");
+				System.setOut(filterStream);
+			}
 			
 		}
 		
@@ -1144,11 +1183,25 @@ public class ACCostsManager {
 			
 			CalcChargesDOC calcChargesDOC = new CalcChargesDOC();
 			
-			if(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CHARGES).equals(MethodEnum.AEA)) 
+			if(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CHARGES).equals(MethodEnum.AEA)) { 
+				System.setOut(originalOut);
+				System.out.println("\t\t\tCharges DOC calculation :: START");
+				System.setOut(filterStream);
 				calcChargesDOC.calculateDOCChargesAEA();
+				System.setOut(originalOut);
+				System.out.println("\t\t\tCharges DOC calculation :: START");
+				System.setOut(filterStream);
+			}
 			
-			else if(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CHARGES).equals(MethodEnum.ILR_AACHEN)) 
+			else if(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CHARGES).equals(MethodEnum.ILR_AACHEN)) { 
+				System.setOut(originalOut);
+				System.out.println("\t\t\tCharges DOC calculation :: START");
+				System.setOut(filterStream);
 				calcChargesDOC.calculateDOCChargesILRAachen();
+				System.setOut(originalOut);
+				System.out.println("\t\t\tCharges DOC calculation :: START");
+				System.setOut(filterStream);
+			}
 			
 		}
 		
@@ -1158,8 +1211,15 @@ public class ACCostsManager {
 			
 			CalcMaintenanceDOC calcMaintenanceDOC = new CalcMaintenanceDOC();
 			
-			if(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_MAINTENANCE).equals(MethodEnum.ATA)) 
+			if(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_MAINTENANCE).equals(MethodEnum.ATA)) { 
+				System.setOut(originalOut);
+				System.out.println("\t\t\tMaintenance DOC calculation :: START");
+				System.setOut(filterStream);
 				calcMaintenanceDOC.calculateDOCMaintenanceATA();
+				System.setOut(originalOut);
+				System.out.println("\t\t\tMaintenance DOC calculation :: START");
+				System.setOut(filterStream);
+			}
 			
 		}
 		
@@ -1167,6 +1227,10 @@ public class ACCostsManager {
 		// PLOTS
 		//=================================================================================================
 		if(_theCostsBuilderInterface.getAircraft().getTheAnalysisManager().getPlotCosts()) {
+			
+			System.setOut(originalOut);
+			System.out.println("\t\t\tDOC plot:: START");
+			System.setOut(filterStream);
 			
 			PlotDOC plotDOC = new PlotDOC();
 
@@ -1200,6 +1264,10 @@ public class ACCostsManager {
 			// PROFITABILITY
 			if(_theCostsBuilderInterface.getPlotList().contains(CostsPlotEnum.PROFITABILITY)) 
 				plotDOC.plotProfitability(); // TODO
+			
+			System.setOut(originalOut);
+			System.out.println("\t\t\tDOC plot:: COMPLETE");
+			System.setOut(filterStream);
 			
 		}
 		

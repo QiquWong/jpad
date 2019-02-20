@@ -248,7 +248,7 @@ public class PerformanceCalcUtils {
 
 		}
 		else {
-			System.err.println("WARNING: (CEILING CALCULATION - CLIMB) RCmax > 0.0 AT CLIMB MAX ALTITUDE. CEILINGS CALCULATION FAILED...");
+			System.err.println("WARNING: (CEILING CALCULATION - CLIMB) RCmax > 0.0 AT ENGINE DECK CLIMB SETTING MAX ALTITUDE. CEILINGS CALCULATION FAILED...");
 		}
 
 		return new CeilingMap(absoluteCeiling, serviceCeiling, listRC.get(0).getWeight(), listRC.get(0).getPhi(), listRC.get(0).getFlightCondition());
