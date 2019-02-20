@@ -5,6 +5,8 @@ import static org.junit.Assert.assertEquals;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -2954,6 +2956,14 @@ public class ACPerformanceManager {
 	 */
 	public void calculate(String resultsFolderPath) {
 
+		final PrintStream originalOut = System.out;
+		PrintStream filterStream = new PrintStream(new OutputStream() {
+		    public void write(int b) {
+		         // write nothing
+		    }
+		});
+		System.setOut(filterStream);
+		
 		initializeData();
 
 		String performanceFolderPath = JPADStaticWriteUtils.createNewFolder(
@@ -2972,6 +2982,10 @@ public class ACPerformanceManager {
 			
 			if(_thePerformanceInterface.getTaskList().contains(PerformanceEnum.TAKE_OFF)) {
 
+				System.setOut(originalOut);
+				System.out.println("\t\t\tTake-Off Analysis :: START");
+				System.setOut(filterStream);
+				
 				String takeOffFolderPath = JPADStaticWriteUtils.createNewFolder(
 						xcgFolderPath 
 						+ "TAKE_OFF"
@@ -2979,24 +2993,85 @@ public class ACPerformanceManager {
 						);
 
 				CalcTakeOff calcTakeOff = new CalcTakeOff();
+				
+				//-----------------------------------------------------------------------------------------------
+				// VMC CALCULATION
+				System.setOut(originalOut);
+				System.out.println("\t\t\t\tVMC caluclation :: START");
+				System.setOut(filterStream);
 				calcTakeOff.calculateVMC(_thePerformanceInterface.getXcgPositionList().get(i));
-				if(_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getPlotPerformance() == true)
+				System.setOut(originalOut);
+				System.out.println("\t\t\t\tVMC caluclation :: COMPLETE");
+				System.setOut(filterStream);
+				
+				//-----------------------------------------------------------------------------------------------
+				// VMC PLOT
+				if(_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getPlotPerformance() == true) {
+					System.setOut(originalOut);
+					System.out.println("\t\t\t\tVMC plot :: START");
+					System.setOut(filterStream);
 					calcTakeOff.plotVMC(takeOffFolderPath, _thePerformanceInterface.getXcgPositionList().get(i));
+					System.setOut(originalOut);
+					System.out.println("\t\t\t\tVMC plot :: COMPLETE");
+					System.setOut(filterStream);
+				}
+				
+				//-----------------------------------------------------------------------------------------------
+				// TAKE-OFF SIMULATION
+				System.setOut(originalOut);
+				System.out.println("\t\t\t\tTake-Off simulation :: START");
+				System.setOut(filterStream);
 				calcTakeOff.performTakeOffSimulation(
 						_thePerformanceInterface.getMaximumTakeOffMass(), 
 						_thePerformanceInterface.getTheOperatingConditions().getAltitudeTakeOff().to(SI.METER),
 						_thePerformanceInterface.getXcgPositionList().get(i),
 						_vMCMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).to(SI.METERS_PER_SECOND)
 						);
-				if(_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getPlotPerformance() == true)
+				System.setOut(originalOut);
+				System.out.println("\t\t\t\tTake-Off simulation :: COMPLETE");
+				System.setOut(filterStream);
+				
+				//-----------------------------------------------------------------------------------------------
+				// TAKE-OFF SIMULATION PLOT
+				if(_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getPlotPerformance() == true) {
+					System.setOut(originalOut);
+					System.out.println("\t\t\t\tTake-Off simulation plot :: START");
+					System.setOut(filterStream);
 					calcTakeOff.plotTakeOffPerformance(takeOffFolderPath, _thePerformanceInterface.getXcgPositionList().get(i));
+					System.setOut(originalOut);
+					System.out.println("\t\t\t\tTake-Off simulation plot :: COMPLETE");
+					System.setOut(filterStream);
+				}
+				
+				//-----------------------------------------------------------------------------------------------
+				// BALANCED FIELD LENGTH CALCULATION
+				System.setOut(originalOut);
+				System.out.println("\t\t\t\tBalanced Field Length calculation :: START");
+				System.setOut(filterStream);
 				calcTakeOff.calculateBalancedFieldLength(
 						_thePerformanceInterface.getXcgPositionList().get(i),
 						_vMCMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).to(SI.METERS_PER_SECOND)
 						);
-				if(_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getPlotPerformance() == true)
+				System.setOut(originalOut);
+				System.out.println("\t\t\t\tBalanced Field Length calculation :: COMPLETE");
+				System.setOut(filterStream);
+				
+				//-----------------------------------------------------------------------------------------------
+				// BALANCED FIELD LENGTH PLOT
+				if(_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getPlotPerformance() == true) {
+					System.setOut(originalOut);
+					System.out.println("\t\t\t\tBalanced Field Length plot :: START");
+					System.setOut(filterStream);
 					calcTakeOff.plotBalancedFieldLength(takeOffFolderPath, _thePerformanceInterface.getXcgPositionList().get(i));
+					System.setOut(originalOut);
+					System.out.println("\t\t\t\tBalanced Field Length plot :: COMPLETE");
+					System.setOut(filterStream);
+				}
 
+				System.setOut(originalOut);
+				System.out.println("\t\t\tTake-Off Analysis :: COMPLETE");
+				System.setOut(filterStream);
+				
 			}
 
 			if(_thePerformanceInterface.getTaskList().contains(PerformanceEnum.CLIMB)) {
@@ -3007,7 +3082,18 @@ public class ACPerformanceManager {
 						+ File.separator
 						);
 
+				System.setOut(originalOut);
+				System.out.println("\t\t\tClimb Analysis :: START");
+				System.setOut(filterStream);
+				
 				CalcClimb calcClimb = new CalcClimb();
+				
+				
+				//-----------------------------------------------------------------------------------------------
+				// CLIMB PERFORMANCE
+				System.setOut(originalOut);
+				System.out.println("\t\t\t\tClimb performance calculation :: START");
+				System.setOut(filterStream);
 				calcClimb.calculateClimbPerformance(
 						_thePerformanceInterface.getMaximumTakeOffMass().times(_thePerformanceInterface.getKClimbWeightAEO()),
 						_thePerformanceInterface.getMaximumTakeOffMass().times(_thePerformanceInterface.getKClimbWeightOEI()),
@@ -3016,13 +3102,34 @@ public class ACPerformanceManager {
 						true,
 						_thePerformanceInterface.getXcgPositionList().get(i)
 						);
-				if(_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getPlotPerformance() == true)
+				System.setOut(originalOut);
+				System.out.println("\t\t\t\tClimb performance calculation :: COMPLETE");
+				System.setOut(filterStream);
+				
+				//-----------------------------------------------------------------------------------------------
+				// CLIMB PLOT
+				if(_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getPlotPerformance() == true) {
+					System.setOut(originalOut);
+					System.out.println("\t\t\t\tClimb performance plot :: START");
+					System.setOut(filterStream);
 					calcClimb.plotClimbPerformance(climbFolderPath, _thePerformanceInterface.getXcgPositionList().get(i));
+					System.setOut(originalOut);
+					System.out.println("\t\t\t\tClimb performance plot :: COMPLETE");
+					System.setOut(filterStream);
+				}
 
+				System.setOut(originalOut);
+				System.out.println("\t\t\tClimb Analysis :: START");
+				System.setOut(filterStream);
+				
 			}
 
 			if(_thePerformanceInterface.getTaskList().contains(PerformanceEnum.CRUISE)) {
 
+				System.setOut(originalOut);
+				System.out.println("\t\t\tCruise Analysis :: START");
+				System.setOut(filterStream);
+				
 				String cruiseFolderPath = JPADStaticWriteUtils.createNewFolder(
 						xcgFolderPath 
 						+ "CRUISE"
@@ -3056,23 +3163,77 @@ public class ACPerformanceManager {
 				}
 
 				CalcCruise calcCruise = new CalcCruise();
+				
+				//-----------------------------------------------------------------------------------------------
+				// THRUST AND DRAG
+				System.setOut(originalOut);
+				System.out.println("\t\t\t\tThrust and Drag curves calculation :: START");
+				System.setOut(filterStream);
 				calcCruise.calculateThrustAndDrag(
 						_thePerformanceInterface.getMaximumTakeOffMass().times(_thePerformanceInterface.getKCruiseWeight()),
 						_thePerformanceInterface.getXcgPositionList().get(i)
 						);
+				System.setOut(originalOut);
+				System.out.println("\t\t\t\tThrust and Drag curves calculation :: COMPLETE");
+				System.setOut(filterStream);
+				
+				//-----------------------------------------------------------------------------------------------
+				// FLIGHT ENVELOPE
+				System.setOut(originalOut);
+				System.out.println("\t\t\t\tFlight envelope calculation :: START");
+				System.setOut(filterStream);
 				calcCruise.calculateFlightEnvelope(
 						_thePerformanceInterface.getMaximumTakeOffMass().times(_thePerformanceInterface.getKCruiseWeight()),
 						_thePerformanceInterface.getXcgPositionList().get(i)
 						);
+				System.setOut(originalOut);
+				System.out.println("\t\t\t\tFlight envelope calculation :: COMPLETE");
+				System.setOut(filterStream);
+				
+				//-----------------------------------------------------------------------------------------------
+				// EFFICIENCY
+				System.setOut(originalOut);
+				System.out.println("\t\t\t\tEfficiency curves calculation :: START");
+				System.setOut(filterStream);
 				calcCruise.calculateEfficiency(_thePerformanceInterface.getXcgPositionList().get(i));
+				System.setOut(originalOut);
+				System.out.println("\t\t\t\tEfficiency curves calculation :: COMPLETE");
+				System.setOut(filterStream);
+				
+				//-----------------------------------------------------------------------------------------------
+				// CRUISE GRID (S.A.R.)
+				System.setOut(originalOut);
+				System.out.println("\t\t\t\tCruise grid calculation :: START");
+				System.setOut(filterStream);
 				calcCruise.calculateCruiseGrid(_thePerformanceInterface.getXcgPositionList().get(i));
-				if(_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getPlotPerformance() == true)
+				System.setOut(originalOut);
+				System.out.println("\t\t\t\tCruise grid calculation :: COMPLETE");
+				System.setOut(filterStream);
+				
+				//-----------------------------------------------------------------------------------------------
+				// CRUISE PLOT
+				if(_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getPlotPerformance() == true) {
+					System.setOut(originalOut);
+					System.out.println("\t\t\t\tCruise performance plot :: START");
+					System.setOut(filterStream);
 					calcCruise.plotCruiseOutput(cruiseFolderPath, _thePerformanceInterface.getXcgPositionList().get(i));
+					System.setOut(originalOut);
+					System.out.println("\t\t\t\tCruise performance plot :: COMPLETE");
+					System.setOut(filterStream);
+				}
 
+				System.setOut(originalOut);
+				System.out.println("\t\t\tCruise Analysis :: COMPLETE");
+				System.setOut(filterStream);
+				
 			}
 
 			if(_thePerformanceInterface.getTaskList().contains(PerformanceEnum.DESCENT)) {
 
+				System.setOut(originalOut);
+				System.out.println("\t\t\tDescent Analysis :: START");
+				System.setOut(filterStream);
+				
 				String descentFolderPath = JPADStaticWriteUtils.createNewFolder(
 						xcgFolderPath 
 						+ "DESCENT"
@@ -3080,19 +3241,46 @@ public class ACPerformanceManager {
 						);
 
 				CalcDescent calcDescent = new CalcDescent();
+				
+				//-----------------------------------------------------------------------------------------------
+				// DESCENT PERFORMANCE CALCULATION
+				System.setOut(originalOut);
+				System.out.println("\t\t\t\tDescent performance calculation :: START");
+				System.setOut(filterStream);
 				calcDescent.calculateDescentPerformance(
 						_thePerformanceInterface.getInitialDescentAltitude().to(SI.METER),
 						_thePerformanceInterface.getFinalDescentAltitude().to(SI.METER),
 						_thePerformanceInterface.getMaximumTakeOffMass().times(_thePerformanceInterface.getKDescentWeight()),
 						_thePerformanceInterface.getXcgPositionList().get(i)
 						);
-				if(_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getPlotPerformance() == true)
+				System.setOut(originalOut);
+				System.out.println("\t\t\t\tDescent performance calculation :: COMPLETE");
+				System.setOut(filterStream);
+				
+				//-----------------------------------------------------------------------------------------------
+				// DESCENT PERFORMANCE PLOT
+				if(_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getPlotPerformance() == true) {
+					System.setOut(originalOut);
+					System.out.println("\t\t\t\tDescent performance plot :: START");
+					System.setOut(filterStream);
 					calcDescent.plotDescentPerformance(descentFolderPath, _thePerformanceInterface.getXcgPositionList().get(i));
+					System.setOut(originalOut);
+					System.out.println("\t\t\t\tDescent performance plot :: COMPLETE");
+					System.setOut(filterStream);
+				}
 
+				System.setOut(originalOut);
+				System.out.println("\t\t\tDescent Analysis :: COMPLETE");
+				System.setOut(filterStream);
+				
 			}
 
 			if(_thePerformanceInterface.getTaskList().contains(PerformanceEnum.LANDING)) {
 
+				System.setOut(originalOut);
+				System.out.println("\t\t\tLanding Analysis :: START");
+				System.setOut(filterStream);
+				
 				String landingFolderPath = JPADStaticWriteUtils.createNewFolder(
 						xcgFolderPath 
 						+ "LANDING"
@@ -3100,16 +3288,44 @@ public class ACPerformanceManager {
 						);
 
 				CalcLanding calcLanding = new CalcLanding();
+				
+				//-----------------------------------------------------------------------------------------------
+				// LANDING SIMULATION
+				System.setOut(originalOut);
+				System.out.println("\t\t\t\tLanding simulation :: START");
+				System.setOut(filterStream);
 				calcLanding.performLandingSimulation(
 						_thePerformanceInterface.getMaximumTakeOffMass().times(_thePerformanceInterface.getKLandingWeight()),
 						_thePerformanceInterface.getXcgPositionList().get(i)
 						);
-				if(_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getPlotPerformance() == true)
+				System.setOut(originalOut);
+				System.out.println("\t\t\t\tLanding simulation :: COMPLETE");
+				System.setOut(filterStream);
+				
+				//-----------------------------------------------------------------------------------------------
+				// LANDING PLOT
+				if(_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getPlotPerformance() == true) {
+					System.setOut(originalOut);
+					System.out.println("\t\t\t\tLanding plot :: START");
+					System.setOut(filterStream);
 					calcLanding.plotLandingPerformance(landingFolderPath, _thePerformanceInterface.getXcgPositionList().get(i));
+					System.setOut(originalOut);
+					System.out.println("\t\t\t\tLanding plot :: COMPLETE");
+					System.setOut(filterStream);
+				}
+				
+				System.setOut(originalOut);
+				System.out.println("\t\t\tLanding Analysis :: COMPLETE");
+				System.setOut(filterStream);
+				
 			}
 
 			if(_thePerformanceInterface.getTaskList().contains(PerformanceEnum.PAYLOAD_RANGE)) {
 
+				System.setOut(originalOut);
+				System.out.println("\t\t\tPayload-Range Analysis :: START");
+				System.setOut(filterStream);
+				
 				String payloadRangeFolderPath = JPADStaticWriteUtils.createNewFolder(
 						xcgFolderPath 
 						+ "PAYLOAD_RANGE"
@@ -3117,14 +3333,43 @@ public class ACPerformanceManager {
 						);
 
 				CalcPayloadRange calcPayloadRange = new CalcPayloadRange();
+				
+				//-----------------------------------------------------------------------------------------------
+				// PAYLOAD-RANGE CALCULATION
+				System.setOut(originalOut);
+				System.out.println("\t\t\t\tPayload-Range points calculation :: START");
+				System.setOut(filterStream);
 				calcPayloadRange.fromMissionProfile(_thePerformanceInterface.getXcgPositionList().get(i));
-				if(_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getPlotPerformance() == true)
+				System.setOut(originalOut);
+				System.out.println("\t\t\t\tPayload-Range points calculation :: COMPLETE");
+				System.setOut(filterStream);
+				
+				//-----------------------------------------------------------------------------------------------
+				// PAYLOAD-RANGE PLOT
+				if(_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getPlotPerformance() == true) {
+					System.setOut(originalOut);
+					System.out.println("\t\t\t\tPayload-Range plot :: START");
+					System.setOut(filterStream);
 					calcPayloadRange.plotPayloadRange(payloadRangeFolderPath, _thePerformanceInterface.getXcgPositionList().get(i));
+					System.setOut(originalOut);
+					System.out.println("\t\t\t\tPayload-Range plot :: COMPLETE");
+					System.setOut(filterStream);
+				}
 
+				System.setOut(originalOut);
+				System.out.println("\t\t\tPayload-Range Analysis :: COMPLETE");
+				System.setOut(filterStream);
+				
 			}
 
 			if(_thePerformanceInterface.getTaskList().contains(PerformanceEnum.V_n_DIAGRAM)) {
 
+				System.setOut(originalOut);
+				System.out.println("\t\t\tFlight Maneuver and Gust Envelope Analysis :: START");
+				System.setOut(filterStream);
+				
+				//-----------------------------------------------------------------------------------------------
+				// V-n DIAGRAM DEFINITION
 				String maneuveringFlightAndGustEnvelopeFolderPath = JPADStaticWriteUtils.createNewFolder(
 						xcgFolderPath 
 						+ "V-n_DIAGRAM"
@@ -3132,14 +3377,39 @@ public class ACPerformanceManager {
 						);
 
 				CalcFlightManeuveringAndGustEnvelope calcEnvelope =  new CalcFlightManeuveringAndGustEnvelope();
+				
+				System.setOut(originalOut);
+				System.out.println("\t\t\t\tFlight Maneuver and Gust Envelope calculation :: START");
+				System.setOut(filterStream);
 				calcEnvelope.fromRegulations(_thePerformanceInterface.getXcgPositionList().get(i));
-				if(_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getPlotPerformance() == true)
+				System.setOut(originalOut);
+				System.out.println("\t\t\t\tFlight Maneuver and Gust Envelope calculation :: COMPLETE");
+				System.setOut(filterStream);
+				
+				//-----------------------------------------------------------------------------------------------
+				// V-n DIAGRAM PLOT
+				if(_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getPlotPerformance() == true) {
+					System.setOut(originalOut);
+					System.out.println("\t\t\t\tFlight Maneuver and Gust Envelope plot :: START");
+					System.setOut(filterStream);
 					calcEnvelope.plotVnDiagram(maneuveringFlightAndGustEnvelopeFolderPath, _thePerformanceInterface.getXcgPositionList().get(i));
+					System.setOut(originalOut);
+					System.out.println("\t\t\t\tFlight Maneuver and Gust Envelope plot :: COMPLETE");
+					System.setOut(filterStream);
+				}
 
+				System.setOut(originalOut);
+				System.out.println("\t\t\tFlight Maneuver and Gust Envelope Analysis :: COMPLETE");
+				System.setOut(filterStream);
+				
 			}
 
 			if(_thePerformanceInterface.getTaskList().contains(PerformanceEnum.NOISE_TRAJECTORIES)) {
 
+				System.setOut(originalOut);
+				System.out.println("\t\t\tNoise Trajectories Analysis :: START");
+				System.setOut(filterStream);
+				
 				String noiseTrajectoriesFolderPath = JPADStaticWriteUtils.createNewFolder(
 						xcgFolderPath 
 						+ "NOISE_TRAJECTORIES"
@@ -3157,8 +3427,12 @@ public class ACPerformanceManager {
 						);
 
 				CalcNoiseTrajectories calcNoiseTrajectories =  new CalcNoiseTrajectories();
+				
+				System.setOut(originalOut);
 				calcNoiseTrajectories.calculateTakeOffNoiseTrajectory(_thePerformanceInterface.getXcgPositionList().get(i), takeOffNoiseTrajectoriesFolderPath);
+				System.setOut(originalOut);
 				calcNoiseTrajectories.calculateLandingNoiseTrajectory(_thePerformanceInterface.getXcgPositionList().get(i), landingNoiseTrajectoriesFolderPath);
+				System.setOut(filterStream);
 				
 				List<Amount<Length>> groundDistanceList = new ArrayList<>();
 				List<Amount<Length>> altitudeList = new ArrayList<>();
@@ -3213,10 +3487,18 @@ public class ACPerformanceManager {
 				_certificationPointsThetaMap.put(_thePerformanceInterface.getXcgPositionList().get(i), thetaList);
 				_certificationPointsThrustMap.put(_thePerformanceInterface.getXcgPositionList().get(i), thrustList);
 
+				System.setOut(originalOut);
+				System.out.println("\t\t\tNoise Trajectories Analysis :: COMPLETE");
+				System.setOut(filterStream);
+				
 			}
 			
 			if(_thePerformanceInterface.getTaskList().contains(PerformanceEnum.MISSION_PROFILE)) {
 
+				System.setOut(originalOut);
+				System.out.println("\t\t\tMission profile Analysis :: START");
+				System.setOut(filterStream);
+				
 				String missionProfilesFolderPath = JPADStaticWriteUtils.createNewFolder(
 						xcgFolderPath 
 						+ "MISSION_PROFILES"
@@ -3224,10 +3506,31 @@ public class ACPerformanceManager {
 						);
 
 				CalcMissionProfile calcMissionProfile = new CalcMissionProfile();
+				
+				//---------------------------------------------------------------------------------------------------------------------------------------------------
+				// MISSION PROFILE SIMULATION
+				System.setOut(originalOut);
+				System.out.println("\t\t\t\tMission profile simulation :: START");
+				System.setOut(filterStream);
 				calcMissionProfile.calculateMissionProfileIterative(_thePerformanceInterface.getXcgPositionList().get(i));
-				if(_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getPlotPerformance() == true)
+				System.setOut(originalOut);
+				System.out.println("\t\t\t\tMission profile simulation :: COMPLETE");
+				System.setOut(filterStream);
+				
+				if(_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getPlotPerformance() == true) {
+					System.setOut(originalOut);
+					System.out.println("\t\t\t\tMission profile plot :: START");
+					System.setOut(filterStream);
 					calcMissionProfile.plotProfiles(missionProfilesFolderPath, _thePerformanceInterface.getXcgPositionList().get(i));
+					System.setOut(originalOut);
+					System.out.println("\t\t\t\tMission profile plot :: COMPLETE");
+					System.setOut(filterStream);
+				}
 
+				System.setOut(originalOut);
+				System.out.println("\t\t\tMission profile Analysis :: COMPLETE");
+				System.setOut(filterStream);
+				
 			}
 
 			// PRINT RESULTS
@@ -5940,7 +6243,6 @@ public class ACPerformanceManager {
 			
 			for(int i=0; i<_weightListCruiseMap.get(xcg).size(); i++) {
 				//..................................................................................................
-//				double currentWeight = _weightListCruiseMap.get(xcg).get(i).doubleValue(SI.NEWTON)/9.81;
 				dragListWeightParameterization.add(
 						DragCalc.calculateDragAndPowerRequired(
 								_thePerformanceInterface.getTheOperatingConditions().getAltitudeCruise(),
@@ -7220,6 +7522,15 @@ public class ACPerformanceManager {
 		
 		public void calculateTakeOffNoiseTrajectory(double xcg, String noiseTrajectoriesFolderPath) {
 			
+			final PrintStream originalOut = System.out;
+			PrintStream filterStream = new PrintStream(new OutputStream() {
+			    public void write(int b) {
+			         // write nothing
+			    }
+			});
+			
+			System.setOut(filterStream);
+			
 			Amount<Length> wingToGroundDistance = 
 					_thePerformanceInterface.getTheAircraft().getFuselage().getHeightFromGround()
 					.plus(_thePerformanceInterface.getTheAircraft().getFuselage().getSectionCylinderHeight().divide(2))
@@ -7252,7 +7563,8 @@ public class ACPerformanceManager {
 							_thePerformanceInterface.getDeltaCD0LandingGears().get(xcg),
 							_thePerformanceInterface.getDragDueToEngineFailure(),
 							_thePerformanceInterface.getTheAircraft().getWing().getAspectRatio(),
-							_thePerformanceInterface.getTheAircraft().getWing().getSurfacePlanform(), 
+							_thePerformanceInterface.getTheAircraft().getWing().getSurfacePlanform(),
+							_thePerformanceInterface.getTheAircraft().getFuselage().getUpsweepAngle(),
 							_thePerformanceInterface.getDtHold(), 
 							_thePerformanceInterface.getTakeOffNoiseTrajectoryLandingGearRetractionTimeInterval(),
 							_thePerformanceInterface.getTakeOffNoiseTrajectoryThrustReductionCutbackTimeInterval(),
@@ -7270,29 +7582,78 @@ public class ACPerformanceManager {
 							)
 					);
 
+			//-----------------------------------------------------------------------------------------------
+			// TAKE-OFF NOISE TRAJECTORY (100% MAX-TO)
+			System.setOut(originalOut);
+			System.out.println("\t\t\t\tTake-off noise trajectory simulation - 100% MAX-TO :: START");
+			System.setOut(filterStream);
 			_theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).calculateNoiseTakeOffTrajectory(false, null, true, _vMCMap.get(xcg));
+			System.setOut(originalOut);
+			System.out.println("\t\t\t\tTake-off noise trajectory simulation - 100% MAX-TO :: START");
+			System.setOut(filterStream);
+			
+			if(_theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).isRotationSpeedWarningFlag() == true)
+				System.err.println("WARNING: (SIMULATION - TAKE-OFF NOISE TRAJECTORY - 100% MAX-TO) THE CHOSEN VRot IS LESS THAN 1.05*VMC. THIS LATTER WILL BE USED ...");
+			if(_theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).isTailStrike() == true)
+				System.err.println("WARNING: (SIMULATION - TAKE-OFF NOISE TRAJECTORY - 100% MAX-TO) TAIL STRIKE !! ");
+			
+			//-----------------------------------------------------------------------------------------------
+			// TAKE-OFF NOISE TRAJECTORY (CUTBACK)
+			System.setOut(originalOut);
+			System.out.println("\t\t\t\tTake-off noise trajectory simulation - Lowest Cutback :: START");
+			System.setOut(filterStream);
 			_theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).calculateNoiseTakeOffTrajectory(true, null, true, _vMCMap.get(xcg));
-
+			System.setOut(originalOut);
+			System.out.println("\t\t\t\tTake-off noise trajectory simulation - Lowest Cutback :: COMPLETE");
+			System.setOut(filterStream);
+			
+			if(_theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).isRotationSpeedWarningFlag() == true)
+				System.err.println("WARNING: (SIMULATION - TAKE-OFF NOISE TRAJECTORY - LOWEST CUTBACK) THE CHOSEN VRot IS LESS THAN 1.05*VMC. THIS LATTER WILL BE USED ...");
+			if(_theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).isTailStrike() == true)
+				System.err.println("WARNING: (SIMULATION - TAKE-OFF NOISE TRAJECTORY - LOWEST CUTBACK) TAIL STRIKE !! ");
+			
 			double lowestPhiCutback = _theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).getPhiCutback();
 			if(_thePerformanceInterface.getTakeOffNoiseTrajectoryNumberOfThrustSettingCutback() != 0) {
 				
 				double[] phiArray = MyArrayUtils.linspace( (lowestPhiCutback + 0.1), 0.9, _thePerformanceInterface.getTakeOffNoiseTrajectoryNumberOfThrustSettingCutback());
 
+				//-----------------------------------------------------------------------------------------------
+				// TAKE-OFF NOISE TRAJECTORY (INTERMEDIATE CUTBACKS)
 				Arrays.stream(phiArray).forEach(
-						throttle -> _theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).calculateNoiseTakeOffTrajectory(
+						throttle -> {
+							System.setOut(originalOut);
+							System.out.println("\t\t\t\tTake-off noise trajectory simulation - " + (throttle*100) + "% MAX-TO :: START");
+							System.setOut(filterStream);
+							_theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).calculateNoiseTakeOffTrajectory(
 								true,
 								throttle, 
 								true,
 								_vMCMap.get(xcg)
-								)
-						);
+								);
+							System.setOut(originalOut);
+							System.out.println("\t\t\t\tTake-off noise trajectory simulation - " + (throttle*100) + "% MAX-TO :: COMPLETE");
+							System.setOut(filterStream);
+							
+							if(_theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).isRotationSpeedWarningFlag() == true)
+								System.err.println("WARNING: (SIMULATION - TAKE-OFF NOISE TRAJECTORY - " + (throttle*100) + "% MAX-TO) THE CHOSEN VRot IS LESS THAN 1.05*VMC. THIS LATTER WILL BE USED ...");
+							if(_theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).isTailStrike() == true)
+								System.err.println("WARNING: (SIMULATION - TAKE-OFF NOISE TRAJECTORY - " + (throttle*100) + "% MAX-TO) TAIL STRIKE !! ");
+						});
 				
 			}
 			
+			//-----------------------------------------------------------------------------------------------
+			// PLOT
 			if(_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getPlotPerformance().equals(Boolean.TRUE)) {
 				if(_theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).isTargetSpeedFlag() == true)
 					try {
+						System.setOut(originalOut);
+						System.out.println("\t\t\t\tTake-off noise trajectory plot :: START");
+						System.setOut(filterStream);
 						_theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).createOutputCharts(noiseTrajectoriesFolderPath, true);
+						System.setOut(originalOut);
+						System.out.println("\t\t\t\tTake-off noise trajectory plot :: COMPLETE");
+						System.setOut(filterStream);
 					} catch (InstantiationException | IllegalAccessException e) {
 						e.printStackTrace();
 					}
@@ -7304,6 +7665,15 @@ public class ACPerformanceManager {
 		}
 		
 		public void calculateLandingNoiseTrajectory(Double xcg, String noiseTrajectoriesFolderPath) {
+			
+			final PrintStream originalOut = System.out;
+			PrintStream filterStream = new PrintStream(new OutputStream() {
+			    public void write(int b) {
+			         // write nothing
+			    }
+			});
+			
+			System.setOut(filterStream);
 			
 			Amount<Length> wingToGroundDistance = 
 					_thePerformanceInterface.getTheAircraft().getFuselage().getHeightFromGround()
@@ -7349,12 +7719,28 @@ public class ACPerformanceManager {
 							)
 					);
 
+			//-----------------------------------------------------------------------------------------------
+			// LANDING NOISE TRAJECTORY
+			System.setOut(originalOut);
+			System.out.println("\t\t\t\tLanding noise trajectory simulation :: START");
+			System.setOut(filterStream);
 			_theLandingNoiseTrajectoryCalculatorMap.get(xcg).calculateNoiseLandingTrajectory(true);
+			System.setOut(originalOut);
+			System.out.println("\t\t\t\tLanding noise trajectory simulation :: COMPLETE");
+			System.setOut(filterStream);
 
+			//-----------------------------------------------------------------------------------------------
+			// PLOT
 			if(_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getPlotPerformance().equals(Boolean.TRUE)) {
 				if(_theLandingNoiseTrajectoryCalculatorMap.get(xcg).isTargetRDandAltitudeFlag() == true)
 					try {
+						System.setOut(originalOut);
+						System.out.println("\t\t\t\tLanding noise trajectory plot :: START");
+						System.setOut(filterStream);
 						_theLandingNoiseTrajectoryCalculatorMap.get(xcg).createOutputCharts(noiseTrajectoriesFolderPath, true);
+						System.setOut(originalOut);
+						System.out.println("\t\t\t\tLanding noise trajectory plot :: COMPLETE");
+						System.setOut(filterStream);
 					} catch (InstantiationException | IllegalAccessException e) {
 						e.printStackTrace();
 					}

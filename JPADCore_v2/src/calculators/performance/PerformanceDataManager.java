@@ -48,9 +48,9 @@ public class PerformanceDataManager {
 			) {
 
 		for (DragMap x : list) {
-			if (x.getWeight() == weight 
-					&& x.getAltitude() == altitude
-					&& x.getDeltaTemperature() == deltaTemperature
+			if (x.getWeight().equals(weight) 
+					&& x.getAltitude().equals(altitude)
+					&& x.getDeltaTemperature().equals(deltaTemperature)
 					) 
 				return x.getDrag();
 		}
@@ -76,10 +76,10 @@ public class PerformanceDataManager {
 
 		for (int i=0; i < list.size(); i++) {
 			DragMap x = list.get(i);
-			if (x.getWeight() == weight 
-					&& x.getAltitude() == altitude 
+			if (x.getWeight().equals(weight) 
+					&& x.getAltitude().equals(altitude) 
 					&& x.getPhi() == phi
-					&& x.getDeltaTemperature() == deltaTemperature
+					&& x.getDeltaTemperature().equals(deltaTemperature)
 					) return x.getSpeed();
 		}
 
@@ -99,9 +99,9 @@ public class PerformanceDataManager {
 
 		for (int i=0; i < list.size(); i++) {
 			DragMap x = list.get(i);
-			if (x.getWeight() == weight
-					&& x.getAltitude() == altitude
-					&& x.getDeltaTemperature() == deltaTemperature
+			if (x.getWeight().equals(weight)
+					&& x.getAltitude().equals(altitude)
+					&& x.getDeltaTemperature().equals(deltaTemperature)
 					)
 				return x.getPower();
 		}
@@ -130,7 +130,7 @@ public class PerformanceDataManager {
 			ThrustMap x = list.get(i);
 			if (x.getAltitude() == altitude
 					&& x.getFlightCondition().equals(flightCondition)
-					&& x.getDeltaTemperature() == deltaTemperature
+					&& x.getDeltaTemperature().equals(deltaTemperature)
 					&& x.getPhi() == phi
 					) 
 				return x.getThrust();
@@ -150,7 +150,7 @@ public class PerformanceDataManager {
 	 */
 	public static List<Amount<Velocity>> getSpeed(
 			Amount<Length> altitude, 
-			Amount<Temperature> deltaTemperaturem, 
+			Amount<Temperature> deltaTemperature, 
 			double phi,
 			EngineOperatingConditionEnum flightCondition, 
 			List<ThrustMap> list
@@ -158,9 +158,9 @@ public class PerformanceDataManager {
 
 		for (int i=0; i < list.size(); i++) {			
 			ThrustMap x = list.get(i);
-			if (x.getAltitude() == altitude 
+			if (x.getAltitude().equals(altitude) 
 					&& x.getFlightCondition().equals(flightCondition)
-					&& x.getDeltaTemperature() == deltaTemperaturem
+					&& x.getDeltaTemperature().equals(deltaTemperature)
 					&& x.getPhi() == phi
 					)
 				return x.getSpeed();
@@ -188,9 +188,9 @@ public class PerformanceDataManager {
 
 		for (int i=0; i < list.size(); i++) {
 			ThrustMap x = list.get(i);
-			if (x.getAltitude() == altitude 
+			if (x.getAltitude().equals(altitude) 
 					&& x.getFlightCondition().equals(flightCondition)
-					&& x.getDeltaTemperature() == deltaTemperature
+					&& x.getDeltaTemperature().equals(deltaTemperature)
 					&& x.getPhi() == phi
 					) 
 				return x.getPower();
@@ -217,7 +217,7 @@ public class PerformanceDataManager {
 		for (int i=0; i < list.size(); i++) {
 			CeilingMap x = list.get(i);
 			if (x.getFlightCondition().equals(fligthCondition)
-					&& x.getWeight() == weight
+					&& x.getWeight().equals(weight)
 					&& x.getPhi() == phi
 					) 
 				return x.getAbsoluteCeiling();
@@ -243,7 +243,7 @@ public class PerformanceDataManager {
 		for (int i=0; i < list.size(); i++) {			
 			CeilingMap x = list.get(i);
 			if ( x.getFlightCondition().equals(fligthCondition)
-					&& x.getWeight() == weight
+					&& x.getWeight().equals(weight)
 					&& x.getPhi() == phi
 					)
 				return x.getServiceCeiling();
@@ -273,11 +273,11 @@ public class PerformanceDataManager {
 
 		for (int i=0; i < list.size(); i++) {
 			DragThrustIntersectionMap x = list.get(i);
-			if (x.getAltitude() == altitude 
+			if (x.getAltitude().equals(altitude) 
 					&& x.getFlightCondition().equals(flightCondition)
-					&& x.getDeltaTemperature() == deltaTemperature
+					&& x.getDeltaTemperature().equals(deltaTemperature)
 					&& x.getPhi() == phi
-					&& x.getWeight() == weight
+					&& x.getWeight().equals(weight)
 					)
 				return x.getSpeed();
 		}
@@ -306,11 +306,11 @@ public class PerformanceDataManager {
 
 		for (int i=0; i < list.size(); i++) {
 			DragThrustIntersectionMap x = list.get(i);
-			if (x.getAltitude() == altitude 
+			if (x.getAltitude().equals(altitude) 
 					&& x.getFlightCondition().equals(flightCondition)
-					&& x.getDeltaTemperature() == deltaTemperature
+					&& x.getDeltaTemperature().equals(deltaTemperature)
 					&& x.getPhi() == phi
-					&& x.getWeight() == weight
+					&& x.getWeight().equals(weight)
 					)
 				return x.getMaxSpeed();
 		}
@@ -341,9 +341,9 @@ public class PerformanceDataManager {
 			DragThrustIntersectionMap x = list.get(i);
 			if (x.getAltitude() == altitude 
 					&& x.getFlightCondition().equals(flightCondition)
-					&& x.getDeltaTemperature() == deltaTemperature
+					&& x.getDeltaTemperature().equals(deltaTemperature)
 					&& x.getPhi() == phi
-					&& x.getWeight() == weight
+					&& x.getWeight().equals(weight)
 					)
 				return x.getMinSpeed();
 		}
@@ -372,11 +372,11 @@ public class PerformanceDataManager {
 
 		for (int i=0; i < list.size(); i++) {
 			DragThrustIntersectionMap x = list.get(i);
-			if (x.getAltitude() == altitude 
+			if (x.getAltitude().equals(altitude) 
 					&& x.getFlightCondition().equals(flightCondition)
-					&& x.getDeltaTemperature() == deltaTemperature
+					&& x.getDeltaTemperature().equals(deltaTemperature)
 					&& x.getPhi() == phi
-					&& x.getWeight() == weight
+					&& x.getWeight().equals(weight)
 					)
 				return x.getMaxMach();
 		}
@@ -405,11 +405,11 @@ public class PerformanceDataManager {
 
 		for (int i=0; i < list.size(); i++) {
 			DragThrustIntersectionMap x = list.get(i);
-			if (x.getAltitude() == altitude 
+			if (x.getAltitude().equals(altitude) 
 					&& x.getFlightCondition().equals(flightCondition)
-					&& x.getDeltaTemperature() == deltaTemperature
+					&& x.getDeltaTemperature().equals(deltaTemperature)
 					&& x.getPhi() == phi
-					&& x.getWeight() == weight
+					&& x.getWeight().equals(weight)
 					)
 				return x.getMinMach();
 		}
@@ -435,7 +435,7 @@ public class PerformanceDataManager {
 		for (int i=0; i < list.size(); i++) {
 			FlightEnvelopeMap x = list.get(i);
 			if (x.getFlightCondition().equals(fligthCondition)
-					&& x.getWeight() == weight
+					&& x.getWeight().equals(weight)
 					&& x.getPhi() == phi
 					)
 				return x.getAltitude();
@@ -462,7 +462,7 @@ public class PerformanceDataManager {
 		for (int i=0; i < list.size(); i++) {			
 			FlightEnvelopeMap x = list.get(i);
 			if ( x.getFlightCondition().equals(fligthCondition)
-					&& x.getWeight() == weight
+					&& x.getWeight().equals(weight)
 					&& x.getPhi() == phi
 					) 
 				return x.getMaxSpeed();
@@ -489,7 +489,7 @@ public class PerformanceDataManager {
 		for (int i=0; i < list.size(); i++) {			
 			FlightEnvelopeMap x = list.get(i);
 			if ( x.getFlightCondition().equals(fligthCondition)
-					&& x.getWeight() == weight
+					&& x.getWeight().equals(weight)
 					&& x.getPhi() == phi
 					) 
 				return x.getMinSpeed();
@@ -519,10 +519,10 @@ public class PerformanceDataManager {
 
 		for (int i=0; i < rcList.size(); i++) {
 			RCMap x = rcList.get(i);
-			if (x.getAltitude() == altitude 
+			if (x.getAltitude().equals(altitude) 
 					&& x.getFlightCondition().equals(flightCondition)
-					&& x.getDeltaTemperature() == deltaTemperature 
-					&& x.getWeight() == weight
+					&& x.getDeltaTemperature().equals(deltaTemperature) 
+					&& x.getWeight().equals(weight)
 					&& x.getPhi() == phi
 					) 
 				return x.getRCList();
@@ -552,10 +552,10 @@ public class PerformanceDataManager {
 
 		for (int i=0; i < rcList.size(); i++) {
 			RCMap x = rcList.get(i);
-			if (x.getAltitude() == altitude 
+			if (x.getAltitude().equals(altitude) 
 					&& x.getFlightCondition().equals(flightCondition)
-					&& x.getDeltaTemperature() == deltaTemperature 
-					&& x.getWeight() == weight
+					&& x.getDeltaTemperature().equals(deltaTemperature) 
+					&& x.getWeight().equals(weight)
 					&& x.getPhi() == phi
 					) 
 				return x.getSpeedList();
@@ -585,10 +585,10 @@ public class PerformanceDataManager {
 
 		for (int i=0; i < rcList.size(); i++) {
 			RCMap x = rcList.get(i);
-			if (x.getAltitude() == altitude 
+			if (x.getAltitude().equals(altitude) 
 					&& x.getFlightCondition().equals(flightCondition)
-					&& x.getDeltaTemperature() == deltaTemperature
-					&& x.getWeight() == weight
+					&& x.getDeltaTemperature().equals(deltaTemperature)
+					&& x.getWeight().equals(weight)
 					&& x.getPhi() == phi
 					) 
 				return x.getRCMax();
@@ -618,10 +618,10 @@ public class PerformanceDataManager {
 
 		for (int i=0; i < rcList.size(); i++) {
 			RCMap x = rcList.get(i);
-			if (x.getAltitude() == altitude 
+			if (x.getAltitude().equals(altitude) 
 					&& x.getFlightCondition().equals(flightCondition)
-					&& x.getDeltaTemperature() == deltaTemperature
-					&& x.getWeight() == weight
+					&& x.getDeltaTemperature().equals(deltaTemperature)
+					&& x.getWeight().equals(weight)
 					&& x.getPhi() == phi
 					) 
 				return x.getClimbAngleList();
@@ -651,10 +651,10 @@ public class PerformanceDataManager {
 
 		for (int i=0; i < rcList.size(); i++) {
 			RCMap x = rcList.get(i);
-			if (x.getAltitude() == altitude 
+			if (x.getAltitude().equals(altitude) 
 					&& x.getFlightCondition().equals(flightCondition)
-					&& x.getDeltaTemperature() == deltaTemperature
-					&& x.getWeight() == weight
+					&& x.getDeltaTemperature().equals(deltaTemperature)
+					&& x.getWeight().equals(weight)
 					&& x.getPhi() == phi
 					) 
 				return x.getClimbAngle();

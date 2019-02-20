@@ -73,7 +73,6 @@ public class DescentCalc {
 	private List<Amount<Force>> _cruiseThrustFromDatabase;
 	private List<Amount<Force>> _flightIdleThrustFromDatabase;
 	private List<Amount<Force>> _thrustPerStep;
-	private List<Double> _throttlePerStep;
 	private List<Amount<Force>> _dragPerStep;
 	private List<Double> _fuelFlowCruiseList;
 	private List<Double> _fuelFlowFlightIdleList;
@@ -201,7 +200,6 @@ public class DescentCalc {
 		this._cruiseThrustFromDatabase = new ArrayList<>();
 		this._flightIdleThrustFromDatabase = new ArrayList<>();
 		this._thrustPerStep = new ArrayList<>();
-		this._throttlePerStep = new ArrayList<>();
 		this._dragPerStep = new ArrayList<>();
 		this._fuelFlowCruiseList = new ArrayList<>();
 		this._fuelFlowFlightIdleList = new ArrayList<>();
@@ -752,10 +750,6 @@ public class DescentCalc {
 		}
 		
 		_thrustPerStep.add(interpolatedThrustList.get(0));
-		_throttlePerStep.add(
-				_thrustPerStep.get(0).doubleValue(SI.NEWTON) 
-				/ _cruiseThrustFromDatabase.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
-				);
 		_interpolatedSFCList.add(
 				(_sfcCruiseList.get(0)*weightCruise.get(0))
 				+ (_sfcFlightIdleList.get(0)*weightFlightIdle.get(0))
@@ -1292,7 +1286,6 @@ public class DescentCalc {
 
 				if(iter > 0) { /* Not added yet at the first iter, to be replaced only from iter=1 on */
 					_thrustPerStep.remove(i);
-					_throttlePerStep.remove(i);
 					_interpolatedSFCList.remove(i);
 					_interpolatedFuelFlowList.remove(i);
 					_interpolatedEmissionIndexNOxList.remove(i);
@@ -1313,11 +1306,6 @@ public class DescentCalc {
 				}
 				
 				_thrustPerStep.add(i, interpolatedThrustList.get(i));
-				_throttlePerStep.add(
-						i, 
-						_thrustPerStep.get(i).doubleValue(SI.NEWTON) / 
-						_cruiseThrustFromDatabase.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
-						);
 				_interpolatedSFCList.add(
 						(_sfcCruiseList.get(i)*weightCruise.get(i))
 						+ (_sfcFlightIdleList.get(i)*weightFlightIdle.get(i))
@@ -1556,7 +1544,7 @@ public class DescentCalc {
 		MyChartToFileUtils.plotNoLegend(
 				MyArrayUtils.convertListOfAmountTodoubleArray(
 						_descentTimes.stream()
-						.map(t -> t.to(SI.SECOND))
+						.map(t -> t.to(NonSI.MINUTE))
 						.collect(Collectors.toList())
 						),
 				MyArrayUtils.convertListOfAmountTodoubleArray(
@@ -1566,14 +1554,14 @@ public class DescentCalc {
 						),
 				0.0, null, 0.0, null,
 				"Time", "Altitude",
-				"s", "m",
+				"min", "m",
 				descentFolderPath, "Descent_Time_SI",
 				_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 				);
 		MyChartToFileUtils.plotNoLegend(
 				MyArrayUtils.convertListOfAmountTodoubleArray(
 						_descentTimes.stream()
-						.map(t -> t.to(SI.SECOND))
+						.map(t -> t.to(NonSI.MINUTE))
 						.collect(Collectors.toList())
 						),
 				MyArrayUtils.convertListOfAmountTodoubleArray(
@@ -1583,7 +1571,7 @@ public class DescentCalc {
 						),
 				0.0, null, 0.0, null,
 				"Time", "Altitude",
-				"s", "ft",
+				"min", "ft",
 				descentFolderPath, "Descent_Time_IMPERIAL",
 				_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 				);
@@ -1663,59 +1651,7 @@ public class DescentCalc {
 				);
 		
 		//............................................................................................
-		// DESCENT AIRCRAFT MASS
-		MyChartToFileUtils.plotNoLegend(
-				MyArrayUtils.convertListOfAmountTodoubleArray(
-						_aircraftMassPerStep.stream()
-						.map(f -> f.to(SI.KILOGRAM))
-						.collect(Collectors.toList())
-						),
-				MyArrayUtils.convertListOfAmountTodoubleArray(
-						_descentAltitudes.stream()
-						.map(x -> x.to(SI.METER))
-						.collect(Collectors.toList())
-						),
-				0.0, null, 0.0, null,
-				"Aircraft Mass", "Altitude",
-				"kg", "m",
-				descentFolderPath, "Descent_Aircraft_Mass_SI",
-				_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
-				);
-		MyChartToFileUtils.plotNoLegend(
-				MyArrayUtils.convertListOfAmountTodoubleArray(
-						_aircraftMassPerStep.stream()
-						.map(f -> f.to(NonSI.POUND))
-						.collect(Collectors.toList())
-						),
-				MyArrayUtils.convertListOfAmountTodoubleArray(
-						_descentAltitudes.stream()
-						.map(x -> x.to(NonSI.FOOT))
-						.collect(Collectors.toList())
-						),
-				0.0, null, 0.0, null,
-				"Aircraft Mass", "Altitude",
-				"lb", "ft",
-				descentFolderPath, "Descent_Aircraft_Mass_IMPERIAL",
-				_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
-				);
-		//............................................................................................
-		// DESCENT THROTTLE 
-		MyChartToFileUtils.plotNoLegend(
-				_throttlePerStep.stream().mapToDouble(t -> t).toArray(),
-				MyArrayUtils.convertListOfAmountTodoubleArray(
-						_descentTimes.stream()
-						.map(x -> x.to(SI.SECOND))
-						.collect(Collectors.toList())
-						),
-				0.0, null, 0.0, null,
-				"Throttle setting", "Time",
-				"", "s",
-				descentFolderPath, "Descent_Throttle_Setting",
-				_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
-				);
-	
-		//............................................................................................
-		// DESCENT THROTTLE 
+		// DESCENT THRUST 
 		List<Double[]> thrust_SI = new ArrayList<Double[]>();
 		List<Double[]> thrust_Imperial = new ArrayList<Double[]>();
 		List<Double[]> time = new ArrayList<Double[]>();
@@ -1770,7 +1706,7 @@ public class DescentCalc {
 			time.add(
 					MyArrayUtils.convertListOfAmountToDoubleArray(
 							_descentTimes.stream()
-							.map(x -> x.to(SI.SECOND))
+							.map(x -> x.to(NonSI.MINUTE))
 							.collect(Collectors.toList())
 							)
 					);
@@ -1781,7 +1717,7 @@ public class DescentCalc {
 					"Thrust Interpolation during descent",
 					"Time", "Thrust",
 					null, null, null, null,
-					"s", "N",
+					"min", "N",
 					true, legend,
 					descentFolderPath, "Thrust_Interpolation_Descent_SI",
 					_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
@@ -1792,7 +1728,7 @@ public class DescentCalc {
 					"Thrust Interpolation during descent",
 					"Time", "Thrust",
 					null, null, null, null,
-					"s", "lbf",
+					"min", "lbf",
 					true, legend,
 					descentFolderPath, "Thrust_Interpolation_Descent_IMPERIAL",
 					_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
@@ -1982,14 +1918,6 @@ public class DescentCalc {
 
 	public void setThrustPerStep(List<Amount<Force>> _thrustPerStep) {
 		this._thrustPerStep = _thrustPerStep;
-	}
-
-	public List<Double> getThrottlePerStep() {
-		return _throttlePerStep;
-	}
-
-	public void setThrottlePerStep(List<Double> _throttlePerStep) {
-		this._throttlePerStep = _throttlePerStep;
 	}
 
 	public List<Amount<Force>> getDragPerStep() {

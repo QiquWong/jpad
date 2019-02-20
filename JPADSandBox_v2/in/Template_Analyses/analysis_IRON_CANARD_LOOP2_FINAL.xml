@@ -84,13 +84,13 @@
 			create_CSV="TRUE"
 			take_off="FALSE"
 			climb="FALSE"
-			cruise="FALSE"
+			cruise="TRUE"
 			descent="FALSE"
 			landing="FALSE"
 			payload_range="FALSE"
 			V_n_diagram="FALSE"
 			noise_trajectories="FALSE"
-			mission_profile="TRUE"
+			mission_profile="FALSE"
 	/>
 	<!--
  	<costs 

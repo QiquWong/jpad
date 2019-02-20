@@ -62,16 +62,20 @@ public class SpecificRangeCalc {
 		double sfcMach[] = new double[mach.length];
 
 		for (int i=0; i<mach.length; i++) {
-			
-			sfcMach[i] = thePowerPlant.getEngineDatabaseReaderList().get(i).getSfc(
-					mach[i],
-					altitude,
-					deltaTemperature,
-					phi,
-					EngineOperatingConditionEnum.CRUISE,
-					sfcCorrectionFactor
-					);
-		}
+			List<Double> sfcListTemp = new ArrayList<>();
+			for(int iEng=0; iEng<thePowerPlant.getEngineNumber(); iEng++)
+				sfcListTemp.add(
+						thePowerPlant.getEngineDatabaseReaderList().get(iEng).getSfc(
+								mach[i],
+								altitude,
+								deltaTemperature,
+								phi,
+								EngineOperatingConditionEnum.CRUISE,
+								sfcCorrectionFactor
+								)
+						);
+			sfcMach[i] = sfcListTemp.stream().mapToDouble(sfc -> sfc).average().getAsDouble();
+			}
 		return sfcMach;
 	}
 	
@@ -98,28 +102,16 @@ public class SpecificRangeCalc {
 			double[] efficiency,
 			Amount<Length> altitude,
 			Amount<Temperature> deltaTemperature
-//			double eta,
-//			EngineTypeEnum engineType
 			) {
 		
 		double specificRange[] = new double[mach.length];
 		
-//		if (engineType == EngineTypeEnum.TURBOFAN) {
-			
 		double speed[] = new double [mach.length];
 		for (int i=0; i<mach.length; i++) 
 			speed[i] = SpeedCalc.calculateTAS(mach[i], altitude, deltaTemperature).doubleValue(NonSI.KNOT);
 		for (int i=0; i<sfc.length; i++)
 			specificRange[i] = ((speed[i]*efficiency[i])/sfc[i])/(maxTakeOffMass.doubleValue(NonSI.POUND));
 			
-//		}
-//		else if(engineType == EngineTypeEnum.TURBOPROP) {
-//			
-//			for (int i=0; i<sfc.length; i++) 
-//				// the constant is needed in order to use sfc in lb/(hp*h) and obtain [nmi]/[lbs]
-//				specificRange[i] = 325.8640495*(((eta*efficiency[i])/sfc[i])/(maxTakeOffMass.doubleValue(NonSI.POUND)));
-//		}
-		
 		return specificRange;
 	}
 
@@ -206,7 +198,6 @@ public class SpecificRangeCalc {
 			List<Double[]> mach,
 			List<String> legend,
 			String performanceFolderPath,
-//			EngineTypeEnum engineType,
 			boolean createCSV) throws InstantiationException, IllegalAccessException {
 		
 		System.out.println("\n-----------WRITING SFC v.s. MACH CHART TO FILE-------------");
@@ -217,7 +208,6 @@ public class SpecificRangeCalc {
 			mach.remove(mach.size()-1);
 		}
 		
-//		if(engineType == EngineTypeEnum.TURBOFAN )
 		MyChartToFileUtils.plot(
 				mach, sfc,
 				"SFC v.s. Mach", "Mach", "SFC",
@@ -227,16 +217,6 @@ public class SpecificRangeCalc {
 				performanceFolderPath, "SFC",
 				createCSV
 				);
-//		else if(engineType == EngineTypeEnum.TURBOPROP)
-//			MyChartToFileUtils.plot(
-//					mach, sfc,
-//					"SFC v.s. Mach", "Mach", "SFC",
-//					null, null, null, null,
-//					"", "lb/(hp*h)",
-//					true, legend,
-//					subfolderPath, "SFC",
-//					createCSV
-//					);  
 	}
 	
 	//--------------------------------------------------------------------------------------
