@@ -6243,7 +6243,6 @@ public class ACPerformanceManager {
 			
 			for(int i=0; i<_weightListCruiseMap.get(xcg).size(); i++) {
 				//..................................................................................................
-//				double currentWeight = _weightListCruiseMap.get(xcg).get(i).doubleValue(SI.NEWTON)/9.81;
 				dragListWeightParameterization.add(
 						DragCalc.calculateDragAndPowerRequired(
 								_thePerformanceInterface.getTheOperatingConditions().getAltitudeCruise(),
