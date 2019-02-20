@@ -30,7 +30,6 @@ import it.unina.daf.jpadcad.occ.OCCSolid;
 import it.unina.daf.jpadcad.occ.OCCUtils;
 import it.unina.daf.jpadcad.occ.OCCUtils.FileExtension;
 import it.unina.daf.jpadcad.utils.AircraftCADUtils;
-import it.unina.daf.jpadcad.utils.AircraftCADUtils.WingTipType;
 import it.unina.daf.jpadcadsandbox.utils.AircraftUtils;
 import javaslang.Tuple2;
 import javaslang.Tuple3;

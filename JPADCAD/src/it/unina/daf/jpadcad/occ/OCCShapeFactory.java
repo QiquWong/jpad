@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.ThreadFactory;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -19,17 +18,14 @@ import opencascade.BRepBuilderAPI_MakeWire;
 import opencascade.BRepBuilderAPI_Sewing;
 import opencascade.BRepTools;
 import opencascade.BRep_Builder;
-import opencascade.BRep_Tool;
 import opencascade.IGESControl_Reader;
+import opencascade.Interface_Static;
 import opencascade.STEPControl_Reader;
 import opencascade.TopAbs_ShapeEnum;
-import opencascade.TopExp;
 import opencascade.TopExp_Explorer;
-import opencascade.TopTools_IndexedMapOfShape;
 import opencascade.TopoDS;
 import opencascade.TopoDS_Face;
 import opencascade.TopoDS_Shape;
-import opencascade.TopoDS_Shell;
 import opencascade.TopoDS_Wire;
 import opencascade.gp_Pnt;
 import processing.core.PVector;
@@ -82,39 +78,59 @@ public class OCCShapeFactory extends CADShapeFactory
 	}
 	
 	@Override
-	public CADShape newShape (String fileName)
-	{
+	public CADShape newShape(String fileName) {
+		
+		return newShape(fileName, null);
+	}
+	
+	@Override
+	public CADShape newShape(String fileName, String units) {
+		
 		TopoDS_Shape brepShape;
-		if (fileName.endsWith(".step") || fileName.endsWith(".stp"))
-		{
+		
+		if (fileName.endsWith(".step") || fileName.endsWith(".stp")) {
+			
 			logger.fine("Read STEP file: " + fileName);
 			STEPControl_Reader aReader = new STEPControl_Reader();
 			aReader.ReadFile(fileName);
+			
+			if (!units.equals(null))
+				Interface_Static.SetCVal("xstep.cascade.unit", units);
+			
 			logger.fine("Transfer roots into shape...");
 			aReader.NbRootsForTransfer();
 			aReader.TransferRoots();
 			brepShape = aReader.OneShape();
 			logger.fine("... done");
-		}
-		else if (fileName.endsWith(".igs"))
-		{
+			
+		} else if (fileName.endsWith(".igs")) {	
+			
 			logger.fine("Read IGES file: " + fileName);
 			IGESControl_Reader aReader = new IGESControl_Reader();
 			aReader.ReadFile(fileName);
+			
+			if (!units.equals(null))
+				Interface_Static.SetCVal("xstep.cascade.unit", units);
+			
 			logger.fine("Transfer roots into shape...");
 			aReader.NbRootsForTransfer();
 			aReader.TransferRoots();
 			brepShape = aReader.OneShape();
 			logger.fine("... done");
-		}
-		else
-		{
+			
+		} else {
+			
 			logger.fine("Read BREP file: " + fileName);
 			TopoDS_Shape shape = new TopoDS_Shape();
 			BRepTools.Read(shape, fileName, new BRep_Builder());
+			
+			if (!units.equals(null))
+				Interface_Static.SetCVal("xstep.cascade.unit", units);
+			
 			brepShape = shape;
 			logger.fine("... done");
 		}
+		
 		return newShape(brepShape);
 	}
 	
@@ -586,6 +602,26 @@ public class OCCShapeFactory extends CADShapeFactory
 	@Override
 	public CADVertex newVertex(double[] coordinates3d) {
 		return newVertex(coordinates3d[0], coordinates3d[1], coordinates3d[2]);
+	}
+	
+	@Override
+	public CADCompound newCompound(CADShape ... cadShapes) {
+		return new OCCCompound(cadShapes);
+	}
+	
+	@Override
+	public CADCompound newCompound(List<CADShape> cadShapes) {
+		return newCompound(cadShapes.toArray(new CADShape[cadShapes.size()]));
+	}
+	
+	@Override
+	public CADCompSolid newCompSolid(CADShape ... cadShapes) {
+		return new OCCCompSolid(cadShapes);
+	}
+	
+	@Override
+	public CADCompSolid newCompSolid(List<CADShape> cadShapes) {
+		return newCompSolid(cadShapes.toArray(new CADShape[cadShapes.size()]));
 	}
 
 }

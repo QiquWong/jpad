@@ -1,5 +1,6 @@
 package it.unina.daf.jpadcad.utils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -8,6 +9,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -21,7 +23,17 @@ import org.jscience.physics.amount.Amount;
 import aircraft.components.fuselage.Fuselage;
 import aircraft.components.liftingSurface.LiftingSurface;
 import aircraft.components.liftingSurface.airfoils.Airfoil;
+import aircraft.components.nacelles.NacelleCreator;
+import aircraft.components.powerplant.Engine;
+import configuration.MyConfiguration;
 import configuration.enumerations.ComponentEnum;
+import configuration.enumerations.FoldersEnum;
+import it.unina.daf.jpadcad.EngineCAD;
+import it.unina.daf.jpadcad.FairingDataCollection;
+import it.unina.daf.jpadcad.enums.EngineCADComponentsEnum;
+import it.unina.daf.jpadcad.enums.FairingPosition;
+import it.unina.daf.jpadcad.enums.WingTipType;
+import it.unina.daf.jpadcad.enums.XSpacingType;
 import it.unina.daf.jpadcad.occ.CADEdge;
 import it.unina.daf.jpadcad.occ.CADFace;
 import it.unina.daf.jpadcad.occ.CADGeomCurve3D;
@@ -29,6 +41,8 @@ import it.unina.daf.jpadcad.occ.CADShape;
 import it.unina.daf.jpadcad.occ.CADShapeTypes;
 import it.unina.daf.jpadcad.occ.CADShell;
 import it.unina.daf.jpadcad.occ.CADWire;
+import it.unina.daf.jpadcad.occ.OCCCompSolid;
+import it.unina.daf.jpadcad.occ.OCCCompound;
 import it.unina.daf.jpadcad.occ.OCCEdge;
 import it.unina.daf.jpadcad.occ.OCCExplorer;
 import it.unina.daf.jpadcad.occ.OCCFace;
@@ -37,6 +51,7 @@ import it.unina.daf.jpadcad.occ.OCCShape;
 import it.unina.daf.jpadcad.occ.OCCShell;
 import it.unina.daf.jpadcad.occ.OCCSolid;
 import it.unina.daf.jpadcad.occ.OCCUtils;
+import it.unina.daf.jpadcad.occ.OCCVertex;
 import it.unina.daf.jpadcad.occ.OCCWire;
 import javaslang.Tuple2;
 import javaslang.Tuple3;
@@ -3433,15 +3448,15 @@ public class AircraftCADUtils {
 			Tuple2<double[], double[]> sidePts = getFairingSidePts(
 					mainPnt, subPnt, sideCurve1XCoords, sideCurve1YCoords);
 			
-			if (fairingData._fairingPosition.equals(FairingPosition.ATTACHED_DOWN) ||
-				fairingData._fairingPosition.equals(FairingPosition.DETACHED_DOWN)) {
+			if (fairingData.getFairingPosition().equals(FairingPosition.ATTACHED_DOWN) ||
+				fairingData.getFairingPosition().equals(FairingPosition.DETACHED_DOWN)) {
 				
 				mainSegms.add(OCCUtils.theFactory.newCurve3D(sidePts._1(), mainPnt));				
 				subSegms.add(OCCUtils.theFactory.newCurve3D(subPnt, sidePts._2()));					
 				sideSegms.add(OCCUtils.theFactory.newCurve3D(sidePts._2(), sidePts._1()));	
 				
-			} else if (fairingData._fairingPosition.equals(FairingPosition.DETACHED_UP) ||
-					   fairingData._fairingPosition.equals(FairingPosition.ATTACHED_UP)) {
+			} else if (fairingData.getFairingPosition().equals(FairingPosition.DETACHED_UP) ||
+					   fairingData.getFairingPosition().equals(FairingPosition.ATTACHED_UP)) {
 				
 				mainSegms.add(OCCUtils.theFactory.newCurve3D(mainPnt, sidePts._1()));				
 				subSegms.add(OCCUtils.theFactory.newCurve3D(sidePts._2(), subPnt));					
@@ -3458,15 +3473,15 @@ public class AircraftCADUtils {
 			Tuple2<double[], double[]> sidePts = getFairingSidePts(
 					mainPnt, subPnt, sideCurve2YCoord);
 			
-			if (fairingData._fairingPosition.equals(FairingPosition.ATTACHED_DOWN) ||
-				fairingData._fairingPosition.equals(FairingPosition.DETACHED_DOWN)) {
+			if (fairingData.getFairingPosition().equals(FairingPosition.ATTACHED_DOWN) ||
+				fairingData.getFairingPosition().equals(FairingPosition.DETACHED_DOWN)) {
 
 				mainSegms.add(OCCUtils.theFactory.newCurve3D(sidePts._1(), mainPnt));				
 				subSegms.add(OCCUtils.theFactory.newCurve3D(subPnt, sidePts._2()));					
 				sideSegms.add(OCCUtils.theFactory.newCurve3D(sidePts._2(), sidePts._1()));	
 
-			} else if (fairingData._fairingPosition.equals(FairingPosition.DETACHED_UP) ||
-					   fairingData._fairingPosition.equals(FairingPosition.ATTACHED_UP)) {
+			} else if (fairingData.getFairingPosition().equals(FairingPosition.DETACHED_UP) ||
+					   fairingData.getFairingPosition().equals(FairingPosition.ATTACHED_UP)) {
 
 				mainSegms.add(OCCUtils.theFactory.newCurve3D(mainPnt, sidePts._1()));				
 				subSegms.add(OCCUtils.theFactory.newCurve3D(sidePts._2(), subPnt));					
@@ -3482,15 +3497,15 @@ public class AircraftCADUtils {
 			Tuple2<double[], double[]> sidePts = getFairingSidePts(
 					mainPnt, subPnt, sideCurve3XCoords, sideCurve3YCoords);
 			
-			if (fairingData._fairingPosition.equals(FairingPosition.ATTACHED_DOWN) ||
-				fairingData._fairingPosition.equals(FairingPosition.DETACHED_DOWN)) {
+			if (fairingData.getFairingPosition().equals(FairingPosition.ATTACHED_DOWN) ||
+				fairingData.getFairingPosition().equals(FairingPosition.DETACHED_DOWN)) {
 
 				mainSegms.add(OCCUtils.theFactory.newCurve3D(sidePts._1(), mainPnt));				
 				subSegms.add(OCCUtils.theFactory.newCurve3D(subPnt, sidePts._2()));					
 				sideSegms.add(OCCUtils.theFactory.newCurve3D(sidePts._2(), sidePts._1()));	
 
-			} else if (fairingData._fairingPosition.equals(FairingPosition.DETACHED_UP) ||
-					   fairingData._fairingPosition.equals(FairingPosition.ATTACHED_UP)) {
+			} else if (fairingData.getFairingPosition().equals(FairingPosition.DETACHED_UP) ||
+					   fairingData.getFairingPosition().equals(FairingPosition.ATTACHED_UP)) {
 
 				mainSegms.add(OCCUtils.theFactory.newCurve3D(mainPnt, sidePts._1()));				
 				subSegms.add(OCCUtils.theFactory.newCurve3D(sidePts._2(), subPnt));					
@@ -3556,16 +3571,16 @@ public class AircraftCADUtils {
 			
 			OCCShape sidePatch = null;
 			
-			if (fairingData._fairingPosition.equals(FairingPosition.ATTACHED_DOWN) ||
-				fairingData._fairingPosition.equals(FairingPosition.DETACHED_DOWN)) {
+			if (fairingData.getFairingPosition().equals(FairingPosition.ATTACHED_DOWN) ||
+				fairingData.getFairingPosition().equals(FairingPosition.DETACHED_DOWN)) {
 
 				sidePatch = OCCUtils.makePatchThruCurveSections(
 						OCCUtils.theFactory.newCurve3D(subEdges.get(1)),
 						OCCUtils.theFactory.newCurve3D(mainEdges.get(3))															
 						);
 
-			} else if (fairingData._fairingPosition.equals(FairingPosition.DETACHED_UP) ||
-					   fairingData._fairingPosition.equals(FairingPosition.ATTACHED_UP)) {
+			} else if (fairingData.getFairingPosition().equals(FairingPosition.DETACHED_UP) ||
+					   fairingData.getFairingPosition().equals(FairingPosition.ATTACHED_UP)) {
 
 				sidePatch = OCCUtils.makePatchThruCurveSections(
 						OCCUtils.theFactory.newCurve3D(mainEdges.get(1)),
@@ -3584,15 +3599,15 @@ public class AircraftCADUtils {
 			
 			int[] edgeIndexes = null;
 			
-			if (fairingData._fairingPosition.equals(FairingPosition.ATTACHED_DOWN) ||
-				fairingData._fairingPosition.equals(FairingPosition.DETACHED_DOWN)) {
+			if (fairingData.getFairingPosition().equals(FairingPosition.ATTACHED_DOWN) ||
+				fairingData.getFairingPosition().equals(FairingPosition.DETACHED_DOWN)) {
 				
 				edgeIndexes = (fairingData.getWidthFactor() > 1.00) ?
 						new int[] {3, 4}:
 						new int[] {3};
 				
-			} else if (fairingData._fairingPosition.equals(FairingPosition.DETACHED_UP) ||
-					   fairingData._fairingPosition.equals(FairingPosition.ATTACHED_UP)) {
+			} else if (fairingData.getFairingPosition().equals(FairingPosition.DETACHED_UP) ||
+					   fairingData.getFairingPosition().equals(FairingPosition.ATTACHED_UP)) {
 				
 				edgeIndexes = (fairingData.getWidthFactor() > 1.00) ?
 						new int[] {1, 6}:
@@ -3662,692 +3677,468 @@ public class AircraftCADUtils {
 		return new Tuple2<double[], double[]>(mainSidePnt, subSidePnt);
 	}
 	
-	public enum XSpacingType {
-		UNIFORM {
-			@Override
-			public Double[] calculateSpacing(double x1, double x2, int n) {
-				Double[] xSpacing = MyArrayUtils.linspaceDouble(x1, x2, n);
-				return xSpacing;
-			}
-		},
-		COSINUS {
-			@Override
-			public Double[] calculateSpacing(double x1, double x2, int n) {
-				Double[] xSpacing = MyArrayUtils.cosineSpaceDouble(x1, x2, n);
-				return xSpacing;
-			}
-		},
-		HALFCOSINUS1 { // finer spacing close to x1
-			@Override
-			public Double[] calculateSpacing(double x1, double x2, int n) {
-				Double[] xSpacing = MyArrayUtils.halfCosine1SpaceDouble(x1, x2, n);
-				return xSpacing;
-			}
-		}, 
-		HALFCOSINUS2 { // finer spacing close to x2
-			@Override
-			public Double[] calculateSpacing(double x1, double x2, int n) {
-				Double[] xSpacing = MyArrayUtils.halfCosine2SpaceDouble(x1, x2, n);
-				return xSpacing;
-			}
-		}; 
-
-		public abstract Double[] calculateSpacing(double x1, double x2, int n);
-	}
-	
-	public enum WingTipType {
-		CUTOFF,
-		ROUNDED,
-		WINGLET;
-	}
-	
-	public enum FairingPosition {
-		DETACHED_UP,
-		ATTACHED_UP,
-		MIDDLE,
-		ATTACHED_DOWN,
-		DETACHED_DOWN;
-	}
-	
-	public static class FairingDataCollection {
+	public static List<OCCShape> getEnginesCAD(List<NacelleCreator> nacelles, List<Engine> engines,
+			List<Map<EngineCADComponentsEnum, String>> templateMapsList,
+			boolean exportSupportShapes, boolean exportShells, boolean exportSolids) {
 		
-		private Fuselage _fuselage = null;
-		private LiftingSurface _liftingSurface = null;
+		List<OCCShape> supportShapes = new ArrayList<>();
+		List<OCCShape> shellShapes = new ArrayList<>();
+		List<OCCShape> solidShapes = new ArrayList<>();
+		List<OCCShape> requestedShapes = new ArrayList<>();	
 		
-		private double _frontLengthFactor = 0.0;
-		private double _backLengthFactor = 0.0;
-		private double _widthFactor = 0.0;
-		private double _heightFactor = 0.0;
-		private double _heightBelowReferenceFactor = 0.0;
-		private double _heightAboveReferenceFactor = 0.0;
-		private double _filletRadiusFactor = 0.0;
+		// ----------------------------------------------------------
+		// Check whether continuing with the method
+		// ----------------------------------------------------------
+		if ((nacelles.isEmpty() || nacelles.stream().anyMatch(n -> n == null)) || 
+			(engines.isEmpty() || engines.stream().anyMatch(e -> e == null))) {			
+			System.out.println("========== [AircraftCADUtils::getEnginesCAD] One or more engine/nacelle object passed to the "
+					+ "getEnginesCAD method is null! Exiting the method ...");
+			return null;
+		}
 		
-		private double _rootChord = 0.0;
-		private double _rootThickness = 0.0;
+		if (!exportSupportShapes && !exportShells && !exportSolids) {
+			System.out.println("========== [AircraftCADUtils::getEnginesCAD] No shapes to export! Exiting the method ...");
+			return null;
+		}
 		
-		private List<double[]> _rootAirfoilPts = new ArrayList<>();
-		private List<double[]> _sideAirfoilPts = new ArrayList<>(); // LS airfoil points at FUSELAGE max width
-		private List<double[]> _tipAirfoilPts = new ArrayList<>();  // LS airfoil points at FAIRING max width
-		private double[] _rootAirfoilTop = new double[3];
-		private double[] _rootAirfoilBottom = new double[3];
-		private double[] _rootAirfoilLE = new double[3];
-		private double[] _rootAirfoilTE = new double[3];
-		private double[] _sideAirfoilTop = new double[3];
-		private double[] _sideAirfoilBottom = new double[3];
-		private double[] _tipAirfoilTop = new double[3];
-		private double[] _tipAirfoilBottom = new double[3];
-
-		private PVector _fusDeltaApex = null;
-		private double[] _fuselageSCMiddleTopPnt = new double[3];
-		private double[] _fuselageSCMiddleBottomPnt = new double[3];
-		private double[] _fuselageSCFrontTopPnt = new double[3];
-		private double[] _fuselageSCFrontBottomPnt = new double[3];
-		private double[] _fuselageSCBackTopPnt = new double[3];
-		private double[] _fuselageSCBackBottomPnt = new double[3];
-		private Tuple2<List<Double>, List<Double>> _fuselageSCMiddleUpperYZCoords = null;
-		private Tuple2<List<Double>, List<Double>> _fuselageSCMiddleLowerYZCoords = null;
-		private double _fuselageMinimumZ = 0.0;
-		private double _fuselageMaximumZ = 0.0;
+		System.out.println("========== [AircraftCADUtils::getEnginesCAD]");
 		
-		private double[] _fusLSContactPnt = new double[3];
-		private double[] _fusFairingUppContactPnt = new double[3];
-		private double[] _fusFairingLowContactPnt = new double[3];
+		// ----------------------------------------------------------
+		// Generate engine CAD shapes
+		// ----------------------------------------------------------	
+		List<EngineCAD> engineCADList = new ArrayList<>();
+		IntStream.range(0, engines.size())
+				 .forEach(i -> engineCADList.add(
+						 new EngineCAD(nacelles.get(i), engines.get(i), templateMapsList.get(i))
+						 ));
 		
-		private double _fairingMinimumZ = 0.0;
-		private double _fairingMaximumZ = 0.0;
-		private double _fairingReferenceZ = 0.0;	
-			
-		private double _frontLength = 0.0;
-		private double _backLength = 0.0;
-		private double _width = 0.0;
+		// Check the indexes of the engines that can be mirrored, based on:
+		// - sharing the same y apex coordinate (absolute value);
+		// - sharing the same type, templates and dimensions.
+		// First, it is necessary to sort the engines.
+		List<EngineCAD> sortedEngineCADList = engineCADList.stream()
+				.sorted(Comparator.comparing(e -> e.getEngineYApex()))
+				.collect(Collectors.toList());
 		
-		private FairingPosition _fairingPosition;	
-		
-		public FairingDataCollection (Fuselage fuselage, LiftingSurface liftingSurface, 
-				double frontLengthFactor, double backLengthFactor, double widthFactor, double heightFactor,
-				double heightBelowReferenceFactor, double heightAboveContactFactor,
-				double filletRadiusFactor
-				) {
-			
-			this._fuselage = fuselage;
-			this._liftingSurface = liftingSurface;
-			
-			// -------------------------------
-			// FAIRING parameters assignment
-			// -------------------------------
-			this._frontLengthFactor = frontLengthFactor;
-			this._backLengthFactor = backLengthFactor;
-			this._widthFactor = widthFactor;
-			this._heightFactor = heightFactor;
-			this._heightBelowReferenceFactor = heightBelowReferenceFactor;
-			this._heightAboveReferenceFactor = heightAboveContactFactor;
-			this._filletRadiusFactor = filletRadiusFactor;
-			
-			// -------------------------------
-			// FAIRING reference lengths
-			// -------------------------------
-			this._rootChord = liftingSurface.getChordsBreakPoints().get(0).doubleValue(SI.METER);
-			this._rootThickness = liftingSurface.getAirfoilList().get(0).getThicknessToChordRatio()*_rootChord;
-			
-			// -------------------------------
-			// FUSELAGE delta position
-			// -------------------------------
-			this._fusDeltaApex = new PVector(
-					(float) fuselage.getXApexConstructionAxes().doubleValue(SI.METER),
-					(float) fuselage.getYApexConstructionAxes().doubleValue(SI.METER),
-					(float) fuselage.getZApexConstructionAxes().doubleValue(SI.METER)
-					);		
-			
-			// ------------------------
-			// Root reference airfoil
-			// ------------------------
-			this._rootAirfoilPts = AircraftCADUtils.generateAirfoilAtY(0, liftingSurface);
-			
-			this._rootAirfoilTop = getAirfoilTop(_rootAirfoilPts);
-			this._rootAirfoilBottom = getAirfoilBottom(_rootAirfoilPts);
-			this._rootAirfoilLE = getAirfoilLE(_rootAirfoilPts);
-			this._rootAirfoilTE = getAirfoilTE(_rootAirfoilPts);
-			
-			// --------------------------------------
-			// FUSELAGE reference points and curves
-			// --------------------------------------
-			double fusWidthAtRootAirfoilTopX = fuselage.getWidthAtX(_rootAirfoilTop[0])*0.5;
-			double fusCamberZAtRootAirfoilTopX = fuselage.getCamberZAtX(_rootAirfoilTop[0] - _fusDeltaApex.x);
-			
-			List<PVector> fuselageSCMiddle = fuselage.getUniqueValuesYZSideRCurve(
-					Amount.valueOf(_rootAirfoilTop[0] - _fusDeltaApex.x, SI.METER));	
-			List<PVector> fuselageSCFront = fuselage.getUniqueValuesYZSideRCurve(
-					Amount.valueOf((_rootAirfoilLE[0] - _frontLength) - _fusDeltaApex.x, SI.METER));
-			List<PVector> fuselageSCBack = fuselage.getUniqueValuesYZSideRCurve(
-					Amount.valueOf((_rootAirfoilTE[0] + _backLength) - _fusDeltaApex.x, SI.METER));
-
-			fuselageSCMiddle.forEach(pv -> pv.add(_fusDeltaApex));
-
-			this._fuselageSCMiddleTopPnt = new double[] {
-					fuselageSCMiddle.get(0).x,
-					fuselageSCMiddle.get(0).y,
-					fuselageSCMiddle.get(0).z
-			};
-			this._fuselageSCMiddleBottomPnt = new double[] {
-					fuselageSCMiddle.get(fuselageSCMiddle.size() - 1).x,
-					fuselageSCMiddle.get(fuselageSCMiddle.size() - 1).y,
-					fuselageSCMiddle.get(fuselageSCMiddle.size() - 1).z
-			};
-			this._fuselageSCFrontTopPnt = new double[] {
-					fuselageSCFront.get(0).x + _fusDeltaApex.x,
-					fuselageSCFront.get(0).y + _fusDeltaApex.y,
-					fuselageSCFront.get(0).z + _fusDeltaApex.z
-			};
-			this._fuselageSCFrontBottomPnt = new double[] {
-					fuselageSCFront.get(fuselageSCFront.size() - 1).x + _fusDeltaApex.x,
-					fuselageSCFront.get(fuselageSCFront.size() - 1).y + _fusDeltaApex.y,
-					fuselageSCFront.get(fuselageSCFront.size() - 1).z + _fusDeltaApex.z
-			};
-			this._fuselageSCBackTopPnt = new double[] {
-					fuselageSCBack.get(0).x + _fusDeltaApex.x,
-					fuselageSCBack.get(0).y + _fusDeltaApex.y,
-					fuselageSCBack.get(0).z + _fusDeltaApex.z
-			};
-			this._fuselageSCBackBottomPnt = new double[] {
-					fuselageSCBack.get(fuselageSCBack.size() - 1).x + _fusDeltaApex.x,
-					fuselageSCBack.get(fuselageSCBack.size() - 1).y + _fusDeltaApex.y,
-					fuselageSCBack.get(fuselageSCBack.size() - 1).z + _fusDeltaApex.z
-			};
-
-			this._fuselageMaximumZ = Math.min(_fuselageSCFrontTopPnt[2], _fuselageSCBackTopPnt[2]);
-			this._fuselageMinimumZ = Math.max(_fuselageSCFrontBottomPnt[2], _fuselageSCBackBottomPnt[2]);
-
-			List<Double> fuselageSCMiddleUpperZCoords = new ArrayList<>();
-			List<Double> fuselageSCMiddleUpperYCoords = new ArrayList<>();
-			List<Double> fuselageSCMiddleLowerZCoords = new ArrayList<>();
-			List<Double> fuselageSCMiddleLowerYCoords = new ArrayList<>();
-
-			fuselageSCMiddleLowerZCoords.add(fusCamberZAtRootAirfoilTopX);
-			fuselageSCMiddleLowerYCoords.add(fusWidthAtRootAirfoilTopX);
-
-			for (int i = 0; i < fuselageSCMiddle.size() - 1; i++) {
-				PVector pv = fuselageSCMiddle.get(i);
-
-				if (pv.z > fusCamberZAtRootAirfoilTopX) {
-					fuselageSCMiddleUpperZCoords.add((double) pv.z);
-					fuselageSCMiddleUpperYCoords.add((double) pv.y);
-				} else if (pv.z < fusCamberZAtRootAirfoilTopX) {
-					fuselageSCMiddleLowerZCoords.add((double) pv.z);
-					fuselageSCMiddleLowerYCoords.add((double) pv.y);
-				}
-			}
-
-			fuselageSCMiddleUpperZCoords.add(fusCamberZAtRootAirfoilTopX);
-			fuselageSCMiddleUpperYCoords.add(fusWidthAtRootAirfoilTopX);
-
-			this._fuselageSCMiddleUpperYZCoords = obtainMonotonicSequence(
-					fuselageSCMiddleUpperYCoords, fuselageSCMiddleUpperZCoords, true);
-
-			this._fuselageSCMiddleLowerYZCoords = obtainMonotonicSequence(
-					fuselageSCMiddleLowerYCoords, fuselageSCMiddleLowerZCoords, false);
-			
-			// ------------------------
-			// Side reference airfoil
-			// ------------------------
-			this._sideAirfoilPts = AircraftCADUtils.generateAirfoilAtY(fusWidthAtRootAirfoilTopX, liftingSurface);
-			
-			this._sideAirfoilTop = getAirfoilTop(_sideAirfoilPts);
-			this._sideAirfoilBottom = getAirfoilBottom(_sideAirfoilPts);
-			
-			// ------------------------------------------------------
-			// Check FAIRING position
-			// ------------------------------------------------------
-			_fairingPosition = checkFairingPosition();
-			
-			// ------------------------------------------------------
-			// LIFTING-SURFACE / FUSELAGE contact point calculation and 
-			// ------------------------------------------------------
-			switch (_fairingPosition) {
-
-			case ATTACHED_UP:
-				_fusLSContactPnt = new double[] {
-						_sideAirfoilBottom[0],
-						MyMathUtils.getInterpolatedValue1DSpline(
-								MyArrayUtils.convertToDoublePrimitive(reverseList(_fuselageSCMiddleUpperYZCoords._2())), 
-								MyArrayUtils.convertToDoublePrimitive(reverseList(_fuselageSCMiddleUpperYZCoords._1())), 
-								_sideAirfoilBottom[2]),
-						_sideAirfoilBottom[2]
-				};
-
-				break;
-
-			case ATTACHED_DOWN:
-				_fusLSContactPnt = new double[] {
-						_sideAirfoilTop[0],
-						MyMathUtils.getInterpolatedValue1DSpline(
-								MyArrayUtils.convertToDoublePrimitive(reverseList(_fuselageSCMiddleLowerYZCoords._2())), 
-								MyArrayUtils.convertToDoublePrimitive(reverseList(_fuselageSCMiddleLowerYZCoords._1())), 
-								_sideAirfoilTop[2]),
-						_sideAirfoilTop[2]
-				};
-				
-				break;
-				
-			default:
-
-				break;
-			}
-			
-			// ----------------------------------------
-			// Calculate fairing principal dimensions
-			// ----------------------------------------
-			this._frontLength = _frontLengthFactor*_rootChord;
-			this._backLength = _backLengthFactor*_rootChord;
-			
-			if ((_fairingPosition.equals(FairingPosition.ATTACHED_UP) || _fairingPosition.equals(FairingPosition.ATTACHED_DOWN)) 
-					&& _widthFactor < 1.0) {
-				
-				this._width = widthFactor*(fusWidthAtRootAirfoilTopX - (_fusLSContactPnt[1] - _fusDeltaApex.y)) + 
-						(_fusLSContactPnt[1] - _fusDeltaApex.y);
-				
-			} else {
-				
-				this._width = _widthFactor*fusWidthAtRootAirfoilTopX;
-			}
-			
-			// ------------------------
-			// Tip reference airfoil
-			// ------------------------
-			this._tipAirfoilPts = AircraftCADUtils.generateAirfoilAtY(_width, liftingSurface);				
-			
-			this._tipAirfoilTop = getAirfoilTop(_tipAirfoilPts);
-			this._tipAirfoilBottom = getAirfoilBottom(_tipAirfoilPts);
-	
-			// --------------------------------------------------------------------------------
-			// FUSELAGE / FAIRING contact point and maximum/minimum z coordinates calculation
-			// --------------------------------------------------------------------------------
-			if (_widthFactor < 1.0) {
-				
-				_fusFairingUppContactPnt = new double[] {
-						_tipAirfoilTop[0],
-						_width,
-						MyMathUtils.getInterpolatedValue1DSpline(
-								MyArrayUtils.convertToDoublePrimitive(_fuselageSCMiddleUpperYZCoords._1()), 
-								MyArrayUtils.convertToDoublePrimitive(_fuselageSCMiddleUpperYZCoords._2()), 
-								_width
-								)
-				};
-				
-				_fusFairingLowContactPnt = new double[] {
-						_tipAirfoilTop[0],
-						_width,
-						MyMathUtils.getInterpolatedValue1DSpline(
-								MyArrayUtils.convertToDoublePrimitive(reverseList(_fuselageSCMiddleLowerYZCoords._1())), 
-								MyArrayUtils.convertToDoublePrimitive(reverseList(_fuselageSCMiddleLowerYZCoords._2())), 
-								_width
-								)
-				};
-				
-				if (_fairingPosition.equals(FairingPosition.DETACHED_UP) || _fairingPosition.equals(FairingPosition.ATTACHED_UP)) {
-					
-					_fairingReferenceZ = _fusFairingUppContactPnt[2];
-					
-					_fairingMinimumZ = MyArrayUtils.getMax(
-							new double[] {
-									_fuselageSCFrontBottomPnt[2],
-									_fusFairingLowContactPnt[2],
-									_fuselageSCBackBottomPnt[2]
-							});
-					
-					_fuselageMaximumZ = Math.min(
-							_fuselageSCFrontTopPnt[2], 
-							_fuselageSCBackTopPnt[2]
-							);
-					
-					if (_fairingPosition.equals(FairingPosition.DETACHED_UP)) {
-						
-						_fairingMaximumZ = Math.max(_rootAirfoilTop[2], _tipAirfoilTop[2]) + _rootThickness*_heightFactor;
-						
-					} else if (_fairingPosition.equals(FairingPosition.ATTACHED_UP)) {
-						
-						_fairingMaximumZ = _rootAirfoilTop[2] + (_fuselageSCMiddleTopPnt[2] - _rootAirfoilTop[2])*_heightFactor;
-						
-					}			
-					
-				} else if (_fairingPosition.equals(FairingPosition.ATTACHED_DOWN) || _fairingPosition.equals(FairingPosition.DETACHED_DOWN)) {
-					
-					_fairingReferenceZ = _fusFairingLowContactPnt[2];
-					
-					_fairingMaximumZ = MyArrayUtils.getMin(
-							new double[] {
-									_fuselageSCFrontTopPnt[2],
-									_fusFairingUppContactPnt[2],
-									_fuselageSCBackTopPnt[2]
-							});
-					
-					_fuselageMinimumZ = Math.max(
-							_fuselageSCFrontBottomPnt[2], 
-							_fuselageSCBackBottomPnt[2]
-							);
-					
-					if (_fairingPosition.equals(FairingPosition.ATTACHED_DOWN)) {
-						
-						_fairingMinimumZ = _fuselageSCMiddleBottomPnt[2] - _rootThickness*_heightFactor;
-						
-					} else if (_fairingPosition.equals(FairingPosition.DETACHED_DOWN)) {
-						
-						_fairingMinimumZ = Math.min(_rootAirfoilBottom[2], _tipAirfoilBottom[2]) - _rootThickness*_heightFactor;
-						
-					}				
-				}
-				
-			} else {
-				
-				if (_fairingPosition.equals(FairingPosition.DETACHED_UP) || _fairingPosition.equals(FairingPosition.ATTACHED_UP)) {
-					
-					_fairingReferenceZ = fusCamberZAtRootAirfoilTopX + 
-							(Math.min(_rootAirfoilBottom[2], _tipAirfoilBottom[2]) - fusCamberZAtRootAirfoilTopX)*0.5;
-					
-					_fairingMinimumZ = MyArrayUtils.getMax(
-							new double[] {
-									_fuselageSCFrontBottomPnt[2],
-									_fuselageSCBackBottomPnt[2]
-							});
-					
-					_fuselageMaximumZ = Math.min(
-							_fuselageSCFrontTopPnt[2], 
-							_fuselageSCBackTopPnt[2]
-							);
-					
-					if (_fairingPosition.equals(FairingPosition.DETACHED_UP)) {
-						
-						_fairingMaximumZ = Math.max(_rootAirfoilTop[2], _tipAirfoilTop[2]) + _rootThickness*_heightFactor;
-						
-					} else if (_fairingPosition.equals(FairingPosition.ATTACHED_UP)) {
-						
-						_fairingMaximumZ = _rootAirfoilTop[2] + (_fuselageSCMiddleTopPnt[2] - _rootAirfoilTop[2])*_heightFactor;
-						
-					}	
-					
-				} else if (_fairingPosition.equals(FairingPosition.ATTACHED_DOWN) || _fairingPosition.equals(FairingPosition.DETACHED_DOWN)) {
-					
-					_fairingReferenceZ = fusCamberZAtRootAirfoilTopX - 
-							(fusCamberZAtRootAirfoilTopX - Math.max(_rootAirfoilTop[2], _tipAirfoilTop[2]))*0.5;
-					
-					_fairingMaximumZ = MyArrayUtils.getMin(
-							new double[] {
-									_fuselageSCFrontTopPnt[2],
-									_fuselageSCBackTopPnt[2]
-							});
-					
-					_fuselageMinimumZ = Math.max(
-							_fuselageSCFrontBottomPnt[2], 
-							_fuselageSCBackBottomPnt[2]
-							);
-					
-					if (_fairingPosition.equals(FairingPosition.ATTACHED_DOWN)) {
-						
-						_fairingMinimumZ = _fuselageSCMiddleBottomPnt[2] - _rootThickness*_heightFactor;
-						
-					} else if (_fairingPosition.equals(FairingPosition.DETACHED_DOWN)) {
-						
-						_fairingMinimumZ = Math.min(_rootAirfoilBottom[2], _tipAirfoilBottom[2]) - _rootThickness*_heightFactor;
-						
-					}				
-				}
+		int[] symmEngines = new int[engines.size()];
+		Arrays.fill(symmEngines, 0);
+		if ((engines.size() & 1) == 0) { // even number of engines		
+			for (int i = 0; i < engines.size()/2; i++) {				
+				if (sortedEngineCADList.get(i).symmetrical(sortedEngineCADList.get(engines.size()-1-i))) {				
+					symmEngines[i] = i + 1;
+					symmEngines[engines.size()-1-i] = i + 1;
+				}					
 			}		
-		}
-		
-		private FairingPosition checkFairingPosition() {
-
-			List<PVector> fuselageSCAtTopX = _fuselage.getUniqueValuesYZSideRCurve(
-					Amount.valueOf(_sideAirfoilTop[0] - _fusDeltaApex.x, SI.METER));
-			List<PVector> fuselageSCAtBottomX = _fuselage.getUniqueValuesYZSideRCurve(
-					Amount.valueOf(_sideAirfoilBottom[0] - _fusDeltaApex.x, SI.METER));
-
-			double fuselageZTopAtTopX = fuselageSCAtTopX.get(0).add(_fusDeltaApex).z;
-			double fuselageCamberZAtTopX = _fuselage.getCamberZAtX(_sideAirfoilTop[0] - _fusDeltaApex.x) + _fusDeltaApex.z;
-			double fuselageCamberZAtBottomX = _fuselage.getCamberZAtX(_sideAirfoilBottom[0] - _fusDeltaApex.x) + _fusDeltaApex.z;
-			double fuselageZBottomAtBottomX = fuselageSCAtBottomX.get(fuselageSCAtBottomX.size() - 1).add(_fusDeltaApex).z;
-
-			if (_rootAirfoilTop[2] > fuselageZTopAtTopX) {
-				return FairingPosition.DETACHED_UP;
-
-			} else if (_sideAirfoilTop[2] < fuselageZTopAtTopX && _sideAirfoilBottom[2] > fuselageCamberZAtBottomX) {
-				return FairingPosition.ATTACHED_UP;
+		} else { // odd	number of engines
+			for (int i = 0; i < (engines.size()-1)/2; i++) {
+				if (sortedEngineCADList.get(i).symmetrical(sortedEngineCADList.get(engines.size()-1-i))) {
+					symmEngines[i] = i + 1;
+					symmEngines[engines.size()-1-i] = i + 1;
+				}
 			}
-
-			if (_rootAirfoilBottom[2] < fuselageZBottomAtBottomX) {
-				return FairingPosition.DETACHED_DOWN;
-
-			} else if (_sideAirfoilTop[2] < fuselageCamberZAtTopX && _sideAirfoilBottom[2] > fuselageZBottomAtBottomX) {
-				return FairingPosition.ATTACHED_DOWN;
-			}		
-
-			return FairingPosition.MIDDLE;
 		}
 		
-		private double[] getAirfoilTop(List<double[]> airfoilPts) {
-			return airfoilPts.stream().max(Comparator.comparing(pnt -> pnt[2])).get();
-		}
-		
-		private double[] getAirfoilBottom(List<double[]> airfoilPts) {
-			return airfoilPts.stream().min(Comparator.comparing(pnt -> pnt[2])).get();
-		}
-		
-		private double[] getAirfoilLE(List<double[]> airfoilPts) {
-			return airfoilPts.stream().min(Comparator.comparing(pnt -> pnt[0])).get();
-		}
-		
-		private double[] getAirfoilTE(List<double[]> airfoilPts) {
-			return airfoilPts.stream().max(Comparator.comparing(pnt -> pnt[0])).get();
-		}
-		
-		private static <T> List<T> reverseList(List<T> list) {
-			return IntStream.range(0, list.size())
-					.mapToObj(i -> list.get(list.size() - 1 - i))
-					.collect(Collectors.toCollection(ArrayList::new));
-		}
-		
-		private static Tuple2<List<Double>, List<Double>> obtainMonotonicSequence(
-				List<Double> y, List<Double> z, boolean strictlyIncreasing) {		
+		for (int i = 0; i < engines.size(); i++) {
 			
-			List<Double> ym = new ArrayList<>();
-			List<Double> zm = new ArrayList<>();
-			
-			int n = y.size() - 1;
-			ym.add(y.get(0));
-			zm.add(z.get(0));
-			
-			int j = 0;
-			for (int i = 1; i <= n; i++) {
-				Double yt_p = y.get(i);
-				Double zt_p = z.get(i);
-				Double yt_m = ym.get(j);
+			if (symmEngines[i] != 0 && i < engines.size()/2) {
 				
-				if (strictlyIncreasing) {
-					if (yt_p > yt_m) {
-						ym.add(yt_p);
-						zm.add(zt_p);
-						j++;
-					}
-				} else {
-					if (yt_p < yt_m) {
-						ym.add(yt_p);
-						zm.add(zt_p);
-						j++;
-					}
-				}				
+				List<OCCShape> engineShapes = getEngineCAD(sortedEngineCADList.get(i));
+				
+				List<OCCShape> symmEngineShapes = OCCUtils.getShapesTranslated(
+						engineShapes, 
+						new double[] {
+								sortedEngineCADList.get(i).getEngineXApex(),
+								sortedEngineCADList.get(i).getEngineYApex(),
+								sortedEngineCADList.get(i).getEngineZApex()
+						}, 
+						new double[] {
+								sortedEngineCADList.get(i).getEngineXApex(),
+							    sortedEngineCADList.get(i).getEngineYApex()*(-1),
+								sortedEngineCADList.get(i).getEngineZApex()
+						});		
+				
+				solidShapes.addAll(engineShapes);
+				solidShapes.addAll(symmEngineShapes);
+				
+			} else if (symmEngines[i] == 0) {
+				
+				solidShapes.addAll(getEngineCAD(sortedEngineCADList.get(i)));
 			}
+		}
+		
+		OCCCompound solidsCompound = (OCCCompound) OCCUtils.theFactory.newCompound(
+				solidShapes.stream().map(s -> (OCCShape) s).collect(Collectors.toList()));
+		
+		if (exportSolids) {
+			requestedShapes.addAll(solidShapes);
+		}
+		
+		if (exportSupportShapes) {
+			OCCExplorer wireExp = new OCCExplorer();
+			wireExp.init(solidsCompound, CADShapeTypes.WIRE);
+			while (wireExp.more()) {
+				supportShapes.add((OCCShape) wireExp.current());
+				wireExp.next();
+			}
+		}
+		
+		if (exportShells) {
+			OCCExplorer shellExp = new OCCExplorer();
+			shellExp.init(solidsCompound, CADShapeTypes.SHELL);
+			while (shellExp.more()) {
+				shellShapes.add((OCCShape) shellExp.current());
+				shellExp.next();
+			}
+		}
+	
+		requestedShapes.addAll(supportShapes);
+		requestedShapes.addAll(shellShapes);
+		
+		return requestedShapes;
+	}
+	
+	public static List<OCCShape> getEngineCAD(EngineCAD engineCAD) {
+		
+		List<OCCShape> requestedShapes = new ArrayList<>();	
+		
+		// -----------------------------------
+		// Call to specific CAD engine method
+		// -----------------------------------
+		switch (engineCAD.getEngineType()) {
+		
+		case TURBOPROP:
+			requestedShapes.addAll(getTurbopropEngineCAD(engineCAD));
 			
-			return new Tuple2<List<Double>, List<Double>>(ym, zm);
+			break;
+			
+		case TURBOFAN:
+			requestedShapes.addAll(getTurbofanEngineCAD(engineCAD));
+			
+			break;
+			
+		default:
+			System.err.println("No CAD templates are currently available for " +  engineCAD.getEngineType() + " engines. "
+					+ "No engine CAD shapes will be produced!");
+			
+			break;
 		}
 		
-		public Fuselage getFuselage() {
-			return _fuselage;
+		return requestedShapes;
+	} 
+	
+	public static List<OCCShape> getTurbopropEngineCAD(EngineCAD engineCAD) {
+		
+		// ----------------------------------------------------------
+		// Check the factory
+		// ----------------------------------------------------------
+		if (OCCUtils.theFactory == null) {
+			System.out.println("========== [AircraftCADUtils::getEngineCAD] Initialize CAD shape factory");
+			OCCUtils.initCADShapeFactory();
 		}
 		
-		public LiftingSurface getLiftingSurface() {
-			return _liftingSurface;
+		// ----------------------------------------------------------
+		// Initialize shape lists
+		// ----------------------------------------------------------	
+		List<OCCShape> solidShapes = new ArrayList<>();
+		
+		// ----------------------------------------------------------
+		// Importing the templates
+		// ----------------------------------------------------------	
+		MyConfiguration.setDir(FoldersEnum.INPUT_DIR, MyConfiguration.inputDirectory);
+		String inputFolderPath = MyConfiguration.getDir(FoldersEnum.INPUT_DIR) + 
+				 				 "CAD_engine_templates" + File.separator + 
+				                 "turboprop_templates" + File.separator;
+		
+		// Reading the NACELLE
+		OCCShape nacelleShapes = ((OCCShape) OCCUtils.theFactory.newShape(
+				inputFolderPath + engineCAD.getEngineCADTemplates().get(EngineCADComponentsEnum.NACELLE), "M"));
+		
+		// Reading the BLADE
+		OCCShape bladeShapes = ((OCCShape) OCCUtils.theFactory.newShape(
+				inputFolderPath + engineCAD.getEngineCADTemplates().get(EngineCADComponentsEnum.BLADE), "M"));
+		
+		// ------------------------------------------------------------------------
+		// Instantiate necessary translations, rotations, scalings, and affinities
+		// ------------------------------------------------------------------------		
+//		nacelleShapes.Reverse(); // TODO: add this correction to the turboprop templates
+//		bladeShapes.Reverse();	 // TODO: add this correction to the turboprop templates	 
+		
+		double[] xDir = new double[] {1.0, 0.0, 0.0};	
+		double[] yDir = new double[] {0.0, 1.0, 0.0};
+		double[] zDir = new double[] {0.0, 0.0, 1.0};
+		
+		double[] nacelleCG = OCCUtils.getShapeCG(nacelleShapes);
+		double[] bladeCG = OCCUtils.getShapeCG(bladeShapes);
+		
+		// ------------------------------------------------------------------------
+		// Apply transformation to imported templates
+		// ------------------------------------------------------------------------	
+		
+		// NACELLE	
+		OCCCompound nacelleRefCompound = (OCCCompound) OCCUtils.theFactory.newCompound(
+				(OCCShape) OCCUtils.theFactory.newVertex(0.0, 0.0, 0.0),
+				nacelleShapes
+				);
+		
+		double nacelleLengthStretchingFactor = engineCAD.getNacelleLength()/engineCAD.getTurbopropTemplateNacelleLength();
+		double nacelleHeightStretchingFactor = engineCAD.getNacelleMaxDiameter()/engineCAD.getTurbopropTemplateNacelleMaxDiameter();
+		
+		OCCShape xStretchedNacelle = OCCUtils.getShapeStretched(nacelleRefCompound, nacelleCG, xDir, nacelleLengthStretchingFactor);
+		OCCShape xzStretchedNacelle = OCCUtils.getShapeStretched(xStretchedNacelle, nacelleCG, zDir, nacelleHeightStretchingFactor);
+		OCCShape xyzStretchedNacelle = OCCUtils.getShapeStretched(xzStretchedNacelle, nacelleCG, yDir, nacelleHeightStretchingFactor);
+		
+		OCCExplorer nacelleRefCompoundExp = new OCCExplorer();
+		
+		nacelleRefCompoundExp.init(xyzStretchedNacelle, CADShapeTypes.VERTEX);	
+		double[] refPnt = ((OCCVertex) nacelleRefCompoundExp.current()).pnt();
+	
+		nacelleRefCompoundExp.init(xyzStretchedNacelle, CADShapeTypes.SOLID);		
+		OCCShape stretchedNacelle = (OCCShape) nacelleRefCompoundExp.current();
+		
+		OCCShape finalNacelle = OCCUtils.getShapeTranslated(
+				stretchedNacelle, refPnt, new double[] {
+						engineCAD.getEngineXApex(), 
+						engineCAD.getEngineYApex(), 
+						engineCAD.getEngineZApex()
+						});
+		
+		// BLADE	
+		OCCCompound bladeRefCompound = (OCCCompound) OCCUtils.theFactory.newCompound(
+				OCCUtils.theFactory.newVertex(0.0, 0.0, 0.0),
+				bladeShapes
+				);
+		
+		double[] bladeRotVec = MyArrayUtils.linspace(0, 2*Math.PI, engineCAD.getNumberOfBlades() + 1);
+		
+		double scaledHubRadius = nacelleHeightStretchingFactor*engineCAD.getTurbopropTemplateHubDiameter()/2;
+		double bladeScalingFactor = engineCAD.getPropellerDiameter()/(2*(engineCAD.getTurbopropTemplateBladeLength() + engineCAD.getTurbopropTemplateHubDiameter()/2));
+		double scaledHubLength = nacelleLengthStretchingFactor*engineCAD.getTurbopropTemplateHubLengthRatio()*engineCAD.getTurbopropTemplateNacelleLength();
+		double scaledHubZCoord = nacelleHeightStretchingFactor*engineCAD.getTurbopropTemplateHubCenterZCoord();
+		
+		OCCShape scaledBladeRefCompound = OCCUtils.getShapeScaled(bladeRefCompound, bladeCG, bladeScalingFactor);
+		
+		OCCExplorer bladeRefCompoundExp = new OCCExplorer();
+		
+		bladeRefCompoundExp.init(scaledBladeRefCompound, CADShapeTypes.VERTEX);	
+		double[] bladeRefPnt = ((OCCVertex) bladeRefCompoundExp.current()).pnt();
+		
+		bladeRefCompoundExp.init(scaledBladeRefCompound, CADShapeTypes.SOLID);	
+		OCCShape scaledBlade = (OCCShape) bladeRefCompoundExp.current();
+			
+		// Blade stretching, whether it is necessary
+		double bladeLengthScaled = bladeScalingFactor*engineCAD.getTurbopropTemplateBladeMaxBaseDiameter();
+		double totalBladeBaseLength = engineCAD.getNumberOfBlades()*bladeLengthScaled;
+		double scaledHubCircle = 2*Math.PI*scaledHubRadius;
+		
+		if (totalBladeBaseLength > 1.10*scaledHubCircle) {
+			System.out.println("... Stretching the blade in order to fit it on the hub ...");
+			
+			double bladeLengthScalingFactor = 0.95*(scaledHubCircle/engineCAD.getNumberOfBlades())/
+					engineCAD.getTurbopropTemplateBladeMaxBaseDiameter();
+			
+			OCCShape bladeXStretched = OCCUtils.getShapeStretched(scaledBlade, bladeCG, xDir, bladeLengthScalingFactor);
+			OCCShape bladeYStretched = OCCUtils.getShapeStretched(bladeXStretched, bladeCG, yDir, bladeLengthScalingFactor);
+			
+			scaledBlade = bladeYStretched;			
 		}
 		
-		public double getFrontLengthFactor() {
-			return _frontLengthFactor;
+		OCCShape hubTranslatedBlade = OCCUtils.getShapeTranslated(scaledBlade, bladeRefPnt, new double[] {0.0, 0.0, scaledHubRadius});
+			
+		List<OCCShape> rotatedBlades = new ArrayList<>();
+		rotatedBlades.add(hubTranslatedBlade);
+		for (int j = 1; j < bladeRotVec.length - 1; j++) 
+			rotatedBlades.add(OCCUtils.getShapeRotated(
+					hubTranslatedBlade, 
+					new double[] {0.0, 0.0, 0.0}, 
+					xDir, 
+					bladeRotVec[j])
+					);
+		
+		OCCCompound bladesCompound = (OCCCompound) OCCUtils.theFactory.newCompound(
+				rotatedBlades.stream().map(b -> (CADShape) b).collect(Collectors.toList()));
+		
+		double[] propellerRefPnt = new double[] {
+				engineCAD.getEngineXApex() - scaledHubLength/2,
+				engineCAD.getEngineYApex(),
+				engineCAD.getEngineZApex() + scaledHubZCoord
+		};
+		
+		OCCShape translatedBladeCompound = OCCUtils.getShapeTranslated(
+				bladesCompound, new double[] {0.0, 0.0, 0.0}, propellerRefPnt);
+		
+		OCCExplorer bladesCompoundExp = new OCCExplorer();
+		bladesCompoundExp.init(translatedBladeCompound, CADShapeTypes.SOLID);
+		
+		List<OCCShape> translatedBlades = new ArrayList<>();
+		while (bladesCompoundExp.more()) {
+			translatedBlades.add((OCCShape) bladesCompoundExp.current());
+			bladesCompoundExp.next();
+		}
+			
+		// Add all produced shapes to a compound of solids		
+		OCCCompSolid turbopropCompSolid = (OCCCompSolid) OCCUtils.theFactory.newCompSolid(
+				translatedBlades.stream().map(s -> (CADShape) s).collect(Collectors.toList()));		
+		turbopropCompSolid.add(finalNacelle);
+		
+		// Rotate the compound of solids according to the tilting angle
+		OCCShape rotatedTurbopropCompSolid = OCCUtils.getShapeRotated(
+				turbopropCompSolid, 
+				new double[] {engineCAD.getEngineXApex(), engineCAD.getEngineYApex(), engineCAD.getEngineZApex()}, 
+				yDir, 
+				engineCAD.getTiltingAngle()
+				);
+		
+		// ------------------------------------------------------------------------
+		// Export solid shapes
+		// ------------------------------------------------------------------------			
+		OCCExplorer tpSolidExp = new OCCExplorer();
+		tpSolidExp.init(rotatedTurbopropCompSolid, CADShapeTypes.SOLID);
+		while (tpSolidExp.more()) {
+			solidShapes.add((OCCShape) tpSolidExp.current());
+			tpSolidExp.next();
 		}
 		
-		public double getBackLengthFactor() {
-			return _backLengthFactor;
+		return solidShapes;
+	}
+	
+	public static List<OCCShape> getTurbofanEngineCAD(EngineCAD engineCAD) {
+		
+		// ----------------------------------------------------------
+		// Check the factory
+		// ----------------------------------------------------------
+		if (OCCUtils.theFactory == null) {
+			System.out.println("========== [AircraftCADUtils::getEngineCAD] Initialize CAD shape factory");
+			OCCUtils.initCADShapeFactory();
 		}
 		
-		public double getWidthFactor() {
-			return _widthFactor;
-		}
+		// ----------------------------------------------------------
+		// Initialize shape lists
+		// ----------------------------------------------------------	
+		List<OCCShape> solidShapes = new ArrayList<>();
 		
-		public double getHeightFactor() {
-			return _heightFactor;
-		}
+		// ----------------------------------------------------------
+		// Initialize directions
+		// ----------------------------------------------------------	
+		double[] xDir = new double[] {1.0, 0.0, 0.0};	
+		double[] yDir = new double[] {0.0, 1.0, 0.0};
+		double[] zDir = new double[] {0.0, 0.0, 1.0};
 		
-		public double getHeightBelowReferenceFactor() {
-			return _heightBelowReferenceFactor;
-		}
+		// ----------------------------------------------------------
+		// Importing the template
+		// ----------------------------------------------------------	
+		MyConfiguration.setDir(FoldersEnum.INPUT_DIR, MyConfiguration.inputDirectory);
+		String inputFolderPath = MyConfiguration.getDir(FoldersEnum.INPUT_DIR) + 
+				 				 "CAD_engine_templates" + File.separator + 
+				                 "turbofan_templates" + File.separator;
 		
-		public double getHeightAboveReferenceFactor() {
-			return _heightAboveReferenceFactor;
-		}
+		OCCShape engineShapes = (OCCShape) OCCUtils.theFactory.newShape(
+				inputFolderPath + engineCAD.getEngineCADTemplates().get(EngineCADComponentsEnum.NACELLE), "M");
 		
-		public double getFilletRadiusFactor() {
-			return _filletRadiusFactor;
-		}
+		OCCExplorer engineShapesExp = new OCCExplorer();
+		engineShapesExp.init(engineShapes, CADShapeTypes.SOLID);
 		
-		public double getRootChord() {
-			return _rootChord;
-		}
-		
-		public double getRootThickness() {
-			return _rootThickness;
-		}
-		
-		public List<double[]> getRootAirfoilPts() {
-			return _rootAirfoilPts;
-		}
-		
-		public List<double[]> getSideAirfoilPts() {
-			return _sideAirfoilPts;
-		}
-		
-		public List<double[]> getTipAirfoilPts() {
-			return _tipAirfoilPts;
-		}
-		
-		public double[] getRootAirfoilTop() {
-			return _rootAirfoilTop;
-		}
-		
-		public double[] getRootAirfoilBottom() {
-			return _rootAirfoilBottom;
-		}
-		
-		public double[] getRootAirfoilLE() {
-			return _rootAirfoilLE;
-		}
-		
-		public double[] getRootAirfoilTE() {
-			return _rootAirfoilTE;
-		}
-		
-		public double[] getSideAirfoilTop() {
-			return _sideAirfoilTop;
-		}
-		
-		public double[] getSideAirfoilBottom() {
-			return _sideAirfoilBottom;
-		}
-		
-		public double[] getTipAirfoilTop() {
-			return _tipAirfoilTop;
-		}
-		
-		public double[] getTipAirfoilBottom() {
-			return _tipAirfoilBottom;
-		}
-		
-		public PVector getFusDeltaApex() {
-			return _fusDeltaApex;
-		}
-		
-		public double[] getFuselageSCMiddleTop() {
-			return _fuselageSCMiddleTopPnt;
-		}
-		
-		public double[] getFuselageSCMiddleBottom() {
-			return _fuselageSCMiddleBottomPnt;
-		}
-		
-		public double[] getFuselageSCFrontTop() {
-			return _fuselageSCFrontTopPnt;
-		}
-		
-		public double[] getFuselageSCFrontBottom() {
-			return _fuselageSCFrontBottomPnt;
-		}
-		
-		public double[] getFuselageSCBackTop() {
-			return _fuselageSCBackTopPnt;
-		}
-		
-		public double[] getFuselageSCBackBottom() {
-			return _fuselageSCBackBottomPnt;
-		}
-		
-		public Tuple2<List<Double>, List<Double>> getFuselageSCMiddleUpperYZCoords() {
-			return _fuselageSCMiddleUpperYZCoords;
-		}
-		
-		public Tuple2<List<Double>, List<Double>> getFuselageSCMiddleLowerYZCoords() {
-			return _fuselageSCMiddleLowerYZCoords;
-		}
-		
-		public double getFuselageMinimumZ() {
-			return _fuselageMinimumZ;
-		}
-		
-		public double getFuselageMaximumZ() {
-			return _fuselageMaximumZ;
-		}
-
-		public double[] getFusLSContactPnt() {
-			return _fusLSContactPnt;
-		}
-		
-		public double[] getFusFairingUppContactPnt() {
-			return _fusFairingUppContactPnt;
-		}
-		
-		public double[] getFusFairingLowContactPnt() {
-			return _fusFairingLowContactPnt;
+		List<OCCShape> engineSolids = new ArrayList<>();
+		while (engineShapesExp.more()) {
+			engineSolids.add((OCCShape) engineShapesExp.current());
+			engineShapesExp.next();
 		} 
 		
-		public double getFairingMinimumZ() {
-			return _fairingMinimumZ;
+		// ------------------------------------------------------------------------
+		// Apply transformation to the imported template
+		// ------------------------------------------------------------------------	
+		double[] engineCG = OCCUtils.getShapeCG(engineShapes);
+		
+		OCCCompound engineRefCompound = (OCCCompound) OCCUtils.theFactory.newCompound(
+				OCCUtils.theFactory.newVertex(0.0, 0.0, 0.0),
+				engineShapes
+				);
+		
+		double engineInnerCasingRadiusRatio = 1 - engineCAD.getTurbofanTemplateInnerOuterCasingCoeff()*engineCAD.getByPassRatio();
+		
+		double engineLengthStretchingFactor = engineCAD.getNacelleLength()/engineCAD.getTurbofanTemplateNacelleLength();
+		double engineHeightStretchingFactor = engineCAD.getNacelleMaxDiameter()/engineCAD.getTurbofanTemplateNacelleMaxDiameter();
+		double engineInnerCasingHeightStretchingFactor = engineInnerCasingRadiusRatio*engineHeightStretchingFactor;
+		
+		OCCShape xStretchedEngine = OCCUtils.getShapeStretched(engineRefCompound, engineCG, xDir, engineLengthStretchingFactor);
+		OCCShape xzStretchedEngine = OCCUtils.getShapeStretched(xStretchedEngine, engineCG, zDir, engineHeightStretchingFactor);
+		OCCShape xyzStretchedEngine = OCCUtils.getShapeStretched(xzStretchedEngine, engineCG, yDir, engineHeightStretchingFactor);
+		
+		OCCExplorer engineRefCompoundExp = new OCCExplorer();
+		
+		engineRefCompoundExp.init(xyzStretchedEngine, CADShapeTypes.VERTEX);
+		OCCVertex newEngineApex = (OCCVertex) engineRefCompoundExp.current();
+		
+		engineRefCompoundExp.init(xyzStretchedEngine, CADShapeTypes.SOLID);	
+		List<OCCShape> engineStretchedSolids = new ArrayList<>();
+		while (engineRefCompoundExp.more()) {
+			engineStretchedSolids.add((OCCShape) engineRefCompoundExp.current());
+			engineRefCompoundExp.next();
+		}	
+		
+		OCCCompound engineInnerCasingCompound = (OCCCompound) OCCUtils.theFactory.newCompound(
+				engineStretchedSolids.get(1),
+				engineStretchedSolids.get(2)
+				);
+		
+		double[] engineInnerCasingCG = OCCUtils.getShapeCG(engineInnerCasingCompound);
+		
+		OCCShape yStretchedEngineInnerCasing = OCCUtils.getShapeStretched(
+				engineInnerCasingCompound, engineInnerCasingCG, yDir, engineInnerCasingHeightStretchingFactor);
+		OCCShape yzStretchedEngineInnerCasing = OCCUtils.getShapeStretched(
+				yStretchedEngineInnerCasing, engineInnerCasingCG, zDir, engineInnerCasingHeightStretchingFactor);
+		
+		OCCExplorer engineInnerCasingCompoundExp = new OCCExplorer();
+		engineInnerCasingCompoundExp.init(yzStretchedEngineInnerCasing, CADShapeTypes.SOLID);
+		
+		List<OCCShape> stretchedEngineInnerCasingSolids = new ArrayList<>();
+		while (engineInnerCasingCompoundExp.more()) {
+			stretchedEngineInnerCasingSolids.add((OCCShape) engineInnerCasingCompoundExp.current());
+			engineInnerCasingCompoundExp.next();
 		}
 		
-		public double getFairingMaximumZ() {
-			return _fairingMaximumZ;
+		List<OCCShape> stretchedEngineSolids = new ArrayList<>();
+		stretchedEngineSolids.add(engineStretchedSolids.get(0));
+		stretchedEngineSolids.addAll(stretchedEngineInnerCasingSolids);
+		stretchedEngineSolids.add(engineStretchedSolids.get(3));
+		
+		OCCCompound stretchedEngineCompound = (OCCCompound) OCCUtils.theFactory.newCompound(
+				stretchedEngineSolids.stream().map(s -> (CADShape) s).collect(Collectors.toList()));
+		
+		OCCShape translatedEngineCompound = OCCUtils.getShapeTranslated(
+				stretchedEngineCompound, 
+				newEngineApex.pnt(), 
+				new double[] {
+						engineCAD.getEngineXApex(),
+						engineCAD.getEngineYApex(),
+						engineCAD.getEngineZApex()
+				});
+		
+		OCCShape rotatedEngineCompound = OCCUtils.getShapeRotated(
+				translatedEngineCompound, 
+				new double[] {
+						engineCAD.getEngineXApex(),
+						engineCAD.getEngineYApex(),
+						engineCAD.getEngineZApex()
+				}, 
+				yDir, 
+				engineCAD.getTiltingAngle()
+				);
+		
+		OCCExplorer finalEngineCompoundExp = new OCCExplorer();
+		finalEngineCompoundExp.init(rotatedEngineCompound, CADShapeTypes.SOLID);
+		
+		List<OCCShape> finalEngineSolids = new ArrayList<>();
+		while (finalEngineCompoundExp.more()) {
+			finalEngineSolids.add((OCCShape) finalEngineCompoundExp.current());
+			finalEngineCompoundExp.next();
 		}
 		
-		public double getFairingReferenceZ() {
-			return _fairingReferenceZ;
-		}
+		// ------------------------------------------------------------------------
+		// Export requested shapes
+		// ------------------------------------------------------------------------	
+		solidShapes.addAll(finalEngineSolids);
 		
-		public double getFairingFrontLength() {
-			return _frontLength;
-		}
-		
-		public double getFairingBackLength() {
-			return _backLength;
-		}
-		
-		public double getFairingWidth() {
-			return _width;
-		}
-		
-		public FairingPosition getFairingPosition() {
-			return _fairingPosition;
-		}		
+		return solidShapes;
 	}
+
 }

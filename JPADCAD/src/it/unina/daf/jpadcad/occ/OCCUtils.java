@@ -14,6 +14,7 @@ import opencascade.Adaptor3d_HCurve;
 import opencascade.BOPAlgo_PaveFiller;
 import opencascade.BOPDS_DS;
 import opencascade.BRepAdaptor_Curve;
+import opencascade.BRepBuilderAPI_GTransform;
 import opencascade.BRepBuilderAPI_MakeEdge;
 import opencascade.BRepBuilderAPI_MakeVertex;
 import opencascade.BRepBuilderAPI_Transform;
@@ -56,6 +57,7 @@ import opencascade.TopoDS_Vertex;
 import opencascade.gp_Ax1;
 import opencascade.gp_Ax2;
 import opencascade.gp_Dir;
+import opencascade.gp_GTrsf;
 import opencascade.gp_Pnt;
 import opencascade.gp_Trsf;
 import opencascade.gp_Vec;
@@ -690,6 +692,96 @@ public final class OCCUtils {
 		return expWires;
 	}
 	
+	public static OCCShape getShapeTranslated(OCCShape shape, double[] initPnt, double[] finalPnt) {
+		
+		gp_Trsf translation = new gp_Trsf();
+		
+		translation.SetTranslation(
+				new gp_Pnt(initPnt[0], initPnt[1], initPnt[2]), 
+				new gp_Pnt(finalPnt[0], finalPnt[1], finalPnt[2])
+				);
+		
+		return (OCCShape) OCCUtils.theFactory.newShape(
+				new BRepBuilderAPI_Transform(shape.getShape(), translation, 1).Shape());
+	}
+	
+	public static List<OCCShape> getShapesTranslated(List<OCCShape> shapes, double[] initPnt, double[] finalPnt) {
+		
+		List<OCCShape> translatedShapes = new ArrayList<>();
+		shapes.forEach(s -> translatedShapes.add(getShapeTranslated(s, initPnt, finalPnt)));
+		
+		return translatedShapes;
+	}
+	
+	public static OCCShape getShapeRotated(OCCShape shape, double[] rotCenter, double[] rotAxis, double rotAngle) {
+		
+		gp_Trsf rotation = new gp_Trsf();
+		
+		rotation.SetRotation(
+				new gp_Ax1(
+						new gp_Pnt(rotCenter[0], rotCenter[1], rotCenter[2]), 
+						new gp_Dir(rotAxis[0], rotAxis[1], rotAxis[2])
+						), 
+				rotAngle
+				);
+		
+		return (OCCShape) OCCUtils.theFactory.newShape(
+				new BRepBuilderAPI_Transform(shape.getShape(), rotation, 1).Shape());
+	}
+	
+	public static List<OCCShape> getShapesRotated(List<OCCShape> shapes, double[] rotCenter, double[] rotAxis, double rotAngle) {
+		
+		List<OCCShape> rotatedShapes = new ArrayList<>();
+		shapes.forEach(s -> rotatedShapes.add(getShapeRotated(s, rotCenter, rotAxis, rotAngle)));
+		
+		return rotatedShapes;
+	}
+	
+	public static OCCShape getShapeScaled(OCCShape shape, double[] centerPnt, double scaleFactor) {
+		
+		gp_Trsf scale = new gp_Trsf();
+		
+		scale.SetScale(
+				new gp_Pnt(centerPnt[0], centerPnt[1], centerPnt[2]), 
+				scaleFactor
+				);
+		
+		return (OCCShape) OCCUtils.theFactory.newShape(
+				new BRepBuilderAPI_Transform(shape.getShape(), scale, 1).Shape());	
+	}
+	
+	public static List<OCCShape> getShapesScaled(List<OCCShape> shapes, double[] centerPnt, double scaleFactor) {
+		
+		List<OCCShape> scaledShapes = new ArrayList<>();
+		shapes.forEach(s -> scaledShapes.add(getShapeScaled(s, centerPnt, scaleFactor)));
+		
+		return scaledShapes;
+	}
+	
+	public static OCCShape getShapeStretched(OCCShape shape, double[] centerPnt, double[] stretchAxis, double stretchingFactor) {
+		
+		gp_GTrsf stretching = new gp_GTrsf();
+		
+		stretching.SetAffinity(
+				new gp_Ax2(
+						new gp_Pnt(centerPnt[0], centerPnt[1], centerPnt[2]), 
+						new gp_Dir(stretchAxis[0], stretchAxis[1], stretchAxis[2])
+						), 
+				stretchingFactor
+				);
+		
+		return (OCCShape) OCCUtils.theFactory.newShape(
+				new BRepBuilderAPI_GTransform(shape.getShape(), stretching, 1).Shape());	
+	}
+	
+	public static List<OCCShape> getShapesStretched(List<OCCShape> shapes, double[] centerPnt, double[] stretchAxis, double stretchingFactor) {
+		
+		List<OCCShape> stretchedShapes = new ArrayList<>();
+		shapes.forEach(s -> stretchedShapes.add(getShapeStretched(s, centerPnt, stretchAxis, stretchingFactor)));
+		
+		return stretchedShapes;
+	}
+	
 	/**
 	 * Mirrors the provided shape with respect to a plane
 	 * @param shape - The shape to mirror.
@@ -716,9 +808,19 @@ public final class OCCUtils {
 		
 		// Generate the mirrored shape
 		mirroredShape = (OCCShape) OCCUtils.theFactory.newShape(
-				new BRepBuilderAPI_Transform(shape.getShape(), mirroring, 0).Shape());
+				new BRepBuilderAPI_Transform(shape.getShape(), mirroring, 1).Shape());
 			
 		return mirroredShape;
+	}
+	
+	public static List<OCCShape> getShapesMirrored(List<OCCShape> shapes,
+			PVector mirroPlaneOrigin, PVector mirrorPlaneNormal, PVector mirrorPlaneInDirection) {
+		
+		List<OCCShape> mirroredShapes = new ArrayList<>();	
+		shapes.forEach(s -> mirroredShapes.add(getShapeMirrored(s, 
+				mirroPlaneOrigin, mirrorPlaneNormal, mirrorPlaneInDirection)));
+		
+		return mirroredShapes;
 	}
 	
 	public static List<double[]> getIntersectionPts(CADGeomCurve3D curve1, CADGeomCurve3D curve2, double tol) {
@@ -856,12 +958,13 @@ public final class OCCUtils {
 		return revolvedWires;
 	}
 	
-	public static gp_Pnt getShapeCG(OCCShape shape) {
+	public static double[] getShapeCG(OCCShape shape) {
 		
 		GProp_GProps gProp = new GProp_GProps();
 		BRepGProp.LinearProperties(shape.getShape(), gProp);	
+		gp_Pnt cgGpPnt = gProp.CentreOfMass();
 		
-		return gProp.CentreOfMass();
+		return new double[] {cgGpPnt.X(), cgGpPnt.Y(), cgGpPnt.Z()};
 	}
 	
 	public enum FileExtension {

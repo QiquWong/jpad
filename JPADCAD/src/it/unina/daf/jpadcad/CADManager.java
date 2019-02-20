@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 import javax.measure.unit.SI;
 
 import aircraft.Aircraft;
+import it.unina.daf.jpadcad.enums.WingTipType;
+import it.unina.daf.jpadcad.enums.XSpacingType;
 import it.unina.daf.jpadcad.occ.OCCShape;
 import it.unina.daf.jpadcad.occ.OCCUtils;
 import it.unina.daf.jpadcad.occ.OCCUtils.FileExtension;
@@ -16,8 +18,6 @@ import it.unina.daf.jpadcad.occfx.OCCFXForm;
 import it.unina.daf.jpadcad.occfx.OCCFXMeshExtractor;
 import it.unina.daf.jpadcad.utils.AircraftUtils;
 import it.unina.daf.jpadcad.utils.AircraftCADUtils;
-import it.unina.daf.jpadcad.utils.AircraftCADUtils.WingTipType;
-import it.unina.daf.jpadcad.utils.AircraftCADUtils.XSpacingType;
 import javafx.event.EventHandler;
 import javafx.scene.DepthTest;
 import javafx.scene.Group;

@@ -18,7 +18,6 @@ import it.unina.daf.jpadcad.occ.OCCSolid;
 import it.unina.daf.jpadcad.occ.OCCUtils;
 import it.unina.daf.jpadcad.occ.OCCUtils.FileExtension;
 import it.unina.daf.jpadcad.occfx.OCCFXMeshExtractor;
-import it.unina.daf.jpadcadsandbox.Test39mds.Cam;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;

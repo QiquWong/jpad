@@ -2,9 +2,9 @@ package it.unina.daf.jpadcad;
 
 import org.inferred.freebuilder.FreeBuilder;
 
+import it.unina.daf.jpadcad.enums.WingTipType;
+import it.unina.daf.jpadcad.enums.XSpacingType;
 import it.unina.daf.jpadcad.occ.OCCUtils.FileExtension;
-import it.unina.daf.jpadcad.utils.AircraftCADUtils.WingTipType;
-import it.unina.daf.jpadcad.utils.AircraftCADUtils.XSpacingType;
 
 @FreeBuilder
 public interface ICADManager {

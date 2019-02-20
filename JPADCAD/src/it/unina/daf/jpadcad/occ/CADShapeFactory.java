@@ -67,9 +67,11 @@ public abstract class CADShapeFactory {
 	/**
 	 * Create a new CADShape by loading it from a file
 	 * @param fileName The file to read
+	 * @param units The units the imported shapes are set (e.g., M for meters, MM for millimeters)
 	 * @return The created CADShape
 	 */
-	public abstract CADShape newShape (String fileName);
+	public abstract CADShape newShape(String fileName);
+	public abstract CADShape newShape(String fileName, String units);
 	
 	/**
 	 * Create a new CADExplorer
@@ -256,4 +258,19 @@ public abstract class CADShapeFactory {
 	 */
 	public abstract CADVertex newVertex(double [] coordinates3D);
 
+	/**
+	 * Create a new CADCompound from a list of generic shapes
+	 * @param cadShapes the list containing the shapes to be added to the compound
+	 * @return The created CADCompound
+	 */
+	public abstract CADCompound newCompound(CADShape ... cadShapes);
+	public abstract CADCompound newCompound(List<CADShape> cadShapes);
+	
+	/**
+	 * Create a new CADCompSolid from a list of CADSolid shapes
+	 * @param cadShapes the list containing the solid shapes to be added to the solid compound
+	 * @return The created CADCompSolid
+	 */
+	public abstract CADCompSolid newCompSolid(CADShape ... cadShapes);
+	public abstract CADCompSolid newCompSolid(List<CADShape> cadShapes);
 }

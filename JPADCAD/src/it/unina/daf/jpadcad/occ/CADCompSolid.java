@@ -5,4 +5,5 @@ package it.unina.daf.jpadcad.occ;
  */
 public interface CADCompSolid extends CADShape
 {
+	public boolean add(CADShape s);
 }
