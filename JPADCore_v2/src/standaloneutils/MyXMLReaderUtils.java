@@ -532,6 +532,28 @@ public class MyXMLReaderUtils {
 	}
 
 	/**
+	 * Get the first occurrence of an attribute for a given XPath search string
+	 * into a _document_
+	 *
+	 * @author Agostino De Marco
+	 * @param doc the document root to start the search
+	 * @param path to node where attribute is searched for
+	 * @param attribute label
+	 * @return property value, null if search fails
+	 */	
+	public static String getXMLAttributeByPath(Document doc, String path, String attribute) {
+		List<String> attributes = MyXMLReaderUtils.getXMLPropertiesByPath(doc, path+"/@"+ attribute);
+
+		//System.out.println("getXMLAttributeByPath :: attributes \""+ attribute +"\" found: " + attributes.size());
+		//System.out.println("props[0] " + attributes.get(0));
+
+		if (attributes.size() == 0)
+			return null;
+		else
+			return attributes.get(0);
+	}
+	
+	/**
 	 * Get a list of occurrences of an attribute for a given XPath search string
 	 * into a _node_
 	 *
@@ -752,7 +774,7 @@ public class MyXMLReaderUtils {
 
 		String valueStr = MyXMLReaderUtils.getXMLPropertyByPath(xmlDoc, xpath, expression + "/text()");
 		String unitStr = MyXMLReaderUtils.getXMLPropertyByPath(xmlDoc, xpath, expression + "/@unit");
-
+		
 		if ((valueStr != null) && (!valueStr.equals("")) && (unitStr != null)) {
 			try {
 
@@ -760,7 +782,8 @@ public class MyXMLReaderUtils {
 
 				if(unitStr.startsWith("1/", 0)) {
 					if(unitStr.equalsIgnoreCase("1/deg"))
-						unitStr = "1/Â°";
+						unitStr = //"1/°";
+							"1/"+"\u00B0";
 					Double value = Double.parseDouble(valueStr);
 					quantity = Amount.valueOf(value, Unit.valueOf(unitStr.substring(2)).inverse());
 				}
@@ -1101,7 +1124,7 @@ public class MyXMLReaderUtils {
 					case "deg":
 					case "DEG":
 					case "Deg":
-						unitStr = "Â°"; // UTF-8 symbol: C/C++/Java source code "\u00B0"
+						//unitStr = "°"; // UTF-8 symbol: C/C++/Java source code "\u00B0"
 						unitStr = "\u00B0";
 						break;
 					}

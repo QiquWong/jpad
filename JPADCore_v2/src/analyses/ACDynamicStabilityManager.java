@@ -4,13 +4,18 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
+import javax.measure.quantity.Angle;
+import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
+import javax.measure.quantity.Temperature;
 import javax.measure.unit.SI;
 
 import org.apache.commons.math3.linear.RealVector;
@@ -40,6 +45,7 @@ import standaloneutils.MyArrayUtils;
 import standaloneutils.MyUnits;
 import standaloneutils.MyXLSUtils;
 import standaloneutils.MyXMLReaderUtils;
+import standaloneutils.atmosphere.AtmosphereCalc;
 import writers.JPADStaticWriteUtils;
 
 public class ACDynamicStabilityManager {
@@ -55,6 +61,11 @@ public class ACDynamicStabilityManager {
 	// OUTPUT DATA
 	//..............................................................................
 
+	private double _currentMachNumber;
+	private Amount<Length> _currentAltitude;
+	private Amount<Temperature> _currentDeltaTemperature;
+	private Amount<Angle> _alphaBodyCurrent;
+	
 	double rho0;         						// air density
 	double reference_area;						// wing area
 	double mass; 								// total mass
@@ -183,7 +194,13 @@ public class ACDynamicStabilityManager {
 	//------------------------------------------------------------------------------
 
 	private void initializeData() {
+		
+		// this.rho0 = 
+		
 		// TODO @agodemar
+		
+		//..............................................................................
+		// initialize containers of results
 		
 
 	}
@@ -193,7 +210,7 @@ public class ACDynamicStabilityManager {
 			String pathToXML,
 			Aircraft theAircraft,
 			OperatingConditions theOperatingConditions,
-			ConditionEnum condition
+			ConditionEnum currentCondition
 			) throws IOException {
 
 		JPADXmlReader reader = new JPADXmlReader(pathToXML);
@@ -206,7 +223,7 @@ public class ACDynamicStabilityManager {
 						"//@id");
 		
 		PropulsionTypeEnum propulsionSystem = PropulsionTypeEnum.valueOf(
-				reader.getXMLAttributeByPath("//dynamic_stability/propulsion_system", "type"));
+				reader.getXMLAttributeByPath("//dynamic_stability/global_data/propulsion_system", "type"));
 
 		//---------------------------------------------------------------------------------------
 		// WEIGHTS FROM FILE INSTRUCTION
@@ -361,13 +378,21 @@ public class ACDynamicStabilityManager {
 		else {
 			
 			// get the node <aerodynamics/>
-			Node nodeBalance = MyXMLReaderUtils
-					.getXMLNodeListByPath(reader.getXmlDoc(), "//analysis/dynamic_stability/balance")
-					.item(0);
+			NodeList nodeListBalance = MyXMLReaderUtils
+					.getXMLNodeListByPath(reader.getXmlDoc(), "//analysis/dynamic_stability/balance");
+			
+			if (nodeListBalance.getLength() == 0) throw new AssertionError("Must have a node analysis/dynamic_stability/balance !");
+			
+			// take first occurrence
+			Node nodeBalance = nodeListBalance.item(0);
 			
 			// get the node list of <xcg/>'s
 			NodeList xcgNodelist = MyXMLReaderUtils
-					.getXMLNodeListByPath(nodeBalance, "/xcg");
+					.getXMLNodeListByPath(nodeBalance, "//xcg");
+
+			if (xcgNodelist.getLength() == 0) throw new AssertionError("Must have at least one node analysis/dynamic_stability/balance/xcg !");
+			
+			// System.out.println("balance/xcg nodes found: " + xcgNodelist.getLength());
 			
 			for(int i = 0; i < xcgNodelist.getLength(); i++) {
 
@@ -375,23 +400,25 @@ public class ACDynamicStabilityManager {
 				Double xcg = MyXMLReaderUtils.getXMLDoubleFromAttributeValueByPath(node, "/");
 
 				iXX
-					.put(xcg, MyXMLReaderUtils.getXMLAmountFromAttributeValueWithUnitByPath(node, "/iXX")
+					.put(xcg, MyXMLReaderUtils.getXMLAmountFromAttributeValueWithUnitByPath(node, "//iXX")
 						.doubleValue(MyUnits.KILOGRAM_METER_SQUARED));
 				iYY
-					.put(xcg, MyXMLReaderUtils.getXMLAmountFromAttributeValueWithUnitByPath(node, "/iYY")
+					.put(xcg, MyXMLReaderUtils.getXMLAmountFromAttributeValueWithUnitByPath(node, "//iYY")
 						.doubleValue(MyUnits.KILOGRAM_METER_SQUARED));
 				iZZ
-					.put(xcg, MyXMLReaderUtils.getXMLAmountFromAttributeValueWithUnitByPath(node, "/iZZ")
+					.put(xcg, MyXMLReaderUtils.getXMLAmountFromAttributeValueWithUnitByPath(node, "//iZZ")
 							.doubleValue(MyUnits.KILOGRAM_METER_SQUARED));
 				iXZ
-					.put(xcg, MyXMLReaderUtils.getXMLAmountFromAttributeValueWithUnitByPath(node, "/iXZ")
+					.put(xcg, MyXMLReaderUtils.getXMLAmountFromAttributeValueWithUnitByPath(node, "//iXZ")
 						.doubleValue(MyUnits.KILOGRAM_METER_SQUARED));
 				
+				/*
 				System.out.println("xcg = " + xcg);
 				System.out.println("IXX = " + iXX.get(xcg));
 				System.out.println("IYY = " + iYY.get(xcg));
 				System.out.println("IZZ = " + iZZ.get(xcg));
 				System.out.println("IXZ = " + iXZ.get(xcg));
+				*/
 				
 			}
 			
@@ -518,13 +545,13 @@ public class ACDynamicStabilityManager {
 			
 			// TODO refactor the following code in order to treat dynamic_stability/aerodynamics/xcg as a node list
 			
-			List<String> xCGListProperty = MyXMLReaderUtils.getXMLPropertiesByPath(reader.getXmlDoc(), reader.getXpath(),"//xcg/@value");
+			List<String> xCGListProperty = MyXMLReaderUtils.getXMLPropertiesByPath(reader.getXmlDoc(), reader.getXpath(),"//dynamic_stability/aerodynamics/xcg/@value");
 			if(!xCGListProperty.isEmpty())
 				xCGListProperty.stream().forEach(xcg -> centerOfGravityList.add(Double.valueOf(xcg)));
 			
 			//...............................................................
 			// CLmax CLEAN
-			List<String> cLmaxCleanProperty = reader.getXMLPropertiesByPath("//cLmax_clean_configuration");
+			List<String> cLmaxCleanProperty = reader.getXMLPropertiesByPath("//dynamic_stability/aerodynamics/xcg/cLmax_clean_configuration");
 			if(!cLmaxCleanProperty.isEmpty())
 				for(int i=0; i<cLmaxCleanProperty.size(); i++)
 					cLmaxClean.put(
@@ -533,12 +560,12 @@ public class ACDynamicStabilityManager {
 							);
 			//...............................................................
 			// CLalpha CLEAN
-			List<String> cLAlphaCleanProperty = reader.getXMLPropertiesByPath("//cL_alpha_clean_configuration");
+			List<String> cLAlphaCleanProperty = reader.getXMLPropertiesByPath("//dynamic_stability/aerodynamics/xcg/cL_alpha_clean_configuration");
 			List<Amount<?>> cLAlphaCleanList = new ArrayList<>();
 			if(!cLAlphaCleanProperty.isEmpty()) {
 				for(int i=0; i<centerOfGravityList.size(); i++) 
 					cLAlphaCleanList.add(
-							reader.getXMLAmountWithUnitByPath("//xcg[@value='" + centerOfGravityList.get(i) + "']/cL_alpha_clean_configuration")
+							reader.getXMLAmountWithUnitByPath("//dynamic_stability/aerodynamics/xcg[@value='" + centerOfGravityList.get(i) + "']/cL_alpha_clean_configuration")
 							);
 			}
 			for(int i=0; i<cLAlphaCleanList.size(); i++)
@@ -549,12 +576,12 @@ public class ACDynamicStabilityManager {
 				
 			//...............................................................
 			// CLalpha TAKE-OFF
-			List<String> cLAlphaTakeOffProperty = reader.getXMLPropertiesByPath("//cL_alpha_take_off");
+			List<String> cLAlphaTakeOffProperty = reader.getXMLPropertiesByPath("//dynamic_stability/aerodynamics/xcg/cL_alpha_take_off");
 			List<Amount<?>> cLAlphaTakeOffList = new ArrayList<>();
 			if(!cLAlphaTakeOffProperty.isEmpty()) {
 				for(int i=0; i<centerOfGravityList.size(); i++) 
 					cLAlphaTakeOffList.add(
-							reader.getXMLAmountWithUnitByPath("//xcg[@value='" + centerOfGravityList.get(i) + "']/cL_alpha_take_off")
+							reader.getXMLAmountWithUnitByPath("//dynamic_stability/aerodynamics/xcg[@value='" + centerOfGravityList.get(i) + "']/cL_alpha_take_off")
 							);
 			}
 			for(int i=0; i<cLAlphaTakeOffList.size(); i++)
@@ -564,12 +591,12 @@ public class ACDynamicStabilityManager {
 						);
 			//...............................................................
 			// CLalpha LANDING
-			List<String> cLAlphaLandingProperty = reader.getXMLPropertiesByPath("//cL_alpha_landing");
+			List<String> cLAlphaLandingProperty = reader.getXMLPropertiesByPath("//dynamic_stability/aerodynamics/xcg/cL_alpha_landing");
 			List<Amount<?>> cLAlphaLandingList = new ArrayList<>();
 			if(!cLAlphaLandingProperty.isEmpty()) {
 				for(int i=0; i<centerOfGravityList.size(); i++) 
 					cLAlphaLandingList.add(
-							reader.getXMLAmountWithUnitByPath("//xcg[@value='" + centerOfGravityList.get(i) + "']/cL_alpha_landing")
+							reader.getXMLAmountWithUnitByPath("//dynamic_stability/aerodynamics/xcg[@value='" + centerOfGravityList.get(i) + "']/cL_alpha_landing")
 							);
 			}
 			for(int i=0; i<cLAlphaLandingList.size(); i++)
@@ -579,7 +606,7 @@ public class ACDynamicStabilityManager {
 						);
 			//...............................................................
 			// CLmax TAKE-OFF
-			List<String> cLmaxTakeOffProperty = reader.getXMLPropertiesByPath("//cLmax_take_off_configuration");
+			List<String> cLmaxTakeOffProperty = reader.getXMLPropertiesByPath("//dynamic_stability/aerodynamics/xcg/cLmax_take_off_configuration");
 			if(!cLmaxTakeOffProperty.isEmpty())
 				for(int i=0; i<cLmaxTakeOffProperty.size(); i++)
 					cLmaxTakeOff.put(
@@ -588,7 +615,7 @@ public class ACDynamicStabilityManager {
 							);
 			//...............................................................
 			// CL0 TAKE-OFF
-			List<String> cL0TakeOffProperty = reader.getXMLPropertiesByPath("//cL0_take_off_configuration");
+			List<String> cL0TakeOffProperty = reader.getXMLPropertiesByPath("//dynamic_stability/aerodynamics/xcg/cL0_take_off_configuration");
 			if(!cL0TakeOffProperty.isEmpty())
 				for(int i=0; i<cL0TakeOffProperty.size(); i++)
 					cLZeroTakeOff.put(
@@ -597,7 +624,7 @@ public class ACDynamicStabilityManager {
 							);
 			//...............................................................
 			// CLmax LANDING
-			List<String> cLmaxLandingProperty = reader.getXMLPropertiesByPath("//cLmax_landing_configuration");
+			List<String> cLmaxLandingProperty = reader.getXMLPropertiesByPath("//dynamic_stability/aerodynamics/xcg/cLmax_landing_configuration");
 			if(!cLmaxLandingProperty.isEmpty())
 				for(int i=0; i<cLmaxLandingProperty.size(); i++)
 					cLmaxLanding.put(
@@ -606,7 +633,7 @@ public class ACDynamicStabilityManager {
 							);
 			//...............................................................
 			// CL0 LANDING
-			List<String> cL0LandingProperty = reader.getXMLPropertiesByPath("//cL0_landing_configuration");
+			List<String> cL0LandingProperty = reader.getXMLPropertiesByPath("//dynamic_stability/aerodynamics/xcg/cL0_landing_configuration");
 			if(!cL0LandingProperty.isEmpty())
 				for(int i=0; i<cL0LandingProperty.size(); i++)
 					cLZeroLanding.put(
@@ -616,7 +643,7 @@ public class ACDynamicStabilityManager {
 			
 			//...............................................................
 			// DeltaCD0 TAKE-OFF
-			List<String> deltaCD0TakeOffProperty = reader.getXMLPropertiesByPath("//delta_CD0_flap_take_off");
+			List<String> deltaCD0TakeOffProperty = reader.getXMLPropertiesByPath("//dynamic_stability/aerodynamics/xcg/delta_CD0_flap_take_off");
 			if(!deltaCD0TakeOffProperty.isEmpty())
 				for(int i=0; i<deltaCD0TakeOffProperty.size(); i++)
 					deltaCD0TakeOff.put(
@@ -625,7 +652,7 @@ public class ACDynamicStabilityManager {
 						);
 			//...............................................................
 			// DeltaCD0 LANDING
-			List<String> deltaCD0LandingProperty = reader.getXMLPropertiesByPath("//delta_CD0_flap_landing");
+			List<String> deltaCD0LandingProperty = reader.getXMLPropertiesByPath("//dynamic_stability/aerodynamics/xcg/delta_CD0_flap_landing");
 			if(!deltaCD0LandingProperty.isEmpty())
 				for(int i=0; i<deltaCD0LandingProperty.size(); i++)
 					deltaCD0Landing.put(
@@ -634,7 +661,7 @@ public class ACDynamicStabilityManager {
 						);
 			//...............................................................
 			// DeltaCD0 LANDING GEARS
-			List<String> deltaCD0LandingGearsProperty = reader.getXMLPropertiesByPath("//delta_CD0_landing_gears");
+			List<String> deltaCD0LandingGearsProperty = reader.getXMLPropertiesByPath("//dynamic_stability/aerodynamics/xcg/delta_CD0_landing_gears");
 			if(!deltaCD0LandingGearsProperty.isEmpty())
 				for(int i=0; i<deltaCD0LandingGearsProperty.size(); i++)
 					deltaCD0LandingGears.put(
@@ -654,7 +681,7 @@ public class ACDynamicStabilityManager {
 			else {
 				//...............................................................
 				// CD0
-				List<String> cD0Property = reader.getXMLPropertiesByPath("//cD0");
+				List<String> cD0Property = reader.getXMLPropertiesByPath("//dynamic_stability/aerodynamics/xcg/cD0");
 				if(!cD0Property.isEmpty())
 					for(int i=0; i<cD0Property.size(); i++)
 						cD0.put(
@@ -663,7 +690,7 @@ public class ACDynamicStabilityManager {
 							);
 				//...............................................................
 				// OSWALD CRUISE
-				List<String> oswladCruiseProperty = reader.getXMLPropertiesByPath("//oswald_cruise");
+				List<String> oswladCruiseProperty = reader.getXMLPropertiesByPath("//dynamic_stability/aerodynamics/xcg/oswald_cruise");
 				if(!oswladCruiseProperty.isEmpty())
 					for(int i=0; i<oswladCruiseProperty.size(); i++)
 						oswaldCruise.put(
@@ -672,7 +699,7 @@ public class ACDynamicStabilityManager {
 							);
 				//...............................................................
 				// OSWALD CLIMB
-				List<String> oswladClimbProperty = reader.getXMLPropertiesByPath("//oswald_climb");
+				List<String> oswladClimbProperty = reader.getXMLPropertiesByPath("//dynamic_stability/aerodynamics/xcg/oswald_climb");
 				if(!oswladClimbProperty.isEmpty())
 					for(int i=0; i<oswladClimbProperty.size(); i++)
 						oswaldClimb.put(
@@ -681,7 +708,7 @@ public class ACDynamicStabilityManager {
 							);
 				//...............................................................
 				// OSWALD TO
-				List<String> oswladTOProperty = reader.getXMLPropertiesByPath("//oswald_take_off");
+				List<String> oswladTOProperty = reader.getXMLPropertiesByPath("//dynamic_stability/aerodynamics/xcg/oswald_take_off");
 				if(!oswladTOProperty.isEmpty())
 					for(int i=0; i<oswladTOProperty.size(); i++)
 						oswaldTakeOff.put(
@@ -690,7 +717,7 @@ public class ACDynamicStabilityManager {
 							);
 				//...............................................................
 				// OSWALD LND
-				List<String> oswladLNDProperty = reader.getXMLPropertiesByPath("//oswald_landing");
+				List<String> oswladLNDProperty = reader.getXMLPropertiesByPath("//dynamic_stability/aerodynamics/xcg/oswald_landing");
 				if(!oswladLNDProperty.isEmpty())
 					for(int i=0; i<oswladLNDProperty.size(); i++)
 						oswaldLanding.put(
@@ -809,7 +836,10 @@ public class ACDynamicStabilityManager {
 				});
 			}
 			
-			assert centerOfGravityList.size() == xcgNodelist.getLength() : "Inconsistent <xcg/> nodes!";
+			// System.out.println("analysis/dynamic_stability/aerodynamics/xcg nodes: " + xcgNodelist.getLength());
+			// System.out.println("analysis/dynamic_stability/dynamic_stability/xcg nodes: " + centerOfGravityList.size());
+			
+			if (centerOfGravityList.size() != xcgNodelist.getLength()) throw new AssertionError("Inconsistent nodes analysis/dynamic_stability/aerodynamics/xcg and analysis/dynamic_stability/dynamic_stability/xcg !");
 
 			for(int i = 0; i < xcgNodelist.getLength(); i++) {
 				
@@ -888,20 +918,7 @@ public class ACDynamicStabilityManager {
 				cYawDeltaR				
 					.put(xcg, MyXMLReaderUtils.getXMLDoubleFromAttributeValueByPath(node, "//cYaw_delta_A"));
 			}
-			
-			// TODO @agodemar read necessary data for dynamic stability analysis
-			
-			
 		}		
-		
-		// TODO @agodemar
-
-		
-		
-		
-		
-		
-		
 		
 		// TODO @agodemar
 		//===========================================================================================
@@ -910,6 +927,7 @@ public class ACDynamicStabilityManager {
 				.setId(id)
 				.setTheAircraft(theAircraft)
 				.setTheOperatingConditions(theOperatingConditions)
+				.setCurrentCondition(currentCondition)
 				.setPropulsionSystem(propulsionSystem)
 				.setMaximumTakeOffMass(maximumTakeOffMass.to(SI.KILOGRAM))
 				.setOperatingEmptyMass(operatingEmptyMass.to(SI.KILOGRAM))
@@ -973,7 +991,7 @@ public class ACDynamicStabilityManager {
 				.putAllCYawR(cYawR)
 				.putAllCYawDeltaA(cYawDeltaA)
 				.putAllCYawDeltaR(cYawDeltaR)
-				// TODO: add the rest...
+				// TODO: add the rest... ???
 				.build();
 
 		ACDynamicStabilityManager theDynamicsManager = new ACDynamicStabilityManager();
@@ -982,601 +1000,6 @@ public class ACDynamicStabilityManager {
 		return theDynamicsManager;
 	}
 
-	// SEE: DYNAMIC_STABILITY_TEST_AIRCRAFT_DATA.xlsx
-	public void readDataFromExcelFile(File excelFile, int sheetNum) {
-
-		// Formats numbers up to 4 decimal places
-		DecimalFormat df = new DecimalFormat("#,###,##0.0000");
-
-		try {
-			System.out.println("Input file: " + excelFile.getAbsolutePath());
-			FileInputStream fis = new FileInputStream(excelFile);
-			Workbook wb = WorkbookFactory.create(fis);
-			Sheet ws = wb.getSheetAt(sheetNum);
-			int rowNum = ws.getLastRowNum() + 1;
-			System.out.println("rows number: " + rowNum);
-
-			if(sheetNum == 0){
-				System.out.println("---------------------------------------------------\n");
-				System.out.println("\n\n BOEING 747 /// Flight Condition (2) ");
-				System.out.println("_________________________________________________________________\n");
-				System.out.println("DATA LIST: \n");
-			}
-			else if (sheetNum == 1){
-				System.out.println("---------------------------------------------------\n");
-				System.out.println("\n\n BOEING 747 /// Flight Condition (5) ");
-				System.out.println("_________________________________________________________________\n");
-				System.out.println("DATA LIST: \n");
-			}
-
-			for (int i = 0 ; i < rowNum ; i++) {
-				Row row = ws.getRow(i);
-				int colNum = ws.getRow(0).getLastCellNum();
-				for (int j = 0 ; j < colNum-2 ; j++) {
-
-					Cell cell = row.getCell(j);
-					String value = cellToString(cell);
-					switch (sheetNum){
-					///////////// 1st sheet /////////////
-					case 0:
-						if ((i == 1) && (j == 1)) {
-							propulsion_system = PropulsionTypeEnum.valueOf(value);
-							switch (propulsion_system)
-							{
-							case CONSTANT_TRUST:
-								System.out.println(" PROPULSION SYSTEM: CONSTANT TRUST \n");
-								break;
-							case CONSTANT_POWER:
-								System.out.println(" PROPULSION SYSTEM: CONSTANT POWER \n");
-								break;
-							case CONSTANT_MASS_FLOW:
-								System.out.println(" PROPULSION SYSTEM: CONSTANT MASS FLOW \n");
-								break;
-							case RAMJET:
-								System.out.println(" PROPULSION SYSTEM: RAMJET \n");
-								break;
-							default:
-								System.out.println(" PROPULSION SYSTEM: CONSTANT TRUST \n");
-								break;
-							}
-						}
-
-						if ((i == 2) && (j == 1)) {
-							rho0 = Double.parseDouble(value);
-							System.out.println(" rho0         = " + rho0);
-						}
-
-						if ((i == 3) && (j == 1)) {
-							reference_area = Double.parseDouble(value);
-							System.out.println(" surf         = " + reference_area);
-						}
-
-						if ((i == 4) && (j == 1)) {
-							mass = Double.parseDouble(value);
-							System.out.println(" mass         = " + mass);
-						}
-
-						if ((i == 5) && (j == 1)) {
-							cbar = Double.parseDouble(value);
-							System.out.println(" cbar         = " + cbar);
-						}
-
-						if ((i == 6) && (j == 1)) {
-							wing_span = Double.parseDouble(value);
-							System.out.println(" bbar         = " + wing_span  );
-						}
-
-						if ((i == 7) && (j == 1)) {
-							u0 = Double.parseDouble(value);
-							System.out.println(" u0           = " + u0);
-							qbar0 = ACDynamicStabilityManagerUtils.calcDynamicPressure(rho0, u0);
-							System.out.println(" q0           = " + df.format(qbar0));
-						}
-
-
-						if ((i == 8) && (j == 1)) {
-							mach0 = Double.parseDouble(value);
-							System.out.println(" m0           = " + mach0);
-						}
-
-						if ((i == 9) && (j == 1)) {
-							gamma0 = Double.parseDouble(value);
-							System.out.println(" gamma0       = " + gamma0);
-						}
-
-						if ((i == 10) && (j == 1)) {
-							theta0  = Double.parseDouble(value);
-							System.out.println(" theta0_rad   = " + theta0 );
-						}
-
-						if ((i == 11) && (j == 1)) {
-							iXX = Double.parseDouble(value);
-							System.out.println(" iXX          = " + iXX);
-						}
-
-						if ((i == 12) && (j == 1)) {
-							iYY = Double.parseDouble(value);
-							System.out.println(" iYY          = " + iYY);
-						}
-
-						if ((i == 13) && (j == 1)) {
-							iZZ = Double.parseDouble(value);
-							System.out.println(" iZZ          = " + iZZ);
-						}
-
-						if ((i == 14) && (j == 1)) {
-							iXZ = Double.parseDouble(value);
-							System.out.println(" iXZ          = " + iXZ);
-						}
-
-						if ((i == 15) && (j == 1)) {
-							cDrag0 = Double.parseDouble(value);
-							System.out.println(" cd0          = " + cDrag0);
-						}
-
-						if ((i == 16) && (j == 1)) {
-							cDrag_alpha0  = Double.parseDouble(value);
-							System.out.println(" cdAlpha0     = " + cDrag_alpha0 );
-						}
-
-						if ((i == 17) && (j == 1)) {
-							cDrag_Mach0  = Double.parseDouble(value);
-							System.out.println(" cdM0         = " + cDrag_Mach0 );
-						}
-
-						if ((i == 18) && (j == 1)) {
-							cL0 = Double.parseDouble(value);
-							System.out.println(" cl0          = " + cL0);
-						}
-
-						if ((i == 19) && (j == 1)) {
-							cL_alpha0 = Double.parseDouble(value);
-							System.out.println(" clAlpha0     = " + cL_alpha0);
-						}
-
-						if ((i == 20) && (j == 1)) {
-							cL_alpha_dot0 = Double.parseDouble(value);
-							System.out.println(" clAlpha_dot0 = " + cL_alpha_dot0);
-						}
-
-						if ((i == 21) && (j == 1)) {
-							cL_Mach0 = Double.parseDouble(value);
-							System.out.println(" clM0         = " + cL_Mach0);
-						}
-						
-						if ((i == 22) && (j == 1)) {
-							cL_q0 = Double.parseDouble(value);
-							System.out.println(" clQ0         = " + cL_q0);
-						}
-
-						if ((i == 23) && (j == 1)) {
-							cL_delta_T = Double.parseDouble(value);
-							System.out.println(" clDelta_T    = " + cL_delta_T);
-						}
-
-						if ((i == 24) && (j == 1)) {
-							cL_delta_E = Double.parseDouble(value);
-							System.out.println(" clDelta_E    = " + cL_delta_E);
-						}
-
-						if ((i == 25) && (j == 1)) {
-							cm_alpha0 = Double.parseDouble(value);
-							System.out.println(" cMAlpha0     = " + cm_alpha0);
-						}
-
-						if ((i == 26) && (j == 1)) {
-							cm_alpha_dot0 = Double.parseDouble(value);
-							System.out.println(" cMAlpha_dot0 = " + cm_alpha_dot0);
-						}
-
-						if ((i == 27) && (j == 1)) {
-							cm_Mach0 = Double.parseDouble(value);
-							System.out.println(" cM_m0        = " + cm_Mach0);
-						}
-
-						if ((i == 28) && (j == 1)) {
-							cm_q = Double.parseDouble(value);
-							System.out.println(" cMq          = " + cm_q);
-						}
-
-						if ((i == 29) && (j == 1)) {
-							cm_delta_T = Double.parseDouble(value);
-							System.out.println(" cMDelta_T    = " + cm_delta_T);
-						}
-
-						if ((i == 30) && (j == 1)) {
-							cm_delta_E = Double.parseDouble(value);
-							System.out.println(" cMDelta_E    = " + cm_delta_E);
-						}
-
-						if ((i == 31) && (j == 1)) {
-							c_Tfix = Double.parseDouble(value);
-							System.out.println(" cTfix        = " + c_Tfix);
-						}
-
-						if ((i == 32) && (j == 1)) {
-							kv = Double.parseDouble(value);
-							System.out.println(" kv           = " + kv);
-						}
-
-						if ((i == 33) && (j == 1)) {
-							cY_beta = Double.parseDouble(value);
-							System.out.println(" cyBeta       = " + cY_beta);
-						}
-
-						if ((i == 34) && (j == 1)) {
-							cY_p = Double.parseDouble(value);
-							System.out.println(" cyP          = " + cY_p);
-						}
-
-						if ((i == 35) && (j == 1)) {
-							cY_r = Double.parseDouble(value);
-							System.out.println(" cyR          = " + cY_r);
-						}
-
-						if ((i == 36) && (j == 1)) {
-							cY_delta_A = Double.parseDouble(value);
-							System.out.println(" cyDelta_A    = " + cY_delta_A);
-						}
-
-						if ((i == 37) && (j == 1)) {
-							cY_delta_R = Double.parseDouble(value);
-							System.out.println(" cyDelta_R    = " + cY_delta_R);
-						}
-
-						if ((i == 38) && (j == 1)) {
-							cRoll_beta = Double.parseDouble(value);
-							System.out.println(" cLBeta       = " + cRoll_beta);
-						}
-
-						if ((i == 39) && (j == 1)) {
-							cRoll_p = Double.parseDouble(value);
-							System.out.println(" cLP          = " + cRoll_p);
-						}
-
-						if ((i == 40) && (j == 1)) {
-							cRoll_r = Double.parseDouble(value);
-							System.out.println(" cLR          = " + cRoll_r);
-						}
-
-						if ((i == 41) && (j == 1)) {
-							cRoll_delta_A = Double.parseDouble(value);
-							System.out.println(" cLDelta_A    = " + cRoll_delta_A);
-						}
-
-						if ((i == 42) && (j == 1)) {
-							cRoll_delta_R = Double.parseDouble(value);
-							System.out.println(" cLDelta_R    = " + cRoll_delta_R);
-						}
-
-						if ((i == 43) && (j == 1)) {
-							cYaw_beta = Double.parseDouble(value);
-							System.out.println(" cNBeta       = " + cYaw_beta);
-						}
-
-						if ((i == 44) && (j == 1)) {
-							cYaw_p = Double.parseDouble(value);
-							System.out.println(" cNP          = " + cYaw_p);
-						}
-
-						if ((i == 45) && (j == 1)) {
-							cYaw_r = Double.parseDouble(value);
-							System.out.println(" cNR          = " + cYaw_r);
-						}
-
-						if ((i == 46) && (j == 1)) {
-							cYaw_delta_A = Double.parseDouble(value);
-							System.out.println(" cNDelta_A    = " + cYaw_delta_A);
-						}
-
-						if ((i == 47) && (j == 1)) {
-							cYaw_delta_R = Double.parseDouble(value);
-							System.out.println(" cNDelta_R    = " + cYaw_delta_R);
-						}
-
-						break;
-
-						///////////// 2nd sheet /////////////
-					case 1:	
-						if ((i == 1) && (j == 1)) {
-							propulsion_system = PropulsionTypeEnum.valueOf(value);
-							switch (propulsion_system)
-							{
-							case CONSTANT_TRUST:
-								System.out.println(" PROPULSION SYSTEM: CONSTANT TRUST \n");
-								break;
-							case CONSTANT_POWER:
-								System.out.println(" PROPULSION SYSTEM: CONSTANT POWER \n");
-								break;
-							case CONSTANT_MASS_FLOW:
-								System.out.println(" PROPULSION SYSTEM: CONSTANT MASS FLOW \n");
-								break;
-							case RAMJET:
-								System.out.println(" PROPULSION SYSTEM: RAMJET \n");
-								break;
-							default:
-								System.out.println(" PROPULSION SYSTEM: CONSTANT TRUST \n");
-								break;
-							}
-						}
-
-						if ((i == 2) && (j == 1)) {
-							rho0 = Double.parseDouble(value);
-							System.out.println(" rho0         = " + rho0);
-						}
-
-						if ((i == 3) && (j == 1)) {
-							reference_area = Double.parseDouble(value);
-							System.out.println(" surf         = " + reference_area);
-						}
-
-						if ((i == 4) && (j == 1)) {
-							mass = Double.parseDouble(value);
-							System.out.println(" mass         = " + mass);
-						}
-
-						if ((i == 5) && (j == 1)) {
-							cbar = Double.parseDouble(value);
-							System.out.println(" cbar         = " + cbar);
-						}
-
-						if ((i == 6) && (j == 1)) {
-							wing_span = Double.parseDouble(value);
-							System.out.println(" bbar         = " + wing_span  );
-						}
-
-						if ((i == 7) && (j == 1)) {
-							u0 = Double.parseDouble(value);
-							System.out.println(" u0           = " + u0);
-							qbar0 = ACDynamicStabilityManagerUtils.calcDynamicPressure(rho0, u0);
-							System.out.println(" q0           = " + df.format(qbar0));
-						}
-
-
-						if ((i == 8) && (j == 1)) {
-							mach0 = Double.parseDouble(value);
-							System.out.println(" m0           = " + mach0);
-						}
-
-						if ((i == 9) && (j == 1)) {
-							gamma0 = Double.parseDouble(value);
-							System.out.println(" gamma0       = " + gamma0);
-						}
-
-						if ((i == 10) && (j == 1)) {
-							theta0  = Double.parseDouble(value);
-							System.out.println(" theta0_rad   = " + theta0 );
-						}
-
-						if ((i == 11) && (j == 1)) {
-							iXX = Double.parseDouble(value);
-							System.out.println(" iXX          = " + iXX);
-						}
-
-						if ((i == 12) && (j == 1)) {
-							iYY = Double.parseDouble(value);
-							System.out.println(" iYY          = " + iYY);
-						}
-
-						if ((i == 13) && (j == 1)) {
-							iZZ = Double.parseDouble(value);
-							System.out.println(" iZZ          = " + iZZ);
-						}
-
-						if ((i == 14) && (j == 1)) {
-							iXZ = Double.parseDouble(value);
-							System.out.println(" iXZ          = " + iXZ);
-						}
-
-						if ((i == 15) && (j == 1)) {
-							cDrag0 = Double.parseDouble(value);
-							System.out.println(" cd0          = " + cDrag0);
-						}
-
-						if ((i == 16) && (j == 1)) {
-							cDrag_alpha0  = Double.parseDouble(value);
-							System.out.println(" cdAlpha0     = " + cDrag_alpha0 );
-						}
-
-						if ((i == 17) && (j == 1)) {
-							cDrag_Mach0  = Double.parseDouble(value);
-							System.out.println(" cdM0         = " + cDrag_Mach0 );
-						}
-
-						if ((i == 18) && (j == 1)) {
-							cL0 = Double.parseDouble(value);
-							System.out.println(" cl0          = " + cL0);
-						}
-
-						if ((i == 19) && (j == 1)) {
-							cL_alpha0 = Double.parseDouble(value);
-							System.out.println(" clAlpha0     = " + cL_alpha0);
-						}
-
-						if ((i == 20) && (j == 1)) {
-							cL_alpha_dot0 = Double.parseDouble(value);
-							System.out.println(" clAlpha_dot0 = " + cL_alpha_dot0);
-						}
-
-						if ((i == 21) && (j == 1)) {
-							cL_Mach0 = Double.parseDouble(value);
-							System.out.println(" clM0         = " + cL_Mach0);
-						}
-						
-						if ((i == 22) && (j == 1)) {
-							cL_q0 = Double.parseDouble(value);
-							System.out.println(" clQ0         = " + cL_q0);
-						}
-
-						if ((i == 23) && (j == 1)) {
-							cL_delta_T = Double.parseDouble(value);
-							System.out.println(" clDelta_T    = " + cL_delta_T);
-						}
-
-						if ((i == 24) && (j == 1)) {
-							cL_delta_E = Double.parseDouble(value);
-							System.out.println(" clDelta_E    = " + cL_delta_E);
-						}
-
-						if ((i == 25) && (j == 1)) {
-							cm_alpha0 = Double.parseDouble(value);
-							System.out.println(" cMAlpha0     = " + cm_alpha0);
-						}
-
-						if ((i == 26) && (j == 1)) {
-							cm_alpha_dot0 = Double.parseDouble(value);
-							System.out.println(" cMAlpha_dot0 = " + cm_alpha_dot0);
-						}
-
-						if ((i == 27) && (j == 1)) {
-							cm_Mach0 = Double.parseDouble(value);
-							System.out.println(" cM_m0        = " + cm_Mach0);
-						}
-
-						if ((i == 28) && (j == 1)) {
-							cm_q = Double.parseDouble(value);
-							System.out.println(" cMq          = " + cm_q);
-						}
-
-						if ((i == 29) && (j == 1)) {
-							cm_delta_T = Double.parseDouble(value);
-							System.out.println(" cMDelta_T    = " + cm_delta_T);
-						}
-
-						if ((i == 30) && (j == 1)) {
-							cm_delta_E = Double.parseDouble(value);
-							System.out.println(" cMDelta_E    = " + cm_delta_E);
-						}
-
-						if ((i == 31) && (j == 1)) {
-							c_Tfix = Double.parseDouble(value);
-							System.out.println(" cTfix        = " + c_Tfix);
-						}
-
-						if ((i == 32) && (j == 1)) {
-							kv = Double.parseDouble(value);
-							System.out.println(" kv           = " + kv);
-						}
-
-						if ((i == 33) && (j == 1)) {
-							cY_beta = Double.parseDouble(value);
-							System.out.println(" cyBeta       = " + cY_beta);
-						}
-
-						if ((i == 34) && (j == 1)) {
-							cY_p = Double.parseDouble(value);
-							System.out.println(" cyP          = " + cY_p);
-						}
-
-						if ((i == 35) && (j == 1)) {
-							cY_r = Double.parseDouble(value);
-							System.out.println(" cyR          = " + cY_r);
-						}
-
-						if ((i == 36) && (j == 1)) {
-							cY_delta_A = Double.parseDouble(value);
-							System.out.println(" cyDelta_A    = " + cY_delta_A);
-						}
-
-						if ((i == 37) && (j == 1)) {
-							cY_delta_R = Double.parseDouble(value);
-							System.out.println(" cyDelta_R    = " + cY_delta_R);
-						}
-
-						if ((i == 38) && (j == 1)) {
-							cRoll_beta = Double.parseDouble(value);
-							System.out.println(" cLBeta       = " + cRoll_beta);
-						}
-
-						if ((i == 39) && (j == 1)) {
-							cRoll_p = Double.parseDouble(value);
-							System.out.println(" cLP          = " + cRoll_p);
-						}
-
-						if ((i == 40) && (j == 1)) {
-							cRoll_r = Double.parseDouble(value);
-							System.out.println(" cLR          = " + cRoll_r);
-						}
-
-						if ((i == 41) && (j == 1)) {
-							cRoll_delta_A = Double.parseDouble(value);
-							System.out.println(" cLDelta_A    = " + cRoll_delta_A);
-						}
-
-						if ((i == 42) && (j == 1)) {
-							cRoll_delta_R = Double.parseDouble(value);
-							System.out.println(" cLDelta_R    = " + cRoll_delta_R);
-						}
-
-						if ((i == 43) && (j == 1)) {
-							cYaw_beta = Double.parseDouble(value);
-							System.out.println(" cNBeta       = " + cYaw_beta);
-						}
-
-						if ((i == 44) && (j == 1)) {
-							cYaw_p = Double.parseDouble(value);
-							System.out.println(" cNP          = " + cYaw_p);
-						}
-
-						if ((i == 45) && (j == 1)) {
-							cYaw_r = Double.parseDouble(value);
-							System.out.println(" cNR          = " + cYaw_r);
-						}
-
-						if ((i == 46) && (j == 1)) {
-							cYaw_delta_A = Double.parseDouble(value);
-							System.out.println(" cNDelta_A    = " + cYaw_delta_A);
-						}
-
-						if ((i == 47) && (j == 1)) {
-							cYaw_delta_R = Double.parseDouble(value);
-							System.out.println(" cNDelta_R    = " + cYaw_delta_R);
-						}
-
-						break;
-					}
-
-				}
-			}
-		}
-
-		catch(Exception ioe) {
-			ioe.printStackTrace();
-		}
-
-
-	}
-
-	public static String cellToString(Cell cell) {  
-		int type;
-		Object result = null;
-		type = cell.getCellType();
-
-		switch (type) {
-
-		case Cell.CELL_TYPE_NUMERIC: // numeric value in Excel
-		case Cell.CELL_TYPE_FORMULA: // precomputed value based on formula
-			result = cell.getNumericCellValue();
-			break;
-		case Cell.CELL_TYPE_STRING: // String Value in Excel 
-			result = cell.getStringCellValue();
-			break;
-		case Cell.CELL_TYPE_BLANK:
-			result = "";
-		case Cell.CELL_TYPE_BOOLEAN: //boolean value 
-			result = cell.getBooleanCellValue();
-			break;
-		case Cell.CELL_TYPE_ERROR:
-		default:  
-			throw new RuntimeException("There is no support for this type of cell");                        
-		}
-
-		if (result == null)
-			return "";
-		else
-			return result.toString();
-	}
-	
 	/**
 	 * This method initializes the related calculators inner classes and 
 	 * performs the required calculation
@@ -1600,8 +1023,105 @@ public class ACDynamicStabilityManager {
 					+ File.separator
 					);
 
+			
+			// Air density at current operating condition
+			
+			switch (_theDynamicStabilityManagerInterface.getCurrentCondition()) {
+			case TAKE_OFF:
+				this._currentMachNumber = _theDynamicStabilityManagerInterface.getTheOperatingConditions().getMachTakeOff();
+				this._currentAltitude = _theDynamicStabilityManagerInterface.getTheOperatingConditions().getAltitudeTakeOff();
+				this._currentDeltaTemperature = _theDynamicStabilityManagerInterface.getTheOperatingConditions().getDeltaTemperatureTakeOff();
+				this._alphaBodyCurrent = _theDynamicStabilityManagerInterface.getTheOperatingConditions().getAlphaTakeOff();
+				this.mass = _theDynamicStabilityManagerInterface.getMaximumTakeOffMass().doubleValue(SI.KILOGRAM);
+				this.u0 = _theDynamicStabilityManagerInterface.getTheOperatingConditions().getTasTakeOff().doubleValue(SI.METERS_PER_SECOND);
+				this.qbar0 = _theDynamicStabilityManagerInterface.getTheOperatingConditions().getDynamicPressureTakeOff().doubleValue(SI.PASCAL);
+				break;
+			case CLIMB:
+				this._currentMachNumber = _theDynamicStabilityManagerInterface.getTheOperatingConditions().getMachClimb();
+				this._currentAltitude = _theDynamicStabilityManagerInterface.getTheOperatingConditions().getAltitudeClimb();
+				this._currentDeltaTemperature = _theDynamicStabilityManagerInterface.getTheOperatingConditions().getDeltaTemperatureClimb();
+				this._alphaBodyCurrent = _theDynamicStabilityManagerInterface.getTheOperatingConditions().getAlphaClimb();
+				this.mass = _theDynamicStabilityManagerInterface.getMaximumTakeOffMass().doubleValue(SI.KILOGRAM);
+				this.u0 = _theDynamicStabilityManagerInterface.getTheOperatingConditions().getTasClimb().doubleValue(SI.METERS_PER_SECOND);
+				this.qbar0 = _theDynamicStabilityManagerInterface.getTheOperatingConditions().getDynamicPressureClimb().doubleValue(SI.PASCAL);
+				break;
+			case CRUISE:
+				this._currentMachNumber = _theDynamicStabilityManagerInterface.getTheOperatingConditions().getMachCruise();
+				this._currentAltitude = _theDynamicStabilityManagerInterface.getTheOperatingConditions().getAltitudeCruise();
+				this._currentDeltaTemperature = _theDynamicStabilityManagerInterface.getTheOperatingConditions().getDeltaTemperatureCruise();
+				this._alphaBodyCurrent = _theDynamicStabilityManagerInterface.getTheOperatingConditions().getAlphaCruise();
+				this.mass = _theDynamicStabilityManagerInterface.getMaximumTakeOffMass().doubleValue(SI.KILOGRAM)*0.80; // TODO check this assumption
+				this.u0 = _theDynamicStabilityManagerInterface.getTheOperatingConditions().getTasCruise().doubleValue(SI.METERS_PER_SECOND);
+				this.qbar0 = _theDynamicStabilityManagerInterface.getTheOperatingConditions().getDynamicPressureCruise().doubleValue(SI.PASCAL);
+				break;
+			case LANDING:
+				this._currentMachNumber = _theDynamicStabilityManagerInterface.getTheOperatingConditions().getMachLanding();
+				this._currentAltitude = _theDynamicStabilityManagerInterface.getTheOperatingConditions().getAltitudeLanding();
+				this._currentDeltaTemperature = _theDynamicStabilityManagerInterface.getTheOperatingConditions().getDeltaTemperatureLanding();
+				this._alphaBodyCurrent = _theDynamicStabilityManagerInterface.getTheOperatingConditions().getAlphaLanding();
+				this.mass = _theDynamicStabilityManagerInterface.getMaximumTakeOffMass()
+						.minus(_theDynamicStabilityManagerInterface.getMaximumFuelMass().times(0.80)) // TODO check this assumption
+						.doubleValue(SI.KILOGRAM); 
+				this.u0 = _theDynamicStabilityManagerInterface.getTheOperatingConditions().getTasLanding().doubleValue(SI.METERS_PER_SECOND);
+				this.qbar0 = _theDynamicStabilityManagerInterface.getTheOperatingConditions().getDynamicPressureLanding().doubleValue(SI.PASCAL);
+				break;
+			default:
+				break;
+			}
+			
+			this.rho0 				= AtmosphereCalc.getDensity(_currentAltitude.doubleValue(SI.METER), _currentDeltaTemperature.doubleValue(SI.CELSIUS));
+			this.mach0 				= this._currentMachNumber;
+			this.reference_area 	= _theDynamicStabilityManagerInterface.getTheAircraft().getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE);
+			this.cbar 				= _theDynamicStabilityManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChord().doubleValue(SI.METER);
+			this.wing_span 			= _theDynamicStabilityManagerInterface.getTheAircraft().getWing().getSpan().doubleValue(SI.METER);
+			
+			this.gamma0 = 0.0;
+			this.theta0 = gamma0;
+
+			Double xcg = _theDynamicStabilityManagerInterface.getXcgPositionList().get(i);
+			
+			this.iXX = _theDynamicStabilityManagerInterface.getIXX().get(xcg);
+			this.iYY = _theDynamicStabilityManagerInterface.getIYY().get(xcg);
+			this.iZZ = _theDynamicStabilityManagerInterface.getIZZ().get(xcg);
+			this.iXZ = _theDynamicStabilityManagerInterface.getIXZ().get(xcg);
+			this.cDrag0  = _theDynamicStabilityManagerInterface.getCDrag0().get(xcg);
+			this.cDrag_alpha0 = _theDynamicStabilityManagerInterface.getCDragAlpha0().get(xcg);
+			this.cDrag_Mach0 = _theDynamicStabilityManagerInterface.getCDragMach0().get(xcg);
+			this.cL0  = _theDynamicStabilityManagerInterface.getCLift0().get(xcg);
+			this.cL_alpha0  = _theDynamicStabilityManagerInterface.getCLiftAlpha0().get(xcg);
+			this.cL_alpha_dot0 = _theDynamicStabilityManagerInterface.getCLiftAlphaDot0().get(xcg);
+			this.cL_Mach0 = _theDynamicStabilityManagerInterface.getCLiftMach0().get(xcg);
+			this.cL_q0 = _theDynamicStabilityManagerInterface.getCLiftQ0().get(xcg);
+			this.cL_delta_E = _theDynamicStabilityManagerInterface.getCLiftDeltaE().get(xcg);
+			this.cL_delta_T = _theDynamicStabilityManagerInterface.getCLiftDeltaT() .get(xcg);
+			this.cm_alpha0 = _theDynamicStabilityManagerInterface.getCPitchAlpha0().get(xcg);
+			this.cm_alpha_dot0 = _theDynamicStabilityManagerInterface.getCPitchAlphaDot0().get(xcg);
+			this.cm_Mach0 = _theDynamicStabilityManagerInterface.getCPitchMach0().get(xcg);
+			this.cm_q = _theDynamicStabilityManagerInterface.getCPitchQ0().get(xcg);
+			this.cm_delta_E = _theDynamicStabilityManagerInterface.getCPitchDeltaE().get(xcg);
+			this.cm_delta_T = _theDynamicStabilityManagerInterface.getCPitchDeltaT().get(xcg);
+			this.c_Tfix = _theDynamicStabilityManagerInterface.getCThrustFix().get(xcg);
+			this.kv = _theDynamicStabilityManagerInterface.getKVThrust().get(xcg);
+			this.cY_beta = _theDynamicStabilityManagerInterface.getCSideBeta().get(xcg);
+			this.cY_p = _theDynamicStabilityManagerInterface.getCSideP().get(xcg);
+			this.cY_r = _theDynamicStabilityManagerInterface.getCSideR().get(xcg);
+			this.cY_delta_A = _theDynamicStabilityManagerInterface.getCSideDeltaA().get(xcg);
+			this.cY_delta_R = _theDynamicStabilityManagerInterface.getCSideDeltaR().get(xcg);
+			this.cRoll_beta = _theDynamicStabilityManagerInterface.getCRollBeta().get(xcg);
+			this.cRoll_p = _theDynamicStabilityManagerInterface.getCRollP().get(xcg);
+			this.cRoll_r = _theDynamicStabilityManagerInterface.getCRollR().get(xcg);
+			this.cRoll_delta_A = _theDynamicStabilityManagerInterface.getCRollDeltaA().get(xcg);
+			this.cRoll_delta_R = _theDynamicStabilityManagerInterface.getCRollDeltaR().get(xcg);
+			this.cYaw_beta = _theDynamicStabilityManagerInterface.getCYawBeta().get(xcg);
+			this.cYaw_p = _theDynamicStabilityManagerInterface.getCYawP().get(xcg);
+			this.cYaw_r = _theDynamicStabilityManagerInterface.getCYawR().get(xcg);
+			this.cYaw_delta_A = _theDynamicStabilityManagerInterface.getCYawDeltaA().get(xcg);
+			this.cYaw_delta_R = _theDynamicStabilityManagerInterface.getCYawDeltaR().get(xcg);
+			
 			// Formats numbers up to 4 decimal places
-			DecimalFormat df = new DecimalFormat("#,###,##0.0000");
+			NumberFormat nf = NumberFormat.getNumberInstance(Locale.US);
+	        DecimalFormat df = (DecimalFormat)nf;
+	        df.applyPattern("#,###,##0.0000");
 
 			////////////////////          LONGITUDINAL DYNAMICS          \\\\\\\\\\\\\\\\\\\\
 

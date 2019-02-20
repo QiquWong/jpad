@@ -1,26 +1,26 @@
 -------------------
 Complete Analysis Test
 -------------------
-AIRCRAFT INPUT ===> D:\agodemar\github\jpad\JPADSandBox_v2\in\Template_Aircraft\aircraft_IRON_CANARD_LOOP2_FINAL_DYN.xml
-ANALYSES INPUT ===> D:\agodemar\github\jpad\JPADSandBox_v2\in\Template_Analyses\analysis_IRON_CANARD_LOOP2_FINAL_DYN.xml
-OPERATING CONDITIONS INPUT ===> D:\agodemar\github\jpad\JPADSandBox_v2\in\Template_Analyses\operating_conditions_IRON_CANARD.xml
-AIRFOILS ===> D:\agodemar\github\jpad\JPADSandBox_v2\in\Template_Aircraft\lifting_surfaces\airfoils
-FUSELAGES ===> D:\agodemar\github\jpad\JPADSandBox_v2\in\Template_Aircraft\fuselages
-LIFTING SURFACES ===> D:\agodemar\github\jpad\JPADSandBox_v2\in\Template_Aircraft\lifting_surfaces
-ENGINES ===> D:\agodemar\github\jpad\JPADSandBox_v2\in\Template_Aircraft\engines
-NACELLES ===> D:\agodemar\github\jpad\JPADSandBox_v2\in\Template_Aircraft\nacelles
-LANDING GEARS ===> D:\agodemar\github\jpad\JPADSandBox_v2\in\Template_Aircraft\landing_gears
-CABIN CONFIGURATIONS ===> D:\agodemar\github\jpad\JPADSandBox_v2\in\Template_Aircraft\cabin_configurations
+AIRCRAFT INPUT ===> C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\in\Template_Aircraft\aircraft_IRON_CANARD_LOOP2_FINAL_DYN.xml
+ANALYSES INPUT ===> C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\in\Template_Analyses\analysis_IRON_CANARD_LOOP2_FINAL_DYN.xml
+OPERATING CONDITIONS INPUT ===> C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\in\Template_Analyses\operating_conditions_IRON_CANARD.xml
+AIRFOILS ===> C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\in\Template_Aircraft\lifting_surfaces\airfoils
+FUSELAGES ===> C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\in\Template_Aircraft\fuselages
+LIFTING SURFACES ===> C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\in\Template_Aircraft\lifting_surfaces
+ENGINES ===> C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\in\Template_Aircraft\engines
+NACELLES ===> C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\in\Template_Aircraft\nacelles
+LANDING GEARS ===> C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\in\Template_Aircraft\landing_gears
+CABIN CONFIGURATIONS ===> C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\in\Template_Aircraft\cabin_configurations
 --------------
-72 [main] INFO ncsa.hdf.hdf5lib.H5 - HDF5 library: jhdf5
-72 [main] INFO ncsa.hdf.hdf5lib.H5 -  successfully loaded from java.library.path
-De-serializing file: D:\agodemar\github\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterAerodynamicDatabase.xml ...
+11 [main] INFO ncsa.hdf.hdf5lib.H5 - HDF5 library: jhdf5
+12 [main] INFO ncsa.hdf.hdf5lib.H5 -  successfully loaded from java.library.path
+De-serializing file: C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterAerodynamicDatabase.xml ...
 database.databasefunctions.aerodynamics.AerodynamicDatabaseReader de-serialization complete
-De-serializing file: D:\agodemar\github\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterHighLiftDatabase.xml ...
+De-serializing file: C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterHighLiftDatabase.xml ...
 database.databasefunctions.aerodynamics.HighLiftDatabaseReader de-serialization complete
-De-serializing file: D:\agodemar\github\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterFusDesDatabase.xml ...
+De-serializing file: C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterFusDesDatabase.xml ...
 database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader de-serialization complete
-De-serializing file: D:\agodemar\github\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterVeDSCDatabase.xml ...
+De-serializing file: C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterVeDSCDatabase.xml ...
 database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serialization complete
 
 
@@ -1342,70 +1342,70 @@ database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serializati
 	Fuel tank
 	-------------------------------------
 	ID: 'null'
-	?????????????????????????????????????
+	·····································
 	Main spar position (% local chord): 0.2
 	Secondary spar position (% local chord): 0.6
-	?????????????????????????????????????
+	·····································
 	Airfoils thickness at main spar stations: [0.67938671659519967 m, 0.5321607012607998 m, 0.2703458355133933 m]
 	Airfoils thickness at secondary spar stations: [0.5613056492287971 m, 0.4396683076351978 m, 0.223358274473833 m]
 	Spar distance at each spanwise station: [1.7011199999999995 m, 1.3324799999999999 m, 0.78588803955261488 m]
 	Prismoids length: [5.151175326550149 m, 9.443821432008604 m]
-	?????????????????????????????????????
+	·····································
 	Prismoids spanwise sections areas: [1.055283298675258 m², 0.6474713588868692 m², 0.19399807755846488 m²]
 	Prismoids volumes: [4.3430478480394559 m³, 3.7645650594430888 m³]
-	?????????????????????????????????????
+	·····································
 	Total tank volume: 16.215225814965084 m³
 	Fuel density: 804.0 kg/m³
 	Total fuel mass: 13037.041555231925 kg
 	Total fuel weight: 127849.70356761511 N
-	?????????????????????????????????????
+	·····································
 	-------------------------------------
 	The Power Plant
 	-------------------------------------
 	Number of engines: 2
 	-------------------------------------
-	Engine n? 1
+	Engine nï¿½ 1
 	-------------------------------------
 	ID: 'IRON Engine'
 	Type: TURBOPROP
 	Engine database name: EngineDatabaseUSF.xlsx
-	?????????????????????????????????????
+	·····································
 	Length: 5.279999999999999 m
 	Propeller diameter: 14.0 ft
 	Number of blades: 12
 	Number of compressor stages: 5
 	Number of shafts: 2
 	Overall pressure ratio: 15.0
-	?????????????????????????????????????
+	·····································
 	P0: 7450.8199999999997 hp
 	T0: 20862.295999999995 lbf
-	?????????????????????????????????????
+	·····································
 	-------------------------------------
-	Engine n? 2
+	Engine nï¿½ 2
 	-------------------------------------
 	ID: 'IRON Engine'
 	Type: TURBOPROP
 	Engine database name: EngineDatabaseUSF.xlsx
-	?????????????????????????????????????
+	·····································
 	Length: 5.279999999999999 m
 	Propeller diameter: 14.0 ft
 	Number of blades: 12
 	Number of compressor stages: 5
 	Number of shafts: 2
 	Overall pressure ratio: 15.0
-	?????????????????????????????????????
+	·····································
 	P0: 7450.8199999999997 hp
 	T0: 20862.295999999995 lbf
-	?????????????????????????????????????
+	·····································
 	-------------------------------------
 	Nacelles
 	-------------------------------------
 	Number of nacelles: 2
 	-------------------------------------
-	Nacelle n? 1
+	Nacelle n° 1
 	-------------------------------------
 	ID: 'IRON Nacelle'
-	?????????????????????????????????????
+	·····································
 	Engine ID: 'IRON Engine'
 	Engine type: TURBOPROP
 	Length: 5.279999999999999 m
@@ -1418,22 +1418,22 @@ database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serializati
 	X position of the max diameter in LRF: 2.7244799999999998 m
 	K_diameter_outlet: 0.0
 	Z position of the outlet diameter in LRF: 0.0 m
-	?????????????????????????????????????
+	·····································
 	Surface roughness: 0.00000405 m
 	Surface wetted: 21.23213979002125 m²
-	?????????????????????????????????????
+	·····································
 	Discretization
 	Outline XY - X (m): [0.0, 0.2778947368421052, 0.5557894736842104, 0.8336842105263158, 1.1115789473684208, 1.3894736842105262, 1.6673684210526312, 1.9452631578947366, 2.2231578947368416, 2.501052631578947, 2.7789473684210524, 3.056842105263158, 3.334736842105263, 3.6126315789473686, 3.890526315789474, 4.1684210526315795, 4.446315789473685, 4.72421052631579, 5.002105263157896, 5.279999999999999]
 	Outline XY Left Top View - Y (m): [-0.22399999999999992, -0.2932570772904789, -0.3608220269443646, -0.42500272132506367, -0.48410703279598266, -0.5364428337205285, -0.5803179964621077, -0.614040393384127, -0.635917896849993, -0.6442583792231125, -0.6373741002415325, -0.6145566206780471, -0.5773071103627905, -0.527429573139734, -0.46672801285284937, -0.39700643334610786, -0.32006883846348055, -0.2377192320489392, -0.15176161794645499, -0.06399999999999995]
 	Outline XY Right Top View - Y (m): [0.22399999999999992, 0.2932570772904789, 0.3608220269443646, 0.42500272132506367, 0.48410703279598266, 0.5364428337205285, 0.5803179964621077, 0.614040393384127, 0.635917896849993, 0.6442583792231125, 0.6373741002415325, 0.6145566206780471, 0.5773071103627905, 0.527429573139734, 0.46672801285284937, 0.39700643334610786, 0.32006883846348055, 0.2377192320489392, 0.15176161794645499, 0.06399999999999995]
 	Outline XZ Upper Side View - Z (m): [0.22399999999999992, 0.2932570772904789, 0.3608220269443646, 0.42500272132506367, 0.48410703279598266, 0.5364428337205285, 0.5803179964621077, 0.614040393384127, 0.635917896849993, 0.6442583792231125, 0.6373741002415325, 0.6145566206780471, 0.5773071103627905, 0.527429573139734, 0.46672801285284937, 0.39700643334610786, 0.32006883846348055, 0.2377192320489392, 0.15176161794645499, 0.06399999999999995]
 	Outline XZ Lower Side View - Z (m): [-0.22399999999999992, -0.2932570772904789, -0.3608220269443646, -0.42500272132506367, -0.48410703279598266, -0.5364428337205285, -0.5803179964621077, -0.614040393384127, -0.635917896849993, -0.6442583792231125, -0.6373741002415325, -0.6145566206780471, -0.5773071103627905, -0.527429573139734, -0.46672801285284937, -0.39700643334610786, -0.32006883846348055, -0.2377192320489392, -0.15176161794645499, -0.06399999999999995]
-	?????????????????????????????????????
+	·····································
 	-------------------------------------
-	Nacelle n? 2
+	Nacelle n° 2
 	-------------------------------------
 	ID: 'IRON Nacelle'
-	?????????????????????????????????????
+	·····································
 	Engine ID: 'IRON Engine'
 	Engine type: TURBOPROP
 	Length: 5.279999999999999 m
@@ -1446,33 +1446,33 @@ database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serializati
 	X position of the max diameter in LRF: 2.7244799999999998 m
 	K_diameter_outlet: 0.0
 	Z position of the outlet diameter in LRF: 0.0 m
-	?????????????????????????????????????
+	·····································
 	Surface roughness: 0.00000405 m
 	Surface wetted: 21.23213979002125 m²
-	?????????????????????????????????????
+	·····································
 	Discretization
 	Outline XY - X (m): [0.0, 0.2778947368421052, 0.5557894736842104, 0.8336842105263158, 1.1115789473684208, 1.3894736842105262, 1.6673684210526312, 1.9452631578947366, 2.2231578947368416, 2.501052631578947, 2.7789473684210524, 3.056842105263158, 3.334736842105263, 3.6126315789473686, 3.890526315789474, 4.1684210526315795, 4.446315789473685, 4.72421052631579, 5.002105263157896, 5.279999999999999]
 	Outline XY Left Top View - Y (m): [-0.22399999999999992, -0.2932570772904789, -0.3608220269443646, -0.42500272132506367, -0.48410703279598266, -0.5364428337205285, -0.5803179964621077, -0.614040393384127, -0.635917896849993, -0.6442583792231125, -0.6373741002415325, -0.6145566206780471, -0.5773071103627905, -0.527429573139734, -0.46672801285284937, -0.39700643334610786, -0.32006883846348055, -0.2377192320489392, -0.15176161794645499, -0.06399999999999995]
 	Outline XY Right Top View - Y (m): [0.22399999999999992, 0.2932570772904789, 0.3608220269443646, 0.42500272132506367, 0.48410703279598266, 0.5364428337205285, 0.5803179964621077, 0.614040393384127, 0.635917896849993, 0.6442583792231125, 0.6373741002415325, 0.6145566206780471, 0.5773071103627905, 0.527429573139734, 0.46672801285284937, 0.39700643334610786, 0.32006883846348055, 0.2377192320489392, 0.15176161794645499, 0.06399999999999995]
 	Outline XZ Upper Side View - Z (m): [0.22399999999999992, 0.2932570772904789, 0.3608220269443646, 0.42500272132506367, 0.48410703279598266, 0.5364428337205285, 0.5803179964621077, 0.614040393384127, 0.635917896849993, 0.6442583792231125, 0.6373741002415325, 0.6145566206780471, 0.5773071103627905, 0.527429573139734, 0.46672801285284937, 0.39700643334610786, 0.32006883846348055, 0.2377192320489392, 0.15176161794645499, 0.06399999999999995]
 	Outline XZ Lower Side View - Z (m): [-0.22399999999999992, -0.2932570772904789, -0.3608220269443646, -0.42500272132506367, -0.48410703279598266, -0.5364428337205285, -0.5803179964621077, -0.614040393384127, -0.635917896849993, -0.6442583792231125, -0.6373741002415325, -0.6145566206780471, -0.5773071103627905, -0.527429573139734, -0.46672801285284937, -0.39700643334610786, -0.32006883846348055, -0.2377192320489392, -0.15176161794645499, -0.06399999999999995]
-	?????????????????????????????????????
+	·····································
 	-------------------------------------
 	Landing gears
 	-------------------------------------
 	ID: 'IRON Landing Gears'
-	?????????????????????????????????????
+	·····································
 	Main gear legs length: 1.6 m
 	Distance between wheels: 5.0 m
 	Number of frontal wheels: 2
 	Number of rear wheels: 4
-	?????????????????????????????????????
+	·····································
 	Frontal wheels height: 0.96999999999999997 m
 	Frontal wheels width: 0.34999999999999998 m
-	?????????????????????????????????????
+	·····································
 	Rear wheels height: 0.96999999999999997 m
 	Rear wheels width: 0.34999999999999998 m
-	?????????????????????????????????????
+	·····································
 
 
 
@@ -1586,7 +1586,205 @@ database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serializati
 		Balance Analysis :: COMPLETE 
 
 		Dynamic Stability Analysis (CRUISE) :: START
-File D:\agodemar\github\jpad\JPADSandBox_v2\in\Template_Analyses\analysis_dynamics_IRON_CANARD_cruise.xml found.
+File C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\in\Template_Analyses\analysis_dynamics_IRON_CANARD_cruise.xml found.
 Parsing ...
-File D:\agodemar\github\jpad\JPADSandBox_v2\in\Template_Analyses\analysis_dynamics_IRON_CANARD_cruise.xml parsed.
+File C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\in\Template_Analyses\analysis_dynamics_IRON_CANARD_cruise.xml parsed.
 Reading dynamic stability analysis data ...
+_________________________________________________________________
+
+LONGITUDINAL STABILITY DERIVATIVES: 
+
+ X_u_CT  = -0.0197
+ X_u_CP  = -0.0296
+ X_w     = 0.0433
+ X_w_dot = 0.0000
+ X_q     = 0.0000
+ Z_u     = -0.2140
+ Z_w     = -0.5603
+ Z_w_dot = -0.0051
+ Z_q     = -0.7952
+ M_u     = 0.0000
+ M_w     = -0.0004
+ M_w_dot = -0.0000
+ M_q     = -0.0097
+
+
+LONGITUDINAL CONTROL DERIVATIVES: 
+
+ X_delta_T_CT  = -0.0000
+ X_delta_T_CP  = -0.0000
+ X_delta_T_CMF = -0.0000
+ X_delta_T_RJ  = -0.0000
+ X_delta_E     = 0.0000
+ Z_delta_T     = 0.0000
+ Z_delta_E     = -6.3347
+ M_delta_T     = 0.0000
+ M_delta_E     = -0.0795
+
+_________________________________________________________________
+
+MATRIX [A_LON]: 
+
+-0.0197		0.0433		0.0000		-9.8100
+
+-0.2129		-0.5575		192.2941		-0.0000
+
+0.0000		-0.0004		-0.0112		0.0000
+
+0.0		0.0		1.0		0.0
+
+_________________________________________________________________
+
+MATRIX [B_LON]: 
+
+-0.0000		0.0000
+
+0.0000		-6.3026
+
+0.0000		-0.0795
+
+0.0		0.0
+
+_________________________________________________________________
+
+LONGITUDINAL EIGENVALUES
+
+  SHORT PERIOD: -0.3074 ï¿½ j0.1196
+
+  PHUGOID:      0.0132 ï¿½ j0.0850
+
+_________________________________________________________________
+
+LONGITUDINAL EIGENVECTORS:
+
+EigenVector 1 = {-0,1839358598; -0,376321024; 0,0002942671; -0,0029481996}
+EigenVector 2 = {0,3368570121; -1,5878232105; -0,0019259613; 0,0051184561}
+EigenVector 3 = {24,4248420037; 14,4076386158; 0,0798906165; 1,1429284206}
+EigenVector 4 = {134,0380411827; -22,8166137509; 0,0870690606; -0,7621080285}
+
+_________________________________________________________________
+
+SHORT PERIOD MODE CHARACTERISTICS
+
+Zeta_SP                          = 0.9320
+
+Omega_n_SP                       = 0.3298
+
+Period                           = 52.5473
+
+Halving Time                     = 2.2548
+
+Number of cycles to Halving Time = 0.0429
+
+
+PHUGOID MODE CHARACTERISTICS
+
+Zeta_PH                          = 0.1537
+
+Omega_n_PH                       = -0.0860
+
+Period                           = -73.9217
+
+Halving Time                     = -52.4194
+
+Number of cycles to Halving Time = 0.7091
+
+_________________________________________________________________
+
+LATERAL-DIRECTIONAL STABILITY DERIVATIVES: 
+
+ Y_beta = -17.9920
+ Y_p    = 0.0000
+ Y_r    = 0.0000
+ L_beta = -0.3336
+ L_p    = -0.0601
+ L_r    = 0.0135
+ N_beta = 0.0715
+ N_p    = -0.0051
+ N_r    = -0.0126
+
+
+LATERAL-DIRECTIONAL CONTROL DERIVATIVES: 
+
+ Y_delta_A = 0.0000
+ Y_delta_R = 3.2798
+ L_delta_A = 0.0696
+ L_delta_R = 0.0106
+ N_delta_A = 0.0030
+ N_delta_R = 0.0030
+
+_________________________________________________________________
+
+MATRIX [A_LD]: 
+
+-0.0134		0.0886		-0.0022		0.0000
+
+-1.0000		-0.0927		0.0000		0.0505
+
+0.0156		-0.3474		-0.0598		0.0000
+
+0.0		0.0		1.0		0.0
+
+_________________________________________________________________
+
+MATRIX [B_LD]: 
+
+-0.0004		0.0025
+
+0.0000		0.0169
+
+0.0697		0.0102
+
+0.0		0.0
+
+_________________________________________________________________
+
+LATERAL-DIRECTIONAL EIGENVALUES
+
+  ROLL:       -0.2147
+
+  DUTCH-ROLL: 0.0280 ï¿½ j0.3261
+
+  SPIRAL:     -0.0072
+
+_________________________________________________________________
+
+LATERAL-DIRECTIONAL EIGENVECTORS:
+
+EigenVector 1 = {-0,1022426844; -0,3795101875; 0,4418900916; -0,7383534257}
+EigenVector 2 = {0,0930372821; -0,3396346337; -0,28051903; -1,4187082609}
+EigenVector 3 = {0,0902561565; -0,2172202769; -0,4960538053; 2,3099217509}
+EigenVector 4 = {-0,8106619225; -0,0539506089; 0,1163002585; -16,1282243694}
+
+_________________________________________________________________
+
+DUTCH-ROLL MODE CHARACTERISTICS
+
+Zeta_DR                          = 0.0857
+
+Omega_n_DR                       = -0.3273
+
+Period                           = -19.2699
+
+Halving Time                     = -24.7268
+
+Number of cycles to Halving Time = 1.2832
+
+
+			UNCOMPLETE - UNDER DEVELOPMENT...
+
+		Dynamic Stability Analysis :: COMPLETE
+
+
+
+	Done!! 
+
+
+
+
+	NOT Printing results ... 
+
+
+
+
+	TIME ESTIMATED = 7 seconds

@@ -15,27 +15,36 @@
 			aerodynamics_from_previous_analysis="false"
 			>
 
-			<propulsion_system type="CONSTANT_TRUST" descr="propulsion regime type"/>
+			<global_data>		
+				<propulsion_system type="CONSTANT_TRUST" descr="propulsion regime type"/>
+
+				<!--
+				<reference_area		value="510.9667" 		unit="m^2" descr="wing area"/>
+				<rho0 				value="1.225" 			unit="kg*m^3" descr="air density"/>
+				<cbar 				value="8.321" 			unit="m" descr="mean aerodynamic chord"/>
+				<wing_span 			value="59.6433" 		unit="m" descr="wingspan"/>
+				<u0 				value="85.073525" 		unit="m/s" descr="speed in nominal conditions"/>
+				<Mach0 				value="0.25" 					descr="Mach number in nominal conditions"/>
+				<gamma0 			value="0" 				unit="deg" descr="flight path angle in nominal conditions"/>
+				<theta0 			value="0" 				unit="deg" descr="Euler angle of X-Stability axis in nominal conditions"/>
+				-->
+				
+			</global_data>
 			
-			<weights/>
+			<weights>
+				<!--
+				<mass 				value="255753" 			unit="kg" descr="total mass"/>
+				-->
+			</weights>
 			
 			<balance>
 				<xcg value="-0.22">
 					<!-- TODO: take the following values from the selected operating condition -->
-					<rho0 				value="1.225" unit="kg*m^3" descr="air density"/>
-					<reference_area		value="510.9667" unit="m^2" descr="wing area"/>
-					<mass 				value="255753" unit="kg" descr="total mass"/>
-					<cbar 				value="8.321" unit="m" descr="mean aerodynamic chord"/>
-					<wing_span 			value="59.6433" unit="m" descr="wingspan"/>
-					<u0 				value="85.073525" unit="m/s" descr="speed in nominal conditions"/>
-					<Mach0 				value="0.25" descr="Mach number in nominal conditions"/>
-					<gamma0 			value="0" unit="deg" descr="flight path angle in nominal conditions"/>
-					<theta0 			value="0" unit="deg" descr="Euler angle of X-Stability axis in nominal conditions"/>
 					<!-- Inertias, overriding balance analysis results -->
-					<iXX 				value="19388196.61" unit="kg*m^2" descr="Body-axes moment of inertia (IXX)"/>
-					<iYY 				value="43792919.62" unit="kg*m^2" descr="Body-axes moment of inertia (IYY)"/>
-					<iZZ 				value="61418552.9" unit="kg*m^2" descr="Body-axes moment of inertia (IZZ)"/>
-					<iXZ 				value="-3023474.017" unit="kg*m^2" descr="Body-axes product of inertia (IXZ)"/>
+					<iXX 				value="19388196.61" 	unit="kg*m^2" descr="Body-axes moment of inertia (IXX)"/>
+					<iYY 				value="43792919.62" 	unit="kg*m^2" descr="Body-axes moment of inertia (IYY)"/>
+					<iZZ 				value="61418552.9" 		unit="kg*m^2" descr="Body-axes moment of inertia (IZZ)"/>
+					<iXZ 				value="-3023474.017" 	unit="kg*m^2" descr="Body-axes product of inertia (IXZ)"/>
 				</xcg>			
 			</balance>
 			
@@ -44,11 +53,11 @@
 					<cLmax_clean_configuration>1.85</cLmax_clean_configuration>
 					<cL_alpha_clean_configuration unit="1/deg">0.116</cL_alpha_clean_configuration>
 					<cLmax_take_off_configuration>2.86</cLmax_take_off_configuration> 
-					<cL_alpha_take_off unit="1/°">0.1031</cL_alpha_take_off>  
+					<cL_alpha_take_off unit="1/deg">0.1031</cL_alpha_take_off>  
 					<cL0_take_off_configuration>1.6358</cL0_take_off_configuration> 
 					<!---->
 					<cLmax_landing_configuration>3.1</cLmax_landing_configuration>
-					<cL_alpha_landing unit="1/°">0.0888</cL_alpha_landing>
+					<cL_alpha_landing unit="1/deg">0.0888</cL_alpha_landing>
 					<cL0_landing_configuration>1.866</cL0_landing_configuration>
 					<!---->
 					<delta_CD0_flap_take_off>0.0125</delta_CD0_flap_take_off>
@@ -62,45 +71,43 @@
 					<oswald_landing>0.80</oswald_landing>
 					<!-- Stability derivatives and other data -->
 					<!-- Aerodynamic derivatives, overriding aerodynamic analysis results -->
-					<cD0 				value="0.102" descr="drag coefficient at zero lift"/>
-					<cD_Alpha0 			value="0.66" unit="1/rad^" descr="drag coefficient gradient with angle of attack"/>
-					<cD_Mach0 			value="0" descr="drag coefficient gradient with Mach number"/>
-					<cL0 				value="1.108" descr="lift coefficient at nominal flight condition"/>
-					<cL_Alpha0			value="5.7" unit="1/rad" descr="lift coefficient gradient with angle of attack"/>
-					<cL_Alpha_dot0 		value="6.7" unit="1/rad" descr="lift coefficient gradient with angle of attack rate"/>
-					<cL_Mach0 			value="0" descr="lift coefficient gradient with Mach number"/>
-					<cL_q0 				value="5.4" unit="1/rad" descr="lift coefficient gradient with pitch angular rate"/>
-					<cL_delta_T 		value="0" descr="lift coefficient gradient with thrust setting delta_T"/>
-					<cL_delta_E 		value="0.338" unit="1/rad" descr="lift coefficient gradient with elevator deflection delta_E"/>
-					<cm_alpha0 			value="-1.26" unit="1/rad" descr="pitching moment coefficient gradient with angle of attack"/>
-					<cm_alpha_dot0 		value="-3.2" unit="1/rad" descr="pitching moment coefficient gradient with angle of attack rate"/>
-					<cm_Mach0 			value="0" descr="pitching moment coefficient gradient with Mach number"/>
-					<cm_q 				value="-20.8" unit="1/rad" descr="pitching moment coefficient with respect to q"/>
-					<cm_delta_E 		value="-1.34" unit="1/rad" descr="pitching moment coefficient gradient with elevator deflection delta_E"/>
-					<cm_delta_T 		value="0" descr="pitching moment coefficient gradient with thrust setting delta_T"/>
-					<c_Tfix 			value="0" descr="thrust coefficient at a fixed point ( U0 = 0 , delta_T = 1 )"/>
-					<k_TV				value="0" descr="scale factor of speed effect on thrust coefficient"/>
-					<cY_beta 			value="-0.96" descr="lateral force coefficient gradient with sideslip angle"/>
-					<cY_p 				value="0" descr="lateral force coefficient gradient with roll angular rate"/>
-					<cY_r 				value="0" descr="lateral force coefficient gradient with yaw angular rate"/>
-					<cY_delta_A 		value="0" unit="1/rad" descr="lateral force coefficient gradient with aileron deflection delta_A"/>
-					<cY_delta_R 		value="0.175" unit="1/rad" descr="lateral force coefficient gradient with rudder deflection delta_R"/>
-					<cRoll_beta 		value="-0.221" unit="1/rad" descr="rolling moment coefficient gradient with sideslip angle"/>
-					<cRoll_p 			value="-0.45" unit="1/rad" descr="rolling moment coefficient gradient with roll angular rate"/>
-					<cRoll_r 			value="0.101" unit="1/rad" descr="rolling moment coefficient gradient with yaw angular rate"/>
-					<cRoll_delta_A 		value="0.0461" unit="1/rad" descr="rolling moment coefficient gradient with aileron deflection delta_A "/>
-					<cRoll_delta_R 		value="0.007" unit="1/rad" descr="rolling moment coefficient gradient with ruddar deflection delta_R"/>
-					<cYaw_beta 			value="0.15" unit="1/rad" descr="yawing moment coefficient gradient with sideslip angle"/>
-					<cYaw_p 			value="-0.121" unit="1/rad" descr="yawing moment coefficient gradient with roll angular rate"/>
-					<cYaw_r 			value="-0.3" unit="1/rad" descr="yawing moment coefficient gradient with yaw angular rate"/>
-					<cYaw_delta_A 		value="0.0064" unit="1/rad" descr="yawing moment coefficient gradient with aileron deflection delta_A"/>
-					<cYaw_delta_R 		value="-0.109" unit="1/rad" descr="yawing moment coefficient gradient with rudder deflection delta_R"/>
+					<cD0 				value="0.102" 					descr="drag coefficient at zero lift"/>
+					<cD_Alpha0 			value="0.66" 	unit="1/rad" 	descr="drag coefficient gradient with angle of attack"/>
+					<cD_Mach0 			value="0" 						descr="drag coefficient gradient with Mach number"/>
+					<cL0 				value="1.108" 					descr="lift coefficient at nominal flight condition"/>
+					<cL_Alpha0			value="5.7" 	unit="1/rad" 	descr="lift coefficient gradient with angle of attack"/>
+					<cL_Alpha_dot0 		value="6.7" 	unit="1/rad" 	descr="lift coefficient gradient with angle of attack rate"/>
+					<cL_Mach0 			value="0" 						descr="lift coefficient gradient with Mach number"/>
+					<cL_q0 				value="5.4" 	unit="1/rad" 	descr="lift coefficient gradient with pitch angular rate"/>
+					<cL_delta_T 		value="0" 						descr="lift coefficient gradient with thrust setting delta_T"/>
+					<cL_delta_E 		value="0.338" 	unit="1/rad" 	descr="lift coefficient gradient with elevator deflection delta_E"/>
+					<cm_alpha0 			value="-1.26" 	unit="1/rad" 	descr="pitching moment coefficient gradient with angle of attack"/>
+					<cm_alpha_dot0 		value="-3.2" 	unit="1/rad" 	descr="pitching moment coefficient gradient with angle of attack rate"/>
+					<cm_Mach0 			value="0" 						descr="pitching moment coefficient gradient with Mach number"/>
+					<cm_q 				value="-20.8" 	unit="1/rad" 	descr="pitching moment coefficient with respect to q"/>
+					<cm_delta_E 		value="-1.34" 	unit="1/rad" 	descr="pitching moment coefficient gradient with elevator deflection delta_E"/>
+					<cm_delta_T 		value="0" 						descr="pitching moment coefficient gradient with thrust setting delta_T"/>
+					<c_Tfix 			value="0" 						descr="thrust coefficient at a fixed point ( U0 = 0 , delta_T = 1 )"/>
+					<k_TV				value="0" 						descr="scale factor of speed effect on thrust coefficient"/>
+					<cY_beta 			value="-0.96" 	unit="1/rad" 	descr="lateral force coefficient gradient with sideslip angle"/>
+					<cY_p 				value="0" 		unit="1/rad" 	descr="lateral force coefficient gradient with roll angular rate"/>
+					<cY_r 				value="0" 		unit="1/rad" 	descr="lateral force coefficient gradient with yaw angular rate"/>
+					<cY_delta_A 		value="0" 		unit="1/rad" 	descr="lateral force coefficient gradient with aileron deflection delta_A"/>
+					<cY_delta_R 		value="0.175" 	unit="1/rad" 	descr="lateral force coefficient gradient with rudder deflection delta_R"/>
+					<cRoll_beta 		value="-0.221" 	unit="1/rad" 	descr="rolling moment coefficient gradient with sideslip angle"/>
+					<cRoll_p 			value="-0.45" 	unit="1/rad" 	descr="rolling moment coefficient gradient with roll angular rate"/>
+					<cRoll_r 			value="0.101" 	unit="1/rad" 	descr="rolling moment coefficient gradient with yaw angular rate"/>
+					<cRoll_delta_A 		value="0.0461" 	unit="1/rad" 	descr="rolling moment coefficient gradient with aileron deflection delta_A "/>
+					<cRoll_delta_R 		value="0.007" 	unit="1/rad" 	descr="rolling moment coefficient gradient with ruddar deflection delta_R"/>
+					<cYaw_beta 			value="0.15" 	unit="1/rad" 	descr="yawing moment coefficient gradient with sideslip angle"/>
+					<cYaw_p 			value="-0.121" 	unit="1/rad" 	descr="yawing moment coefficient gradient with roll angular rate"/>
+					<cYaw_r 			value="-0.3" 	unit="1/rad" 	descr="yawing moment coefficient gradient with yaw angular rate"/>
+					<cYaw_delta_A 		value="0.0064" 	unit="1/rad" 	descr="yawing moment coefficient gradient with aileron deflection delta_A"/>
+					<cYaw_delta_R 		value="-0.109" 	unit="1/rad" 	descr="yawing moment coefficient gradient with rudder deflection delta_R"/>
 				</xcg>
 				
 			</aerodynamics>
 			
-			<global_data>		
-			</global_data>
 			
 			<!-- choose which analysys has to be done --> 
 			<longitudinal perform="TRUE"/>

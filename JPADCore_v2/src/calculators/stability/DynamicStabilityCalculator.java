@@ -7,6 +7,7 @@ import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
 
 public class DynamicStabilityCalculator {
+	
 	/**
 	 *   calculates EigenValues from a square matrix 4x4 (such as [A_Lon] and [A_LD])
 	 *   and puts them in a matrix 4x2 (a single line contains a specific eigenvalue

@@ -23,7 +23,8 @@ public interface IACDynamicStabilityManager {
 	String getId();
 	Aircraft getTheAircraft();
 	OperatingConditions getTheOperatingConditions();
-	
+	ConditionEnum getCurrentCondition();
+
 	//==============================================================================
 	// FROM INPUT (Passed from XML file)
 	//==============================================================================

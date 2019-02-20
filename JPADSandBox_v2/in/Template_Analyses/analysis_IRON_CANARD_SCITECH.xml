@@ -69,18 +69,7 @@
 			file_landing_condition="analysis_aerodynamics_Prototype_LOOP1_updated_landing.xml"
 	/>
 	-->
-	<dynamic_stability
-			plot="TRUE"
-			create_CSV="TRUE"
-			take_off="FALSE"
-			climb="FALSE"
-			file_cruise_condition="analysis_dynamics_IRON_CANARD_SCITECH_cruise.xml"
-			cruise="TRUE"
-			descent="FALSE"
-			landing="FALSE"
-	>
 	
-	</dynamic_stability>
 	<performance
 			file="analysis_performance_IRON_CANARD_SCITECH.xml"
 			plot="TRUE"
