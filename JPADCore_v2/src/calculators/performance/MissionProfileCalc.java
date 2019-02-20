@@ -258,7 +258,6 @@ public class MissionProfileCalc {
 	private List<Amount<Force>> totalThrustTakeOff;
 	private List<Amount<Force>> thermicThrustTakeOff;
 	private List<Amount<Force>> electricThrustTakeOff;
-	private List<Double> throttleTakeOff;
 	private List<Double> sfcTakeOff;
 	private List<Double> fuelFlowTakeOff;
 	private List<Amount<Velocity>> rateOfClimbTakeOff;
@@ -292,7 +291,6 @@ public class MissionProfileCalc {
 	private List<Amount<Force>> totalThrustClimb;
 	private List<Amount<Force>> thermicThrustClimb;
 	private List<Amount<Force>> electricThrustClimb;
-	private List<Double> throttleClimb;
 	private List<Double> sfcClimb;
 	private List<Double> fuelFlowClimb;
 	private List<Amount<Velocity>> rateOfClimbClimb;
@@ -326,7 +324,6 @@ public class MissionProfileCalc {
 	private List<Amount<Force>> totalThrustCruise;
 	private List<Amount<Force>> thermicThrustCruise;
 	private List<Amount<Force>> electricThrustCruise;
-	private List<Double> throttleCruise;
 	private List<Double> sfcCruise;
 	private List<Double> fuelFlowCruise;
 	private List<Amount<Velocity>> rateOfClimbCruise;
@@ -360,7 +357,6 @@ public class MissionProfileCalc {
 	private List<Amount<Force>> totalThrustFirstDescent;
 	private List<Amount<Force>> thermicThrustFirstDescent;
 	private List<Amount<Force>> electricThrustFirstDescent;
-	private List<Double> throttleFirstDescent;
 	private List<Double> sfcFirstDescent;
 	private List<Double> fuelFlowFirstDescent;
 	private List<Amount<Velocity>> rateOfClimbFirstDescent;
@@ -394,7 +390,6 @@ public class MissionProfileCalc {
 	private List<Amount<Force>> totalThrustSecondClimb;
 	private List<Amount<Force>> thermicThrustSecondClimb;
 	private List<Amount<Force>> electricThrustSecondClimb;
-	private List<Double> throttleSecondClimb;
 	private List<Double> sfcSecondClimb;
 	private List<Double> fuelFlowSecondClimb;
 	private List<Amount<Velocity>> rateOfClimbSecondClimb;
@@ -428,7 +423,6 @@ public class MissionProfileCalc {
 	private List<Amount<Force>> totalThrustAlternateCruise;
 	private List<Amount<Force>> thermicThrustAlternateCruise;
 	private List<Amount<Force>> electricThrustAlternateCruise;
-	private List<Double> throttleAlternateCruise;
 	private List<Double> sfcAlternateCruise;
 	private List<Double> fuelFlowAlternateCruise;
 	private List<Amount<Velocity>> rateOfClimbAlternateCruise;
@@ -462,7 +456,6 @@ public class MissionProfileCalc {
 	private List<Amount<Force>> totalThrustSecondDescent;
 	private List<Amount<Force>> thermicThrustSecondDescent;
 	private List<Amount<Force>> electricThrustSecondDescent;
-	private List<Double> throttleSecondDescent;
 	private List<Double> sfcSecondDescent;
 	private List<Double> fuelFlowSecondDescent;
 	private List<Amount<Velocity>> rateOfClimbSecondDescent;
@@ -496,7 +489,6 @@ public class MissionProfileCalc {
 	private List<Amount<Force>> totalThrustHolding;
 	private List<Amount<Force>> thermicThrustHolding;
 	private List<Amount<Force>> electricThrustHolding;
-	private List<Double> throttleHolding;
 	private List<Double> sfcHolding;
 	private List<Double> fuelFlowHolding;
 	private List<Amount<Velocity>> rateOfClimbHolding;
@@ -530,7 +522,6 @@ public class MissionProfileCalc {
 	private List<Amount<Force>> totalThrustLanding;
 	private List<Amount<Force>> thermicThrustLanding;
 	private List<Amount<Force>> electricThrustLanding;
-	private List<Double> throttleLanding;
 	private List<Double> sfcLanding;
 	private List<Double> fuelFlowLanding;
 	private List<Amount<Velocity>> rateOfClimbLanding;
@@ -815,7 +806,6 @@ public class MissionProfileCalc {
 			this.totalThrustTakeOff = new ArrayList<>();
 			this.thermicThrustTakeOff = new ArrayList<>();
 			this.electricThrustTakeOff = new ArrayList<>();
-			this.throttleTakeOff = new ArrayList<>();
 			this.sfcTakeOff = new ArrayList<>();
 			this.fuelFlowTakeOff = new ArrayList<>();
 			this.rateOfClimbTakeOff = new ArrayList<>();
@@ -849,7 +839,6 @@ public class MissionProfileCalc {
 			this.totalThrustClimb = new ArrayList<>();
 			this.thermicThrustClimb = new ArrayList<>();
 			this.electricThrustClimb = new ArrayList<>();
-			this.throttleClimb = new ArrayList<>();
 			this.sfcClimb = new ArrayList<>();
 			this.fuelFlowClimb = new ArrayList<>();
 			this.rateOfClimbClimb = new ArrayList<>();
@@ -887,7 +876,6 @@ public class MissionProfileCalc {
 			this.totalThrustCruise = new ArrayList<>();
 			this.thermicThrustCruise = new ArrayList<>();
 			this.electricThrustCruise = new ArrayList<>();
-			this.throttleCruise = new ArrayList<>();
 			this.sfcCruise = new ArrayList<>();
 			this.fuelFlowCruise = new ArrayList<>();
 			this.rateOfClimbCruise = new ArrayList<>();
@@ -921,7 +909,6 @@ public class MissionProfileCalc {
 			this.totalThrustFirstDescent = new ArrayList<>();
 			this.thermicThrustFirstDescent = new ArrayList<>();
 			this.electricThrustFirstDescent = new ArrayList<>();
-			this.throttleFirstDescent = new ArrayList<>();
 			this.sfcFirstDescent = new ArrayList<>();
 			this.fuelFlowFirstDescent = new ArrayList<>();
 			this.rateOfClimbFirstDescent = new ArrayList<>();
@@ -955,7 +942,6 @@ public class MissionProfileCalc {
 			this.totalThrustSecondClimb = new ArrayList<>();
 			this.thermicThrustSecondClimb = new ArrayList<>();
 			this.electricThrustSecondClimb = new ArrayList<>();
-			this.throttleSecondClimb = new ArrayList<>();
 			this.sfcSecondClimb = new ArrayList<>();
 			this.fuelFlowSecondClimb = new ArrayList<>();
 			this.rateOfClimbSecondClimb = new ArrayList<>();
@@ -991,7 +977,6 @@ public class MissionProfileCalc {
 		this.totalThrustAlternateCruise = new ArrayList<>();
 		this.thermicThrustAlternateCruise = new ArrayList<>();
 		this.electricThrustAlternateCruise = new ArrayList<>();
-		this.throttleAlternateCruise = new ArrayList<>();
 		this.sfcAlternateCruise = new ArrayList<>();
 		this.fuelFlowAlternateCruise = new ArrayList<>();
 		this.rateOfClimbAlternateCruise = new ArrayList<>();
@@ -1025,7 +1010,6 @@ public class MissionProfileCalc {
 		this.totalThrustSecondDescent = new ArrayList<>();
 		this.thermicThrustSecondDescent = new ArrayList<>();
 		this.electricThrustSecondDescent = new ArrayList<>();
-		this.throttleSecondDescent = new ArrayList<>();
 		this.sfcSecondDescent = new ArrayList<>();
 		this.fuelFlowSecondDescent = new ArrayList<>();
 		this.rateOfClimbSecondDescent = new ArrayList<>();
@@ -1059,7 +1043,6 @@ public class MissionProfileCalc {
 		this.totalThrustHolding = new ArrayList<>();
 		this.thermicThrustHolding = new ArrayList<>();
 		this.electricThrustHolding = new ArrayList<>();
-		this.throttleHolding = new ArrayList<>();
 		this.sfcHolding = new ArrayList<>();
 		this.fuelFlowHolding = new ArrayList<>();
 		this.rateOfClimbHolding = new ArrayList<>();
@@ -1095,7 +1078,6 @@ public class MissionProfileCalc {
 			this.totalThrustLanding = new ArrayList<>();
 			this.thermicThrustLanding = new ArrayList<>();
 			this.electricThrustLanding = new ArrayList<>();
-			this.throttleLanding = new ArrayList<>();
 			this.sfcLanding = new ArrayList<>();
 			this.fuelFlowLanding = new ArrayList<>();
 			this.rateOfClimbLanding = new ArrayList<>();
@@ -1262,7 +1244,6 @@ public class MissionProfileCalc {
 			cDTakeOff.addAll(theTakeOffCalculator.getcD());
 			dragTakeOff.addAll(theTakeOffCalculator.getDrag());
 			totalThrustTakeOff.addAll(theTakeOffCalculator.getThrust());
-			throttleTakeOff.addAll(timeTakeOff.stream().map(t -> theOperatingConditions.getThrottleTakeOff()).collect(Collectors.toList()));
 			fuelFlowTakeOff.addAll(theTakeOffCalculator.getFuelFlow());
 			rateOfClimbTakeOff.addAll(theTakeOffCalculator.getRateOfClimb());
 			climbAngleTakeOff.addAll(theTakeOffCalculator.getGamma());
@@ -1360,7 +1341,6 @@ public class MissionProfileCalc {
 			efficiencyClimb.addAll(theClimbCalculator.getEfficiencyClimb());
 			dragClimb.addAll(theClimbCalculator.getDragClimb());
 			totalThrustClimb.addAll(theClimbCalculator.getTotalThrustClimb());
-			throttleClimb.addAll(timeClimb.stream().map(t -> theOperatingConditions.getThrottleClimb()).collect(Collectors.toList()));
 			fuelFlowClimb.addAll(theClimbCalculator.getFuelFlowClimb());
 			sfcClimb.addAll(theClimbCalculator.getSfcClimb());
 			rateOfClimbClimb.addAll(theClimbCalculator.getRateOfClimbClimb());
@@ -2030,7 +2010,6 @@ public class MissionProfileCalc {
 				cDCruise.addAll(cDSteps);
 				dragCruise.addAll(dragPerStep);
 				totalThrustCruise.addAll(dragPerStep);
-				throttleCruise.addAll(phi);
 				sfcCruise.addAll(sfcList);
 				fuelFlowCruise.addAll(fuelFlows);
 				
@@ -2129,7 +2108,6 @@ public class MissionProfileCalc {
 				efficiencyFirstDescent.addAll(theFirstDescentCalculator.getEfficiencyPerStep());
 				dragFirstDescent.addAll(theFirstDescentCalculator.getDragPerStep());
 				totalThrustFirstDescent.addAll(theFirstDescentCalculator.getThrustPerStep());
-				throttleFirstDescent.addAll(theFirstDescentCalculator.getThrottlePerStep());
 				fuelFlowFirstDescent.addAll(theFirstDescentCalculator.getInterpolatedFuelFlowList());
 				sfcFirstDescent.addAll(theFirstDescentCalculator.getInterpolatedSFCList());
 				rateOfClimbFirstDescent.addAll(theFirstDescentCalculator.getRateOfDescentList());
@@ -2224,7 +2202,6 @@ public class MissionProfileCalc {
 				efficiencySecondClimb.addAll(theSecondClimbCalculator.getEfficiencyClimb());
 				dragSecondClimb.addAll(theSecondClimbCalculator.getDragClimb());
 				totalThrustSecondClimb.addAll(theSecondClimbCalculator.getTotalThrustClimb());
-				throttleSecondClimb.addAll(timeClimb.stream().map(t -> theOperatingConditions.getThrottleClimb()).collect(Collectors.toList()));
 				fuelFlowSecondClimb.addAll(theSecondClimbCalculator.getFuelFlowClimb());
 				sfcSecondClimb.addAll(theSecondClimbCalculator.getSfcClimb());
 				rateOfClimbSecondClimb.addAll(theSecondClimbCalculator.getRateOfClimbClimb());
@@ -2972,7 +2949,6 @@ public class MissionProfileCalc {
 					cDAlternateCruise.addAll(cDStepsAlternateCruise);
 					dragAlternateCruise.addAll(dragPerStepAlternateCruise);
 					totalThrustAlternateCruise.addAll(dragPerStepAlternateCruise);
-					throttleAlternateCruise.addAll(phiAlternateCruise);
 					sfcAlternateCruise.addAll(sfcAlternateCruiseList);
 					fuelFlowAlternateCruise.addAll(fuelFlowsAlternateCruise);
 					
@@ -3074,7 +3050,6 @@ public class MissionProfileCalc {
 					efficiencySecondDescent.addAll(theSecondDescentCalculator.getEfficiencyPerStep());
 					dragSecondDescent.addAll(theSecondDescentCalculator.getDragPerStep());
 					totalThrustSecondDescent.addAll(theSecondDescentCalculator.getThrustPerStep());
-					throttleSecondDescent.addAll(theSecondDescentCalculator.getThrottlePerStep());
 					fuelFlowSecondDescent.addAll(theSecondDescentCalculator.getInterpolatedFuelFlowList());
 					sfcSecondDescent.addAll(theSecondDescentCalculator.getInterpolatedSFCList());
 					rateOfClimbSecondDescent.addAll(theSecondDescentCalculator.getRateOfDescentList());
@@ -3791,7 +3766,6 @@ public class MissionProfileCalc {
 					cDHolding.addAll(cDStepsHolding);
 					dragHolding.addAll(dragPerStepHolding);
 					totalThrustHolding.addAll(dragPerStepHolding);
-					throttleHolding.addAll(phiHolding);
 					sfcHolding.addAll(sfcHoldingList);
 					fuelFlowHolding.addAll(fuelFlowsHolding);
 					
@@ -3923,7 +3897,6 @@ public class MissionProfileCalc {
 						cDLanding.addAll(theLandingCalculator.getcDList());
 						dragLanding.addAll(theLandingCalculator.getDragList());
 						totalThrustLanding.addAll(theLandingCalculator.getThrustList());
-						throttleLanding.addAll(timeLanding.stream().map(t -> theOperatingConditions.getThrottleLanding()).collect(Collectors.toList()));
 						fuelFlowLanding.addAll(theLandingCalculator.getFuelFlowList());
 						rateOfClimbLanding.addAll(theLandingCalculator.getRateOfClimbList());
 						climbAngleLanding.addAll(theLandingCalculator.getGammaList());

@@ -2997,11 +2997,11 @@ public class ACPerformanceManager {
 				//-----------------------------------------------------------------------------------------------
 				// VMC CALCULATION
 				System.setOut(originalOut);
-				System.out.println("\t\t\t\tVMC caluclation :: START");
+				System.out.println("\t\t\t\tVMC calculation :: START");
 				System.setOut(filterStream);
 				calcTakeOff.calculateVMC(_thePerformanceInterface.getXcgPositionList().get(i));
 				System.setOut(originalOut);
-				System.out.println("\t\t\t\tVMC caluclation :: COMPLETE");
+				System.out.println("\t\t\t\tVMC calculation :: COMPLETE");
 				System.setOut(filterStream);
 				
 				//-----------------------------------------------------------------------------------------------
