@@ -428,8 +428,8 @@ public class LandingCalc {
 			theIntegrator = new HighamHall54Integrator(
 					1e-10,
 					1,
-					1e-7,
-					1e-7
+					1e-9,
+					1e-9
 					);
 			ode = new DynamicsEquationsLanding();
 			
@@ -2441,6 +2441,10 @@ public class LandingCalc {
 				fuelFlow = fuelFlowList.stream().mapToDouble(ff -> ff).sum();
 			}
 
+			// FIXME: CHECK WEIGHT CRUISE/FIDL (+-INFINITY)
+			if(Double.isNaN(fuelFlow))
+				fuelFlow = 0.0;
+			
 			return fuelFlow;
 			
 		}

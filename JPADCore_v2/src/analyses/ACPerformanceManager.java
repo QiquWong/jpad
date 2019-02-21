@@ -2962,6 +2962,7 @@ public class ACPerformanceManager {
 		         // write nothing
 		    }
 		});
+		
 		System.setOut(filterStream);
 		
 		initializeData();
