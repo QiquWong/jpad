@@ -1004,17 +1004,6 @@ public class AircraftCADUtils {
 				exportSupportShapes, exportShells, exportSolids);
 	}
 	
-	public static List<OCCShape> filterAircraftPartSolids(List<OCCShape> shapes) {
-		
-		List<OCCShape> solid = new ArrayList<>();
-		
-		solid.addAll(shapes.stream()
-			  .filter(s -> s instanceof OCCSolid)
-			  .collect(Collectors.toList()));
-		
-		return solid;
-	}
-	
 	public static List<OCCShape> getFairingShapes(Fuselage fuselage, LiftingSurface liftingSurface,
 			double frontLengthFactor, double backLengthFactor, double widthFactor, double heightFactor,
 			double heightBelowReferenceFactor, double heightAboveReferenceFactor,
@@ -1093,6 +1082,232 @@ public class AircraftCADUtils {
 		requestedShapes.addAll(solidShapes);
 		
 		return requestedShapes;
+	}
+	
+	public static List<OCCShape> getEnginesCAD(List<NacelleCreator> nacelles, List<Engine> engines,
+			List<Map<EngineCADComponentsEnum, String>> templateMapsList,
+			boolean exportSupportShapes, boolean exportShells, boolean exportSolids) {
+		
+		return getEnginesCAD(nacelles, engines,
+				templateMapsList, new ArrayList<>(),
+				exportSupportShapes, exportShells, exportSolids
+				);
+	}
+ 	
+	public static List<OCCShape> getEnginesCAD(List<NacelleCreator> nacelles, List<Engine> engines,
+			List<Map<EngineCADComponentsEnum, String>> templateMapsList, List<Amount<Angle>> propellerBladePitchAngleList,
+			boolean exportSupportShapes, boolean exportShells, boolean exportSolids) {
+		
+		List<OCCShape> supportShapes = new ArrayList<>();
+		List<OCCShape> shellShapes = new ArrayList<>();
+		List<OCCShape> solidShapes = new ArrayList<>();
+		List<OCCShape> requestedShapes = new ArrayList<>();	
+		
+		// ----------------------------------------------------------
+		// Check whether continuing with the method
+		// ----------------------------------------------------------
+		if ((nacelles.isEmpty() || nacelles.stream().anyMatch(n -> n == null)) || 
+			(engines.isEmpty() || engines.stream().anyMatch(e -> e == null))) {			
+			System.out.println("========== [AircraftCADUtils::getEnginesCAD] One or more engine/nacelle object passed to the "
+					+ "getEnginesCAD method is null! Exiting the method ...");
+			return null;
+		}
+		
+		if (!exportSupportShapes && !exportShells && !exportSolids) {
+			System.out.println("========== [AircraftCADUtils::getEnginesCAD] No shapes to export! Exiting the method ...");
+			return null;
+		}
+		
+		System.out.println("========== [AircraftCADUtils::getEnginesCAD]");
+		
+		// ----------------------------------------------------------
+		// Generate engine CAD shapes
+		// ----------------------------------------------------------	
+		List<EngineCAD> engineCADList = new ArrayList<>();
+		IntStream.range(0, engines.size())
+				 .forEach(i -> engineCADList.add(
+						 new EngineCAD(nacelles.get(i), engines.get(i), templateMapsList.get(i))
+						 ));
+		
+		// Check the indexes of the engines that can be reused, based on:
+		// - sharing the same y apex coordinate (absolute value);
+		// - sharing the same type, templates and dimensions.
+		// First, it is necessary to sort the engines.
+		List<EngineCAD> sortedEngineCADList = engineCADList.stream()
+				.sorted(Comparator.comparing(e -> e.getEngineYApex()))
+				.collect(Collectors.toList());
+		
+		int[] symmEngines = new int[engines.size()];
+		Arrays.fill(symmEngines, 0);
+		if ((engines.size() & 1) == 0) { // even number of engines		
+			for (int i = 0; i < engines.size()/2; i++) {				
+				if (sortedEngineCADList.get(i).symmetrical(sortedEngineCADList.get(engines.size()-1-i))) {				
+					symmEngines[i] = i + 1;
+					symmEngines[engines.size()-1-i] = i + 1;
+				}					
+			}		
+		} else { // odd	number of engines
+			for (int i = 0; i < (engines.size()-1)/2; i++) {
+				if (sortedEngineCADList.get(i).symmetrical(sortedEngineCADList.get(engines.size()-1-i))) {
+					symmEngines[i] = i + 1;
+					symmEngines[engines.size()-1-i] = i + 1;
+				}
+			}
+		}
+		
+		for (int i = 0; i < engines.size(); i++) {
+			
+			if (symmEngines[i] != 0 && i < engines.size()/2) {
+				
+				List<OCCShape> engineShapes = getEngineCAD(sortedEngineCADList.get(i));
+				
+				List<OCCShape> symmEngineShapes = OCCUtils.getShapesTranslated(
+						engineShapes, 
+						new double[] {
+								sortedEngineCADList.get(i).getEngineXApex(),
+								sortedEngineCADList.get(i).getEngineYApex(),
+								sortedEngineCADList.get(i).getEngineZApex()
+						}, 
+						new double[] {
+								sortedEngineCADList.get(i).getEngineXApex(),
+							    sortedEngineCADList.get(i).getEngineYApex()*(-1),
+								sortedEngineCADList.get(i).getEngineZApex()
+						});		
+				
+				solidShapes.addAll(engineShapes);
+				solidShapes.addAll(symmEngineShapes);
+				
+			} else if (symmEngines[i] == 0) {
+				
+				solidShapes.addAll(getEngineCAD(sortedEngineCADList.get(i)));
+			}
+		}
+		
+		OCCCompound solidsCompound = (OCCCompound) OCCUtils.theFactory.newCompound(
+				solidShapes.stream().map(s -> (OCCShape) s).collect(Collectors.toList()));
+		
+		if (exportSolids) {
+			requestedShapes.addAll(solidShapes);
+		}
+		
+		if (exportSupportShapes) {
+			OCCExplorer wireExp = new OCCExplorer();
+			wireExp.init(solidsCompound, CADShapeTypes.WIRE);
+			while (wireExp.more()) {
+				supportShapes.add((OCCShape) wireExp.current());
+				wireExp.next();
+			}
+		}
+		
+		if (exportShells) {
+			OCCExplorer shellExp = new OCCExplorer();
+			shellExp.init(solidsCompound, CADShapeTypes.SHELL);
+			while (shellExp.more()) {
+				shellShapes.add((OCCShape) shellExp.current());
+				shellExp.next();
+			}
+		}
+	
+		requestedShapes.addAll(supportShapes);
+		requestedShapes.addAll(shellShapes);
+		
+		return requestedShapes;
+	}
+	
+	public static List<double[]> generateAirfoilAtY(double yStation, LiftingSurface liftingSurface) {
+		
+		// ---------------------------------------
+		// Determine the airfoil to be modified
+		// ---------------------------------------
+		Airfoil baseAirfoil = null;
+		double tci = 0.15;
+		double tcf = 0.15;
+		double scaleFactor = 1.0;
+		for (int i = 1; i <= liftingSurface.getPanels().size(); i++) {
+			
+			double yIn = liftingSurface.getYBreakPoints().get(i-1).doubleValue(SI.METER);
+			double yOut = liftingSurface.getYBreakPoints().get(i).doubleValue(SI.METER);
+			
+			if (yStation > yIn && yStation < yOut || 
+				Math.abs(yStation - yIn) <= 1e-5 || 
+				Math.abs(yStation - yOut) <= 1e-5) {			
+				baseAirfoil = liftingSurface.getAirfoilList().get(i-1);
+				tci = liftingSurface.getAirfoilList().get(i-1).getThicknessToChordRatio();
+				tcf = liftingSurface.getAirfoilList().get(i).getThicknessToChordRatio();
+				scaleFactor = MyMathUtils.getInterpolatedValue1DLinear(
+						new double[] {yIn, yOut}, 
+						new double[] {1, tcf/tci}, 
+						yStation);
+				
+				break;
+			}
+		}
+		
+		// -----------------------------------------------------------------
+		// Delete duplicates in the airfoil points list, whether necessary
+		// -----------------------------------------------------------------
+		List<PVector> noDuplicatesCoords = new ArrayList<>();
+		for (int i = 0; i < baseAirfoil.getXCoords().length; i++) {
+			noDuplicatesCoords.add(new PVector (
+					(float) baseAirfoil.getXCoords()[i],
+					0.0f,
+					(float) baseAirfoil.getZCoords()[i]
+					));
+		}
+
+		Set<PVector> uniqueEntries = new HashSet<>();
+		for (Iterator<PVector> iter = noDuplicatesCoords.listIterator(1); iter.hasNext(); ) {
+			PVector point = (PVector) iter.next();
+			if (!uniqueEntries.add(point))
+				iter.remove();
+		}
+		
+		// ----------------------------------------------------------------
+		// Scale the inner airfoil according to thickness-to-chord ratios
+		// ----------------------------------------------------------------
+		for (int i = 0; i < noDuplicatesCoords.size(); i++)
+			noDuplicatesCoords.get(i).z = (float) ((float) noDuplicatesCoords.get(i).z * scaleFactor);
+		
+		// ---------------------------
+		// Check the trailing edge
+		// ---------------------------
+		int nPts = noDuplicatesCoords.size();
+		
+		if (Math.abs(noDuplicatesCoords.get(0).z - noDuplicatesCoords.get(nPts - 1).z) < 1e-5) {
+			
+			noDuplicatesCoords.get(0).set(
+					noDuplicatesCoords.get(0).x,
+					noDuplicatesCoords.get(0).y,
+					noDuplicatesCoords.get(0).z + 5e-4f
+					);
+			
+			noDuplicatesCoords.get(nPts - 1).set(
+					noDuplicatesCoords.get(nPts - 1).x,
+					noDuplicatesCoords.get(nPts - 1).y,
+					noDuplicatesCoords.get(nPts - 1).z - 5e-4f
+					);
+		}
+		
+		// ---------------------------------------
+		// Calculate airfoil actual coordinates
+		// ---------------------------------------
+		List<double[]> basePts = new ArrayList<>();
+		basePts.addAll(noDuplicatesCoords.stream()
+				.map(pv -> new double[] {pv.x, pv.y, pv.z})
+				.collect(Collectors.toList()));
+		
+		return generatePtsAtY(basePts, yStation, liftingSurface);
+	}
+	
+	public static List<OCCShape> filterAircraftPartSolids(List<OCCShape> shapes) {
+
+		List<OCCShape> solid = new ArrayList<>();
+
+		solid.addAll(shapes.stream()
+				.filter(s -> s instanceof OCCSolid)
+				.collect(Collectors.toList()));
+
+		return solid;
 	}
 	
 	private static Tuple2<OCCShell, List<OCCShape>> generateRoundedWingTip(LiftingSurface liftingSurface, 
@@ -1888,92 +2103,6 @@ public class AircraftCADUtils {
 		retShapes = new Tuple2<OCCShell, List<OCCShape>>(wingTipShell, wingTipShapes);
 		
 		return retShapes;
-	}
-	
-	// TODO: make this private again after generateFairingShapes completion
-	public static List<double[]> generateAirfoilAtY(double yStation, LiftingSurface liftingSurface) {
-		
-		// ---------------------------------------
-		// Determine the airfoil to be modified
-		// ---------------------------------------
-		Airfoil baseAirfoil = null;
-		double tci = 0.15;
-		double tcf = 0.15;
-		double scaleFactor = 1.0;
-		for (int i = 1; i <= liftingSurface.getPanels().size(); i++) {
-			
-			double yIn = liftingSurface.getYBreakPoints().get(i-1).doubleValue(SI.METER);
-			double yOut = liftingSurface.getYBreakPoints().get(i).doubleValue(SI.METER);
-			
-			if (yStation > yIn && yStation < yOut || 
-				Math.abs(yStation - yIn) <= 1e-5 || 
-				Math.abs(yStation - yOut) <= 1e-5) {			
-				baseAirfoil = liftingSurface.getAirfoilList().get(i-1);
-				tci = liftingSurface.getAirfoilList().get(i-1).getThicknessToChordRatio();
-				tcf = liftingSurface.getAirfoilList().get(i).getThicknessToChordRatio();
-				scaleFactor = MyMathUtils.getInterpolatedValue1DLinear(
-						new double[] {yIn, yOut}, 
-						new double[] {1, tcf/tci}, 
-						yStation);
-				
-				break;
-			}
-		}
-		
-		// -----------------------------------------------------------------
-		// Delete duplicates in the airfoil points list, whether necessary
-		// -----------------------------------------------------------------
-		List<PVector> noDuplicatesCoords = new ArrayList<>();
-		for (int i = 0; i < baseAirfoil.getXCoords().length; i++) {
-			noDuplicatesCoords.add(new PVector (
-					(float) baseAirfoil.getXCoords()[i],
-					0.0f,
-					(float) baseAirfoil.getZCoords()[i]
-					));
-		}
-
-		Set<PVector> uniqueEntries = new HashSet<>();
-		for (Iterator<PVector> iter = noDuplicatesCoords.listIterator(1); iter.hasNext(); ) {
-			PVector point = (PVector) iter.next();
-			if (!uniqueEntries.add(point))
-				iter.remove();
-		}
-		
-		// ----------------------------------------------------------------
-		// Scale the inner airfoil according to thickness-to-chord ratios
-		// ----------------------------------------------------------------
-		for (int i = 0; i < noDuplicatesCoords.size(); i++)
-			noDuplicatesCoords.get(i).z = (float) ((float) noDuplicatesCoords.get(i).z * scaleFactor);
-		
-		// ---------------------------
-		// Check the trailing edge
-		// ---------------------------
-		int nPts = noDuplicatesCoords.size();
-		
-		if (Math.abs(noDuplicatesCoords.get(0).z - noDuplicatesCoords.get(nPts - 1).z) < 1e-5) {
-			
-			noDuplicatesCoords.get(0).set(
-					noDuplicatesCoords.get(0).x,
-					noDuplicatesCoords.get(0).y,
-					noDuplicatesCoords.get(0).z + 5e-4f
-					);
-			
-			noDuplicatesCoords.get(nPts - 1).set(
-					noDuplicatesCoords.get(nPts - 1).x,
-					noDuplicatesCoords.get(nPts - 1).y,
-					noDuplicatesCoords.get(nPts - 1).z - 5e-4f
-					);
-		}
-		
-		// ---------------------------------------
-		// Calculate airfoil actual coordinates
-		// ---------------------------------------
-		List<double[]> basePts = new ArrayList<>();
-		basePts.addAll(noDuplicatesCoords.stream()
-				.map(pv -> new double[] {pv.x, pv.y, pv.z})
-				.collect(Collectors.toList()));
-		
-		return generatePtsAtY(basePts, yStation, liftingSurface);
 	}
 	
 	private static List<double[]> generateCamberAtY(double yStation, LiftingSurface liftingSurface) {
@@ -3677,127 +3806,7 @@ public class AircraftCADUtils {
 		return new Tuple2<double[], double[]>(mainSidePnt, subSidePnt);
 	}
 	
-	public static List<OCCShape> getEnginesCAD(List<NacelleCreator> nacelles, List<Engine> engines,
-			List<Map<EngineCADComponentsEnum, String>> templateMapsList,
-			boolean exportSupportShapes, boolean exportShells, boolean exportSolids) {
-		
-		List<OCCShape> supportShapes = new ArrayList<>();
-		List<OCCShape> shellShapes = new ArrayList<>();
-		List<OCCShape> solidShapes = new ArrayList<>();
-		List<OCCShape> requestedShapes = new ArrayList<>();	
-		
-		// ----------------------------------------------------------
-		// Check whether continuing with the method
-		// ----------------------------------------------------------
-		if ((nacelles.isEmpty() || nacelles.stream().anyMatch(n -> n == null)) || 
-			(engines.isEmpty() || engines.stream().anyMatch(e -> e == null))) {			
-			System.out.println("========== [AircraftCADUtils::getEnginesCAD] One or more engine/nacelle object passed to the "
-					+ "getEnginesCAD method is null! Exiting the method ...");
-			return null;
-		}
-		
-		if (!exportSupportShapes && !exportShells && !exportSolids) {
-			System.out.println("========== [AircraftCADUtils::getEnginesCAD] No shapes to export! Exiting the method ...");
-			return null;
-		}
-		
-		System.out.println("========== [AircraftCADUtils::getEnginesCAD]");
-		
-		// ----------------------------------------------------------
-		// Generate engine CAD shapes
-		// ----------------------------------------------------------	
-		List<EngineCAD> engineCADList = new ArrayList<>();
-		IntStream.range(0, engines.size())
-				 .forEach(i -> engineCADList.add(
-						 new EngineCAD(nacelles.get(i), engines.get(i), templateMapsList.get(i))
-						 ));
-		
-		// Check the indexes of the engines that can be mirrored, based on:
-		// - sharing the same y apex coordinate (absolute value);
-		// - sharing the same type, templates and dimensions.
-		// First, it is necessary to sort the engines.
-		List<EngineCAD> sortedEngineCADList = engineCADList.stream()
-				.sorted(Comparator.comparing(e -> e.getEngineYApex()))
-				.collect(Collectors.toList());
-		
-		int[] symmEngines = new int[engines.size()];
-		Arrays.fill(symmEngines, 0);
-		if ((engines.size() & 1) == 0) { // even number of engines		
-			for (int i = 0; i < engines.size()/2; i++) {				
-				if (sortedEngineCADList.get(i).symmetrical(sortedEngineCADList.get(engines.size()-1-i))) {				
-					symmEngines[i] = i + 1;
-					symmEngines[engines.size()-1-i] = i + 1;
-				}					
-			}		
-		} else { // odd	number of engines
-			for (int i = 0; i < (engines.size()-1)/2; i++) {
-				if (sortedEngineCADList.get(i).symmetrical(sortedEngineCADList.get(engines.size()-1-i))) {
-					symmEngines[i] = i + 1;
-					symmEngines[engines.size()-1-i] = i + 1;
-				}
-			}
-		}
-		
-		for (int i = 0; i < engines.size(); i++) {
-			
-			if (symmEngines[i] != 0 && i < engines.size()/2) {
-				
-				List<OCCShape> engineShapes = getEngineCAD(sortedEngineCADList.get(i));
-				
-				List<OCCShape> symmEngineShapes = OCCUtils.getShapesTranslated(
-						engineShapes, 
-						new double[] {
-								sortedEngineCADList.get(i).getEngineXApex(),
-								sortedEngineCADList.get(i).getEngineYApex(),
-								sortedEngineCADList.get(i).getEngineZApex()
-						}, 
-						new double[] {
-								sortedEngineCADList.get(i).getEngineXApex(),
-							    sortedEngineCADList.get(i).getEngineYApex()*(-1),
-								sortedEngineCADList.get(i).getEngineZApex()
-						});		
-				
-				solidShapes.addAll(engineShapes);
-				solidShapes.addAll(symmEngineShapes);
-				
-			} else if (symmEngines[i] == 0) {
-				
-				solidShapes.addAll(getEngineCAD(sortedEngineCADList.get(i)));
-			}
-		}
-		
-		OCCCompound solidsCompound = (OCCCompound) OCCUtils.theFactory.newCompound(
-				solidShapes.stream().map(s -> (OCCShape) s).collect(Collectors.toList()));
-		
-		if (exportSolids) {
-			requestedShapes.addAll(solidShapes);
-		}
-		
-		if (exportSupportShapes) {
-			OCCExplorer wireExp = new OCCExplorer();
-			wireExp.init(solidsCompound, CADShapeTypes.WIRE);
-			while (wireExp.more()) {
-				supportShapes.add((OCCShape) wireExp.current());
-				wireExp.next();
-			}
-		}
-		
-		if (exportShells) {
-			OCCExplorer shellExp = new OCCExplorer();
-			shellExp.init(solidsCompound, CADShapeTypes.SHELL);
-			while (shellExp.more()) {
-				shellShapes.add((OCCShape) shellExp.current());
-				shellExp.next();
-			}
-		}
-	
-		requestedShapes.addAll(supportShapes);
-		requestedShapes.addAll(shellShapes);
-		
-		return requestedShapes;
-	}
-	
-	public static List<OCCShape> getEngineCAD(EngineCAD engineCAD) {
+	private static List<OCCShape> getEngineCAD(EngineCAD engineCAD) {
 		
 		List<OCCShape> requestedShapes = new ArrayList<>();	
 		
@@ -3826,7 +3835,7 @@ public class AircraftCADUtils {
 		return requestedShapes;
 	} 
 	
-	public static List<OCCShape> getTurbopropEngineCAD(EngineCAD engineCAD) {
+	private static List<OCCShape> getTurbopropEngineCAD(EngineCAD engineCAD) {
 		
 		// ----------------------------------------------------------
 		// Check the factory
@@ -4001,7 +4010,7 @@ public class AircraftCADUtils {
 		return solidShapes;
 	}
 	
-	public static List<OCCShape> getTurbofanEngineCAD(EngineCAD engineCAD) {
+	private static List<OCCShape> getTurbofanEngineCAD(EngineCAD engineCAD) {
 		
 		// ----------------------------------------------------------
 		// Check the factory

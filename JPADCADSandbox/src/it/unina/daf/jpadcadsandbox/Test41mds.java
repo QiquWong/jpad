@@ -31,6 +31,7 @@ import configuration.MyConfiguration;
 import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.FoldersEnum;
 import it.unina.daf.jpadcad.enums.EngineCADComponentsEnum;
+import it.unina.daf.jpadcad.enums.FileExtension;
 import it.unina.daf.jpadcad.enums.WingTipType;
 import it.unina.daf.jpadcad.occ.CADShape;
 import it.unina.daf.jpadcad.occ.CADShapeTypes;
@@ -40,7 +41,6 @@ import it.unina.daf.jpadcad.occ.OCCCompound;
 import it.unina.daf.jpadcad.occ.OCCExplorer;
 import it.unina.daf.jpadcad.occ.OCCShape;
 import it.unina.daf.jpadcad.occ.OCCUtils;
-import it.unina.daf.jpadcad.occ.OCCUtils.FileExtension;
 import it.unina.daf.jpadcad.occ.OCCVertex;
 import it.unina.daf.jpadcad.utils.AircraftCADUtils;
 import it.unina.daf.jpadcad.utils.AircraftUtils;
@@ -128,8 +128,8 @@ public class Test41mds {
 		
 		List<OCCShape> fairingShapes = AircraftCADUtils.getFairingShapes(
 				fuselage, wing, 
-				1.00, 1.00, 1.10, 0.05, 
-				0.75, 0.50, 0.85, 
+				0.50, 0.50, 1.05, 0.10, 
+				0.85, 0.10, 0.85, 
 				exportWires, exportShells, exportSolids);
 		
 		// ---------------------------------

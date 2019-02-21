@@ -1,10 +1,17 @@
 package it.unina.daf.jpadcad;
 
-import org.inferred.freebuilder.FreeBuilder;
+import java.util.List;
+import java.util.Map;
 
+import javax.measure.quantity.Angle;
+
+import org.inferred.freebuilder.FreeBuilder;
+import org.jscience.physics.amount.Amount;
+
+import it.unina.daf.jpadcad.enums.EngineCADComponentsEnum;
+import it.unina.daf.jpadcad.enums.FileExtension;
 import it.unina.daf.jpadcad.enums.WingTipType;
 import it.unina.daf.jpadcad.enums.XSpacingType;
-import it.unina.daf.jpadcad.occ.OCCUtils.FileExtension;
 
 @FreeBuilder
 public interface ICADManager {
@@ -38,6 +45,12 @@ public interface ICADManager {
 	boolean getGenerateCanard();
 	WingTipType getCanardTipType();
 	
+	// ENGINES input
+	boolean getGenerateEngines();
+	List<Map<EngineCADComponentsEnum, String>> getEngineTemplatesList();
+	
+	List<Amount<Angle>> getPropellerBladePitchAngleList();
+	
 	// WING-FUSELAGE FAIRING input
 	boolean getGenerateWingFairing();
 	double getWingFairingFrontLengthFactor();
@@ -67,6 +80,7 @@ public interface ICADManager {
 	// Class builder
 	class Builder extends ICADManager_Builder {
 		public Builder() {
+			
 			
 		}
 	}

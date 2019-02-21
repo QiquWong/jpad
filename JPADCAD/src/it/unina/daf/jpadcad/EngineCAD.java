@@ -94,14 +94,14 @@ public class EngineCAD {
 		this.engineType = engine.getEngineType();
 		setDefaultTemplates(engineType);
 		
-		Set<EngineCADComponentsEnum> tpTemplateSet = new HashSet<>();
+		Set<EngineCADComponentsEnum> engineTemplateSet = new HashSet<>();
 		switch (engineType) {
 
 		case TURBOPROP:			
-			tpTemplateSet.add(EngineCADComponentsEnum.BLADE);
-			tpTemplateSet.add(EngineCADComponentsEnum.NACELLE);
+			engineTemplateSet.add(EngineCADComponentsEnum.BLADE);
+			engineTemplateSet.add(EngineCADComponentsEnum.NACELLE);
 			
-			if (templateFilenames.keySet().equals(tpTemplateSet)) {
+			if (templateFilenames.keySet().equals(engineTemplateSet)) {
 				
 				if (tpBladeTemplates.contains(templateFilenames.get(EngineCADComponentsEnum.BLADE)) &&
 					tpNacelleTemplates.contains(templateFilenames.get(EngineCADComponentsEnum.NACELLE))) {
@@ -123,9 +123,9 @@ public class EngineCAD {
 			break;
 
 		case TURBOFAN:
-			tpTemplateSet.add(EngineCADComponentsEnum.NACELLE);
+			engineTemplateSet.add(EngineCADComponentsEnum.NACELLE);
 			
-			if (templateFilenames.keySet().equals(tpTemplateSet)) {
+			if (templateFilenames.keySet().equals(engineTemplateSet)) {
 				
 				if (tfNacelleTemplates.contains(templateFilenames.get(EngineCADComponentsEnum.NACELLE))) {
 					

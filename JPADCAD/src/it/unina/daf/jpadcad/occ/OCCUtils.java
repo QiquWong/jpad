@@ -9,6 +9,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import it.unina.daf.jpadcad.enums.FileExtension;
 import opencascade.Adaptor3d_Curve;
 import opencascade.Adaptor3d_HCurve;
 import opencascade.BOPAlgo_PaveFiller;
@@ -967,11 +968,5 @@ public final class OCCUtils {
 		return new double[] {cgGpPnt.X(), cgGpPnt.Y(), cgGpPnt.Z()};
 	}
 	
-	public enum FileExtension {
-		BREP,
-		STEP, 
-		IGES,
-		STL;
-	}
 }
 

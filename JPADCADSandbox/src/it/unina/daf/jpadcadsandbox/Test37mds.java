@@ -28,7 +28,6 @@ import it.unina.daf.jpadcad.occ.OCCShape;
 import it.unina.daf.jpadcad.occ.OCCShell;
 import it.unina.daf.jpadcad.occ.OCCSolid;
 import it.unina.daf.jpadcad.occ.OCCUtils;
-import it.unina.daf.jpadcad.occ.OCCUtils.FileExtension;
 import it.unina.daf.jpadcad.occ.OCCVertex;
 import it.unina.daf.jpadcad.utils.AircraftCADUtils;
 import it.unina.daf.jpadcad.utils.AircraftUtils;

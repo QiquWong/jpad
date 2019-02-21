@@ -8,8 +8,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import it.unina.daf.jpadcad.CADManager.CADComponentEnum;
+import it.unina.daf.jpadcad.enums.CADComponentEnum;
+import it.unina.daf.jpadcad.occ.CADShape;
+import it.unina.daf.jpadcad.occ.OCCCompSolid;
 import it.unina.daf.jpadcad.occ.OCCShape;
+import it.unina.daf.jpadcad.occ.OCCUtils;
 import it.unina.daf.jpadcad.occfx.OCCFXMeshExtractor.FaceData;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -111,6 +114,7 @@ public class OCCFX3DView {
 	private List<TriangleMesh> _theHTailImportedMesh = new ArrayList<>();
 	private List<TriangleMesh> _theVTailImportedMesh = new ArrayList<>();
 	private List<TriangleMesh> _theCanardImportedMesh = new ArrayList<>();
+	private List<TriangleMesh> _theEnginesImportedMesh = new ArrayList<>();
 	private List<TriangleMesh> _theWingFairingImportedMesh = new ArrayList<>();
 	private List<TriangleMesh> _theCanardFairingImportedMesh = new ArrayList<>();
 	private List<MeshView> _theAircraftImportedMeshView = new ArrayList<>();
@@ -119,6 +123,7 @@ public class OCCFX3DView {
 	private List<MeshView> _theHTailImportedMeshView = new ArrayList<>();
 	private List<MeshView> _theVTailImportedMeshView = new ArrayList<>();
 	private List<MeshView> _theCanardImportedMeshView = new ArrayList<>();
+	private List<MeshView> _theEnginesImportedMeshView = new ArrayList<>();
 	private List<MeshView> _theWingFairingImportedMeshView = new ArrayList<>();
 	private List<MeshView> _theCanardFairingImportedMeshView = new ArrayList<>();
 	
@@ -168,10 +173,10 @@ public class OCCFX3DView {
 			CADComponentEnum comp = iter.next();
 			List<OCCShape> solids = _theAircraftSolidsMap.get(comp);
 			
-			if (solids.size() != 1) 
-				System.err.println("Warning: the number of solids found in " + comp.toString() + " shape list is incorrect!");
+			OCCCompSolid compSolids = (OCCCompSolid) OCCUtils.theFactory.newCompSolid(
+					solids.stream().map(s -> (CADShape) s).collect(Collectors.toList()));
 			
-			List<TriangleMesh> mesh = extractMesh(solids.get(0), true);
+			List<TriangleMesh> mesh = extractMesh(compSolids, true);
 			List<MeshView> meshView = generateMeshView(mesh);
 			
 			_theAircraftMeshMap.put(comp, mesh);
@@ -207,6 +212,10 @@ public class OCCFX3DView {
 				_theCanardImportedMesh = mesh;
 				_theCanardImportedMeshView = meshView;
 				break;
+				
+			case ENGINES:
+				_theEnginesImportedMesh = mesh;
+				_theEnginesImportedMeshView = meshView;
 				
 			case WING_FAIRING:
 				_theWingFairingImportedMesh = mesh;
