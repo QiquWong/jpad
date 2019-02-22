@@ -629,14 +629,13 @@ public class AVLExternalJob implements IAVLExternalJob {
 		//			DatcomPlusInputGenerator.writeTemplate(this.getInputFile().getAbsolutePath()); // Ok
 
 		// Write out the input file
-		AVLInputGenerator.writeDataToAVLFile(inputData, aircraft, this.getInputAVLFile().getAbsolutePath());
-
+//		AVLInputGenerator.writeDataToAVLFile(inputData, aircraft, this.getInputAVLFile().getAbsolutePath());
 		System.out.println("Input AVL file full path: " + this.getInputAVLFile());
 		System.out.println("Input AVL file name: " + this.getInputAVLFile().getName());
 
 		// Write out the mass file
 		if (massData != null) {
-			AVLInputGenerator.writeDataToMassFile(massData, this.getInputMassFile().getAbsolutePath());
+//			AVLInputGenerator.writeDataToMassFile(massData, this.getInputMassFile().getAbsolutePath());
 			System.out.println("Input Mass file full path: " + this.getInputMassFile());
 			System.out.println("Input Mass file name: " + this.getInputMassFile().getName());
 		} else {
@@ -645,7 +644,7 @@ public class AVLExternalJob implements IAVLExternalJob {
 		}
 
 		// Write out the run file
-		AVLInputGenerator.writeDataToRunFile(avlMacro, this.getInputRunFile().getAbsolutePath());
+//		AVLInputGenerator.writeDataToRunFile(avlMacro, this.getInputRunFile().getAbsolutePath());
 		
 		commandInformation.add(
 				"cd " + this.getBinDirectory()

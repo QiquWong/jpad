@@ -365,8 +365,8 @@ public class TakeOffNoiseTrajectoryCalc {
 			theIntegrator = new HighamHall54Integrator(
 					1e-10,
 					1,
-					1e-8,
-					1e-8
+					1e-6,
+					1e-6
 					);
 			ode = new DynamicsEquationsTakeOffNoiseTrajectory();
 

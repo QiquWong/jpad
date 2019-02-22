@@ -350,6 +350,7 @@ public class NoiseTrajectoryCalcTest extends Application {
 						deltaCD0OEI,
 						theAircraft.getWing().getAspectRatio(),
 						theAircraft.getWing().getSurfacePlanform(),
+						theAircraft.getFuselage().getUpsweepAngle(),
 						dtHold, 
 						dtLandingGearRetraction, 
 						dtThrustCutback,

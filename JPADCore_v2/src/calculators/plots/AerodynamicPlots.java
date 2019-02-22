@@ -11,7 +11,6 @@ import javax.measure.unit.NonSI;
 
 import org.jscience.physics.amount.Amount;
 
-import analyses.IACAerodynamicAndStabilityManager;
 import analyses.IACAerodynamicAndStabilityManager_v2;
 import analyses.fuselage.FuselageAerodynamicsManager;
 import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager;
@@ -4386,7 +4385,7 @@ public class AerodynamicPlots {
 		//-----------------------------------------------------------------------------------------------------------------------
 		// WING DOWNWASH
 		if(_theAerodynamicBuilderInterface.getTheAircraft().getHTail() != null) {
-			if(_theAerodynamicBuilderInterface.getDownwashConstant()) {
+			if(_theAerodynamicBuilderInterface.isWingHTailDownwashConstant()) {
 				if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.AIRCRAFT).contains(AerodynamicAndStabilityPlotEnum.WING_HTAIL_DOWNWASH_ANGLE)) {
 					xVector = new ArrayList<Double>();
 					yVector = new ArrayList<Double>();
@@ -4442,7 +4441,7 @@ public class AerodynamicPlots {
 
 			}
 
-			if(!_theAerodynamicBuilderInterface.getDownwashConstant()) {
+			if(!_theAerodynamicBuilderInterface.isWingHTailDownwashConstant()) {
 				if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.AIRCRAFT).contains(AerodynamicAndStabilityPlotEnum.WING_HTAIL_DOWNWASH_ANGLE)) {
 
 					xVectorMatrix = new ArrayList<Double[]>();

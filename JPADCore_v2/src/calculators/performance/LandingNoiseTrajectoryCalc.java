@@ -368,8 +368,8 @@ public class LandingNoiseTrajectoryCalc {
 			theIntegrator = new HighamHall54Integrator(
 					1e-10,
 					1,
-					1e-10,
-					1e-10
+					1e-8,
+					1e-8
 					);
 			ode = new DynamicsEquationsLandingNoiseTrajectory();
 			
@@ -2179,47 +2179,10 @@ public class LandingNoiseTrajectoryCalc {
 								SI.NEWTON
 								);
 				
-				// first guess values
-				double weightCruise = 0.5;
-				double weightFlightIdle = 0.5;
-
-				Amount<Force> interpolatedThrust = Amount.valueOf(
-								(cruiseThrustFromDatabase.doubleValue(SI.NEWTON)*weightCruise)
-								+ (flightIdleThrustFromDatabase.doubleValue(SI.NEWTON)*weightFlightIdle),
-								SI.NEWTON);
-				
-				int iter = 0;
-				int maxIter = 50;
-				// iterative loop for the definition of the cruise and flight idle weights
-				while (
-						(Math.abs(
-								(totalThrust.doubleValue(SI.NEWTON)
-										-interpolatedThrust.doubleValue(SI.NEWTON))
-								) 
-								/ totalThrust.doubleValue(SI.NEWTON)
-								)
-						> 0.01
-						) {
-					
-					if(iter > maxIter) 
-						break;
-					
-					double thrustRatio = interpolatedThrust.doubleValue(SI.NEWTON)/totalThrust.doubleValue(SI.NEWTON);
-					
-					/* Increase or decrease flight idle weight to make the interpolatedThrust similar to the target totalThrust */
-					double weightFlightIdleTemp = weightFlightIdle;
-					weightFlightIdle = weightFlightIdleTemp*thrustRatio;
-					weightCruise = 1-weightFlightIdle;
-					
-					/* Calculate new interpolatedThrust */
-					interpolatedThrust = Amount.valueOf(
-								(cruiseThrustFromDatabase.doubleValue(SI.NEWTON)*weightCruise)
-								+ (flightIdleThrustFromDatabase.doubleValue(SI.NEWTON)*weightFlightIdle),
-								SI.NEWTON);
-					
-					iter++;
-					
-				}
+				double weightFlightIdle = 
+						(totalThrust.doubleValue(SI.NEWTON) - cruiseThrustFromDatabase.doubleValue(SI.NEWTON))
+						/ (flightIdleThrustFromDatabase.doubleValue(SI.NEWTON) - cruiseThrustFromDatabase.doubleValue(SI.NEWTON));
+				double weightCruise = 1 - weightFlightIdle;
 				
 				List<Double> fuelFlowCruiseList = new ArrayList<>();
 				List<Double> fuelFlowFlightIdleList = new ArrayList<>();
