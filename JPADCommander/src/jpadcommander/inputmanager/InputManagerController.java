@@ -209,6 +209,8 @@ public class InputManagerController {
 	private TabPane tabPaneEngines;	
 	@FXML
 	private TabPane tabPaneCAD3DView;
+	@FXML
+	private TabPane tabPaneCAD3DViewEngines;
 	//...........................................................................................
 	// BUTTONS:
 	//...........................................................................................
@@ -338,6 +340,10 @@ public class InputManagerController {
 	private Button updateCAD3DViewButton;
 	@FXML
 	private Button saveCADToFileButton;
+	@FXML
+	private Button enginesCADChooseNacelleTemplateFileButton1;
+	@FXML
+	private Button enginesCADChooseBladeTemplateFileButton1;
 	
 	//...........................................................................................
 	// BUTTON MAP:
@@ -462,6 +468,8 @@ public class InputManagerController {
 	private FileChooser nacelleFileChooser;
 	private FileChooser landingGearsFileChooser;
 	private FileChooser cad3DViewFileChooser;
+	private FileChooser cadNacelleFileChooser;
+	private FileChooser cadBladeFileChooser;
 	private FileChooser saveCADFileChooser;
 	
 	//...........................................................................................
@@ -1768,6 +1776,18 @@ public class InputManagerController {
 	@FXML
 	private ChoiceBox<String> canardCADTipTypeChoiceBox;
 	
+	// ENGINES
+	@FXML
+	private CheckBox generateEnginesCADCheckBox;
+	@FXML
+	private TextField enginesCADNacelleTemplateFileTextField1;
+	@FXML
+	private TextField enginesCADBladeTemplateFileTextField1;
+	@FXML
+	private TextField enginesCADBladePitchAngleTextField1;
+	@FXML
+	private ChoiceBox<String> enginesCADBladePitchAngleUnitChoiceBox1;
+		
 	// WING FAIRING
 	@FXML
 	private CheckBox generateWingFairingCADCheckBox;
@@ -1803,6 +1823,14 @@ public class InputManagerController {
 	private TextField canardFairingCADHeightAboveReferenceFactorTextField;
 	@FXML
 	private TextField canardFairingCADFilletRadiusFactorTextField;
+	
+	// ENGINES lists
+	private List<TextField> enginesCADNacelleTemplateFileTextFieldList;
+	private List<Button> enginesCADChooseNacelleTemplateFileButtonList;
+	private List<TextField> enginesCADBladeTemplateFileTextFieldList;
+	private List<Button> enginesCADChooseBladeTemplateFileButtonList;
+	private List<TextField> enginesCADBladePitchAngleTextFieldList;
+	private List<ChoiceBox<String>> enginesCADBladePitchAngleUnitList;
 	
 	//-------------------------------------------------------------------------------------------
 	// METHODS
@@ -2003,6 +2031,11 @@ public class InputManagerController {
 		tabPaneEngines.setTabClosingPolicy(TabClosingPolicy.SELECTED_TAB);
 		for(int i=0; i<tabPaneEngines.getTabs().size(); i++)
 			inputManagerControllerSecondaryActionUtilities.removeContentOnEngineTabClose(tabPaneAircraftEngines.getTabs().get(i));
+		
+		tabPaneCAD3DViewEngines.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
+//		for(int i=0; i<tabPaneCAD3DViewEngines.getTabs().size(); i++)
+			// TODO:
+			
 		
 		//.......................................................................................
 		// CHOICE BOX INITIALIZATION
@@ -13739,6 +13772,134 @@ public class InputManagerController {
 	
 	public void setCanardCADTipTypeChoiceBox(ChoiceBox<String> canardCADTipTypeChoiceBox) {
 		this.canardCADTipTypeChoiceBox = canardCADTipTypeChoiceBox;
+	}
+	
+	public CheckBox getGenerateEnginesCADCheckBox() {
+		return generateEnginesCADCheckBox;
+	}
+	
+	public void setGenerateEnginesCADCheckBox(CheckBox generateEnginesCADCheckBox) {
+		this.generateEnginesCADCheckBox = generateEnginesCADCheckBox;
+	}
+	
+	public TabPane getTabPaneCAD3DViewEngines() {
+		return tabPaneCAD3DViewEngines;
+	}
+	
+	public void setTabPaneCAD3DViewEngines(TabPane tabPaneCAD3DViewEngines) {
+		this.tabPaneCAD3DViewEngines = tabPaneCAD3DViewEngines;
+	}
+	
+	public FileChooser getCADNacelleFileChooser() {
+		return cadNacelleFileChooser;
+	}
+	
+	public void setCADNacelleFileChooser(FileChooser cadNacelleFileChooser) {
+		this.cadNacelleFileChooser = cadNacelleFileChooser;
+	}
+	
+	public FileChooser getCADBladeFileChooser() {
+		return cadBladeFileChooser;
+	}
+	
+	public void setCADBladeFileChooser(FileChooser cadBladeFileChooser) {
+		this.cadBladeFileChooser = cadBladeFileChooser;
+	}
+	
+	public TextField getEnginesCADNacelleTemplateFileTextField1() {
+		return enginesCADNacelleTemplateFileTextField1;
+	}
+	
+	public void setEnginesCADNacelleTemplateFileTextField1(TextField enginesCADNacelleTemplateFileTextField1) {
+		this.enginesCADNacelleTemplateFileTextField1 = enginesCADNacelleTemplateFileTextField1;
+	}
+	
+	public Button getEnginesCADChooseNacelleTemplateFileButton1() {
+		return enginesCADChooseNacelleTemplateFileButton1;
+	}
+	
+	public void setEnginesCADChooseNacelleTemplateFileButton1(Button enginesCADChooseNacelleTemplateFileButton1) {
+		this.enginesCADChooseNacelleTemplateFileButton1 = enginesCADChooseNacelleTemplateFileButton1;
+	}
+	
+	public TextField getEnginesCADBladeTemplateFileTextField1() {
+		return enginesCADBladeTemplateFileTextField1;
+	}
+	
+	public void setEnginesCADBladeTemplateFileTextField1(TextField enginesCADBladeTemplateFileTextField1) {
+		this.enginesCADBladeTemplateFileTextField1 = enginesCADBladeTemplateFileTextField1;
+	}
+	
+	public Button getEnginesCADChooseBladeTemplateFileButton1() {
+		return enginesCADChooseBladeTemplateFileButton1;
+	}
+	
+	public void setEnginesCADChooseBladeTemplateFileButton1(Button enginesCADChooseBladeTemplateFileButton1) {
+		this.enginesCADChooseBladeTemplateFileButton1 = enginesCADChooseBladeTemplateFileButton1;
+	}
+	
+	public TextField getEnginesCADBladePitchAngleTextField1() {
+		return enginesCADBladePitchAngleTextField1;
+	}
+	
+	public void setEnginesCADBladePitchAngleTextField1(TextField enginesCADBladePitchAngleTextField1) {
+		this.enginesCADBladePitchAngleTextField1 = enginesCADBladePitchAngleTextField1;
+	}
+	
+	public ChoiceBox<String> getEnginesCADBladePitchAngleUnitChoiceBox1() {
+		return enginesCADBladePitchAngleUnitChoiceBox1;
+	}
+	
+	public void setEnginesCADBladePitchAngleUnitChoiceBox1(ChoiceBox<String> enginesCADBladePitchAngleUnitChoiceBox1) {
+		this.enginesCADBladePitchAngleUnitChoiceBox1 = enginesCADBladePitchAngleUnitChoiceBox1;
+	}
+	
+	public List<TextField> getEnginesCADNacelleTemplateFileTextFieldList() {
+		return enginesCADNacelleTemplateFileTextFieldList;
+	}
+	
+	public void setEnginesCADNacelleTemplateFileTextFieldList(List<TextField> enginesCADNacelleTemplateFileTextFieldList) {
+		this.enginesCADNacelleTemplateFileTextFieldList = enginesCADNacelleTemplateFileTextFieldList;
+	}
+	
+	public List<Button> getEnginesCADChooseNacelleTemplateFileButtonList() {
+		return enginesCADChooseNacelleTemplateFileButtonList;
+	}
+	
+	public void setEnginesCADChooseNacelleTemplateFileButtonList(List<Button> enginesCADChooseNacelleTemplateFileButtonList) {
+		this.enginesCADChooseNacelleTemplateFileButtonList = enginesCADChooseNacelleTemplateFileButtonList;
+	}
+
+	public List<TextField> getEnginesCADBladeTemplateFileTextFieldList() {
+		return enginesCADBladeTemplateFileTextFieldList;
+	}
+	
+	public void setEnginesCADBladeTemplateFileTextFieldList(List<TextField> enginesCADBladeTemplateFileTextFieldList) {
+		this.enginesCADBladeTemplateFileTextFieldList = enginesCADBladeTemplateFileTextFieldList;
+	}
+	
+	public List<Button> getEnginesCADChooseBladeTemplateFileButtonList() {
+		return enginesCADChooseBladeTemplateFileButtonList;
+	}
+	
+	public void setEnginesCADChooseBladeTemplateFileButtonList(List<Button> enginesCADChooseBladeTemplateFileButtonList) {
+		this.enginesCADChooseBladeTemplateFileButtonList = enginesCADChooseBladeTemplateFileButtonList;
+	}
+	
+	public List<TextField> getEnginesCADBladePitchAngleTextFieldList() {
+		return enginesCADBladePitchAngleTextFieldList;
+	}
+	
+	public void setEnginesCADBladePitchAngleTextFieldList(List<TextField> enginesCADBladePitchAngleTextFieldList) {
+		this.enginesCADBladePitchAngleTextFieldList = enginesCADBladePitchAngleTextFieldList;
+	}
+	
+	public List<ChoiceBox<String>> getEnginesCADBladePitchAngleUnitList() {
+		return enginesCADBladePitchAngleUnitList;
+	}
+	
+	public void setEnginesCADBladePitchAngleUnitList(List<ChoiceBox<String>> enginesCADBladePitchAngleUnitList) {
+		this.enginesCADBladePitchAngleUnitList = enginesCADBladePitchAngleUnitList;
 	}
 
 	public CheckBox getGenerateWingFairingCADCheckBox() {

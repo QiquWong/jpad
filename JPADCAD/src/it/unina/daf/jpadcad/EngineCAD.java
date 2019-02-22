@@ -125,7 +125,7 @@ public class EngineCAD {
 		case TURBOFAN:
 			engineTemplateSet.add(EngineCADComponentsEnum.NACELLE);
 			
-			if (templateFilenames.keySet().equals(engineTemplateSet)) {
+			if (templateFilenames.keySet().equals(engineTemplateSet) || templateFilenames.containsKey(EngineCADComponentsEnum.NACELLE)) {
 				
 				if (tfNacelleTemplates.contains(templateFilenames.get(EngineCADComponentsEnum.NACELLE))) {
 					

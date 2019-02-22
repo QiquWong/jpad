@@ -3131,7 +3131,7 @@
                                                                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                                </rowConstraints>
                                                             </GridPane>
-                                                            <GridPane layoutX="5.0" layoutY="1027.0" prefHeight="245.0" prefWidth="365.0">
+                                                            <GridPane layoutX="5.0" layoutY="1319.0" prefHeight="245.0" prefWidth="365.0">
                                                                <children>
                                                                   <Label text="Back length factor:" GridPane.rowIndex="1" />
                                                                   <Label text="Width factor:" GridPane.rowIndex="2" />
@@ -3162,7 +3162,7 @@
                                                                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                                </rowConstraints>
                                                             </GridPane>
-                                                            <Separator layoutX="-34.0" layoutY="1600.0" prefHeight="0.0" prefWidth="1604.0" />
+                                                            <Separator layoutX="-29.0" layoutY="1888.0" prefHeight="0.0" prefWidth="1604.0" />
                                                             <Label layoutX="5.0" layoutY="54.0" text="CAD EXPORT OPTIONS" textFill="#0400ff">
                                                                <font>
                                                                   <Font name="System Bold" size="15.0" />
@@ -3242,19 +3242,19 @@
                                                             </Label>
                                                             <Separator layoutX="-4.0" layoutY="879.0" prefHeight="0.0" prefWidth="1345.0" />
                                                             <CheckBox fx:id="generateCanardCADCheckBox" layoutX="142.0" layoutY="889.0" mnemonicParsing="false" />
-                                                            <Label layoutX="5.0" layoutY="968.0" text="WING FAIRING OPTIONS" textFill="#0400ff">
+                                                            <Label layoutX="5.0" layoutY="1260.0" text="WING FAIRING OPTIONS" textFill="#0400ff">
                                                                <font>
                                                                   <Font name="System Bold" size="15.0" />
                                                                </font>
                                                             </Label>
                                                             <Separator layoutX="-13.0" layoutY="957.0" prefHeight="0.0" prefWidth="1345.0" />
-                                                            <Separator layoutX="-10.0" layoutY="988.0" prefHeight="0.0" prefWidth="1345.0" />
-                                                            <Label layoutX="5.0" layoutY="998.0" text="Generate">
+                                                            <Separator layoutX="-8.0" layoutY="1280.0" prefHeight="0.0" prefWidth="1345.0" />
+                                                            <Label layoutX="5.0" layoutY="1290.0" text="Generate">
                                                                <font>
                                                                   <Font name="System Bold" size="15.0" />
                                                                </font>
                                                             </Label>
-                                                            <CheckBox fx:id="generateWingFairingCADCheckBox" layoutX="223.0" layoutY="998.0" mnemonicParsing="false" />
+                                                            <CheckBox fx:id="generateWingFairingCADCheckBox" layoutX="222.0" layoutY="1290.0" mnemonicParsing="false" />
                                                             <Button id="updateAllButton" fx:id="updateCAD3DViewButton" layoutX="5.0" layoutY="6.0" mnemonicParsing="false" onAction="#updateCAD3DView" text="Update 3D Model" />
                                                             <Separator layoutX="-8.0" layoutY="45.0" prefHeight="0.0" prefWidth="1345.0" />
                                                             <Label layoutX="5.0" layoutY="447.0" text="Tip type:">
@@ -3305,20 +3305,20 @@
                                                                   <Font name="System Bold" size="15.0" />
                                                                </font>
                                                             </Label>
-                                                            <Label layoutX="5.0" layoutY="1320.0" text="Generate">
+                                                            <Label layoutX="5.0" layoutY="1608.0" text="Generate">
                                                                <font>
                                                                   <Font name="System Bold" size="15.0" />
                                                                </font>
                                                             </Label>
-                                                            <Separator layoutX="1.0" layoutY="1310.0" prefHeight="0.0" prefWidth="1345.0" />
-                                                            <CheckBox fx:id="generateCanardFairingCADCheckBox" layoutX="223.0" layoutY="1320.0" mnemonicParsing="false" />
-                                                            <Label layoutX="5.0" layoutY="1290.0" text="CANARD FAIRING OPTIONS" textFill="#0400ff">
+                                                            <Separator layoutX="5.0" layoutY="1888.0" prefHeight="0.0" prefWidth="1345.0" />
+                                                            <CheckBox fx:id="generateCanardFairingCADCheckBox" layoutX="222.0" layoutY="1608.0" mnemonicParsing="false" />
+                                                            <Label layoutX="5.0" layoutY="1578.0" text="CANARD FAIRING OPTIONS" textFill="#0400ff">
                                                                <font>
                                                                   <Font name="System Bold" size="15.0" />
                                                                </font>
                                                             </Label>
-                                                            <Separator layoutX="-2.0" layoutY="1279.0" prefHeight="0.0" prefWidth="1345.0" />
-                                                            <GridPane layoutX="5.0" layoutY="1349.0" prefHeight="245.0" prefWidth="363.0">
+                                                            <Separator layoutX="-13.0" layoutY="1571.0" prefHeight="0.0" prefWidth="1345.0" />
+                                                            <GridPane layoutX="5.0" layoutY="1637.0" prefHeight="245.0" prefWidth="363.0">
                                                                <children>
                                                                   <Label text="Back length factor:" GridPane.rowIndex="1" />
                                                                   <Label text="Width factor:" GridPane.rowIndex="2" />
@@ -3350,6 +3350,53 @@
                                                                </rowConstraints>
                                                             </GridPane>
                                                             <Button id="updateAllButton" fx:id="saveCADToFileButton" layoutX="152.0" layoutY="6.0" mnemonicParsing="false" onAction="#saveCADToFile" prefHeight="31.0" prefWidth="96.0" text="Save CAD" />
+                                                            <Label layoutX="5.0" layoutY="966.0" text="ENGINE OPTIONS" textFill="#0400ff">
+                                                               <font>
+                                                                  <Font name="System Bold" size="15.0" />
+                                                               </font>
+                                                            </Label>
+                                                            <Separator layoutX="-12.0" layoutY="986.0" prefHeight="0.0" prefWidth="1345.0" />
+                                                            <Label layoutX="7.0" layoutY="995.0" text="Generate">
+                                                               <font>
+                                                                  <Font name="System Bold" size="15.0" />
+                                                               </font>
+                                                            </Label>
+                                                            <CheckBox fx:id="generateEnginesCADCheckBox" layoutX="142.0" layoutY="995.0" mnemonicParsing="false" />
+                                                            <TabPane fx:id="tabPaneCAD3DViewEngines" layoutY="1024.0" prefHeight="230.0" prefWidth="1072.0" tabClosingPolicy="UNAVAILABLE">
+                                                               <tabs>
+                                                                  <Tab text="Engine 1 ">
+                                                                     <content>
+                                                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="230.0" prefWidth="1070.0">
+                                                                           <children>
+                                                                              <Label layoutX="5.0" layoutY="4.0" prefHeight="21.0" prefWidth="220.0" text="Template nacelle file:">
+                                                                                 <font>
+                                                                                    <Font size="15.0" />
+                                                                                 </font>
+                                                                              </Label>
+                                                                              <TextField id="textFieldSurfaceRoughness" fx:id="enginesCADNacelleTemplateFileTextField1" layoutX="5.0" layoutY="28.0" prefHeight="31.0" prefWidth="315.0" />
+                                                                              <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="enginesCADBladePitchAngleUnitChoiceBox1" layoutX="329.0" layoutY="146.0" prefHeight="31.0" prefWidth="42.0" />
+                                                                              <Label layoutX="5.0" layoutY="124.0" prefHeight="21.0" prefWidth="197.0" text="Propeller blade pitch angle:">
+                                                                                 <font>
+                                                                                    <Font size="15.0" />
+                                                                                 </font>
+                                                                              </Label>
+                                                                              <TextField id="textFieldSurfaceRoughness" fx:id="enginesCADBladePitchAngleTextField1" layoutX="5.0" layoutY="146.0" prefHeight="31.0" prefWidth="315.0" />
+                                                                              <Button fx:id="enginesCADChooseNacelleTemplateFileButton1" layoutX="328.0" layoutY="28.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="44.0" text="..." />
+                                                                              <Label layoutX="5.0" layoutY="64.0" prefHeight="21.0" prefWidth="220.0" text="Template blade file:">
+                                                                                 <font>
+                                                                                    <Font size="15.0" />
+                                                                                 </font>
+                                                                              </Label>
+                                                                              <TextField id="textFieldSurfaceRoughness" fx:id="enginesCADBladeTemplateFileTextField1" layoutX="5.0" layoutY="86.0" prefHeight="31.0" prefWidth="315.0" />
+                                                                              <Button fx:id="enginesCADChooseBladeTemplateFileButton1" layoutX="328.0" layoutY="86.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="44.0" text="..." />
+                                                                              <Separator layoutX="-318.0" layoutY="188.0" prefHeight="0.0" prefWidth="1345.0" />
+                                                                           </children>
+                                                                        </AnchorPane>
+                                                                     </content>
+                                                                  </Tab>
+                                                               </tabs>
+                                                            </TabPane>
+                                                            <Separator layoutX="-4.0" layoutY="1598.0" prefHeight="0.0" prefWidth="1345.0" />
                                                          </children>
                                                       </AnchorPane>
                                                    </content>
