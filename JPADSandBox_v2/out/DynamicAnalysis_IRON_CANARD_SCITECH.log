@@ -12,8 +12,8 @@ NACELLES ===> C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\in\Template_A
 LANDING GEARS ===> C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\in\Template_Aircraft\landing_gears
 CABIN CONFIGURATIONS ===> C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\in\Template_Aircraft\cabin_configurations
 --------------
-11 [main] INFO ncsa.hdf.hdf5lib.H5 - HDF5 library: jhdf5
-12 [main] INFO ncsa.hdf.hdf5lib.H5 -  successfully loaded from java.library.path
+34 [main] INFO ncsa.hdf.hdf5lib.H5 - HDF5 library: jhdf5
+34 [main] INFO ncsa.hdf.hdf5lib.H5 -  successfully loaded from java.library.path
 De-serializing file: C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterAerodynamicDatabase.xml ...
 database.databasefunctions.aerodynamics.AerodynamicDatabaseReader de-serialization complete
 De-serializing file: C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterHighLiftDatabase.xml ...
@@ -1580,11 +1580,15 @@ database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serializati
 
 
 		Weights Analysis :: START
-		Weights Analysis :: COMPLETE
-
+			Class II mass breakdown :: START
+			Class II mass breakdown :: COMPLETE
+			Class II mass breakdown plot :: START
+			Class II mass breakdown plot :: COMPLETE
 		Balance Analysis :: START
-		Balance Analysis :: COMPLETE 
-
+			Center of gravity positions and inertias estimation :: START
+			Center of gravity positions and inertias estimation :: COMPLETE
+			Balance analysis plot :: START
+			Balance analysis plot :: COMPLETE
 		Dynamic Stability Analysis (CRUISE) :: START
 File C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\in\Template_Analyses\analysis_dynamics_IRON_CANARD_cruise.xml found.
 Parsing ...

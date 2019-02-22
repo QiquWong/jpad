@@ -1225,16 +1225,16 @@ public class ACDynamicStabilityManager {
 			System.out.println("EigenVector 4 = " + eigLonVec4+"\n");
 			
 			// Generates and prints out all the characteristics for longitudinal SHORT PERIOD and PHUGOID modes \\
-			zeta_SP = DynamicStabilityCalculator.calcZeta(lonEigenvaluesMatrix[0][0],lonEigenvaluesMatrix[0][1]);
-			zeta_PH = DynamicStabilityCalculator.calcZeta(lonEigenvaluesMatrix[2][0],lonEigenvaluesMatrix[2][1]);
-			omega_n_SP = DynamicStabilityCalculator.calcOmega_n(lonEigenvaluesMatrix[0][0],lonEigenvaluesMatrix[0][1]);
-			omega_n_PH = DynamicStabilityCalculator.calcOmega_n(lonEigenvaluesMatrix[2][0],lonEigenvaluesMatrix[2][1]);
-			period_SP = DynamicStabilityCalculator.calcT(lonEigenvaluesMatrix[0][0],lonEigenvaluesMatrix[0][1]);
-			period_PH = DynamicStabilityCalculator.calcT(lonEigenvaluesMatrix[2][0],lonEigenvaluesMatrix[2][1]);
-			t_half_SP = DynamicStabilityCalculator.calct_half(lonEigenvaluesMatrix[0][0],lonEigenvaluesMatrix[0][1]);
-			t_half_PH = DynamicStabilityCalculator.calct_half(lonEigenvaluesMatrix[2][0],lonEigenvaluesMatrix[2][1]);
-			N_half_SP = DynamicStabilityCalculator.calcN_half(lonEigenvaluesMatrix[0][0],lonEigenvaluesMatrix[0][1]);
-			N_half_PH = DynamicStabilityCalculator.calcN_half(lonEigenvaluesMatrix[2][0],lonEigenvaluesMatrix[2][1]);
+			zeta_SP = DynamicStabilityCalculator.calcDampingCoefficient(lonEigenvaluesMatrix[0][0],lonEigenvaluesMatrix[0][1]);
+			zeta_PH = DynamicStabilityCalculator.calcDampingCoefficient(lonEigenvaluesMatrix[2][0],lonEigenvaluesMatrix[2][1]);
+			omega_n_SP = DynamicStabilityCalculator.calcNaturalPulsation(lonEigenvaluesMatrix[0][0],lonEigenvaluesMatrix[0][1]);
+			omega_n_PH = DynamicStabilityCalculator.calcNaturalPulsation(lonEigenvaluesMatrix[2][0],lonEigenvaluesMatrix[2][1]);
+			period_SP = DynamicStabilityCalculator.calcPeriod(lonEigenvaluesMatrix[0][0],lonEigenvaluesMatrix[0][1]);
+			period_PH = DynamicStabilityCalculator.calcPeriod(lonEigenvaluesMatrix[2][0],lonEigenvaluesMatrix[2][1]);
+			t_half_SP = DynamicStabilityCalculator.calcTimeToHalf(lonEigenvaluesMatrix[0][0],lonEigenvaluesMatrix[0][1]);
+			t_half_PH = DynamicStabilityCalculator.calcTimeToHalf(lonEigenvaluesMatrix[2][0],lonEigenvaluesMatrix[2][1]);
+			N_half_SP = DynamicStabilityCalculator.calcNCyclesToHalf(lonEigenvaluesMatrix[0][0],lonEigenvaluesMatrix[0][1]);
+			N_half_PH = DynamicStabilityCalculator.calcNCyclesToHalf(lonEigenvaluesMatrix[2][0],lonEigenvaluesMatrix[2][1]);
 
 			System.out.println("_________________________________________________________________\n");
 			System.out.println("SHORT PERIOD MODE CHARACTERISTICS\n");
@@ -1338,11 +1338,11 @@ public class ACDynamicStabilityManager {
 			System.out.println("EigenVector 4 = " + eigLDVec4+"\n");
 			
 			// Generates and prints out all the characteristics for lateral-directional DUTCH-ROLL mode \\
-			zeta_DR = DynamicStabilityCalculator.calcZeta(ldEigenvaluesMatrix[0][0],ldEigenvaluesMatrix[0][1]);
-			omega_n_DR = DynamicStabilityCalculator.calcOmega_n(ldEigenvaluesMatrix[0][0],ldEigenvaluesMatrix[0][1]);
-			period_DR = DynamicStabilityCalculator.calcT(ldEigenvaluesMatrix[0][0],ldEigenvaluesMatrix[0][1]);
-			t_half_DR = DynamicStabilityCalculator.calct_half(ldEigenvaluesMatrix[0][0],ldEigenvaluesMatrix[0][1]);
-			N_half_DR = DynamicStabilityCalculator.calcN_half(ldEigenvaluesMatrix[0][0],ldEigenvaluesMatrix[0][1]);
+			zeta_DR = DynamicStabilityCalculator.calcDampingCoefficient(ldEigenvaluesMatrix[0][0],ldEigenvaluesMatrix[0][1]);
+			omega_n_DR = DynamicStabilityCalculator.calcNaturalPulsation(ldEigenvaluesMatrix[0][0],ldEigenvaluesMatrix[0][1]);
+			period_DR = DynamicStabilityCalculator.calcPeriod(ldEigenvaluesMatrix[0][0],ldEigenvaluesMatrix[0][1]);
+			t_half_DR = DynamicStabilityCalculator.calcTimeToHalf(ldEigenvaluesMatrix[0][0],ldEigenvaluesMatrix[0][1]);
+			N_half_DR = DynamicStabilityCalculator.calcNCyclesToHalf(ldEigenvaluesMatrix[0][0],ldEigenvaluesMatrix[0][1]);
 
 			System.out.println("_________________________________________________________________\n");
 			System.out.println("DUTCH-ROLL MODE CHARACTERISTICS\n");

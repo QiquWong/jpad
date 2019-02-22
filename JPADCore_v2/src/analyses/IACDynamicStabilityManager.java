@@ -113,8 +113,6 @@ public interface IACDynamicStabilityManager {
 	List<ConditionEnum> getTaskList();
 	List<ConditionEnum> getPlotList();
 	
-	// TODO
-	
 	class Builder extends IACDynamicStabilityManager_Builder {
 		public Builder() {
 			
