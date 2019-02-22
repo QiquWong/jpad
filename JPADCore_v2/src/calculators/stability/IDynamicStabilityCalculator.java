@@ -8,8 +8,8 @@ public interface IDynamicStabilityCalculator {
 
 	double getDensity0();       	// air density
 	double getReferenceArea();		// wing area
-	double getMass(); 				// total mass
 	double getReferenceChord(); 	// mean aerodynamic chord
+	double getMass(); 				// total mass
 	double getWingSpan(); 			// wingspan
 	double getSpeed0(); 			// speed of the aircraft
 	double getDynamicPressure0();   // dynamic pressure
@@ -29,7 +29,7 @@ public interface IDynamicStabilityCalculator {
 	double getCLiftAlphaDot0(); 	// linear lift gradient time derivative (ClAlpha_dot�) of the aircraft
 	double getCLiftMach0();			// lift coefficient with respect to Mach (ClM�) of the aircraft
 	double getCLiftQ0(); 			// lift coefficient with respect to q (ClQ�) of the aircraft
-	double getCLiftDelta_E(); 		// lift coefficient with respect to delta_E (ClDelta_E�) of the aircraft
+	double getCLiftDeltaE(); 		// lift coefficient with respect to delta_E (ClDelta_E�) of the aircraft
 	double getCLiftDeltaT(); 		// lift coefficient with respect to delta_T (ClDelta_T�) of the aircraft
 	double getCPitchAlpha0(); 		// pitching moment coefficient with respect to Alpha (CmAlpha�) of the aircraft
 	double getCPitchAlphaDot0(); 	// pitching moment coefficient time derivative (CmAlpha_dot�) of the aircraft
@@ -39,11 +39,11 @@ public interface IDynamicStabilityCalculator {
 	double getCPitchDeltaT(); 		// pitching moment coefficient with respect to delta_T (CMDelta_T�) of the aircraft
 	double getCThrustFix(); 		// thrust coefficient at a fixed point ( U0 = u , delta_T = 1 )
 	double getKVThrust(); 			// scale factor of the effect on the propulsion due to the speed
-	double getSideBeta0(); 			// lateral force coefficient with respect to beta (CyBeta) of the aircraft
-	double getSideP0(); 			// lateral force coefficient with respect to p (CyP) of the aircraft
-	double getSideR0(); 			// lateral force coefficient with respect to r (CyR) of the aircraft
-	double getSideDeltaA(); 		// lateral force coefficient with respect to delta_A (CyDelta_A) of the aircraft
-	double getSideDeltaR(); 		// lateral force coefficient with respect to delta_R (CyDelta_R) of the aircraft
+	double getCSideBeta0(); 			// lateral force coefficient with respect to beta (CyBeta) of the aircraft
+	double getCSideP0(); 			// lateral force coefficient with respect to p (CyP) of the aircraft
+	double getCSideR0(); 			// lateral force coefficient with respect to r (CyR) of the aircraft
+	double getCSideDeltaA(); 		// lateral force coefficient with respect to delta_A (CyDelta_A) of the aircraft
+	double getCSideDeltaR(); 		// lateral force coefficient with respect to delta_R (CyDelta_R) of the aircraft
 	double getCRollBeta0(); 		// rolling moment coefficient with respect to beta (CLBeta) of the aircraft
 	double getCRollP0(); 			// rolling moment coefficient with respect to a p (CLP) of the aircraft
 	double getCRollR0(); 			// rolling moment coefficient with respect to a r (CLR) of the aircraft

@@ -28,7 +28,6 @@ import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jscience.physics.amount.Amount;
 import org.w3c.dom.Node;
@@ -37,13 +36,11 @@ import org.w3c.dom.NodeList;
 import aircraft.Aircraft;
 import analyses.ACDynamicStabilityManagerUtils.PropulsionTypeEnum;
 import calculators.aerodynamics.DragCalc;
-import calculators.stability.DynamicStabilityCalculator;
+import calculators.stability.IDynamicStabilityCalculator;
 import configuration.enumerations.ConditionEnum;
-import configuration.enumerations.PerformanceEnum;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyUnits;
-import standaloneutils.MyXLSUtils;
 import standaloneutils.MyXMLReaderUtils;
 import standaloneutils.atmosphere.AtmosphereCalc;
 import writers.JPADStaticWriteUtils;
@@ -57,6 +54,11 @@ public class ACDynamicStabilityManager {
 	private IACDynamicStabilityManager _theDynamicStabilityManagerInterface;
 
 	PropulsionTypeEnum propulsion_system = PropulsionTypeEnum.CONSTANT_TRUST;
+	
+	// Calculation object
+	
+	private IDynamicStabilityCalculator _theDynamicStabilityCalculatorInterface;
+	
 	//------------------------------------------------------------------------------
 	// OUTPUT DATA
 	//..............................................................................
@@ -68,7 +70,7 @@ public class ACDynamicStabilityManager {
 	
 	double rho0;         						// air density
 	double reference_area;						// wing area
-	double mass; 								// total mass
+	double currentMass; 								// total mass
 	double cbar; 								// mean aerodynamic chord
 	double wing_span; 							// wingspan
 	double u0; 								    // speed of the aircraft
@@ -1032,7 +1034,7 @@ public class ACDynamicStabilityManager {
 				this._currentAltitude = _theDynamicStabilityManagerInterface.getTheOperatingConditions().getAltitudeTakeOff();
 				this._currentDeltaTemperature = _theDynamicStabilityManagerInterface.getTheOperatingConditions().getDeltaTemperatureTakeOff();
 				this._alphaBodyCurrent = _theDynamicStabilityManagerInterface.getTheOperatingConditions().getAlphaTakeOff();
-				this.mass = _theDynamicStabilityManagerInterface.getMaximumTakeOffMass().doubleValue(SI.KILOGRAM);
+				this.currentMass = _theDynamicStabilityManagerInterface.getMaximumTakeOffMass().doubleValue(SI.KILOGRAM);
 				this.u0 = _theDynamicStabilityManagerInterface.getTheOperatingConditions().getTasTakeOff().doubleValue(SI.METERS_PER_SECOND);
 				this.qbar0 = _theDynamicStabilityManagerInterface.getTheOperatingConditions().getDynamicPressureTakeOff().doubleValue(SI.PASCAL);
 				break;
@@ -1041,7 +1043,7 @@ public class ACDynamicStabilityManager {
 				this._currentAltitude = _theDynamicStabilityManagerInterface.getTheOperatingConditions().getAltitudeClimb();
 				this._currentDeltaTemperature = _theDynamicStabilityManagerInterface.getTheOperatingConditions().getDeltaTemperatureClimb();
 				this._alphaBodyCurrent = _theDynamicStabilityManagerInterface.getTheOperatingConditions().getAlphaClimb();
-				this.mass = _theDynamicStabilityManagerInterface.getMaximumTakeOffMass().doubleValue(SI.KILOGRAM);
+				this.currentMass = _theDynamicStabilityManagerInterface.getMaximumTakeOffMass().doubleValue(SI.KILOGRAM);
 				this.u0 = _theDynamicStabilityManagerInterface.getTheOperatingConditions().getTasClimb().doubleValue(SI.METERS_PER_SECOND);
 				this.qbar0 = _theDynamicStabilityManagerInterface.getTheOperatingConditions().getDynamicPressureClimb().doubleValue(SI.PASCAL);
 				break;
@@ -1050,7 +1052,7 @@ public class ACDynamicStabilityManager {
 				this._currentAltitude = _theDynamicStabilityManagerInterface.getTheOperatingConditions().getAltitudeCruise();
 				this._currentDeltaTemperature = _theDynamicStabilityManagerInterface.getTheOperatingConditions().getDeltaTemperatureCruise();
 				this._alphaBodyCurrent = _theDynamicStabilityManagerInterface.getTheOperatingConditions().getAlphaCruise();
-				this.mass = _theDynamicStabilityManagerInterface.getMaximumTakeOffMass().doubleValue(SI.KILOGRAM)*0.80; // TODO check this assumption
+				this.currentMass = _theDynamicStabilityManagerInterface.getMaximumTakeOffMass().doubleValue(SI.KILOGRAM)*0.80; // TODO check this assumption
 				this.u0 = _theDynamicStabilityManagerInterface.getTheOperatingConditions().getTasCruise().doubleValue(SI.METERS_PER_SECOND);
 				this.qbar0 = _theDynamicStabilityManagerInterface.getTheOperatingConditions().getDynamicPressureCruise().doubleValue(SI.PASCAL);
 				break;
@@ -1059,7 +1061,7 @@ public class ACDynamicStabilityManager {
 				this._currentAltitude = _theDynamicStabilityManagerInterface.getTheOperatingConditions().getAltitudeLanding();
 				this._currentDeltaTemperature = _theDynamicStabilityManagerInterface.getTheOperatingConditions().getDeltaTemperatureLanding();
 				this._alphaBodyCurrent = _theDynamicStabilityManagerInterface.getTheOperatingConditions().getAlphaLanding();
-				this.mass = _theDynamicStabilityManagerInterface.getMaximumTakeOffMass()
+				this.currentMass = _theDynamicStabilityManagerInterface.getMaximumTakeOffMass()
 						.minus(_theDynamicStabilityManagerInterface.getMaximumFuelMass().times(0.80)) // TODO check this assumption
 						.doubleValue(SI.KILOGRAM); 
 				this.u0 = _theDynamicStabilityManagerInterface.getTheOperatingConditions().getTasLanding().doubleValue(SI.METERS_PER_SECOND);
@@ -1068,6 +1070,8 @@ public class ACDynamicStabilityManager {
 			default:
 				break;
 			}
+			
+			// TODO refactor, clean the code below and use _theDynamicStabilityCalculatorInterface instead
 			
 			this.rho0 				= AtmosphereCalc.getDensity(_currentAltitude.doubleValue(SI.METER), _currentDeltaTemperature.doubleValue(SI.CELSIUS));
 			this.mach0 				= this._currentMachNumber;
@@ -1079,7 +1083,6 @@ public class ACDynamicStabilityManager {
 			this.theta0 = gamma0;
 
 			Double xcg = _theDynamicStabilityManagerInterface.getXcgPositionList().get(i);
-			
 			this.iXX = _theDynamicStabilityManagerInterface.getIXX().get(xcg);
 			this.iYY = _theDynamicStabilityManagerInterface.getIYY().get(xcg);
 			this.iZZ = _theDynamicStabilityManagerInterface.getIZZ().get(xcg);
@@ -1118,6 +1121,58 @@ public class ACDynamicStabilityManager {
 			this.cYaw_delta_A = _theDynamicStabilityManagerInterface.getCYawDeltaA().get(xcg);
 			this.cYaw_delta_R = _theDynamicStabilityManagerInterface.getCYawDeltaR().get(xcg);
 			
+			// TODO
+			this._theDynamicStabilityCalculatorInterface = new IDynamicStabilityCalculator.Builder()
+					.setDensity0(AtmosphereCalc.getDensity(_currentAltitude.doubleValue(SI.METER), _currentDeltaTemperature.doubleValue(SI.CELSIUS)))
+					.setReferenceArea(_theDynamicStabilityManagerInterface.getTheAircraft().getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE))
+					.setReferenceChord(_theDynamicStabilityManagerInterface.getTheAircraft().getWing().getMeanAerodynamicChord().doubleValue(SI.METER))
+					.setWingSpan(_theDynamicStabilityManagerInterface.getTheAircraft().getWing().getSpan().doubleValue(SI.METER))
+					.setMass(currentMass)
+					.setSpeed0(this.u0)
+					.setDynamicPressure0(this.qbar0)
+					.setMach0(this._currentMachNumber)
+					.setFlightPathAngle0(0.0)
+					.setElevationAngle0(0.0)
+					.setXCGPercentMAC(_theDynamicStabilityManagerInterface.getXcgPositionList().get(i))
+					.setIXX(_theDynamicStabilityManagerInterface.getIXX().get(xcg))
+					.setIYY(_theDynamicStabilityManagerInterface.getIYY().get(xcg))
+					.setIZZ(_theDynamicStabilityManagerInterface.getIZZ().get(xcg))
+					.setIXZ(_theDynamicStabilityManagerInterface.getIXZ().get(xcg))
+					.setCDrag0 (_theDynamicStabilityManagerInterface.getCDrag0().get(xcg))
+					.setCDragAlpha0(_theDynamicStabilityManagerInterface.getCDragAlpha0().get(xcg))
+					.setCDragMach0(_theDynamicStabilityManagerInterface.getCDragMach0().get(xcg))
+					.setCLift0 (_theDynamicStabilityManagerInterface.getCLift0().get(xcg))
+					.setCLiftAlpha0 (_theDynamicStabilityManagerInterface.getCLiftAlpha0().get(xcg))
+					.setCLiftAlphaDot0(_theDynamicStabilityManagerInterface.getCLiftAlphaDot0().get(xcg))
+					.setCLiftMach0(_theDynamicStabilityManagerInterface.getCLiftMach0().get(xcg))
+					.setCLiftQ0(_theDynamicStabilityManagerInterface.getCLiftQ0().get(xcg))
+					.setCLiftDeltaE(_theDynamicStabilityManagerInterface.getCLiftDeltaE().get(xcg))
+					.setCLiftDeltaT(_theDynamicStabilityManagerInterface.getCLiftDeltaT() .get(xcg))
+					.setCPitchAlpha0(_theDynamicStabilityManagerInterface.getCPitchAlpha0().get(xcg))
+					.setCPitchAlphaDot0(_theDynamicStabilityManagerInterface.getCPitchAlphaDot0().get(xcg))
+					.setCPitchMach0(_theDynamicStabilityManagerInterface.getCPitchMach0().get(xcg))
+					.setCPitchQ0(_theDynamicStabilityManagerInterface.getCPitchQ0().get(xcg))
+					.setCPitchDeltaE(_theDynamicStabilityManagerInterface.getCPitchDeltaE().get(xcg))
+					.setCPitchDeltaT(_theDynamicStabilityManagerInterface.getCPitchDeltaT().get(xcg))
+					.setCThrustFix(_theDynamicStabilityManagerInterface.getCThrustFix().get(xcg))
+					.setKVThrust(_theDynamicStabilityManagerInterface.getKVThrust().get(xcg))
+					.setCSideBeta0(_theDynamicStabilityManagerInterface.getCSideBeta().get(xcg))
+					.setCSideP0(_theDynamicStabilityManagerInterface.getCSideP().get(xcg))
+					.setCSideR0(_theDynamicStabilityManagerInterface.getCSideR().get(xcg))
+					.setCSideDeltaA(_theDynamicStabilityManagerInterface.getCSideDeltaA().get(xcg))
+					.setCSideDeltaR(_theDynamicStabilityManagerInterface.getCSideDeltaR().get(xcg))
+					.setCRollBeta0(_theDynamicStabilityManagerInterface.getCRollBeta().get(xcg))
+					.setCRollP0(_theDynamicStabilityManagerInterface.getCRollP().get(xcg))
+					.setCRollR0(_theDynamicStabilityManagerInterface.getCRollR().get(xcg))
+					.setCRollDeltaA(_theDynamicStabilityManagerInterface.getCRollDeltaA().get(xcg))
+					.setCRollDeltaR(_theDynamicStabilityManagerInterface.getCRollDeltaR().get(xcg))
+					.setCYawBeta0(_theDynamicStabilityManagerInterface.getCYawBeta().get(xcg))
+					.setCYawP0(_theDynamicStabilityManagerInterface.getCYawP().get(xcg))
+					.setCYawR0(_theDynamicStabilityManagerInterface.getCYawR().get(xcg))
+					.setCYawDeltaA(_theDynamicStabilityManagerInterface.getCYawDeltaA().get(xcg))
+					.setCYawDeltaR(_theDynamicStabilityManagerInterface.getCYawDeltaR().get(xcg))
+					.build();
+			
 			// Formats numbers up to 4 decimal places
 			NumberFormat nf = NumberFormat.getNumberInstance(Locale.US);
 	        DecimalFormat df = (DecimalFormat)nf;
@@ -1125,29 +1180,33 @@ public class ACDynamicStabilityManager {
 
 			////////////////////          LONGITUDINAL DYNAMICS          \\\\\\\\\\\\\\\\\\\\
 
+	        // TODO: make a calculator class
+	        // >>> new CalcACDynamicStability(_theDynamicStabilityCalculatorInterface)
+	        // that makes all calculations
+	        
 			// Calculates the longitudinal Stability and Control DERIVATIVES \\
-			x_u_CT  = ACDynamicStabilityManagerUtils.calcX_u_CT(rho0, reference_area, mass, u0, qbar0, cDrag0, mach0, cDrag_Mach0);
-			x_u_CP  = ACDynamicStabilityManagerUtils.calcX_u_CP(rho0, reference_area, mass, u0, qbar0, cDrag0, cm_Mach0, cDrag_Mach0, cL0, gamma0);
-			x_w     = ACDynamicStabilityManagerUtils.calcX_w(rho0, reference_area, mass, u0, qbar0, cL0, cDrag_alpha0);
+			x_u_CT  = ACDynamicStabilityManagerUtils.calcX_u_CT(rho0, reference_area, currentMass, u0, qbar0, cDrag0, mach0, cDrag_Mach0);
+			x_u_CP  = ACDynamicStabilityManagerUtils.calcX_u_CP(rho0, reference_area, currentMass, u0, qbar0, cDrag0, cm_Mach0, cDrag_Mach0, cL0, gamma0);
+			x_w     = ACDynamicStabilityManagerUtils.calcX_w(rho0, reference_area, currentMass, u0, qbar0, cL0, cDrag_alpha0);
 			x_w_dot = 0;
 			x_q     = 0;
-			z_u     = ACDynamicStabilityManagerUtils.calcZ_u(rho0, reference_area, mass, u0, qbar0, cm_Mach0, cL0, cL_Mach0);
-			z_w     = ACDynamicStabilityManagerUtils.calcZ_w(rho0, reference_area, mass, u0, qbar0, cm_Mach0, cDrag0, cL_alpha0);
-			z_w_dot = ACDynamicStabilityManagerUtils.calcZ_w_dot(rho0, reference_area, mass, cbar, cL_alpha_dot0);
-			z_q     = ACDynamicStabilityManagerUtils.calcZ_q(rho0, reference_area, mass, u0, qbar0, cbar, cL_q0);
-			m_u     = ACDynamicStabilityManagerUtils.calcM_u(rho0, reference_area, mass, u0, qbar0, cbar, cDrag_Mach0, iYY, cm_Mach0);
-			m_w     = ACDynamicStabilityManagerUtils.calcM_w(rho0, reference_area, mass, u0, qbar0, cbar, iYY, cm_alpha0);
+			z_u     = ACDynamicStabilityManagerUtils.calcZ_u(rho0, reference_area, currentMass, u0, qbar0, cm_Mach0, cL0, cL_Mach0);
+			z_w     = ACDynamicStabilityManagerUtils.calcZ_w(rho0, reference_area, currentMass, u0, qbar0, cm_Mach0, cDrag0, cL_alpha0);
+			z_w_dot = ACDynamicStabilityManagerUtils.calcZ_w_dot(rho0, reference_area, currentMass, cbar, cL_alpha_dot0);
+			z_q     = ACDynamicStabilityManagerUtils.calcZ_q(rho0, reference_area, currentMass, u0, qbar0, cbar, cL_q0);
+			m_u     = ACDynamicStabilityManagerUtils.calcM_u(rho0, reference_area, currentMass, u0, qbar0, cbar, cDrag_Mach0, iYY, cm_Mach0);
+			m_w     = ACDynamicStabilityManagerUtils.calcM_w(rho0, reference_area, currentMass, u0, qbar0, cbar, iYY, cm_alpha0);
 			m_w_dot = ACDynamicStabilityManagerUtils.calcM_w_dot(rho0, reference_area, cbar, iYY, cm_alpha_dot0);
-			m_q     = ACDynamicStabilityManagerUtils.calcM_q(rho0, mass, u0, qbar0, reference_area, cbar, iYY, cm_q);
+			m_q     = ACDynamicStabilityManagerUtils.calcM_q(rho0, currentMass, u0, qbar0, reference_area, cbar, iYY, cm_q);
 
-			x_delta_T_CT  = ACDynamicStabilityManagerUtils.calcX_delta_T_CT (rho0, reference_area, mass, u0, qbar0, c_Tfix, kv);
-			x_delta_T_CP  = ACDynamicStabilityManagerUtils.calcX_delta_T_CP (rho0, reference_area, mass, u0, qbar0, c_Tfix, kv);
-			x_delta_T_CMF = ACDynamicStabilityManagerUtils.calcX_delta_T_CMF (rho0, reference_area, mass, u0, qbar0, c_Tfix, kv);
-			x_delta_T_RJ  = ACDynamicStabilityManagerUtils.calcX_delta_T_RJ (rho0, reference_area, mass, u0, qbar0, c_Tfix, kv);
-			x_delta_T_CT  = ACDynamicStabilityManagerUtils.calcX_delta_T_CT (rho0, reference_area, mass, u0, qbar0, c_Tfix, kv);
+			x_delta_T_CT  = ACDynamicStabilityManagerUtils.calcX_delta_T_CT (rho0, reference_area, currentMass, u0, qbar0, c_Tfix, kv);
+			x_delta_T_CP  = ACDynamicStabilityManagerUtils.calcX_delta_T_CP (rho0, reference_area, currentMass, u0, qbar0, c_Tfix, kv);
+			x_delta_T_CMF = ACDynamicStabilityManagerUtils.calcX_delta_T_CMF (rho0, reference_area, currentMass, u0, qbar0, c_Tfix, kv);
+			x_delta_T_RJ  = ACDynamicStabilityManagerUtils.calcX_delta_T_RJ (rho0, reference_area, currentMass, u0, qbar0, c_Tfix, kv);
+			x_delta_T_CT  = ACDynamicStabilityManagerUtils.calcX_delta_T_CT (rho0, reference_area, currentMass, u0, qbar0, c_Tfix, kv);
 			x_delta_E     = 0;
-			z_delta_T     = ACDynamicStabilityManagerUtils.calcZ_delta_T (rho0, reference_area, mass, u0, qbar0, cL_delta_T);
-			z_delta_E     = ACDynamicStabilityManagerUtils.calcZ_delta_E (rho0, reference_area, mass, u0, qbar0, cL_delta_E);
+			z_delta_T     = ACDynamicStabilityManagerUtils.calcZ_delta_T (rho0, reference_area, currentMass, u0, qbar0, cL_delta_T);
+			z_delta_E     = ACDynamicStabilityManagerUtils.calcZ_delta_E (rho0, reference_area, currentMass, u0, qbar0, cL_delta_E);
 			m_delta_T     = ACDynamicStabilityManagerUtils.calcM_delta_T (rho0, reference_area, cbar, u0, qbar0, iYY, cm_delta_T);
 			m_delta_E     = ACDynamicStabilityManagerUtils.calcM_delta_E (rho0, reference_area, cbar, u0, qbar0, iYY, cm_delta_E);
 
@@ -1182,7 +1241,7 @@ public class ACDynamicStabilityManager {
 			System.out.println("_________________________________________________________________\n");
 			System.out.println("MATRIX [A_LON]: \n");
 
-			aLon = ACDynamicStabilityManagerUtils.build_A_Lon_matrix (propulsion_system, rho0, reference_area, mass, cbar, u0, qbar0, cDrag0, mach0, cDrag_Mach0, cL0,
+			aLon = ACDynamicStabilityManagerUtils.build_A_Lon_matrix (propulsion_system, rho0, reference_area, currentMass, cbar, u0, qbar0, cDrag0, mach0, cDrag_Mach0, cL0,
 					cL_Mach0, cDrag_alpha0, gamma0, theta0,cL_alpha0, cL_alpha_dot0, cm_alpha0, cm_alpha_dot0, cL_q0, iYY, cm_Mach0, cm_q);
 			
 			System.out.println(df.format(aLon[0][0])+"\t\t"+df.format(aLon[0][1])+"\t\t"+df.format(aLon[0][2])+"\t\t"+df.format(aLon[0][3])+"\n");
@@ -1193,7 +1252,7 @@ public class ACDynamicStabilityManager {
 			System.out.println("_________________________________________________________________\n");
 			System.out.println("MATRIX [B_LON]: \n");
 
-			bLon = ACDynamicStabilityManagerUtils.build_B_Lon_matrix (propulsion_system, rho0, reference_area, mass, cbar, u0, qbar0, cDrag0, mach0, cDrag_Mach0, cL0,
+			bLon = ACDynamicStabilityManagerUtils.build_B_Lon_matrix (propulsion_system, rho0, reference_area, currentMass, cbar, u0, qbar0, cDrag0, mach0, cDrag_Mach0, cL0,
 					cDrag_alpha0, gamma0, theta0, cL_alpha0, cL_alpha_dot0, cm_alpha0, cm_alpha_dot0, cL_q0, iYY, cm_Mach0, cm_q, c_Tfix,
 					kv, cL_delta_T, cL_delta_E, cm_delta_T, cm_delta_E);
 
@@ -1203,7 +1262,7 @@ public class ACDynamicStabilityManager {
 			System.out.println(bLon[3][0]+"\t\t"+bLon[3][1]+"\n");
 
 			// Generates and prints out the Eigenvalues of [A_Lon] matrix \\
-			lonEigenvaluesMatrix = DynamicStabilityCalculator.buildEigenValuesMatrix(aLon);
+			lonEigenvaluesMatrix = ACDynamicStabilityManagerUtils.buildEigenValuesMatrix(aLon);
 
 			System.out.println("_________________________________________________________________\n");
 			System.out.println("LONGITUDINAL EIGENVALUES\n");
@@ -1214,10 +1273,10 @@ public class ACDynamicStabilityManager {
 			System.out.println("_________________________________________________________________\n");
 			System.out.println("LONGITUDINAL EIGENVECTORS:\n");
 			
-			eigLonVec1 = DynamicStabilityCalculator.buildEigenVector(aLon, 0);
-			eigLonVec2 = DynamicStabilityCalculator.buildEigenVector(aLon, 1);
-			eigLonVec3 = DynamicStabilityCalculator.buildEigenVector(aLon, 2);
-			eigLonVec4 = DynamicStabilityCalculator.buildEigenVector(aLon, 3);
+			eigLonVec1 = ACDynamicStabilityManagerUtils.buildEigenVector(aLon, 0);
+			eigLonVec2 = ACDynamicStabilityManagerUtils.buildEigenVector(aLon, 1);
+			eigLonVec3 = ACDynamicStabilityManagerUtils.buildEigenVector(aLon, 2);
+			eigLonVec4 = ACDynamicStabilityManagerUtils.buildEigenVector(aLon, 3);
 			
 			System.out.println("EigenVector 1 = " + eigLonVec1);
 			System.out.println("EigenVector 2 = " + eigLonVec2);
@@ -1225,16 +1284,16 @@ public class ACDynamicStabilityManager {
 			System.out.println("EigenVector 4 = " + eigLonVec4+"\n");
 			
 			// Generates and prints out all the characteristics for longitudinal SHORT PERIOD and PHUGOID modes \\
-			zeta_SP = DynamicStabilityCalculator.calcDampingCoefficient(lonEigenvaluesMatrix[0][0],lonEigenvaluesMatrix[0][1]);
-			zeta_PH = DynamicStabilityCalculator.calcDampingCoefficient(lonEigenvaluesMatrix[2][0],lonEigenvaluesMatrix[2][1]);
-			omega_n_SP = DynamicStabilityCalculator.calcNaturalPulsation(lonEigenvaluesMatrix[0][0],lonEigenvaluesMatrix[0][1]);
-			omega_n_PH = DynamicStabilityCalculator.calcNaturalPulsation(lonEigenvaluesMatrix[2][0],lonEigenvaluesMatrix[2][1]);
-			period_SP = DynamicStabilityCalculator.calcPeriod(lonEigenvaluesMatrix[0][0],lonEigenvaluesMatrix[0][1]);
-			period_PH = DynamicStabilityCalculator.calcPeriod(lonEigenvaluesMatrix[2][0],lonEigenvaluesMatrix[2][1]);
-			t_half_SP = DynamicStabilityCalculator.calcTimeToHalf(lonEigenvaluesMatrix[0][0],lonEigenvaluesMatrix[0][1]);
-			t_half_PH = DynamicStabilityCalculator.calcTimeToHalf(lonEigenvaluesMatrix[2][0],lonEigenvaluesMatrix[2][1]);
-			N_half_SP = DynamicStabilityCalculator.calcNCyclesToHalf(lonEigenvaluesMatrix[0][0],lonEigenvaluesMatrix[0][1]);
-			N_half_PH = DynamicStabilityCalculator.calcNCyclesToHalf(lonEigenvaluesMatrix[2][0],lonEigenvaluesMatrix[2][1]);
+			zeta_SP    = ACDynamicStabilityManagerUtils.calcDampingCoefficient(lonEigenvaluesMatrix[0][0],lonEigenvaluesMatrix[0][1]);
+			zeta_PH    = ACDynamicStabilityManagerUtils.calcDampingCoefficient(lonEigenvaluesMatrix[2][0],lonEigenvaluesMatrix[2][1]);
+			omega_n_SP = ACDynamicStabilityManagerUtils.calcNaturalPulsation(lonEigenvaluesMatrix[0][0],lonEigenvaluesMatrix[0][1]);
+			omega_n_PH = ACDynamicStabilityManagerUtils.calcNaturalPulsation(lonEigenvaluesMatrix[2][0],lonEigenvaluesMatrix[2][1]);
+			period_SP  = ACDynamicStabilityManagerUtils.calcPeriod(lonEigenvaluesMatrix[0][0],lonEigenvaluesMatrix[0][1]);
+			period_PH  = ACDynamicStabilityManagerUtils.calcPeriod(lonEigenvaluesMatrix[2][0],lonEigenvaluesMatrix[2][1]);
+			t_half_SP  = ACDynamicStabilityManagerUtils.calcTimeToHalf(lonEigenvaluesMatrix[0][0],lonEigenvaluesMatrix[0][1]);
+			t_half_PH  = ACDynamicStabilityManagerUtils.calcTimeToHalf(lonEigenvaluesMatrix[2][0],lonEigenvaluesMatrix[2][1]);
+			N_half_SP  = ACDynamicStabilityManagerUtils.calcNCyclesToHalf(lonEigenvaluesMatrix[0][0],lonEigenvaluesMatrix[0][1]);
+			N_half_PH  = ACDynamicStabilityManagerUtils.calcNCyclesToHalf(lonEigenvaluesMatrix[2][0],lonEigenvaluesMatrix[2][1]);
 
 			System.out.println("_________________________________________________________________\n");
 			System.out.println("SHORT PERIOD MODE CHARACTERISTICS\n");
@@ -1254,17 +1313,17 @@ public class ACDynamicStabilityManager {
 	        ////////////////////          LATERAL-DIRECTIONAL DYNAMICS          \\\\\\\\\\\\\\\\\\\\
 			
 			// Calculates the lateral-directional Stability and Control DERIVATIVES \\
-			y_beta = ACDynamicStabilityManagerUtils.calcY_beta (rho0, reference_area, mass, u0, qbar0, cY_beta);
-			y_p    = ACDynamicStabilityManagerUtils.calcY_p (rho0, reference_area, mass, u0, qbar0, wing_span, cY_p);
-			y_r    = ACDynamicStabilityManagerUtils.calcY_r (rho0, reference_area, mass, u0, qbar0, wing_span, cY_r);
+			y_beta = ACDynamicStabilityManagerUtils.calcY_beta (rho0, reference_area, currentMass, u0, qbar0, cY_beta);
+			y_p    = ACDynamicStabilityManagerUtils.calcY_p (rho0, reference_area, currentMass, u0, qbar0, wing_span, cY_p);
+			y_r    = ACDynamicStabilityManagerUtils.calcY_r (rho0, reference_area, currentMass, u0, qbar0, wing_span, cY_r);
 			l_beta = ACDynamicStabilityManagerUtils.calcL_beta (rho0, reference_area, wing_span, iXX, u0, qbar0, cRoll_beta);
 			l_p    = ACDynamicStabilityManagerUtils.calcL_p (rho0, reference_area, wing_span, iXX, u0, qbar0, cRoll_p);
 			l_r    = ACDynamicStabilityManagerUtils.calcL_r (rho0, reference_area, wing_span, iXX, u0, qbar0, cRoll_r);
 			n_beta = ACDynamicStabilityManagerUtils.calcN_beta (rho0, reference_area, wing_span, iZZ, u0, qbar0, cYaw_beta);
 			n_p    = ACDynamicStabilityManagerUtils.calcN_p (rho0, reference_area, wing_span, iZZ, u0, qbar0, cYaw_p);
 			n_r    = ACDynamicStabilityManagerUtils.calcN_r (rho0, reference_area, wing_span, iZZ, u0, qbar0, cYaw_r);
-			y_delta_A = ACDynamicStabilityManagerUtils.calcY_delta_A (rho0, reference_area, mass, u0, qbar0, cY_delta_A);
-			y_delta_R = ACDynamicStabilityManagerUtils.calcY_delta_R (rho0, reference_area, mass, u0, qbar0, cY_delta_R);
+			y_delta_A = ACDynamicStabilityManagerUtils.calcY_delta_A (rho0, reference_area, currentMass, u0, qbar0, cY_delta_A);
+			y_delta_R = ACDynamicStabilityManagerUtils.calcY_delta_R (rho0, reference_area, currentMass, u0, qbar0, cY_delta_R);
 			l_delta_A = ACDynamicStabilityManagerUtils.calcL_delta_A (rho0, reference_area, wing_span, iXX, u0, qbar0, cRoll_delta_A);
 			l_delta_R = ACDynamicStabilityManagerUtils.calcL_delta_R (rho0, reference_area, wing_span, iXX, u0, qbar0, cRoll_delta_R);
 			n_delta_A = ACDynamicStabilityManagerUtils.calcN_delta_A (rho0, reference_area, wing_span, iZZ, u0, qbar0, cYaw_delta_A);
@@ -1294,7 +1353,7 @@ public class ACDynamicStabilityManager {
 			System.out.println("_________________________________________________________________\n");
 			System.out.println("MATRIX [A_LD]: \n");
 
-			aLD = ACDynamicStabilityManagerUtils.build_A_LD_matrix (rho0, reference_area, mass, cbar, wing_span, u0, qbar0, 
+			aLD = ACDynamicStabilityManagerUtils.build_A_LD_matrix (rho0, reference_area, currentMass, cbar, wing_span, u0, qbar0, 
 					theta0, iXX, iZZ, iXZ, cY_beta, cY_p, cY_r, cY_delta_A, cY_delta_R, cRoll_beta,
 					cRoll_p, cRoll_r, cRoll_delta_A, cRoll_delta_R, cYaw_beta, cYaw_p, cYaw_r, cYaw_delta_A, cYaw_delta_R);
 
@@ -1306,7 +1365,7 @@ public class ACDynamicStabilityManager {
 			System.out.println("_________________________________________________________________\n");
 			System.out.println("MATRIX [B_LD]: \n");
 
-			bLD = ACDynamicStabilityManagerUtils.build_B_LD_matrix (rho0, reference_area, mass, cbar, wing_span, u0, qbar0, 
+			bLD = ACDynamicStabilityManagerUtils.build_B_LD_matrix (rho0, reference_area, currentMass, cbar, wing_span, u0, qbar0, 
 					iXX, iZZ, iXZ, cY_delta_A, cY_delta_R, cRoll_delta_A, cRoll_delta_R, cYaw_delta_A, cYaw_delta_R);
 
 			System.out.println(df.format(bLD[0][0])+"\t\t"+df.format(bLD[0][1])+"\n");
@@ -1315,7 +1374,7 @@ public class ACDynamicStabilityManager {
 			System.out.println(bLD[3][0]+"\t\t"+bLD[3][1]+"\n");
 
 			// Generates and prints out the Eigenvalues of [A_Ld] matrix \\
-			ldEigenvaluesMatrix = DynamicStabilityCalculator.buildEigenValuesMatrix(aLD);
+			ldEigenvaluesMatrix = ACDynamicStabilityManagerUtils.buildEigenValuesMatrix(aLD);
 
 			System.out.println("_________________________________________________________________\n");
 			System.out.println("LATERAL-DIRECTIONAL EIGENVALUES\n");
@@ -1327,10 +1386,10 @@ public class ACDynamicStabilityManager {
 			System.out.println("_________________________________________________________________\n");
 			System.out.println("LATERAL-DIRECTIONAL EIGENVECTORS:\n");
 
-			eigLDVec1 = DynamicStabilityCalculator.buildEigenVector(aLD, 0);
-			eigLDVec2 = DynamicStabilityCalculator.buildEigenVector(aLD, 1);
-			eigLDVec3 = DynamicStabilityCalculator.buildEigenVector(aLD, 2);
-			eigLDVec4 = DynamicStabilityCalculator.buildEigenVector(aLD, 3);
+			eigLDVec1 = ACDynamicStabilityManagerUtils.buildEigenVector(aLD, 0);
+			eigLDVec2 = ACDynamicStabilityManagerUtils.buildEigenVector(aLD, 1);
+			eigLDVec3 = ACDynamicStabilityManagerUtils.buildEigenVector(aLD, 2);
+			eigLDVec4 = ACDynamicStabilityManagerUtils.buildEigenVector(aLD, 3);
 
 			System.out.println("EigenVector 1 = " + eigLDVec1);
 			System.out.println("EigenVector 2 = " + eigLDVec2);
@@ -1338,11 +1397,11 @@ public class ACDynamicStabilityManager {
 			System.out.println("EigenVector 4 = " + eigLDVec4+"\n");
 			
 			// Generates and prints out all the characteristics for lateral-directional DUTCH-ROLL mode \\
-			zeta_DR = DynamicStabilityCalculator.calcDampingCoefficient(ldEigenvaluesMatrix[0][0],ldEigenvaluesMatrix[0][1]);
-			omega_n_DR = DynamicStabilityCalculator.calcNaturalPulsation(ldEigenvaluesMatrix[0][0],ldEigenvaluesMatrix[0][1]);
-			period_DR = DynamicStabilityCalculator.calcPeriod(ldEigenvaluesMatrix[0][0],ldEigenvaluesMatrix[0][1]);
-			t_half_DR = DynamicStabilityCalculator.calcTimeToHalf(ldEigenvaluesMatrix[0][0],ldEigenvaluesMatrix[0][1]);
-			N_half_DR = DynamicStabilityCalculator.calcNCyclesToHalf(ldEigenvaluesMatrix[0][0],ldEigenvaluesMatrix[0][1]);
+			zeta_DR    = ACDynamicStabilityManagerUtils.calcDampingCoefficient(ldEigenvaluesMatrix[0][0],ldEigenvaluesMatrix[0][1]);
+			omega_n_DR = ACDynamicStabilityManagerUtils.calcNaturalPulsation(ldEigenvaluesMatrix[0][0],ldEigenvaluesMatrix[0][1]);
+			period_DR  = ACDynamicStabilityManagerUtils.calcPeriod(ldEigenvaluesMatrix[0][0],ldEigenvaluesMatrix[0][1]);
+			t_half_DR  = ACDynamicStabilityManagerUtils.calcTimeToHalf(ldEigenvaluesMatrix[0][0],ldEigenvaluesMatrix[0][1]);
+			N_half_DR  = ACDynamicStabilityManagerUtils.calcNCyclesToHalf(ldEigenvaluesMatrix[0][0],ldEigenvaluesMatrix[0][1]);
 
 			System.out.println("_________________________________________________________________\n");
 			System.out.println("DUTCH-ROLL MODE CHARACTERISTICS\n");

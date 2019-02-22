@@ -12,8 +12,8 @@ NACELLES ===> C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\in\Template_A
 LANDING GEARS ===> C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\in\Template_Aircraft\landing_gears
 CABIN CONFIGURATIONS ===> C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\in\Template_Aircraft\cabin_configurations
 --------------
-34 [main] INFO ncsa.hdf.hdf5lib.H5 - HDF5 library: jhdf5
-34 [main] INFO ncsa.hdf.hdf5lib.H5 -  successfully loaded from java.library.path
+13 [main] INFO ncsa.hdf.hdf5lib.H5 - HDF5 library: jhdf5
+13 [main] INFO ncsa.hdf.hdf5lib.H5 -  successfully loaded from java.library.path
 De-serializing file: C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterAerodynamicDatabase.xml ...
 database.databasefunctions.aerodynamics.AerodynamicDatabaseReader de-serialization complete
 De-serializing file: C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterHighLiftDatabase.xml ...
