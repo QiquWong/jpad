@@ -209,12 +209,21 @@ public class ACPerformanceManager {
 	private Map<Double, Amount<Length>> _groundRollDistanceLandingMap;
 	private Map<Double, Amount<Length>> _flareDistanceLandingMap;
 	private Map<Double, Amount<Length>> _airborneDistanceLandingMap;
+	private Map<Double, Amount<Velocity>> _rateOfDescentAtFlareEndingMap;
 	private Map<Double, Amount<Velocity>> _vStallLandingMap;
 	private Map<Double, Amount<Velocity>> _vApproachMap;
 	private Map<Double, Amount<Velocity>> _vFlareMap;
 	private Map<Double, Amount<Velocity>> _vTouchDownMap;
 	private Map<Double, Amount<Duration>> _landingDurationMap;
 	private Map<Double, Amount<Duration>> _totalDurationMap;
+	private Map<Double, Amount<Mass>>_totalFuelMap;
+	private Map<Double, Amount<Mass>>_totalNOxEmissionsMap;
+	private Map<Double, Amount<Mass>>_totalCOEmissionsMap;
+	private Map<Double, Amount<Mass>>_totalHCEmissionsMap;
+	private Map<Double, Amount<Mass>>_totalSootEmissionsMap;
+	private Map<Double, Amount<Mass>>_totalCO2EmissionsMap;
+	private Map<Double, Amount<Mass>>_totalSOxEmissionsMap;
+	private Map<Double, Amount<Mass>>_totalH2OEmissionsMap;
 	//..............................................................................
 	// Payload-Range
 	private Map<Double, PayloadRangeCalc> _thePayloadRangeCalculatorMap;
@@ -436,12 +445,21 @@ public class ACPerformanceManager {
 		this._groundRollDistanceLandingMap = new HashMap<>();
 		this._flareDistanceLandingMap = new HashMap<>();
 		this._airborneDistanceLandingMap = new HashMap<>();
+		this._rateOfDescentAtFlareEndingMap = new HashMap<>();
 		this._vStallLandingMap = new HashMap<>();
 		this._vApproachMap = new HashMap<>();
 		this._vFlareMap = new HashMap<>();
 		this._vTouchDownMap = new HashMap<>();
 		this._landingDurationMap = new HashMap<>();
 		this._totalDurationMap = new HashMap<>();
+		this._totalFuelMap = new HashMap<>();
+		this._totalNOxEmissionsMap = new HashMap<>();
+		this._totalCOEmissionsMap = new HashMap<>();
+		this._totalHCEmissionsMap = new HashMap<>();
+		this._totalSootEmissionsMap = new HashMap<>();
+		this._totalCO2EmissionsMap = new HashMap<>();
+		this._totalSOxEmissionsMap = new HashMap<>();
+		this._totalH2OEmissionsMap = new HashMap<>();
 		//..............................................................................
 		// Payload-Range
 		this._thePayloadRangeCalculatorMap = new HashMap<>();
@@ -3893,6 +3911,8 @@ public class ACPerformanceManager {
         	dataListLanding.add(new Object[] {"FAR-25 landing field length","ft", _landingDistanceFAR25Map.get(xcg).doubleValue(NonSI.FOOT)});
         	dataListLanding.add(new Object[] {"Total distance","ft", _totalDistanceMap.get(xcg).doubleValue(NonSI.FOOT)});
         	dataListLanding.add(new Object[] {" "});
+        	dataListLanding.add(new Object[] {"Rate of descent at touch-down","ft/min", _rateOfDescentAtFlareEndingMap.get(xcg).doubleValue(MyUnits.FOOT_PER_MINUTE)});
+        	dataListLanding.add(new Object[] {" "});
         	dataListLanding.add(new Object[] {"Stall speed landing (VsLND)","m/s", _vStallLandingMap.get(xcg).doubleValue(SI.METERS_PER_SECOND)});
         	dataListLanding.add(new Object[] {"Touchdown speed (V_TD)","m/s", _vTouchDownMap.get(xcg).doubleValue(SI.METERS_PER_SECOND)});
         	dataListLanding.add(new Object[] {"Flare speed (V_Flare)","m/s", _vFlareMap.get(xcg).doubleValue(SI.METERS_PER_SECOND)});
@@ -3909,7 +3929,17 @@ public class ACPerformanceManager {
         	dataListLanding.add(new Object[] {" "});
         	dataListLanding.add(new Object[] {"Total duration","s", _totalDurationMap.get(xcg).doubleValue(SI.SECOND)});
         	dataListLanding.add(new Object[] {"Landing duration","s", _landingDurationMap.get(xcg).doubleValue(SI.SECOND)});
-
+        	dataListLanding.add(new Object[] {" "});
+        	dataListLanding.add(new Object[] {"Total fuel used","kg", _totalFuelMap.get(xcg).doubleValue(SI.KILOGRAM)});
+        	dataListLanding.add(new Object[] {" "});
+        	dataListLanding.add(new Object[] {"Total NOx emissions","g", _totalNOxEmissionsMap.get(xcg).doubleValue(SI.GRAM)});
+        	dataListLanding.add(new Object[] {"Total CO emissions","g", _totalCOEmissionsMap.get(xcg).doubleValue(SI.GRAM)});
+        	dataListLanding.add(new Object[] {"Total HC emissions","g", _totalHCEmissionsMap.get(xcg).doubleValue(SI.GRAM)});
+        	dataListLanding.add(new Object[] {"Total Soot emissions","g", _totalSootEmissionsMap.get(xcg).doubleValue(SI.GRAM)});
+        	dataListLanding.add(new Object[] {"Total CO2 emissions","g", _totalCO2EmissionsMap.get(xcg).doubleValue(SI.GRAM)});
+        	dataListLanding.add(new Object[] {"Total SOx emissions","g", _totalSOxEmissionsMap.get(xcg).doubleValue(SI.GRAM)});
+        	dataListLanding.add(new Object[] {"Total H2O emissions","g", _totalH2OEmissionsMap.get(xcg).doubleValue(SI.GRAM)});
+        	
         	Row rowLanding = sheetLanding.createRow(0);
         	Object[] objArrLanding = dataListLanding.get(0);
         	int cellnumLanding = 0;
@@ -3974,7 +4004,156 @@ public class ACPerformanceManager {
         		dataListMissionProfile.add(new Object[] {"Total fuel energy","kWh", _totalFuelEnergyMap.get(xcg).doubleValue(MyUnits.KILOWATT_HOUR)});
         		dataListMissionProfile.add(new Object[] {"Total battery energy","kWh", _totalBatteryEnergyMap.get(xcg).doubleValue(MyUnits.KILOWATT_HOUR)});
         		dataListMissionProfile.add(new Object[] {"Design passengers number","", Integer.valueOf(_thePerformanceInterface.getTheAircraft().getCabinConfiguration().getDesignPassengerNumber()).doubleValue()});
-        		dataListMissionProfile.add(new Object[] {"Passengers number for this mission","", _theMissionProfileCalculatorMap.get(xcg).getDeisngPassengersNumber()});
+        		dataListMissionProfile.add(new Object[] {"Passengers number for this mission","", Integer.valueOf(_theMissionProfileCalculatorMap.get(xcg).getDeisngPassengersNumber()).doubleValue()});
+        		dataListMissionProfile.add(new Object[] {" "});
+        		dataListMissionProfile.add(new Object[] {" "});
+        		dataListMissionProfile.add(new Object[] {"TAKE-OFF overall data"});
+        		dataListMissionProfile.add(new Object[] {"Range","nm", _rangeMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(_rangeMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).size()-1).doubleValue(NonSI.NAUTICAL_MILE)});        		
+        		dataListMissionProfile.add(new Object[] {"Time","min", _timeMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(_timeMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).size()-1).doubleValue(NonSI.MINUTE)});
+        		dataListMissionProfile.add(new Object[] {"Fuel","kg", _fuelUsedMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(_fuelUsedMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).size()-1).doubleValue(SI.KILOGRAM)});
+        		dataListMissionProfile.add(new Object[] {"NOx emissions","g", _emissionNOxMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(_emissionNOxMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).size()-1).doubleValue(SI.GRAM)});        		
+        		dataListMissionProfile.add(new Object[] {"CO emissions","g", _emissionCOMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(_emissionCOMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).size()-1).doubleValue(SI.GRAM)});
+        		dataListMissionProfile.add(new Object[] {"HC emissions","g", _emissionHCMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(_emissionHCMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).size()-1).doubleValue(SI.GRAM)});
+        		dataListMissionProfile.add(new Object[] {"Soot emissions","g", _emissionSootMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(_emissionSootMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).size()-1).doubleValue(SI.GRAM)});
+        		dataListMissionProfile.add(new Object[] {"CO2 emissions","g", _emissionCO2Map.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(_emissionCO2Map.get(xcg).get(MissionPhasesEnum.TAKE_OFF).size()-1).doubleValue(SI.GRAM)});
+        		dataListMissionProfile.add(new Object[] {"SOx emissions","g", _emissionSOxMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(_emissionSOxMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).size()-1).doubleValue(SI.GRAM)});
+        		dataListMissionProfile.add(new Object[] {"H2O emissions","g", _emissionH2OMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(_emissionH2OMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).size()-1).doubleValue(SI.GRAM)});
+        		dataListMissionProfile.add(new Object[] {"Fuel Power","kW", _fuelPowerMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(_fuelPowerMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).size()-1).doubleValue(SI.KILO(SI.WATT))});
+        		dataListMissionProfile.add(new Object[] {"Battery Power","kW", _batteryPowerMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(_batteryPowerMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).size()-1).doubleValue(SI.KILO(SI.WATT))});
+        		dataListMissionProfile.add(new Object[] {"Fuel Energy","kWh", _fuelEnergyMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});        		
+        		dataListMissionProfile.add(new Object[] {"Battery Energy","kWh", _batteryEnergyMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(_batteryEnergyMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});
+        		dataListMissionProfile.add(new Object[] {" "});
+        		dataListMissionProfile.add(new Object[] {"CLIMB overall data"});
+        		dataListMissionProfile.add(new Object[] {"Range","nm", _rangeMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(_rangeMap.get(xcg).get(MissionPhasesEnum.CLIMB).size()-1).doubleValue(NonSI.NAUTICAL_MILE)});        		
+        		dataListMissionProfile.add(new Object[] {"Time","min", _timeMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(_timeMap.get(xcg).get(MissionPhasesEnum.CLIMB).size()-1).doubleValue(NonSI.MINUTE)});
+        		dataListMissionProfile.add(new Object[] {"Fuel","kg", _fuelUsedMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(_fuelUsedMap.get(xcg).get(MissionPhasesEnum.CLIMB).size()-1).doubleValue(SI.KILOGRAM)});
+        		dataListMissionProfile.add(new Object[] {"NOx emissions","g", _emissionNOxMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(_emissionNOxMap.get(xcg).get(MissionPhasesEnum.CLIMB).size()-1).doubleValue(SI.GRAM)});        		
+        		dataListMissionProfile.add(new Object[] {"CO emissions","g", _emissionCOMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(_emissionCOMap.get(xcg).get(MissionPhasesEnum.CLIMB).size()-1).doubleValue(SI.GRAM)});
+        		dataListMissionProfile.add(new Object[] {"HC emissions","g", _emissionHCMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(_emissionHCMap.get(xcg).get(MissionPhasesEnum.CLIMB).size()-1).doubleValue(SI.GRAM)});
+        		dataListMissionProfile.add(new Object[] {"Soot emissions","g", _emissionSootMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(_emissionSootMap.get(xcg).get(MissionPhasesEnum.CLIMB).size()-1).doubleValue(SI.GRAM)});
+        		dataListMissionProfile.add(new Object[] {"CO2 emissions","g", _emissionCO2Map.get(xcg).get(MissionPhasesEnum.CLIMB).get(_emissionCO2Map.get(xcg).get(MissionPhasesEnum.CLIMB).size()-1).doubleValue(SI.GRAM)});
+        		dataListMissionProfile.add(new Object[] {"SOx emissions","g", _emissionSOxMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(_emissionSOxMap.get(xcg).get(MissionPhasesEnum.CLIMB).size()-1).doubleValue(SI.GRAM)});
+        		dataListMissionProfile.add(new Object[] {"H2O emissions","g", _emissionH2OMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(_emissionH2OMap.get(xcg).get(MissionPhasesEnum.CLIMB).size()-1).doubleValue(SI.GRAM)});
+        		dataListMissionProfile.add(new Object[] {"Fuel Power","kW", _fuelPowerMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(_fuelPowerMap.get(xcg).get(MissionPhasesEnum.CLIMB).size()-1).doubleValue(SI.KILO(SI.WATT))});
+        		dataListMissionProfile.add(new Object[] {"Battery Power","kW", _batteryPowerMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(_batteryPowerMap.get(xcg).get(MissionPhasesEnum.CLIMB).size()-1).doubleValue(SI.KILO(SI.WATT))});
+        		dataListMissionProfile.add(new Object[] {"Fuel Energy","kWh", _fuelEnergyMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.CLIMB).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});        		
+        		dataListMissionProfile.add(new Object[] {"Battery Energy","kWh", _batteryEnergyMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(_batteryEnergyMap.get(xcg).get(MissionPhasesEnum.CLIMB).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});
+        		dataListMissionProfile.add(new Object[] {" "});
+        		dataListMissionProfile.add(new Object[] {"CRUISE overall data"});
+        		dataListMissionProfile.add(new Object[] {"Range","nm", _rangeMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(_rangeMap.get(xcg).get(MissionPhasesEnum.CRUISE).size()-1).doubleValue(NonSI.NAUTICAL_MILE)});        		
+        		dataListMissionProfile.add(new Object[] {"Time","min", _timeMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(_timeMap.get(xcg).get(MissionPhasesEnum.CRUISE).size()-1).doubleValue(NonSI.MINUTE)});
+        		dataListMissionProfile.add(new Object[] {"Fuel","kg", _fuelUsedMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(_fuelUsedMap.get(xcg).get(MissionPhasesEnum.CRUISE).size()-1).doubleValue(SI.KILOGRAM)});
+        		dataListMissionProfile.add(new Object[] {"NOx emissions","g", _emissionNOxMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(_emissionNOxMap.get(xcg).get(MissionPhasesEnum.CRUISE).size()-1).doubleValue(SI.GRAM)});        		
+        		dataListMissionProfile.add(new Object[] {"CO emissions","g", _emissionCOMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(_emissionCOMap.get(xcg).get(MissionPhasesEnum.CRUISE).size()-1).doubleValue(SI.GRAM)});
+        		dataListMissionProfile.add(new Object[] {"HC emissions","g", _emissionHCMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(_emissionHCMap.get(xcg).get(MissionPhasesEnum.CRUISE).size()-1).doubleValue(SI.GRAM)});
+        		dataListMissionProfile.add(new Object[] {"Soot emissions","g", _emissionSootMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(_emissionSootMap.get(xcg).get(MissionPhasesEnum.CRUISE).size()-1).doubleValue(SI.GRAM)});
+        		dataListMissionProfile.add(new Object[] {"CO2 emissions","g", _emissionCO2Map.get(xcg).get(MissionPhasesEnum.CRUISE).get(_emissionCO2Map.get(xcg).get(MissionPhasesEnum.CRUISE).size()-1).doubleValue(SI.GRAM)});
+        		dataListMissionProfile.add(new Object[] {"SOx emissions","g", _emissionSOxMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(_emissionSOxMap.get(xcg).get(MissionPhasesEnum.CRUISE).size()-1).doubleValue(SI.GRAM)});
+        		dataListMissionProfile.add(new Object[] {"H2O emissions","g", _emissionH2OMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(_emissionH2OMap.get(xcg).get(MissionPhasesEnum.CRUISE).size()-1).doubleValue(SI.GRAM)});
+        		dataListMissionProfile.add(new Object[] {"Fuel Power","kW", _fuelPowerMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(_fuelPowerMap.get(xcg).get(MissionPhasesEnum.CRUISE).size()-1).doubleValue(SI.KILO(SI.WATT))});
+        		dataListMissionProfile.add(new Object[] {"Battery Power","kW", _batteryPowerMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(_batteryPowerMap.get(xcg).get(MissionPhasesEnum.CRUISE).size()-1).doubleValue(SI.KILO(SI.WATT))});
+        		dataListMissionProfile.add(new Object[] {"Fuel Energy","kWh", _fuelEnergyMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.CRUISE).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});        		
+        		dataListMissionProfile.add(new Object[] {"Battery Energy","kWh", _batteryEnergyMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(_batteryEnergyMap.get(xcg).get(MissionPhasesEnum.CRUISE).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});
+        		dataListMissionProfile.add(new Object[] {" "});
+        		dataListMissionProfile.add(new Object[] {"FIRST DESCENT overall data"});
+        		dataListMissionProfile.add(new Object[] {"Range","nm", _rangeMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(_rangeMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).size()-1).doubleValue(NonSI.NAUTICAL_MILE)});        		
+        		dataListMissionProfile.add(new Object[] {"Time","min", _timeMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(_timeMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).size()-1).doubleValue(NonSI.MINUTE)});
+        		dataListMissionProfile.add(new Object[] {"Fuel","kg", _fuelUsedMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(_fuelUsedMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).size()-1).doubleValue(SI.KILOGRAM)});
+        		dataListMissionProfile.add(new Object[] {"NOx emissions","g", _emissionNOxMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(_emissionNOxMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).size()-1).doubleValue(SI.GRAM)});        		
+        		dataListMissionProfile.add(new Object[] {"CO emissions","g", _emissionCOMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(_emissionCOMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).size()-1).doubleValue(SI.GRAM)});
+        		dataListMissionProfile.add(new Object[] {"HC emissions","g", _emissionHCMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(_emissionHCMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).size()-1).doubleValue(SI.GRAM)});
+        		dataListMissionProfile.add(new Object[] {"Soot emissions","g", _emissionSootMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(_emissionSootMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).size()-1).doubleValue(SI.GRAM)});
+        		dataListMissionProfile.add(new Object[] {"CO2 emissions","g", _emissionCO2Map.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(_emissionCO2Map.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).size()-1).doubleValue(SI.GRAM)});
+        		dataListMissionProfile.add(new Object[] {"SOx emissions","g", _emissionSOxMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(_emissionSOxMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).size()-1).doubleValue(SI.GRAM)});
+        		dataListMissionProfile.add(new Object[] {"H2O emissions","g", _emissionH2OMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(_emissionH2OMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).size()-1).doubleValue(SI.GRAM)});
+        		dataListMissionProfile.add(new Object[] {"Fuel Power","kW", _fuelPowerMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(_fuelPowerMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).size()-1).doubleValue(SI.KILO(SI.WATT))});
+        		dataListMissionProfile.add(new Object[] {"Battery Power","kW", _batteryPowerMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(_batteryPowerMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).size()-1).doubleValue(SI.KILO(SI.WATT))});
+        		dataListMissionProfile.add(new Object[] {"Fuel Energy","kWh", _fuelEnergyMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});        		
+        		dataListMissionProfile.add(new Object[] {"Battery Energy","kWh", _batteryEnergyMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(_batteryEnergyMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});
+        		dataListMissionProfile.add(new Object[] {" "});
+        		if(_thePerformanceInterface.getAlternateCruiseAltitude().doubleValue(SI.METER) != Amount.valueOf(15.24, SI.METER).getEstimatedValue()) {
+        			dataListMissionProfile.add(new Object[] {"SECOND CLIMB overall data"});
+        			dataListMissionProfile.add(new Object[] {"Range","nm", _rangeMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(_rangeMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).size()-1).doubleValue(NonSI.NAUTICAL_MILE)});        		
+        			dataListMissionProfile.add(new Object[] {"Time","min", _timeMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(_timeMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).size()-1).doubleValue(NonSI.MINUTE)});
+        			dataListMissionProfile.add(new Object[] {"Fuel","kg", _fuelUsedMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(_fuelUsedMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).size()-1).doubleValue(SI.KILOGRAM)});
+        			dataListMissionProfile.add(new Object[] {"NOx emissions","g", _emissionNOxMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(_emissionNOxMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).size()-1).doubleValue(SI.GRAM)});        		
+        			dataListMissionProfile.add(new Object[] {"CO emissions","g", _emissionCOMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(_emissionCOMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).size()-1).doubleValue(SI.GRAM)});
+        			dataListMissionProfile.add(new Object[] {"HC emissions","g", _emissionHCMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(_emissionHCMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).size()-1).doubleValue(SI.GRAM)});
+        			dataListMissionProfile.add(new Object[] {"Soot emissions","g", _emissionSootMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(_emissionSootMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).size()-1).doubleValue(SI.GRAM)});
+        			dataListMissionProfile.add(new Object[] {"CO2 emissions","g", _emissionCO2Map.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(_emissionCO2Map.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).size()-1).doubleValue(SI.GRAM)});
+        			dataListMissionProfile.add(new Object[] {"SOx emissions","g", _emissionSOxMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(_emissionSOxMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).size()-1).doubleValue(SI.GRAM)});
+        			dataListMissionProfile.add(new Object[] {"H2O emissions","g", _emissionH2OMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(_emissionH2OMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).size()-1).doubleValue(SI.GRAM)});
+        			dataListMissionProfile.add(new Object[] {"Fuel Power","kW", _fuelPowerMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(_fuelPowerMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).size()-1).doubleValue(SI.KILO(SI.WATT))});
+        			dataListMissionProfile.add(new Object[] {"Battery Power","kW", _batteryPowerMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(_batteryPowerMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).size()-1).doubleValue(SI.KILO(SI.WATT))});
+        			dataListMissionProfile.add(new Object[] {"Fuel Energy","kWh", _fuelEnergyMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});        		
+        			dataListMissionProfile.add(new Object[] {"Battery Energy","kWh", _batteryEnergyMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(_batteryEnergyMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});
+        			dataListMissionProfile.add(new Object[] {" "});
+        			dataListMissionProfile.add(new Object[] {"ALTERNATE CRUISE overall data"});
+        			dataListMissionProfile.add(new Object[] {"Range","nm", _rangeMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(_rangeMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).size()-1).doubleValue(NonSI.NAUTICAL_MILE)});        		
+        			dataListMissionProfile.add(new Object[] {"Time","min", _timeMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(_timeMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).size()-1).doubleValue(NonSI.MINUTE)});
+        			dataListMissionProfile.add(new Object[] {"Fuel","kg", _fuelUsedMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(_fuelUsedMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).size()-1).doubleValue(SI.KILOGRAM)});
+        			dataListMissionProfile.add(new Object[] {"NOx emissions","g", _emissionNOxMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(_emissionNOxMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).size()-1).doubleValue(SI.GRAM)});        		
+        			dataListMissionProfile.add(new Object[] {"CO emissions","g", _emissionCOMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(_emissionCOMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).size()-1).doubleValue(SI.GRAM)});
+        			dataListMissionProfile.add(new Object[] {"HC emissions","g", _emissionHCMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(_emissionHCMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).size()-1).doubleValue(SI.GRAM)});
+        			dataListMissionProfile.add(new Object[] {"Soot emissions","g", _emissionSootMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(_emissionSootMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).size()-1).doubleValue(SI.GRAM)});
+        			dataListMissionProfile.add(new Object[] {"CO2 emissions","g", _emissionCO2Map.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(_emissionCO2Map.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).size()-1).doubleValue(SI.GRAM)});
+        			dataListMissionProfile.add(new Object[] {"SOx emissions","g", _emissionSOxMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(_emissionSOxMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).size()-1).doubleValue(SI.GRAM)});
+        			dataListMissionProfile.add(new Object[] {"H2O emissions","g", _emissionH2OMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(_emissionH2OMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).size()-1).doubleValue(SI.GRAM)});
+        			dataListMissionProfile.add(new Object[] {"Fuel Power","kW", _fuelPowerMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(_fuelPowerMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).size()-1).doubleValue(SI.KILO(SI.WATT))});
+        			dataListMissionProfile.add(new Object[] {"Battery Power","kW", _batteryPowerMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(_batteryPowerMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).size()-1).doubleValue(SI.KILO(SI.WATT))});
+        			dataListMissionProfile.add(new Object[] {"Fuel Energy","kWh", _fuelEnergyMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});        		
+        			dataListMissionProfile.add(new Object[] {"Battery Energy","kWh", _batteryEnergyMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(_batteryEnergyMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});
+        			dataListMissionProfile.add(new Object[] {" "});
+        			dataListMissionProfile.add(new Object[] {"SECOND DESCENT overall data"});
+        			dataListMissionProfile.add(new Object[] {"Range","nm", _rangeMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(_rangeMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).size()-1).doubleValue(NonSI.NAUTICAL_MILE)});        		
+        			dataListMissionProfile.add(new Object[] {"Time","min", _timeMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(_timeMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).size()-1).doubleValue(NonSI.MINUTE)});
+        			dataListMissionProfile.add(new Object[] {"Fuel","kg", _fuelUsedMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(_fuelUsedMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).size()-1).doubleValue(SI.KILOGRAM)});
+        			dataListMissionProfile.add(new Object[] {"NOx emissions","g", _emissionNOxMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(_emissionNOxMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).size()-1).doubleValue(SI.GRAM)});        		
+        			dataListMissionProfile.add(new Object[] {"CO emissions","g", _emissionCOMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(_emissionCOMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).size()-1).doubleValue(SI.GRAM)});
+        			dataListMissionProfile.add(new Object[] {"HC emissions","g", _emissionHCMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(_emissionHCMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).size()-1).doubleValue(SI.GRAM)});
+        			dataListMissionProfile.add(new Object[] {"Soot emissions","g", _emissionSootMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(_emissionSootMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).size()-1).doubleValue(SI.GRAM)});
+        			dataListMissionProfile.add(new Object[] {"CO2 emissions","g", _emissionCO2Map.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(_emissionCO2Map.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).size()-1).doubleValue(SI.GRAM)});
+        			dataListMissionProfile.add(new Object[] {"SOx emissions","g", _emissionSOxMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(_emissionSOxMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).size()-1).doubleValue(SI.GRAM)});
+        			dataListMissionProfile.add(new Object[] {"H2O emissions","g", _emissionH2OMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(_emissionH2OMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).size()-1).doubleValue(SI.GRAM)});
+        			dataListMissionProfile.add(new Object[] {"Fuel Power","kW", _fuelPowerMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(_fuelPowerMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).size()-1).doubleValue(SI.KILO(SI.WATT))});
+        			dataListMissionProfile.add(new Object[] {"Battery Power","kW", _batteryPowerMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(_batteryPowerMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).size()-1).doubleValue(SI.KILO(SI.WATT))});
+        			dataListMissionProfile.add(new Object[] {"Fuel Energy","kWh", _fuelEnergyMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});        		
+        			dataListMissionProfile.add(new Object[] {"Battery Energy","kWh", _batteryEnergyMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(_batteryEnergyMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});
+        			dataListMissionProfile.add(new Object[] {" "});
+        		}
+        		if(_thePerformanceInterface.getHoldingDuration().doubleValue(NonSI.MINUTE) != 0.0) {
+        			dataListMissionProfile.add(new Object[] {"HOLDING overall data"});
+        			dataListMissionProfile.add(new Object[] {"Range","nm", _rangeMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(_rangeMap.get(xcg).get(MissionPhasesEnum.HOLDING).size()-1).doubleValue(NonSI.NAUTICAL_MILE)});        		
+        			dataListMissionProfile.add(new Object[] {"Time","min", _timeMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(_timeMap.get(xcg).get(MissionPhasesEnum.HOLDING).size()-1).doubleValue(NonSI.MINUTE)});
+        			dataListMissionProfile.add(new Object[] {"Fuel","kg", _fuelUsedMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(_fuelUsedMap.get(xcg).get(MissionPhasesEnum.HOLDING).size()-1).doubleValue(SI.KILOGRAM)});
+        			dataListMissionProfile.add(new Object[] {"NOx emissions","g", _emissionNOxMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(_emissionNOxMap.get(xcg).get(MissionPhasesEnum.HOLDING).size()-1).doubleValue(SI.GRAM)});        		
+        			dataListMissionProfile.add(new Object[] {"CO emissions","g", _emissionCOMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(_emissionCOMap.get(xcg).get(MissionPhasesEnum.HOLDING).size()-1).doubleValue(SI.GRAM)});
+        			dataListMissionProfile.add(new Object[] {"HC emissions","g", _emissionHCMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(_emissionHCMap.get(xcg).get(MissionPhasesEnum.HOLDING).size()-1).doubleValue(SI.GRAM)});
+        			dataListMissionProfile.add(new Object[] {"Soot emissions","g", _emissionSootMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(_emissionSootMap.get(xcg).get(MissionPhasesEnum.HOLDING).size()-1).doubleValue(SI.GRAM)});
+        			dataListMissionProfile.add(new Object[] {"CO2 emissions","g", _emissionCO2Map.get(xcg).get(MissionPhasesEnum.HOLDING).get(_emissionCO2Map.get(xcg).get(MissionPhasesEnum.HOLDING).size()-1).doubleValue(SI.GRAM)});
+        			dataListMissionProfile.add(new Object[] {"SOx emissions","g", _emissionSOxMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(_emissionSOxMap.get(xcg).get(MissionPhasesEnum.HOLDING).size()-1).doubleValue(SI.GRAM)});
+        			dataListMissionProfile.add(new Object[] {"H2O emissions","g", _emissionH2OMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(_emissionH2OMap.get(xcg).get(MissionPhasesEnum.HOLDING).size()-1).doubleValue(SI.GRAM)});
+        			dataListMissionProfile.add(new Object[] {"Fuel Power","kW", _fuelPowerMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(_fuelPowerMap.get(xcg).get(MissionPhasesEnum.HOLDING).size()-1).doubleValue(SI.KILO(SI.WATT))});
+        			dataListMissionProfile.add(new Object[] {"Battery Power","kW", _batteryPowerMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(_batteryPowerMap.get(xcg).get(MissionPhasesEnum.HOLDING).size()-1).doubleValue(SI.KILO(SI.WATT))});
+        			dataListMissionProfile.add(new Object[] {"Fuel Energy","kWh", _fuelEnergyMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.HOLDING).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});        		
+        			dataListMissionProfile.add(new Object[] {"Battery Energy","kWh", _batteryEnergyMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(_batteryEnergyMap.get(xcg).get(MissionPhasesEnum.HOLDING).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});
+        			dataListMissionProfile.add(new Object[] {" "});
+        		}
+        		dataListMissionProfile.add(new Object[] {"APPROACH and LANDING overall data"});
+        		dataListMissionProfile.add(new Object[] {"Range","nm", _rangeMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(_rangeMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).size()-1).doubleValue(NonSI.NAUTICAL_MILE)});        		
+        		dataListMissionProfile.add(new Object[] {"Time","min", _timeMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(_timeMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).size()-1).doubleValue(NonSI.MINUTE)});
+        		dataListMissionProfile.add(new Object[] {"Fuel","kg", _fuelUsedMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(_fuelUsedMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).size()-1).doubleValue(SI.KILOGRAM)});
+        		dataListMissionProfile.add(new Object[] {"NOx emissions","g", _emissionNOxMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(_emissionNOxMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).size()-1).doubleValue(SI.GRAM)});        		
+        		dataListMissionProfile.add(new Object[] {"CO emissions","g", _emissionCOMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(_emissionCOMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).size()-1).doubleValue(SI.GRAM)});
+        		dataListMissionProfile.add(new Object[] {"HC emissions","g", _emissionHCMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(_emissionHCMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).size()-1).doubleValue(SI.GRAM)});
+        		dataListMissionProfile.add(new Object[] {"Soot emissions","g", _emissionSootMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(_emissionSootMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).size()-1).doubleValue(SI.GRAM)});
+        		dataListMissionProfile.add(new Object[] {"CO2 emissions","g", _emissionCO2Map.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(_emissionCO2Map.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).size()-1).doubleValue(SI.GRAM)});
+        		dataListMissionProfile.add(new Object[] {"SOx emissions","g", _emissionSOxMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(_emissionSOxMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).size()-1).doubleValue(SI.GRAM)});
+        		dataListMissionProfile.add(new Object[] {"H2O emissions","g", _emissionH2OMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(_emissionH2OMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).size()-1).doubleValue(SI.GRAM)});
+        		dataListMissionProfile.add(new Object[] {"Fuel Power","kW", _fuelPowerMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(_fuelPowerMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).size()-1).doubleValue(SI.KILO(SI.WATT))});
+        		dataListMissionProfile.add(new Object[] {"Battery Power","kW", _batteryPowerMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(_batteryPowerMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).size()-1).doubleValue(SI.KILO(SI.WATT))});
+        		dataListMissionProfile.add(new Object[] {"Fuel Energy","kWh", _fuelEnergyMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});        		
+        		dataListMissionProfile.add(new Object[] {"Battery Energy","kWh", _batteryEnergyMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(_batteryEnergyMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});
         		dataListMissionProfile.add(new Object[] {" "});
         		dataListMissionProfile.add(new Object[] {" "});
         		dataListMissionProfile.add(new Object[] {"Phase","Time","Range","Altitude","Fuel","Mass","NOx","CO","HC","Soot","CO2","SOx","H2O","Speed TAS","Speed CAS","Mach","CL","CD","Efficiency","Drag","Total Thrust","Thermic Thrust", "Electric Thrust", "Fuel Flow", "SFC", "Rate of Climb", "Climb Gradient", "Climb Angle", "Fuel Power","Battery Power","Fuel Energy","Battery Energy"});
@@ -4874,6 +5053,8 @@ public class ACPerformanceManager {
 				.append("\t\tFAR-25 landing field length = " + _landingDistanceFAR25Map.get(xcg).to(NonSI.FOOT) + "\n")
 				.append("\t\tTotal distance = " + _totalDistanceMap.get(xcg).to(NonSI.FOOT) + "\n")
 				.append("\t\t.....................................\n")
+				.append("\t\tRate of descent at touch-down = " + _rateOfDescentAtFlareEndingMap.get(xcg).doubleValue(MyUnits.FOOT_PER_MINUTE) + "ft/min\n")
+				.append("\t\t.....................................\n")
 				.append("\t\tStall speed landing (VsLND)= " + _vStallLandingMap.get(xcg).to(SI.METERS_PER_SECOND) + "\n")
 				.append("\t\tTouchdown speed (V_TD) = " + _vTouchDownMap.get(xcg).to(SI.METERS_PER_SECOND) + "\n")
 				.append("\t\tFlare speed (V_Flare) = " + _vFlareMap.get(xcg).to(SI.METERS_PER_SECOND) + "\n")
@@ -4890,6 +5071,16 @@ public class ACPerformanceManager {
 				.append("\t\t.....................................\n")
 				.append("\t\tLanding duration = " + _landingDurationMap.get(xcg).to(SI.SECOND) + "\n")
 				.append("\t\tTotal duration = " + _totalDurationMap.get(xcg).to(SI.SECOND) + "\n")
+				.append("\t\t.....................................\n")
+				.append("\t\tTotal fuel used = " + _totalFuelMap.get(xcg) + "\n")
+				.append("\t\t.....................................\n")
+				.append("\t\tTotal NOx emissions = " + _totalNOxEmissionsMap.get(xcg) + "\n")
+				.append("\t\tTotal CO emissions = " + _totalCOEmissionsMap.get(xcg) + "\n")
+				.append("\t\tTotal HC emissions = " + _totalHCEmissionsMap.get(xcg) + "\n")
+				.append("\t\tTotal Soot emissions = " + _totalSootEmissionsMap.get(xcg) + "\n")
+				.append("\t\tTotal CO2 emissions = " + _totalCO2EmissionsMap.get(xcg) + "\n")
+				.append("\t\tTotal SOx emissions = " + _totalSOxEmissionsMap.get(xcg) + "\n")
+				.append("\t\tTotal H2O emissions = " + _totalH2OEmissionsMap.get(xcg) + "\n")
 				.append("\t-------------------------------------\n")
 				;
 			}
@@ -7301,6 +7492,9 @@ public class ACPerformanceManager {
 			_landingDistanceFAR25Map.put(xcg, _theLandingCalculatorMap.get(xcg).getsLanding().divide(0.6));
 			_totalDistanceMap.put(xcg, _theLandingCalculatorMap.get(xcg).getsTotal());
 			
+			// Rate of descent at flare ending
+			_rateOfDescentAtFlareEndingMap.put(xcg, _theLandingCalculatorMap.get(xcg).getRateOfDescentAtFlareEnding());
+			
 			// Velocities:
 			_vStallLandingMap.put(xcg, _theLandingCalculatorMap.get(xcg).getvSLanding());
 			_vTouchDownMap.put(xcg, _theLandingCalculatorMap.get(xcg).getvTouchDownEffective());
@@ -7311,11 +7505,24 @@ public class ACPerformanceManager {
 			_landingDurationMap.put(xcg, _theLandingCalculatorMap.get(xcg).getLandingTime());
 			_totalDurationMap.put(xcg, _theLandingCalculatorMap.get(xcg).getTotalTime());
 			
+			// Fuel used:
+			_totalFuelMap.put(xcg, _theLandingCalculatorMap.get(xcg).getTotalFuelUsed());
+
+			// Emissions:
+			_totalNOxEmissionsMap.put(xcg, _theLandingCalculatorMap.get(xcg).getTotalNOxEmissions());
+			_totalCOEmissionsMap.put(xcg, _theLandingCalculatorMap.get(xcg).getTotalCOEmissions());
+			_totalHCEmissionsMap.put(xcg, _theLandingCalculatorMap.get(xcg).getTotalHCEmissions());
+			_totalSootEmissionsMap.put(xcg, _theLandingCalculatorMap.get(xcg).getTotalSootEmissions());
+			_totalCO2EmissionsMap.put(xcg, _theLandingCalculatorMap.get(xcg).getTotalCO2Emissions());
+			_totalSOxEmissionsMap.put(xcg, _theLandingCalculatorMap.get(xcg).getTotalSOxEmissions());
+			_totalH2OEmissionsMap.put(xcg, _theLandingCalculatorMap.get(xcg).getTotalH2OEmissions());
+			
 		}
 		public void plotLandingPerformance(String landingFolderPath, Double xcg) {
 			if(_thePerformanceInterface.getPlotList().contains(PerformancePlotEnum.LANDING_SIMULATIONS)) {
 				try {
-					_theLandingCalculatorMap.get(xcg).createOutputCharts(landingFolderPath);
+					if(_theLandingCalculatorMap.get(xcg).isTargetRDandAltitudeFlag() == true)
+						_theLandingCalculatorMap.get(xcg).createOutputCharts(landingFolderPath);
 				} catch (InstantiationException e) {
 					e.printStackTrace();
 				} catch (IllegalAccessException e) {
@@ -9480,6 +9687,78 @@ public class ACPerformanceManager {
 
 	public void setPayloadArrayPassengersMap(Map<Double, List<Double>> _payloadArrayPassengersMap) {
 		this._payloadArrayPassengersMap = _payloadArrayPassengersMap;
+	}
+
+	public Map<Double, Amount<Mass>> getTotalFuelMap() {
+		return _totalFuelMap;
+	}
+
+	public void setTotalFuelMap(Map<Double, Amount<Mass>> _totalFuelMap) {
+		this._totalFuelMap = _totalFuelMap;
+	}
+
+	public Map<Double, Amount<Mass>> getTotalNOxEmissionsMap() {
+		return _totalNOxEmissionsMap;
+	}
+
+	public void setTotalNOxEmissionsMap(Map<Double, Amount<Mass>> _totalNOxEmissionsMap) {
+		this._totalNOxEmissionsMap = _totalNOxEmissionsMap;
+	}
+
+	public Map<Double, Amount<Mass>> getTotalCOEmissionsMap() {
+		return _totalCOEmissionsMap;
+	}
+
+	public void setTotalCOEmissionsMap(Map<Double, Amount<Mass>> _totalOffCOEmissionsMap) {
+		this._totalCOEmissionsMap = _totalOffCOEmissionsMap;
+	}
+
+	public Map<Double, Amount<Mass>> getTotalHCEmissionsMap() {
+		return _totalHCEmissionsMap;
+	}
+
+	public void setTotalHCEmissionsMap(Map<Double, Amount<Mass>> _totalOffHCEmissionsMap) {
+		this._totalHCEmissionsMap = _totalOffHCEmissionsMap;
+	}
+
+	public Map<Double, Amount<Mass>> getTotalSootEmissionsMap() {
+		return _totalSootEmissionsMap;
+	}
+
+	public void setTotalSootEmissionsMap(Map<Double, Amount<Mass>> _totalSootEmissionsMap) {
+		this._totalSootEmissionsMap = _totalSootEmissionsMap;
+	}
+
+	public Map<Double, Amount<Mass>> getTotalCO2EmissionsMap() {
+		return _totalCO2EmissionsMap;
+	}
+
+	public void setTotalCO2EmissionsMap(Map<Double, Amount<Mass>> _totalCO2EmissionsMap) {
+		this._totalCO2EmissionsMap = _totalCO2EmissionsMap;
+	}
+
+	public Map<Double, Amount<Mass>> getTotalSOxEmissionsMap() {
+		return _totalSOxEmissionsMap;
+	}
+
+	public void setTotalSOxEmissionsMap(Map<Double, Amount<Mass>> _totalSOxEmissionsMap) {
+		this._totalSOxEmissionsMap = _totalSOxEmissionsMap;
+	}
+
+	public Map<Double, Amount<Mass>> getTotalH2OEmissionsMap() {
+		return _totalH2OEmissionsMap;
+	}
+
+	public void setTotalH2OEmissionsMap(Map<Double, Amount<Mass>> _totalH2OEmissionsMap) {
+		this._totalH2OEmissionsMap = _totalH2OEmissionsMap;
+	}
+
+	public Map<Double, Amount<Velocity>> getRateOfDescentAtFlareEndingMap() {
+		return _rateOfDescentAtFlareEndingMap;
+	}
+
+	public void setRateOfDescentAtFlareEndingMap(Map<Double, Amount<Velocity>> _rateOfDescentAtFlareEndingMap) {
+		this._rateOfDescentAtFlareEndingMap = _rateOfDescentAtFlareEndingMap;
 	}
 
 }

@@ -74,7 +74,8 @@ public class LandingCalc {
 	tTouchDown = Amount.valueOf(10000.0, SI.SECOND), 	  // initialization to an impossible time
 	tZeroGamma = Amount.valueOf(10000.0, SI.SECOND), 	  // initialization to an impossible time
 	tErrorRC = Amount.valueOf(10000.0, SI.SECOND); 	      // initialization to an impossible time
-	private Amount<Mass> maxLandingMass; 
+	private Amount<Mass> maxLandingMass, totalFuelUsed, totalNOxEmissions, totalCOEmissions, 
+	totalHCEmissions, totalSootEmissions, totalCO2Emissions, totalSOxEmissions, totalH2OEmissions; 
 	private Amount<Velocity> vSLanding, vApproach, vFlare, vTouchDown, vWind, rateOfDescentAtFlareEnding;
 	private Amount<Length> wingToGroundDistance, obstacle, initialAltitude, altitudeAtFlareEnding, hFlare, fieldAltitude;
 	private Amount<Temperature> deltaTemperature;
@@ -104,7 +105,7 @@ public class LandingCalc {
 	groundIdleCalibrationFactorEmissionIndexCO2, groundIdleCalibrationFactorEmissionIndexSOx, groundIdleCalibrationFactorEmissionIndexH2O;
 	private Amount<?> cLalphaLND;
 	private MyInterpolatingFunction mu, muBrake, thrustFlareFunction;
-	private boolean targetRDandAltitudeFlag, maximumFlareCLFlag, positiveRCFlag;
+	private boolean targetRDandAltitudeFlag, maximumFlareCLFlag, positiveRCFlag, aircraftStopFlag;
 	private boolean createCSV;
 
 	private FirstOrderIntegrator theIntegrator;
@@ -501,7 +502,6 @@ public class LandingCalc {
 		tZeroGamma = Amount.valueOf(10000.0, SI.SECOND);	        // initialization to an impossible time
 		tErrorRC = Amount.valueOf(10000.0, SI.SECOND);	            // initialization to an impossible time
 		
-		maximumFlareCLFlag = false;
 		positiveRCFlag = false;
 	}
 
@@ -523,7 +523,7 @@ public class LandingCalc {
 
 		int i=0;
 		int maxIter = 200;
-		dtFlare = Amount.valueOf(4.0, SI.SECOND); // First guess value
+		dtFlare = Amount.valueOf(5.0, SI.SECOND); // First guess value
 		alphaDotFlare = 1.0; /* deg/s - First guess value */
 		double newAlphaDotFlare = 0.0;
 		Amount<Velocity> targetRateOfDescent = Amount.valueOf(-100, MyUnits.FOOT_PER_MINUTE);
@@ -531,8 +531,11 @@ public class LandingCalc {
 		rateOfDescentAtFlareEnding = Amount.valueOf(10000.0, SI.METERS_PER_SECOND);  // Initialization at an impossible value
 		altitudeAtFlareEnding = Amount.valueOf(10000.0, SI.METER);  // Initialization at an impossible value
 
-		while (Math.abs(altitudeAtFlareEnding.doubleValue(SI.METER) - 1e-2) >= 1.0 
-				|| Math.abs(rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE)) >= Math.abs(targetRateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE)) ) {
+		aircraftStopFlag = false;
+		
+		while ( (Math.abs(altitudeAtFlareEnding.doubleValue(SI.METER) - 1e-2) >= 1.0 
+				|| Math.abs(rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE)) >= Math.abs(targetRateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE)) 
+				) || maximumFlareCLFlag == false ) {
 
 			if(i > 0) 
 				alphaDotFlare = newAlphaDotFlare;
@@ -573,8 +576,13 @@ public class LandingCalc {
 					// Handle an event and choose what to do next.
 					System.out.println("\n\tPOSITIVE RATE OF CLIMB :: ERROR ... REDUCING ALPHA DOT");
 					System.out.println("\n\tswitching function changes sign at t = " + t);
+					System.out.println("\n\tCurrent Alpha Dot = " + alphaDotFlare);
+					System.out.println("\tNext Alpha Dot = " + (alphaDotFlare - 0.05) + "\n");
 					positiveRCFlag = true;
-					return  Action.STOP;
+					if(maximumFlareCLFlag == false)
+						return  Action.STOP;
+					else
+						return  Action.CONTINUE;
 				}
 			};
 			EventHandler ehCheckStop = new EventHandler() {
@@ -615,6 +623,16 @@ public class LandingCalc {
 					sGround = sTotal.to(SI.METER).minus(sDescent.to(SI.METER)).minus(sApproach.to(SI.METER)).minus(sFlare.to(SI.METER));
 					totalTime = Amount.valueOf(t, SI.SECOND);
 					landingTime = totalTime.to(SI.SECOND).minus(tObstacle.to(SI.SECOND));
+					totalFuelUsed = Amount.valueOf(x[4], SI.KILOGRAM);
+					totalNOxEmissions = emissionNOxPerStep.get(emissionNOxPerStep.size()-1);
+					totalCOEmissions = emissionNOxPerStep.get(emissionCOPerStep.size()-1);
+					totalHCEmissions = emissionNOxPerStep.get(emissionHCPerStep.size()-1);
+					totalSootEmissions = emissionNOxPerStep.get(emissionSootPerStep.size()-1);
+					totalCO2Emissions = emissionNOxPerStep.get(emissionCO2PerStep.size()-1);
+					totalSOxEmissions = emissionNOxPerStep.get(emissionSOxPerStep.size()-1);
+					totalH2OEmissions = emissionNOxPerStep.get(emissionH2OPerStep.size()-1);
+					
+					aircraftStopFlag = true;
 
 					System.out.println("\n---------------------------DONE!-------------------------------");
 					return  Action.STOP;
@@ -830,10 +848,10 @@ public class LandingCalc {
 				}
 			};
 
-			theIntegrator.addEventHandler(ehCheckObstacle, 1.0, 1e-3, 20);
-			theIntegrator.addEventHandler(ehCheckFlareAltitude, 1.0, 1e-3, 20);
-			theIntegrator.addEventHandler(ehCheckTouchDown, 1.0, 1e-3, 20);
-			theIntegrator.addEventHandler(ehCheckStop, 1.0, 1e-2, 50);
+			theIntegrator.addEventHandler(ehCheckObstacle, 1.0, 1e-2, 20);
+			theIntegrator.addEventHandler(ehCheckFlareAltitude, 1.0, 1e-6, 20);
+			theIntegrator.addEventHandler(ehCheckTouchDown, 1.0, 1e-6, 20);
+			theIntegrator.addEventHandler(ehCheckStop, 1.0, 1e-6, 50);
 			theIntegrator.addEventHandler(ehCheckPositiveRateOfClimb, 1.0, 1e-2, 50);
 
 			// handle detailed info
@@ -1070,7 +1088,8 @@ public class LandingCalc {
 					
 					//----------------------------------------------------------------------------------------
 					// RATE OF CLIMB CHECK:
-					if(xDot[3] > 0.0)
+//					if (Math.abs(x[2] - 1e-2) <= 1.0 && xDot[3] > 0.0)
+					if (xDot[3] > 0.0)
 						tErrorRC = currentTime;
 				}
 			};
@@ -1094,10 +1113,8 @@ public class LandingCalc {
 			}; 
 			theIntegrator.integrate(ode, 0.0, xAt0, 10000, xAt0); // now xAt0 contains final state
 
-			if (maximumFlareCLFlag == true) {
-					System.err.println("ERROR: MAXIMUM ALLOWED CL DURING FLARE REACHED. THE LAST FLARE ANGULAR VELOCITY WILL BE CONSIDERED.");
-					break;
-			}
+			if (maximumFlareCLFlag == true) 
+				System.err.println("ERROR: MAXIMUM ALLOWED CL DURING FLARE REACHED. THE LAST FLARE ANGULAR VELOCITY WILL BE CONSIDERED.");
 			
 			if(positiveRCFlag == false) {
 				if(Math.abs(rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE)) > Math.abs(targetRateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE)))
@@ -1107,16 +1124,18 @@ public class LandingCalc {
 						newAlphaDotFlare = alphaDotFlare + 0.5;
 			}
 			else
-				newAlphaDotFlare = alphaDotFlare - 0.05;
+				newAlphaDotFlare = alphaDotFlare - 0.025;
 
 			if(Math.abs(altitudeAtFlareEnding.doubleValue(SI.METER) - 1e-2) < 1 
 					&& Math.abs(rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE)) < Math.abs(targetRateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE))
 					)
 				targetRDandAltitudeFlag = true;
 			
-			if(i > maxIter) {
+			if(i > maxIter) 
 				break;
-			}
+			
+			if (aircraftStopFlag == true)
+				break;
 			
 			i++;
 			
@@ -1128,16 +1147,20 @@ public class LandingCalc {
 		if(targetRDandAltitudeFlag == true)
 			manageOutputData(0.1, timeHistories, continuousOutputModel);
 		else {
-			System.err.println("ERROR: TARGET RATE OF CLIMB AND/OR ALTITUDE ARE NOT REACHED " 
-					+ "\nRate of Descent current = "
-					+ rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE) + " ft/min"
-					+ "\nRate of Descent Target = "
-					+ targetRateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE) + " ft/min"
-					+ "\nAltuitude current = "
-					+ altitudeAtFlareEnding.to(SI.METER)
-					+ "\nAltitude Target = "
-					+ 0.01 + " m"
-					);
+			System.err.println("ERROR: TARGET RATE OF CLIMB AND/OR ALTITUDE ARE NOT REACHED ");
+			this.sGround = Amount.valueOf(0.0, SI.METER);
+			this.sLanding = Amount.valueOf(0.0, SI.METER);
+			this.sTotal = Amount.valueOf(0.0, SI.METER);
+			this.totalTime = Amount.valueOf(0.0, SI.SECOND);
+			this.landingTime = Amount.valueOf(0.0, SI.SECOND);
+			this.totalFuelUsed = Amount.valueOf(0.0, SI.KILOGRAM);
+			this.totalNOxEmissions = Amount.valueOf(0.0, SI.GRAM);
+			this.totalCOEmissions = Amount.valueOf(0.0, SI.GRAM);
+			this.totalHCEmissions = Amount.valueOf(0.0, SI.GRAM);
+			this.totalSootEmissions = Amount.valueOf(0.0, SI.GRAM);
+			this.totalCO2Emissions = Amount.valueOf(0.0, SI.GRAM);
+			this.totalSOxEmissions = Amount.valueOf(0.0, SI.GRAM);
+			this.totalH2OEmissions = Amount.valueOf(0.0, SI.GRAM);
 		}
 		
 		System.out.println("\n---------------------------END!!-------------------------------\n\n");
@@ -2845,8 +2868,8 @@ public class LandingCalc {
 									)
 							*0.454
 							*0.224809
-							/60
-							*cruiseThrustFromDatabase.doubleValue(SI.NEWTON)
+							/3600
+							*cruiseThrustDatabaseTemp.get(ieng).doubleValue(SI.NEWTON)
 							);
 					fuelFlowFlightIdleList.add(
 							LandingCalc.this.getThePowerPlant().getEngineDatabaseReaderList().get(ieng).getSfc(
@@ -2867,8 +2890,8 @@ public class LandingCalc {
 									)
 							*0.454
 							*0.224809
-							/60
-							*flightIdleThrustFromDatabase.doubleValue(SI.NEWTON)
+							/3600
+							*flightIdleThrustDatabaseTemp.get(ieng).doubleValue(SI.NEWTON)
 							);
 				}
 				
@@ -5098,6 +5121,78 @@ public class LandingCalc {
 
 	public void setPositiveRCFlag(boolean positiveRCFlag) {
 		this.positiveRCFlag = positiveRCFlag;
+	}
+
+	public boolean isAircraftStopFlag() {
+		return aircraftStopFlag;
+	}
+
+	public void setAircraftStopFlag(boolean aircraftStopFlag) {
+		this.aircraftStopFlag = aircraftStopFlag;
+	}
+
+	public Amount<Mass> getTotalFuelUsed() {
+		return totalFuelUsed;
+	}
+
+	public void setTotalFuelUsed(Amount<Mass> totalFuelUsed) {
+		this.totalFuelUsed = totalFuelUsed;
+	}
+
+	public Amount<Mass> getTotalNOxEmissions() {
+		return totalNOxEmissions;
+	}
+
+	public void setTotalNOxEmissions(Amount<Mass> totalNOxEmissions) {
+		this.totalNOxEmissions = totalNOxEmissions;
+	}
+
+	public Amount<Mass> getTotalCOEmissions() {
+		return totalCOEmissions;
+	}
+
+	public void setTotalCOEmissions(Amount<Mass> totalCOEmissions) {
+		this.totalCOEmissions = totalCOEmissions;
+	}
+
+	public Amount<Mass> getTotalHCEmissions() {
+		return totalHCEmissions;
+	}
+
+	public void setTotalHCEmissions(Amount<Mass> totalHCEmissions) {
+		this.totalHCEmissions = totalHCEmissions;
+	}
+
+	public Amount<Mass> getTotalSootEmissions() {
+		return totalSootEmissions;
+	}
+
+	public void setTotalSootEmissions(Amount<Mass> totalSootEmissions) {
+		this.totalSootEmissions = totalSootEmissions;
+	}
+
+	public Amount<Mass> getTotalCO2Emissions() {
+		return totalCO2Emissions;
+	}
+
+	public void setTotalCO2Emissions(Amount<Mass> totalCO2Emissions) {
+		this.totalCO2Emissions = totalCO2Emissions;
+	}
+
+	public Amount<Mass> getTotalSOxEmissions() {
+		return totalSOxEmissions;
+	}
+
+	public void setTotalSOxEmissions(Amount<Mass> totalSOxEmissions) {
+		this.totalSOxEmissions = totalSOxEmissions;
+	}
+
+	public Amount<Mass> getTotalH2OEmissions() {
+		return totalH2OEmissions;
+	}
+
+	public void setTotalH2OEmissions(Amount<Mass> totalH2OEmissions) {
+		this.totalH2OEmissions = totalH2OEmissions;
 	}
 
 }
