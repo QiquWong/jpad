@@ -86,8 +86,6 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 					row.forEach(cell -> {
 						sheetRowData.add(dataFormatter.formatCellValue(cell));
 					});
-					// TODO: SET 0.0 WHEN DATA IS EMPTY
-//					sheetData.add(sheetRowData.stream().filter(data -> !data.isEmpty()).collect(Collectors.toList()));
 					sheetData.add(sheetRowData.stream().collect(Collectors.toList()));
 				});
 				for(int j=0; j<sheetData.size(); j++) {

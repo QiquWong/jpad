@@ -3,7 +3,6 @@ package standaloneutils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.analysis.integration.IterativeLegendreGaussIntegrator;
@@ -723,4 +722,15 @@ public final class MyMathUtils {
 		
 	}
 	
+	public static double getMaxMultiValue (double... value) {
+		
+		return Arrays.stream(value).max().getAsDouble();
+		
+	}
+	
+	public static double getMinMultiValue (double... value) {
+		
+		return Arrays.stream(value).min().getAsDouble();
+		
+	}
 }

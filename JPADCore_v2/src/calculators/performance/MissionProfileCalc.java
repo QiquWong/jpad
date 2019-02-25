@@ -228,9 +228,9 @@ public class MissionProfileCalc {
 	private Map<MissionPhasesEnum, List<Amount<Velocity>>> rateOfClimbMissionMap;
 	private Map<MissionPhasesEnum, List<Amount<Angle>>> climbAngleMissionMap;
 	private Map<MissionPhasesEnum, List<Amount<Power>>> fuelPowerMap;
-	private Map<MissionPhasesEnum, List<Amount<Power>>> batteryPowerMap;
+	private Map<MissionPhasesEnum, List<Amount<Power>>> alternativeSourcePowerMap;
 	private Map<MissionPhasesEnum, List<Amount<Energy>>> fuelEnergyMap;
-	private Map<MissionPhasesEnum, List<Amount<Energy>>> batteryEnergyMap;	
+	private Map<MissionPhasesEnum, List<Amount<Energy>>> alternativeSourceEnergyMap;	
 	
 	//----------------------------------------------------------------------
 	// QUANTITES TO BE ADDED IN MAPS PER PHASE AT THE END OF THE ITERATION
@@ -263,9 +263,9 @@ public class MissionProfileCalc {
 	private List<Amount<Velocity>> rateOfClimbTakeOff;
 	private List<Amount<Angle>> climbAngleTakeOff;
 	private List<Amount<Power>> fuelPowerTakeOff;
-	private List<Amount<Power>> batteryPowerTakeOff;
+	private List<Amount<Power>> alternativeSourcePowerTakeOff;
 	private List<Amount<Energy>> fuelEnergyTakeOff;
-	private List<Amount<Energy>> batteryEnergyTakeOff;
+	private List<Amount<Energy>> alternativeSourceEnergyTakeOff;
 	
 	//......................................................................
 	// CLIMB
@@ -296,9 +296,9 @@ public class MissionProfileCalc {
 	private List<Amount<Velocity>> rateOfClimbClimb;
 	private List<Amount<Angle>> climbAngleClimb;
 	private List<Amount<Power>> fuelPowerClimb;
-	private List<Amount<Power>> batteryPowerClimb;
+	private List<Amount<Power>> alternativeSourcePowerClimb;
 	private List<Amount<Energy>> fuelEnergyClimb;
-	private List<Amount<Energy>> batteryEnergyClimb;
+	private List<Amount<Energy>> alternativeSourceEnergyClimb;
 	
 	//......................................................................
 	// CRUISE
@@ -329,9 +329,9 @@ public class MissionProfileCalc {
 	private List<Amount<Velocity>> rateOfClimbCruise;
 	private List<Amount<Angle>> climbAngleCruise;
 	private List<Amount<Power>> fuelPowerCruise;
-	private List<Amount<Power>> batteryPowerCruise;
+	private List<Amount<Power>> alternativeSourcePowerCruise;
 	private List<Amount<Energy>> fuelEnergyCruise;
-	private List<Amount<Energy>> batteryEnergyCruise;
+	private List<Amount<Energy>> alternativeSourceEnergyCruise;
 	
 	//......................................................................
 	// FIRST DESCENT
@@ -362,9 +362,9 @@ public class MissionProfileCalc {
 	private List<Amount<Velocity>> rateOfClimbFirstDescent;
 	private List<Amount<Angle>> climbAngleFirstDescent;
 	private List<Amount<Power>> fuelPowerFirstDescent;
-	private List<Amount<Power>> batteryPowerFirstDescent;
+	private List<Amount<Power>> alternativeSourcePowerFirstDescent;
 	private List<Amount<Energy>> fuelEnergyFirstDescent;
-	private List<Amount<Energy>> batteryEnergyFirstDescent;
+	private List<Amount<Energy>> alternativeSourceEnergyFirstDescent;
 	
 	//......................................................................
 	// SECOND CLIMB
@@ -395,9 +395,9 @@ public class MissionProfileCalc {
 	private List<Amount<Velocity>> rateOfClimbSecondClimb;
 	private List<Amount<Angle>> climbAngleSecondClimb;
 	private List<Amount<Power>> fuelPowerSecondClimb;
-	private List<Amount<Power>> batteryPowerSecondClimb;
+	private List<Amount<Power>> alternativeSourcePowerSecondClimb;
 	private List<Amount<Energy>> fuelEnergySecondClimb;
-	private List<Amount<Energy>> batteryEnergySecondClimb;
+	private List<Amount<Energy>> alternativeSourceEnergySecondClimb;
 	
 	//......................................................................
 	// ALTERNATE CRUISE
@@ -428,9 +428,9 @@ public class MissionProfileCalc {
 	private List<Amount<Velocity>> rateOfClimbAlternateCruise;
 	private List<Amount<Angle>> climbAngleAlternateCruise;
 	private List<Amount<Power>> fuelPowerAlternateCruise;
-	private List<Amount<Power>> batteryPowerAlternateCruise;
+	private List<Amount<Power>> alternativeSourcePowerAlternateCruise;
 	private List<Amount<Energy>> fuelEnergyAlternateCruise;
-	private List<Amount<Energy>> batteryEnergyAlternateCruise;
+	private List<Amount<Energy>> alternativeSourceEnergyAlternateCruise;
 	
 	//......................................................................
 	// SECOND DESCENT
@@ -461,9 +461,9 @@ public class MissionProfileCalc {
 	private List<Amount<Velocity>> rateOfClimbSecondDescent;
 	private List<Amount<Angle>> climbAngleSecondDescent;
 	private List<Amount<Power>> fuelPowerSecondDescent;
-	private List<Amount<Power>> batteryPowerSecondDescent;
+	private List<Amount<Power>> alternativeSourcePowerSecondDescent;
 	private List<Amount<Energy>> fuelEnergySecondDescent;
-	private List<Amount<Energy>> batteryEnergySecondDescent;
+	private List<Amount<Energy>> alternativeSourceEnergySecondDescent;
 	
 	//......................................................................
 	// HOLDING
@@ -494,9 +494,9 @@ public class MissionProfileCalc {
 	private List<Amount<Velocity>> rateOfClimbHolding;
 	private List<Amount<Angle>> climbAngleHolding;
 	private List<Amount<Power>> fuelPowerHolding;
-	private List<Amount<Power>> batteryPowerHolding;
+	private List<Amount<Power>> alternativeSourcePowerHolding;
 	private List<Amount<Energy>> fuelEnergyHolding;
-	private List<Amount<Energy>> batteryEnergyHolding;
+	private List<Amount<Energy>> alternativeSourceEnergyHolding;
 	
 	//......................................................................
 	// LANDING
@@ -527,9 +527,9 @@ public class MissionProfileCalc {
 	private List<Amount<Velocity>> rateOfClimbLanding;
 	private List<Amount<Angle>> climbAngleLanding;
 	private List<Amount<Power>> fuelPowerLanding;
-	private List<Amount<Power>> batteryPowerLanding;
+	private List<Amount<Power>> alternativeSourcePowerLanding;
 	private List<Amount<Energy>> fuelEnergyLanding;
-	private List<Amount<Energy>> batteryEnergyLanding;
+	private List<Amount<Energy>> alternativeSourceEnergyLanding;
 	
 	//......................................................................
 	// TOTAL OUTPUT QUANTITIES
@@ -542,9 +542,9 @@ public class MissionProfileCalc {
 	private Amount<Duration> blockTime;
 	private Amount<Length> totalRange;
 	private Amount<Power> totalFuelPower;
-	private Amount<Power> totalBatteryPower;
+	private Amount<Power> totalAlternativeSourcePower;
 	private Amount<Energy> totalFuelEnergy;
-	private Amount<Energy> totalBatteryEnergy;
+	private Amount<Energy> totalAlternativeSourceEnergy;
 	
 	//--------------------------------------------------------------------------------------------
 	// BUILDER:
@@ -769,9 +769,9 @@ public class MissionProfileCalc {
 		this.rateOfClimbMissionMap = new TreeMap<>();
 		this.climbAngleMissionMap = new TreeMap<>();
 		this.fuelPowerMap = new TreeMap<>();
-		this.batteryPowerMap = new TreeMap<>();
+		this.alternativeSourcePowerMap = new TreeMap<>();
 		this.fuelEnergyMap = new TreeMap<>();
-		this.batteryEnergyMap = new TreeMap<>();	
+		this.alternativeSourceEnergyMap = new TreeMap<>();	
 		
 	}
 
@@ -811,9 +811,9 @@ public class MissionProfileCalc {
 			this.rateOfClimbTakeOff = new ArrayList<>();
 			this.climbAngleTakeOff = new ArrayList<>();
 			this.fuelPowerTakeOff = new ArrayList<>();
-			this.batteryPowerTakeOff = new ArrayList<>();
+			this.alternativeSourcePowerTakeOff = new ArrayList<>();
 			this.fuelEnergyTakeOff = new ArrayList<>();
-			this.batteryEnergyTakeOff = new ArrayList<>();
+			this.alternativeSourceEnergyTakeOff = new ArrayList<>();
 
 			//......................................................................
 			// CLIMB
@@ -844,9 +844,9 @@ public class MissionProfileCalc {
 			this.rateOfClimbClimb = new ArrayList<>();
 			this.climbAngleClimb = new ArrayList<>();
 			this.fuelPowerClimb = new ArrayList<>();
-			this.batteryPowerClimb = new ArrayList<>();
+			this.alternativeSourcePowerClimb = new ArrayList<>();
 			this.fuelEnergyClimb = new ArrayList<>();
-			this.batteryEnergyClimb = new ArrayList<>();
+			this.alternativeSourceEnergyClimb = new ArrayList<>();
 
 		}
 
@@ -881,9 +881,9 @@ public class MissionProfileCalc {
 			this.rateOfClimbCruise = new ArrayList<>();
 			this.climbAngleCruise = new ArrayList<>();
 			this.fuelPowerCruise = new ArrayList<>();
-			this.batteryPowerCruise = new ArrayList<>();
+			this.alternativeSourcePowerCruise = new ArrayList<>();
 			this.fuelEnergyCruise = new ArrayList<>();
-			this.batteryEnergyCruise = new ArrayList<>();
+			this.alternativeSourceEnergyCruise = new ArrayList<>();
 
 			//......................................................................
 			// FIRST DESCENT
@@ -914,9 +914,9 @@ public class MissionProfileCalc {
 			this.rateOfClimbFirstDescent = new ArrayList<>();
 			this.climbAngleFirstDescent = new ArrayList<>();
 			this.fuelPowerFirstDescent = new ArrayList<>();
-			this.batteryPowerFirstDescent = new ArrayList<>();
+			this.alternativeSourcePowerFirstDescent = new ArrayList<>();
 			this.fuelEnergyFirstDescent = new ArrayList<>();
-			this.batteryEnergyFirstDescent = new ArrayList<>();
+			this.alternativeSourceEnergyFirstDescent = new ArrayList<>();
 
 			//......................................................................
 			// SECOND CLIMB
@@ -947,9 +947,9 @@ public class MissionProfileCalc {
 			this.rateOfClimbSecondClimb = new ArrayList<>();
 			this.climbAngleSecondClimb = new ArrayList<>();
 			this.fuelPowerSecondClimb = new ArrayList<>();
-			this.batteryPowerSecondClimb = new ArrayList<>();
+			this.alternativeSourcePowerSecondClimb = new ArrayList<>();
 			this.fuelEnergySecondClimb = new ArrayList<>();
-			this.batteryEnergySecondClimb = new ArrayList<>();
+			this.alternativeSourceEnergySecondClimb = new ArrayList<>();
 
 		}
 		
@@ -982,9 +982,9 @@ public class MissionProfileCalc {
 		this.rateOfClimbAlternateCruise = new ArrayList<>();
 		this.climbAngleAlternateCruise = new ArrayList<>();
 		this.fuelPowerAlternateCruise = new ArrayList<>();
-		this.batteryPowerAlternateCruise = new ArrayList<>();
+		this.alternativeSourcePowerAlternateCruise = new ArrayList<>();
 		this.fuelEnergyAlternateCruise = new ArrayList<>();
-		this.batteryEnergyAlternateCruise = new ArrayList<>();
+		this.alternativeSourceEnergyAlternateCruise = new ArrayList<>();
 		
 		//......................................................................
 		// SECOND DESCENT
@@ -1015,9 +1015,9 @@ public class MissionProfileCalc {
 		this.rateOfClimbSecondDescent = new ArrayList<>();
 		this.climbAngleSecondDescent = new ArrayList<>();
 		this.fuelPowerSecondDescent = new ArrayList<>();
-		this.batteryPowerSecondDescent = new ArrayList<>();
+		this.alternativeSourcePowerSecondDescent = new ArrayList<>();
 		this.fuelEnergySecondDescent = new ArrayList<>();
-		this.batteryEnergySecondDescent = new ArrayList<>();
+		this.alternativeSourceEnergySecondDescent = new ArrayList<>();
 		
 		//......................................................................
 		// HOLDING
@@ -1048,9 +1048,9 @@ public class MissionProfileCalc {
 		this.rateOfClimbHolding = new ArrayList<>();
 		this.climbAngleHolding = new ArrayList<>();
 		this.fuelPowerHolding = new ArrayList<>();
-		this.batteryPowerHolding = new ArrayList<>();
+		this.alternativeSourcePowerHolding = new ArrayList<>();
 		this.fuelEnergyHolding = new ArrayList<>();
-		this.batteryEnergyHolding = new ArrayList<>();
+		this.alternativeSourceEnergyHolding = new ArrayList<>();
 
 		if(isCruiseLoop == false && isAlternateCruiseLoop == false && isFuelWeightLoop == false) {
 
@@ -1083,9 +1083,9 @@ public class MissionProfileCalc {
 			this.rateOfClimbLanding = new ArrayList<>();
 			this.climbAngleLanding = new ArrayList<>();
 			this.fuelPowerLanding = new ArrayList<>();
-			this.batteryPowerLanding = new ArrayList<>();
+			this.alternativeSourcePowerLanding = new ArrayList<>();
 			this.fuelEnergyLanding = new ArrayList<>();
-			this.batteryEnergyLanding = new ArrayList<>();
+			this.alternativeSourceEnergyLanding = new ArrayList<>();
 
 		}
 	}
@@ -1266,7 +1266,7 @@ public class MissionProfileCalc {
 								SI.WATT
 								)
 						);
-				batteryPowerTakeOff.add(
+				alternativeSourcePowerTakeOff.add(
 						Amount.valueOf(
 								electricThrustTakeOff.get(iTakeOff).doubleValue(SI.NEWTON)
 								* speedTASTakeOff.get(iTakeOff).doubleValue(SI.METERS_PER_SECOND),
@@ -1280,7 +1280,7 @@ public class MissionProfileCalc {
 								SI.JOULE
 								)
 						);
-				batteryEnergyTakeOff.add(Amount.valueOf(0.0, SI.JOULE));
+				alternativeSourceEnergyTakeOff.add(Amount.valueOf(0.0, SI.JOULE));
 			}
 			
 			//--------------------------------------------------------------------
@@ -1357,7 +1357,7 @@ public class MissionProfileCalc {
 								SI.WATT
 								)
 						);
-				batteryPowerClimb.add(
+				alternativeSourcePowerClimb.add(
 						Amount.valueOf(
 								electricThrustClimb.get(iClimb).doubleValue(SI.NEWTON)
 								* speedTASClimb.get(iClimb).doubleValue(SI.METERS_PER_SECOND),
@@ -1371,7 +1371,7 @@ public class MissionProfileCalc {
 								SI.JOULE
 								)
 						);
-				batteryEnergyClimb.add(Amount.valueOf(0.0, SI.JOULE));
+				alternativeSourceEnergyClimb.add(Amount.valueOf(0.0, SI.JOULE));
 			}
 			
 			//--------------------------------------------------------------------
@@ -1589,8 +1589,7 @@ public class MissionProfileCalc {
 				}
 				
 				List<Double> sfcFormDatabaseList = new ArrayList<>();
-				List<Double> fuelFlowFormDatabaseList = new ArrayList<>();
-				for(int iEng=0; iEng<theAircraft.getPowerPlant().getEngineNumber(); iEng++) {
+				for(int iEng=0; iEng<theAircraft.getPowerPlant().getEngineNumber(); iEng++) 
 					sfcFormDatabaseList.add(
 							theAircraft.getPowerPlant().getEngineDatabaseReaderList().get(iEng).getSfc(
 									cruiseMissionMachNumber.get(0),
@@ -1601,18 +1600,16 @@ public class MissionProfileCalc {
 									cruiseCalibrationFactorSFC
 									)
 							);
-					fuelFlowFormDatabaseList.add(
-							thrustFormDatabaseList.get(iEng).doubleValue(SI.NEWTON)
-							*(0.224809)*(0.454/60)
-							*sfcFormDatabaseList.get(iEng)
-							);
-				}
 				
 				List<Double> sfcList = new ArrayList<>();
 				sfcList.add(sfcFormDatabaseList.stream().mapToDouble(ff -> ff.doubleValue()).average().getAsDouble());
 				
 				List<Double> fuelFlows = new ArrayList<>();
-				fuelFlows.add(fuelFlowFormDatabaseList.stream().mapToDouble(ff -> ff.doubleValue()).sum());
+				fuelFlows.add(
+						dragPerStep.get(0).doubleValue(SI.NEWTON)
+						*(0.224809)*(0.454/60)
+						*sfcFormDatabaseList.stream().mapToDouble(sfc -> sfc).average().getAsDouble()
+						);
 
 				List<Amount<Duration>> times = new ArrayList<>();
 				times.add(Amount.valueOf(0.0, SI.SECOND));
@@ -1967,7 +1964,6 @@ public class MissionProfileCalc {
 					}
 
 					sfcFormDatabaseList = new ArrayList<>();
-					fuelFlowFormDatabaseList = new ArrayList<>();
 					for(int iEng=0; iEng<theAircraft.getPowerPlant().getEngineNumber(); iEng++) {
 						sfcFormDatabaseList.add(
 								theAircraft.getPowerPlant().getEngineDatabaseReaderList().get(iEng).getSfc(
@@ -1979,16 +1975,15 @@ public class MissionProfileCalc {
 										cruiseCalibrationFactorSFC
 										)
 								);
-						fuelFlowFormDatabaseList.add(
-								thrustFormDatabaseList.get(iEng).doubleValue(SI.NEWTON)
-								*(0.224809)*(0.454/60)
-								*sfcFormDatabaseList.get(iEng)
-								);
 					}
 					
 					sfcList.add(sfcFormDatabaseList.stream().mapToDouble(ff -> ff.doubleValue()).average().getAsDouble());
 					
-					fuelFlows.add(fuelFlowFormDatabaseList.stream().mapToDouble(ff -> ff.doubleValue()).sum());
+					fuelFlows.add(
+							dragPerStep.get(j).doubleValue(SI.NEWTON)
+							*(0.224809)*(0.454/60)
+							*sfcFormDatabaseList.stream().mapToDouble(sfc -> sfc).average().getAsDouble()
+							);
 
 				}
 
@@ -2028,7 +2023,7 @@ public class MissionProfileCalc {
 									SI.WATT
 									)
 							);
-					batteryPowerCruise.add(
+					alternativeSourcePowerCruise.add(
 							Amount.valueOf(
 									electricThrustCruise.get(iCr).doubleValue(SI.NEWTON)
 									* speedTASCruise.get(iCr).doubleValue(SI.METERS_PER_SECOND),
@@ -2042,7 +2037,7 @@ public class MissionProfileCalc {
 									SI.JOULE
 									)
 							);
-					batteryEnergyCruise.add(Amount.valueOf(0.0, SI.JOULE));
+					alternativeSourceEnergyCruise.add(Amount.valueOf(0.0, SI.JOULE));
 				}
 				
 				//--------------------------------------------------------------------
@@ -2124,7 +2119,7 @@ public class MissionProfileCalc {
 									SI.WATT
 									)
 							);
-					batteryPowerFirstDescent.add(
+					alternativeSourcePowerFirstDescent.add(
 							Amount.valueOf(
 									electricThrustFirstDescent.get(iFirstDescent).doubleValue(SI.NEWTON)
 									* speedTASFirstDescent.get(iFirstDescent).doubleValue(SI.METERS_PER_SECOND),
@@ -2138,7 +2133,7 @@ public class MissionProfileCalc {
 									SI.JOULE
 									)
 							);
-					batteryEnergyFirstDescent.add(Amount.valueOf(0.0, SI.JOULE));
+					alternativeSourceEnergyFirstDescent.add(Amount.valueOf(0.0, SI.JOULE));
 				}
 				
 				//--------------------------------------------------------------------
@@ -2218,7 +2213,7 @@ public class MissionProfileCalc {
 									SI.WATT
 									)
 							);
-					batteryPowerSecondClimb.add(
+					alternativeSourcePowerSecondClimb.add(
 							Amount.valueOf(
 									electricThrustSecondClimb.get(iSecondClimb).doubleValue(SI.NEWTON)
 									* speedTASSecondClimb.get(iSecondClimb).doubleValue(SI.METERS_PER_SECOND),
@@ -2232,7 +2227,7 @@ public class MissionProfileCalc {
 									SI.JOULE
 									)
 							);
-					batteryEnergySecondClimb.add(Amount.valueOf(0.0, SI.JOULE));
+					alternativeSourceEnergySecondClimb.add(Amount.valueOf(0.0, SI.JOULE));
 				}
 				
 				//--------------------------------------------------------------------
@@ -2492,7 +2487,6 @@ public class MissionProfileCalc {
 					}
 					
 					List<Double> sfcAlternateCruiseFormDatabaseList = new ArrayList<>();
-					List<Double> fuelFlowAlternateCruiseFormDatabaseList = new ArrayList<>();
 					for(int iEng=0; iEng<theAircraft.getPowerPlant().getEngineNumber(); iEng++) {
 						sfcAlternateCruiseFormDatabaseList.add(
 								theAircraft.getPowerPlant().getEngineDatabaseReaderList().get(iEng).getSfc(
@@ -2504,18 +2498,17 @@ public class MissionProfileCalc {
 										cruiseCalibrationFactorSFC
 										)
 								);
-						fuelFlowAlternateCruiseFormDatabaseList.add(
-								thrustAlternateCruiseFormDatabaseList.get(iEng).doubleValue(SI.NEWTON)
-								*(0.224809)*(0.454/60)
-								*sfcAlternateCruiseFormDatabaseList.get(iEng)
-								);
 					}
 					
 					List<Double> sfcAlternateCruiseList = new ArrayList<>();
 					sfcAlternateCruiseList.add(sfcAlternateCruiseFormDatabaseList.stream().mapToDouble(ff -> ff.doubleValue()).average().getAsDouble());
 					
 					List<Double> fuelFlowsAlternateCruise = new ArrayList<>();
-					fuelFlowsAlternateCruise.add(fuelFlowAlternateCruiseFormDatabaseList.stream().mapToDouble(ff -> ff.doubleValue()).sum());
+					fuelFlowsAlternateCruise.add(
+							dragPerStepAlternateCruise.get(0).doubleValue(SI.NEWTON)
+							*(0.224809)*(0.454/60)
+							*sfcAlternateCruiseFormDatabaseList.stream().mapToDouble(sfc -> sfc).average().getAsDouble()
+							);
 					
 					List<Amount<Duration>> timesAlternateCruise = new ArrayList<>();
 					timesAlternateCruise.add(Amount.valueOf(0.0, SI.SECOND));
@@ -2906,7 +2899,6 @@ public class MissionProfileCalc {
 						}
 						
 						sfcAlternateCruiseFormDatabaseList = new ArrayList<>();
-						fuelFlowAlternateCruiseFormDatabaseList = new ArrayList<>();
 						for(int iEng=0; iEng<theAircraft.getPowerPlant().getEngineNumber(); iEng++) {
 							sfcAlternateCruiseFormDatabaseList.add(
 									theAircraft.getPowerPlant().getEngineDatabaseReaderList().get(iEng).getSfc(
@@ -2918,16 +2910,15 @@ public class MissionProfileCalc {
 											cruiseCalibrationFactorSFC
 											)
 									);
-							fuelFlowAlternateCruiseFormDatabaseList.add(
-									thrustAlternateCruiseFormDatabaseList.get(iEng).doubleValue(SI.NEWTON)
-									*(0.224809)*(0.454/60)
-									*sfcAlternateCruiseFormDatabaseList.get(iEng)
-									);
 						}
 						
 						sfcAlternateCruiseList.add(sfcAlternateCruiseFormDatabaseList.stream().mapToDouble(ff -> ff.doubleValue()).average().getAsDouble());
 						
-						fuelFlowsAlternateCruise.add(fuelFlowAlternateCruiseFormDatabaseList.stream().mapToDouble(ff -> ff.doubleValue()).sum());
+						fuelFlowsAlternateCruise.add(
+								dragPerStepAlternateCruise.get(j).doubleValue(SI.NEWTON)
+								*(0.224809)*(0.454/60)
+								*sfcAlternateCruiseFormDatabaseList.stream().mapToDouble(sfc -> sfc).average().getAsDouble()
+								);
 						
 					}
 
@@ -2967,7 +2958,7 @@ public class MissionProfileCalc {
 										SI.WATT
 										)
 								);
-						batteryPowerAlternateCruise.add(
+						alternativeSourcePowerAlternateCruise.add(
 								Amount.valueOf(
 										electricThrustAlternateCruise.get(iAltCr).doubleValue(SI.NEWTON)
 										* speedTASAlternateCruise.get(iAltCr).doubleValue(SI.METERS_PER_SECOND),
@@ -2981,7 +2972,7 @@ public class MissionProfileCalc {
 										SI.JOULE
 										)
 								);
-						batteryEnergyAlternateCruise.add(Amount.valueOf(0.0, SI.JOULE));
+						alternativeSourceEnergyAlternateCruise.add(Amount.valueOf(0.0, SI.JOULE));
 					}
 					
 					//--------------------------------------------------------------------
@@ -3066,7 +3057,7 @@ public class MissionProfileCalc {
 										SI.WATT
 										)
 								);
-						batteryPowerSecondDescent.add(
+						alternativeSourcePowerSecondDescent.add(
 								Amount.valueOf(
 										electricThrustSecondDescent.get(iSecondDescent).doubleValue(SI.NEWTON)
 										* speedTASSecondDescent.get(iSecondDescent).doubleValue(SI.METERS_PER_SECOND),
@@ -3080,7 +3071,7 @@ public class MissionProfileCalc {
 										SI.JOULE
 										)
 								);
-						batteryEnergySecondDescent.add(Amount.valueOf(0.0, SI.JOULE));
+						alternativeSourceEnergySecondDescent.add(Amount.valueOf(0.0, SI.JOULE));
 					}
 
 					//--------------------------------------------------------------------
@@ -3328,7 +3319,6 @@ public class MissionProfileCalc {
 					}
 					
 					List<Double> sfcHoldingFormDatabaseList = new ArrayList<>();
-					List<Double> fuelFlowHoldingFormDatabaseList = new ArrayList<>();
 					for(int iEng=0; iEng<theAircraft.getPowerPlant().getEngineNumber(); iEng++) {
 						sfcHoldingFormDatabaseList.add(
 								theAircraft.getPowerPlant().getEngineDatabaseReaderList().get(iEng).getSfc(
@@ -3340,18 +3330,17 @@ public class MissionProfileCalc {
 										cruiseCalibrationFactorSFC
 										)
 								);
-						fuelFlowHoldingFormDatabaseList.add(
-								thrustHoldingFormDatabaseList.get(iEng).doubleValue(SI.NEWTON)
-								*(0.224809)*(0.454/60)
-								*sfcHoldingFormDatabaseList.get(iEng)
-								);
 					}
 					
 					List<Double> sfcHoldingList = new ArrayList<>();
 					sfcHoldingList.add(sfcHoldingFormDatabaseList.stream().mapToDouble(ff -> ff.doubleValue()).average().getAsDouble());
 					
 					List<Double> fuelFlowsHolding = new ArrayList<>();
-					fuelFlowsHolding.add(fuelFlowHoldingFormDatabaseList.stream().mapToDouble(ff -> ff.doubleValue()).sum());
+					fuelFlowsHolding.add(
+							dragPerStepHolding.get(0).doubleValue(SI.NEWTON)
+							*(0.224809)*(0.454/60)
+							*sfcHoldingFormDatabaseList.stream().mapToDouble(sfc -> sfc).average().getAsDouble()
+							);
 
 					List<Amount<Mass>> fuelUsedPerStepHolding = new ArrayList<>();
 					fuelUsedPerStepHolding.add(Amount.valueOf(0.0, SI.KILOGRAM));
@@ -3724,7 +3713,6 @@ public class MissionProfileCalc {
 						}
 
 						sfcHoldingFormDatabaseList = new ArrayList<>();
-						fuelFlowHoldingFormDatabaseList = new ArrayList<>();
 						for(int iEng=0; iEng<theAircraft.getPowerPlant().getEngineNumber(); iEng++) {
 							sfcHoldingFormDatabaseList.add(
 									theAircraft.getPowerPlant().getEngineDatabaseReaderList().get(iEng).getSfc(
@@ -3736,16 +3724,15 @@ public class MissionProfileCalc {
 											cruiseCalibrationFactorSFC
 											)
 									);
-							fuelFlowHoldingFormDatabaseList.add(
-									thrustHoldingFormDatabaseList.get(iEng).doubleValue(SI.NEWTON)
-									*(0.224809)*(0.454/60)
-									*sfcHoldingFormDatabaseList.get(iEng)
-									);
 						}
 						
 						sfcHoldingList.add(sfcHoldingFormDatabaseList.stream().mapToDouble(ff -> ff.doubleValue()).average().getAsDouble());
 						
-						fuelFlowsHolding.add(fuelFlowHoldingFormDatabaseList.stream().mapToDouble(ff -> ff.doubleValue()).sum());
+						fuelFlowsHolding.add(
+								dragPerStepHolding.get(j).doubleValue(SI.NEWTON)
+								*(0.224809)*(0.454/60)
+								*sfcHoldingFormDatabaseList.stream().mapToDouble(sfc -> sfc).average().getAsDouble()
+								);
 						
 					}
 
@@ -3785,7 +3772,7 @@ public class MissionProfileCalc {
 										SI.WATT
 										)
 								);
-						batteryPowerHolding.add(
+						alternativeSourcePowerHolding.add(
 								Amount.valueOf(
 										electricThrustHolding.get(iHold).doubleValue(SI.NEWTON)
 										* speedTASHolding.get(iHold).doubleValue(SI.METERS_PER_SECOND),
@@ -3799,7 +3786,7 @@ public class MissionProfileCalc {
 										SI.JOULE
 										)
 								);
-						batteryEnergyHolding.add(Amount.valueOf(0.0, SI.JOULE));
+						alternativeSourceEnergyHolding.add(Amount.valueOf(0.0, SI.JOULE));
 					}
 
 					//--------------------------------------------------------------------
@@ -3918,7 +3905,7 @@ public class MissionProfileCalc {
 											SI.WATT
 											)
 									);
-							batteryPowerLanding.add(
+							alternativeSourcePowerLanding.add(
 									Amount.valueOf(
 											electricThrustLanding.get(iLanding).doubleValue(SI.NEWTON)
 											* speedTASLanding.get(iLanding).doubleValue(SI.METERS_PER_SECOND),
@@ -3932,7 +3919,7 @@ public class MissionProfileCalc {
 											SI.JOULE
 											)
 									);
-							batteryEnergyLanding.add(Amount.valueOf(0.0, SI.JOULE));
+							alternativeSourceEnergyLanding.add(Amount.valueOf(0.0, SI.JOULE));
 						}
 					}
 					//.....................................................................
@@ -4110,27 +4097,31 @@ public class MissionProfileCalc {
 				NonSI.NAUTICAL_MILE
 				);
 		this.totalFuelPower = Amount.valueOf(
-				fuelPowerTakeOff.get(fuelPowerTakeOff.size()-1).doubleValue(SI.KILO(SI.WATT))
-				+ fuelPowerClimb.get(fuelPowerClimb.size()-1).doubleValue(SI.KILO(SI.WATT))
-				+ fuelPowerCruise.get(fuelPowerCruise.size()-1).doubleValue(SI.KILO(SI.WATT))
-				+ fuelPowerFirstDescent.get(fuelPowerFirstDescent.size()-1).doubleValue(SI.KILO(SI.WATT))
-				+ fuelPowerSecondClimb.get(fuelPowerSecondClimb.size()-1).doubleValue(SI.KILO(SI.WATT))
-				+ fuelPowerAlternateCruise.get(fuelPowerAlternateCruise.size()-1).doubleValue(SI.KILO(SI.WATT))
-				+ fuelPowerSecondDescent.get(fuelPowerSecondDescent.size()-1).doubleValue(SI.KILO(SI.WATT))
-				+ fuelPowerHolding.get(fuelPowerHolding.size()-1).doubleValue(SI.KILO(SI.WATT))
-				+ fuelPowerLanding.get(fuelPowerLanding.size()-1).doubleValue(SI.KILO(SI.WATT)),
+				MyMathUtils.getMaxMultiValue(
+						fuelPowerTakeOff.stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble(),
+						fuelPowerClimb.stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble(),
+						fuelPowerCruise.stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble(),
+						fuelPowerFirstDescent.stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble(),
+						fuelPowerSecondClimb.stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble(),
+						fuelPowerAlternateCruise.stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble(),
+						fuelPowerSecondDescent.stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble(),
+						fuelPowerHolding.stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble(),
+						fuelPowerLanding.stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble()
+						),
 				SI.KILO(SI.WATT)
 				);
-		this.totalBatteryPower = Amount.valueOf(
-				batteryPowerTakeOff.get(batteryPowerTakeOff.size()-1).doubleValue(SI.KILO(SI.WATT))
-				+ batteryPowerClimb.get(batteryPowerClimb.size()-1).doubleValue(SI.KILO(SI.WATT))
-				+ batteryPowerCruise.get(batteryPowerCruise.size()-1).doubleValue(SI.KILO(SI.WATT))
-				+ batteryPowerFirstDescent.get(batteryPowerFirstDescent.size()-1).doubleValue(SI.KILO(SI.WATT))
-				+ batteryPowerSecondClimb.get(batteryPowerSecondClimb.size()-1).doubleValue(SI.KILO(SI.WATT))
-				+ batteryPowerAlternateCruise.get(batteryPowerAlternateCruise.size()-1).doubleValue(SI.KILO(SI.WATT))
-				+ batteryPowerSecondDescent.get(batteryPowerSecondDescent.size()-1).doubleValue(SI.KILO(SI.WATT))
-				+ batteryPowerHolding.get(batteryPowerHolding.size()-1).doubleValue(SI.KILO(SI.WATT))
-				+ batteryPowerLanding.get(batteryPowerLanding.size()-1).doubleValue(SI.KILO(SI.WATT)),
+		this.totalAlternativeSourcePower = Amount.valueOf(
+				MyMathUtils.getMaxMultiValue(
+						alternativeSourcePowerTakeOff.stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble(),
+						alternativeSourcePowerClimb.stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble(),
+						alternativeSourcePowerCruise.stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble(),
+						alternativeSourcePowerFirstDescent.stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble(),
+						alternativeSourcePowerSecondClimb.stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble(),
+						alternativeSourcePowerAlternateCruise.stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble(),
+						alternativeSourcePowerSecondDescent.stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble(),
+						alternativeSourcePowerHolding.stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble(),
+						alternativeSourcePowerLanding.stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble()
+						),
 				SI.KILO(SI.WATT)
 				);
 		this.totalFuelEnergy = Amount.valueOf(
@@ -4145,16 +4136,16 @@ public class MissionProfileCalc {
 				+ fuelEnergyLanding.get(fuelEnergyLanding.size()-1).doubleValue(SI.JOULE),
 				SI.JOULE
 				);
-		this.totalBatteryEnergy = Amount.valueOf(
-				batteryEnergyTakeOff.get(batteryEnergyTakeOff.size()-1).doubleValue(SI.JOULE)
-				+ batteryEnergyClimb.get(batteryEnergyClimb.size()-1).doubleValue(SI.JOULE)
-				+ batteryEnergyCruise.get(batteryEnergyCruise.size()-1).doubleValue(SI.JOULE)
-				+ batteryEnergyFirstDescent.get(batteryEnergyFirstDescent.size()-1).doubleValue(SI.JOULE)
-				+ batteryEnergySecondClimb.get(batteryEnergySecondClimb.size()-1).doubleValue(SI.JOULE)
-				+ batteryEnergyAlternateCruise.get(batteryEnergyAlternateCruise.size()-1).doubleValue(SI.JOULE)
-				+ batteryEnergySecondDescent.get(batteryEnergySecondDescent.size()-1).doubleValue(SI.JOULE)
-				+ batteryEnergyHolding.get(batteryEnergyHolding.size()-1).doubleValue(SI.JOULE)
-				+ batteryEnergyLanding.get(batteryEnergyLanding.size()-1).doubleValue(SI.JOULE),
+		this.totalAlternativeSourceEnergy = Amount.valueOf(
+				alternativeSourceEnergyTakeOff.get(alternativeSourceEnergyTakeOff.size()-1).doubleValue(SI.JOULE)
+				+ alternativeSourceEnergyClimb.get(alternativeSourceEnergyClimb.size()-1).doubleValue(SI.JOULE)
+				+ alternativeSourceEnergyCruise.get(alternativeSourceEnergyCruise.size()-1).doubleValue(SI.JOULE)
+				+ alternativeSourceEnergyFirstDescent.get(alternativeSourceEnergyFirstDescent.size()-1).doubleValue(SI.JOULE)
+				+ alternativeSourceEnergySecondClimb.get(alternativeSourceEnergySecondClimb.size()-1).doubleValue(SI.JOULE)
+				+ alternativeSourceEnergyAlternateCruise.get(alternativeSourceEnergyAlternateCruise.size()-1).doubleValue(SI.JOULE)
+				+ alternativeSourceEnergySecondDescent.get(alternativeSourceEnergySecondDescent.size()-1).doubleValue(SI.JOULE)
+				+ alternativeSourceEnergyHolding.get(alternativeSourceEnergyHolding.size()-1).doubleValue(SI.JOULE)
+				+ alternativeSourceEnergyLanding.get(alternativeSourceEnergyLanding.size()-1).doubleValue(SI.JOULE),
 				SI.JOULE
 				);
 		
@@ -4484,15 +4475,15 @@ public class MissionProfileCalc {
 		
 		//.................................................................................................
 		// BATTERY POWER
-		this.batteryPowerMap.put(MissionPhasesEnum.TAKE_OFF, batteryPowerTakeOff.stream().map(e -> e.to(SI.KILO(SI.WATT))).collect(Collectors.toList()));
-		this.batteryPowerMap.put(MissionPhasesEnum.CLIMB, batteryPowerClimb.stream().map(e -> e.to(SI.KILO(SI.WATT))).collect(Collectors.toList()));
-		this.batteryPowerMap.put(MissionPhasesEnum.CRUISE, batteryPowerCruise.stream().map(e -> e.to(SI.KILO(SI.WATT))).collect(Collectors.toList()));
-		this.batteryPowerMap.put(MissionPhasesEnum.FIRST_DESCENT, batteryPowerFirstDescent.stream().map(e -> e.to(SI.KILO(SI.WATT))).collect(Collectors.toList()));
-		this.batteryPowerMap.put(MissionPhasesEnum.SECOND_CLIMB, batteryPowerSecondClimb.stream().map(e -> e.to(SI.KILO(SI.WATT))).collect(Collectors.toList()));
-		this.batteryPowerMap.put(MissionPhasesEnum.ALTERNATE_CRUISE, batteryPowerAlternateCruise.stream().map(e -> e.to(SI.KILO(SI.WATT))).collect(Collectors.toList()));
-		this.batteryPowerMap.put(MissionPhasesEnum.SECOND_DESCENT, batteryPowerSecondDescent.stream().map(e -> e.to(SI.KILO(SI.WATT))).collect(Collectors.toList()));
-		this.batteryPowerMap.put(MissionPhasesEnum.HOLDING, batteryPowerHolding.stream().map(e -> e.to(SI.KILO(SI.WATT))).collect(Collectors.toList()));
-		this.batteryPowerMap.put(MissionPhasesEnum.APPROACH_AND_LANDING, batteryPowerLanding.stream().map(e -> e.to(SI.KILO(SI.WATT))).collect(Collectors.toList()));
+		this.alternativeSourcePowerMap.put(MissionPhasesEnum.TAKE_OFF, alternativeSourcePowerTakeOff.stream().map(e -> e.to(SI.KILO(SI.WATT))).collect(Collectors.toList()));
+		this.alternativeSourcePowerMap.put(MissionPhasesEnum.CLIMB, alternativeSourcePowerClimb.stream().map(e -> e.to(SI.KILO(SI.WATT))).collect(Collectors.toList()));
+		this.alternativeSourcePowerMap.put(MissionPhasesEnum.CRUISE, alternativeSourcePowerCruise.stream().map(e -> e.to(SI.KILO(SI.WATT))).collect(Collectors.toList()));
+		this.alternativeSourcePowerMap.put(MissionPhasesEnum.FIRST_DESCENT, alternativeSourcePowerFirstDescent.stream().map(e -> e.to(SI.KILO(SI.WATT))).collect(Collectors.toList()));
+		this.alternativeSourcePowerMap.put(MissionPhasesEnum.SECOND_CLIMB, alternativeSourcePowerSecondClimb.stream().map(e -> e.to(SI.KILO(SI.WATT))).collect(Collectors.toList()));
+		this.alternativeSourcePowerMap.put(MissionPhasesEnum.ALTERNATE_CRUISE, alternativeSourcePowerAlternateCruise.stream().map(e -> e.to(SI.KILO(SI.WATT))).collect(Collectors.toList()));
+		this.alternativeSourcePowerMap.put(MissionPhasesEnum.SECOND_DESCENT, alternativeSourcePowerSecondDescent.stream().map(e -> e.to(SI.KILO(SI.WATT))).collect(Collectors.toList()));
+		this.alternativeSourcePowerMap.put(MissionPhasesEnum.HOLDING, alternativeSourcePowerHolding.stream().map(e -> e.to(SI.KILO(SI.WATT))).collect(Collectors.toList()));
+		this.alternativeSourcePowerMap.put(MissionPhasesEnum.APPROACH_AND_LANDING, alternativeSourcePowerLanding.stream().map(e -> e.to(SI.KILO(SI.WATT))).collect(Collectors.toList()));
 		
 		//.................................................................................................
 		// FUEL ENERGY
@@ -4508,15 +4499,15 @@ public class MissionProfileCalc {
 		
 		//.................................................................................................
 		// BATTERY ENERGY
-		this.batteryEnergyMap.put(MissionPhasesEnum.TAKE_OFF, batteryEnergyTakeOff.stream().map(e -> e.to(SI.JOULE)).collect(Collectors.toList()));
-		this.batteryEnergyMap.put(MissionPhasesEnum.CLIMB, batteryEnergyClimb.stream().map(e -> e.to(SI.JOULE)).collect(Collectors.toList()));
-		this.batteryEnergyMap.put(MissionPhasesEnum.CRUISE, batteryEnergyCruise.stream().map(e -> e.to(SI.JOULE)).collect(Collectors.toList()));
-		this.batteryEnergyMap.put(MissionPhasesEnum.FIRST_DESCENT, batteryEnergyFirstDescent.stream().map(e -> e.to(SI.JOULE)).collect(Collectors.toList()));
-		this.batteryEnergyMap.put(MissionPhasesEnum.SECOND_CLIMB, batteryEnergySecondClimb.stream().map(e -> e.to(SI.JOULE)).collect(Collectors.toList()));
-		this.batteryEnergyMap.put(MissionPhasesEnum.ALTERNATE_CRUISE, batteryEnergyAlternateCruise.stream().map(e -> e.to(SI.JOULE)).collect(Collectors.toList()));
-		this.batteryEnergyMap.put(MissionPhasesEnum.SECOND_DESCENT, batteryEnergySecondDescent.stream().map(e -> e.to(SI.JOULE)).collect(Collectors.toList()));
-		this.batteryEnergyMap.put(MissionPhasesEnum.HOLDING, batteryEnergyHolding.stream().map(e -> e.to(SI.JOULE)).collect(Collectors.toList()));
-		this.batteryEnergyMap.put(MissionPhasesEnum.APPROACH_AND_LANDING, batteryEnergyLanding.stream().map(e -> e.to(SI.JOULE)).collect(Collectors.toList()));
+		this.alternativeSourceEnergyMap.put(MissionPhasesEnum.TAKE_OFF, alternativeSourceEnergyTakeOff.stream().map(e -> e.to(SI.JOULE)).collect(Collectors.toList()));
+		this.alternativeSourceEnergyMap.put(MissionPhasesEnum.CLIMB, alternativeSourceEnergyClimb.stream().map(e -> e.to(SI.JOULE)).collect(Collectors.toList()));
+		this.alternativeSourceEnergyMap.put(MissionPhasesEnum.CRUISE, alternativeSourceEnergyCruise.stream().map(e -> e.to(SI.JOULE)).collect(Collectors.toList()));
+		this.alternativeSourceEnergyMap.put(MissionPhasesEnum.FIRST_DESCENT, alternativeSourceEnergyFirstDescent.stream().map(e -> e.to(SI.JOULE)).collect(Collectors.toList()));
+		this.alternativeSourceEnergyMap.put(MissionPhasesEnum.SECOND_CLIMB, alternativeSourceEnergySecondClimb.stream().map(e -> e.to(SI.JOULE)).collect(Collectors.toList()));
+		this.alternativeSourceEnergyMap.put(MissionPhasesEnum.ALTERNATE_CRUISE, alternativeSourceEnergyAlternateCruise.stream().map(e -> e.to(SI.JOULE)).collect(Collectors.toList()));
+		this.alternativeSourceEnergyMap.put(MissionPhasesEnum.SECOND_DESCENT, alternativeSourceEnergySecondDescent.stream().map(e -> e.to(SI.JOULE)).collect(Collectors.toList()));
+		this.alternativeSourceEnergyMap.put(MissionPhasesEnum.HOLDING, alternativeSourceEnergyHolding.stream().map(e -> e.to(SI.JOULE)).collect(Collectors.toList()));
+		this.alternativeSourceEnergyMap.put(MissionPhasesEnum.APPROACH_AND_LANDING, alternativeSourceEnergyLanding.stream().map(e -> e.to(SI.JOULE)).collect(Collectors.toList()));
 		
 	}
 
@@ -5778,16 +5769,16 @@ public class MissionProfileCalc {
 			fuelPowerListPlot.addAll(fuelPowerMap.get(MissionPhasesEnum.HOLDING));
 			fuelPowerListPlot.addAll(fuelPowerMap.get(MissionPhasesEnum.APPROACH_AND_LANDING));
 			
-			List<Amount<Power>> batteryPowerListPlot = new ArrayList<>();
-			batteryPowerListPlot.addAll(batteryPowerMap.get(MissionPhasesEnum.TAKE_OFF));
-			batteryPowerListPlot.addAll(batteryPowerMap.get(MissionPhasesEnum.CLIMB));
-			batteryPowerListPlot.addAll(batteryPowerMap.get(MissionPhasesEnum.CRUISE));
-			batteryPowerListPlot.addAll(batteryPowerMap.get(MissionPhasesEnum.FIRST_DESCENT));
-			batteryPowerListPlot.addAll(batteryPowerMap.get(MissionPhasesEnum.SECOND_CLIMB));
-			batteryPowerListPlot.addAll(batteryPowerMap.get(MissionPhasesEnum.ALTERNATE_CRUISE));
-			batteryPowerListPlot.addAll(batteryPowerMap.get(MissionPhasesEnum.SECOND_DESCENT));
-			batteryPowerListPlot.addAll(batteryPowerMap.get(MissionPhasesEnum.HOLDING));
-			batteryPowerListPlot.addAll(batteryPowerMap.get(MissionPhasesEnum.APPROACH_AND_LANDING));
+			List<Amount<Power>> alternativeSourcePowerListPlot = new ArrayList<>();
+			alternativeSourcePowerListPlot.addAll(alternativeSourcePowerMap.get(MissionPhasesEnum.TAKE_OFF));
+			alternativeSourcePowerListPlot.addAll(alternativeSourcePowerMap.get(MissionPhasesEnum.CLIMB));
+			alternativeSourcePowerListPlot.addAll(alternativeSourcePowerMap.get(MissionPhasesEnum.CRUISE));
+			alternativeSourcePowerListPlot.addAll(alternativeSourcePowerMap.get(MissionPhasesEnum.FIRST_DESCENT));
+			alternativeSourcePowerListPlot.addAll(alternativeSourcePowerMap.get(MissionPhasesEnum.SECOND_CLIMB));
+			alternativeSourcePowerListPlot.addAll(alternativeSourcePowerMap.get(MissionPhasesEnum.ALTERNATE_CRUISE));
+			alternativeSourcePowerListPlot.addAll(alternativeSourcePowerMap.get(MissionPhasesEnum.SECOND_DESCENT));
+			alternativeSourcePowerListPlot.addAll(alternativeSourcePowerMap.get(MissionPhasesEnum.HOLDING));
+			alternativeSourcePowerListPlot.addAll(alternativeSourcePowerMap.get(MissionPhasesEnum.APPROACH_AND_LANDING));
 			
 			List<Double[]> xList = new ArrayList<>();
 			for(int i=0; i<2; i++) {
@@ -5801,7 +5792,7 @@ public class MissionProfileCalc {
 					fuelPowerListPlot.stream().mapToDouble(e -> e.doubleValue(SI.KILO(SI.WATT))).toArray())
 					);
 			yList1.add(MyArrayUtils.convertFromDoubleToPrimitive(
-					batteryPowerListPlot.stream().mapToDouble(e -> e.doubleValue(SI.KILO(SI.WATT))).toArray())
+					alternativeSourcePowerListPlot.stream().mapToDouble(e -> e.doubleValue(SI.KILO(SI.WATT))).toArray())
 					);
 			
 			List<Double[]> yList2 = new ArrayList<>();
@@ -5809,12 +5800,12 @@ public class MissionProfileCalc {
 					fuelPowerListPlot.stream().mapToDouble(e -> e.doubleValue(NonSI.HORSEPOWER)).toArray())
 					);
 			yList2.add(MyArrayUtils.convertFromDoubleToPrimitive(
-					batteryPowerListPlot.stream().mapToDouble(e -> e.doubleValue(NonSI.HORSEPOWER)).toArray())
+					alternativeSourcePowerListPlot.stream().mapToDouble(e -> e.doubleValue(NonSI.HORSEPOWER)).toArray())
 					);
 			
 			List<String> legend = new ArrayList<>();
 			legend.add("Fuel Power");
-			legend.add("Battery Power");
+			legend.add("AlternativeSource Power");
 			
 			try {
 				MyChartToFileUtils.plot(
@@ -5854,16 +5845,16 @@ public class MissionProfileCalc {
 			fuelEnergyListPlot.addAll(fuelEnergyMap.get(MissionPhasesEnum.HOLDING));
 			fuelEnergyListPlot.addAll(fuelEnergyMap.get(MissionPhasesEnum.APPROACH_AND_LANDING));
 			
-			List<Amount<Energy>> batteryEnergyListPlot = new ArrayList<>();
-			batteryEnergyListPlot.addAll(batteryEnergyMap.get(MissionPhasesEnum.TAKE_OFF));
-			batteryEnergyListPlot.addAll(batteryEnergyMap.get(MissionPhasesEnum.CLIMB));
-			batteryEnergyListPlot.addAll(batteryEnergyMap.get(MissionPhasesEnum.CRUISE));
-			batteryEnergyListPlot.addAll(batteryEnergyMap.get(MissionPhasesEnum.FIRST_DESCENT));
-			batteryEnergyListPlot.addAll(batteryEnergyMap.get(MissionPhasesEnum.SECOND_CLIMB));
-			batteryEnergyListPlot.addAll(batteryEnergyMap.get(MissionPhasesEnum.ALTERNATE_CRUISE));
-			batteryEnergyListPlot.addAll(batteryEnergyMap.get(MissionPhasesEnum.SECOND_DESCENT));
-			batteryEnergyListPlot.addAll(batteryEnergyMap.get(MissionPhasesEnum.HOLDING));
-			batteryEnergyListPlot.addAll(batteryEnergyMap.get(MissionPhasesEnum.APPROACH_AND_LANDING));
+			List<Amount<Energy>> alternativeSourceEnergyListPlot = new ArrayList<>();
+			alternativeSourceEnergyListPlot.addAll(alternativeSourceEnergyMap.get(MissionPhasesEnum.TAKE_OFF));
+			alternativeSourceEnergyListPlot.addAll(alternativeSourceEnergyMap.get(MissionPhasesEnum.CLIMB));
+			alternativeSourceEnergyListPlot.addAll(alternativeSourceEnergyMap.get(MissionPhasesEnum.CRUISE));
+			alternativeSourceEnergyListPlot.addAll(alternativeSourceEnergyMap.get(MissionPhasesEnum.FIRST_DESCENT));
+			alternativeSourceEnergyListPlot.addAll(alternativeSourceEnergyMap.get(MissionPhasesEnum.SECOND_CLIMB));
+			alternativeSourceEnergyListPlot.addAll(alternativeSourceEnergyMap.get(MissionPhasesEnum.ALTERNATE_CRUISE));
+			alternativeSourceEnergyListPlot.addAll(alternativeSourceEnergyMap.get(MissionPhasesEnum.SECOND_DESCENT));
+			alternativeSourceEnergyListPlot.addAll(alternativeSourceEnergyMap.get(MissionPhasesEnum.HOLDING));
+			alternativeSourceEnergyListPlot.addAll(alternativeSourceEnergyMap.get(MissionPhasesEnum.APPROACH_AND_LANDING));
 			
 			List<Double[]> xList = new ArrayList<>();
 			for(int i=0; i<2; i++) {
@@ -5877,7 +5868,7 @@ public class MissionProfileCalc {
 					fuelEnergyListPlot.stream().mapToDouble(e -> e.doubleValue(SI.JOULE)).toArray())
 					);
 			yList1.add(MyArrayUtils.convertFromDoubleToPrimitive(
-					batteryEnergyListPlot.stream().mapToDouble(e -> e.doubleValue(SI.JOULE)).toArray())
+					alternativeSourceEnergyListPlot.stream().mapToDouble(e -> e.doubleValue(SI.JOULE)).toArray())
 					);
 			
 			List<Double[]> yList2 = new ArrayList<>();
@@ -5885,12 +5876,12 @@ public class MissionProfileCalc {
 					fuelEnergyListPlot.stream().mapToDouble(e -> e.doubleValue(MyUnits.KILOWATT_HOUR)).toArray())
 					);
 			yList2.add(MyArrayUtils.convertFromDoubleToPrimitive(
-					batteryEnergyListPlot.stream().mapToDouble(e -> e.doubleValue(MyUnits.HORSEPOWER_HOUR)).toArray())
+					alternativeSourceEnergyListPlot.stream().mapToDouble(e -> e.doubleValue(MyUnits.HORSEPOWER_HOUR)).toArray())
 					);
 			
 			List<String> legend = new ArrayList<>();
 			legend.add("Fuel Energy");
-			legend.add("Battery Energy");
+			legend.add("AlternativeSource Energy");
 			
 			try {
 				MyChartToFileUtils.plot(
@@ -5937,10 +5928,10 @@ public class MissionProfileCalc {
 				.append("\t\tBlock fuel = " + blockFuel + "\n")
 				.append("\t\tTotal fuel = " + totalFuel + "\n")
 				.append("\t\tFuel reserve = " + fuelReserve*100 + " %\n")
-				.append("\t\tTotal Fuel Power = " + totalFuelPower + "\n")
-				.append("\t\tTotal Battery Power = " + totalBatteryPower + "\n")
-				.append("\t\tTotal Fuel Energy = " + totalFuelEnergy.doubleValue(MyUnits.KILOWATT_HOUR) + " kW*h\n")
-				.append("\t\tTotal Battery Energy = " + totalBatteryEnergy.doubleValue(MyUnits.KILOWATT_HOUR) + " kW*h\n")
+				.append("\t\tMaximum Thermic Power Required = " + totalFuelPower + "\n")
+				.append("\t\tMaximum Batter Power Required = " + totalAlternativeSourcePower + "\n")
+				.append("\t\tTotal Thermic Energy = " + totalFuelEnergy.doubleValue(MyUnits.KILOWATT_HOUR) + " kW*h\n")
+				.append("\t\tTotal AlternativeSource Energy = " + totalAlternativeSourceEnergy.doubleValue(MyUnits.KILOWATT_HOUR) + " kW*h\n")
 				.append("\t\tDesign passengers number = " + theAircraft.getCabinConfiguration().getDesignPassengerNumber() + "\n")
 				.append("\t\tPassengers number for this mission = " + deisgnPassengersNumber + "\n")
 				.append("\t\t.....................................\n")
@@ -5956,10 +5947,10 @@ public class MissionProfileCalc {
 				.append("\t\tTake-Off CO2 emissions = " + emissionCO2Map.get(MissionPhasesEnum.TAKE_OFF).get(emissionCO2Map.get(MissionPhasesEnum.TAKE_OFF).size()-1).to(SI.GRAM) + "\n")
 				.append("\t\tTake-Off SOx emissions = " + emissionSOxMap.get(MissionPhasesEnum.TAKE_OFF).get(emissionSOxMap.get(MissionPhasesEnum.TAKE_OFF).size()-1).to(SI.GRAM) + "\n")
 				.append("\t\tTake-Off H2O emissions = " + emissionH2OMap.get(MissionPhasesEnum.TAKE_OFF).get(emissionH2OMap.get(MissionPhasesEnum.TAKE_OFF).size()-1).to(SI.GRAM) + "\n")
-				.append("\t\tTake-Off Fuel Power = " + fuelPowerMap.get(MissionPhasesEnum.TAKE_OFF).get(fuelPowerMap.get(MissionPhasesEnum.TAKE_OFF).size()-1).to(SI.KILO(SI.WATT)) + "\n")
-				.append("\t\tTake-Off Battery Power = " + batteryPowerMap.get(MissionPhasesEnum.TAKE_OFF).get(batteryPowerMap.get(MissionPhasesEnum.TAKE_OFF).size()-1).to(SI.KILO(SI.WATT)) + "\n")
+				.append("\t\tTake-Off Maximum Thermic Power = " + fuelPowerMap.get(MissionPhasesEnum.TAKE_OFF).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble() + " kW\n")
+				.append("\t\tTake-Off Maximum AlternativeSource Power = " + alternativeSourcePowerMap.get(MissionPhasesEnum.TAKE_OFF).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble() + " kW\n")
 				.append("\t\tTake-Off Fuel Energy = " + fuelEnergyMap.get(MissionPhasesEnum.TAKE_OFF).get(fuelEnergyMap.get(MissionPhasesEnum.TAKE_OFF).size()-1).doubleValue(MyUnits.KILOWATT_HOUR) + " kW*h\n")
-				.append("\t\tTake-Off Battery Energy = " + batteryEnergyMap.get(MissionPhasesEnum.TAKE_OFF).get(batteryEnergyMap.get(MissionPhasesEnum.TAKE_OFF).size()-1).doubleValue(MyUnits.KILOWATT_HOUR) + " kW*h\n")
+				.append("\t\tTake-Off AlternativeSource Energy = " + alternativeSourceEnergyMap.get(MissionPhasesEnum.TAKE_OFF).get(alternativeSourceEnergyMap.get(MissionPhasesEnum.TAKE_OFF).size()-1).doubleValue(MyUnits.KILOWATT_HOUR) + " kW*h\n")
 				.append("\t\t.....................................\n")
 				.append("\t\tClimb range = " + rangeMap.get(MissionPhasesEnum.CLIMB).get(rangeMap.get(MissionPhasesEnum.CLIMB).size()-1).to(NonSI.NAUTICAL_MILE) + "\n")
 				.append("\t\tClimb time = " + timeMap.get(MissionPhasesEnum.CLIMB).get(timeMap.get(MissionPhasesEnum.CLIMB).size()-1).to(NonSI.MINUTE) + "\n")
@@ -5971,10 +5962,10 @@ public class MissionProfileCalc {
 				.append("\t\tClimb CO2 emissions = " + emissionCO2Map.get(MissionPhasesEnum.CLIMB).get(emissionCO2Map.get(MissionPhasesEnum.CLIMB).size()-1).to(SI.GRAM) + "\n")
 				.append("\t\tClimb SOx emissions = " + emissionSOxMap.get(MissionPhasesEnum.CLIMB).get(emissionSOxMap.get(MissionPhasesEnum.CLIMB).size()-1).to(SI.GRAM) + "\n")
 				.append("\t\tClimb H2O emissions = " + emissionH2OMap.get(MissionPhasesEnum.CLIMB).get(emissionH2OMap.get(MissionPhasesEnum.CLIMB).size()-1).to(SI.GRAM) + "\n")
-				.append("\t\tClimb Fuel Power = " + fuelPowerMap.get(MissionPhasesEnum.CLIMB).get(fuelPowerMap.get(MissionPhasesEnum.CLIMB).size()-1).to(SI.KILO(SI.WATT)) + "\n")
-				.append("\t\tClimb Battery Power = " + batteryPowerMap.get(MissionPhasesEnum.CLIMB).get(batteryPowerMap.get(MissionPhasesEnum.CLIMB).size()-1).to(SI.KILO(SI.WATT)) + "\n")
+				.append("\t\tClimb Maximum Thermic Power = " + fuelPowerMap.get(MissionPhasesEnum.CLIMB).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble() + " kW\n")
+				.append("\t\tClimb Maximum AlternativeSource Power = " + alternativeSourcePowerMap.get(MissionPhasesEnum.CLIMB).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble() + " kW\n")
 				.append("\t\tClimb Fuel Energy = " + fuelEnergyMap.get(MissionPhasesEnum.CLIMB).get(fuelEnergyMap.get(MissionPhasesEnum.CLIMB).size()-1).doubleValue(MyUnits.KILOWATT_HOUR) + " kW*h\n")
-				.append("\t\tClimb Battery Energy = " + batteryEnergyMap.get(MissionPhasesEnum.CLIMB).get(batteryEnergyMap.get(MissionPhasesEnum.CLIMB).size()-1).doubleValue(MyUnits.KILOWATT_HOUR) + " kW*h\n")
+				.append("\t\tClimb AlternativeSource Energy = " + alternativeSourceEnergyMap.get(MissionPhasesEnum.CLIMB).get(alternativeSourceEnergyMap.get(MissionPhasesEnum.CLIMB).size()-1).doubleValue(MyUnits.KILOWATT_HOUR) + " kW*h\n")
 				.append("\t\t.....................................\n")
 				.append("\t\tCruise range = " + rangeMap.get(MissionPhasesEnum.CRUISE).get(rangeMap.get(MissionPhasesEnum.CRUISE).size()-1).to(NonSI.NAUTICAL_MILE) + "\n")
 				.append("\t\tCruise time = " + timeMap.get(MissionPhasesEnum.CRUISE).get(timeMap.get(MissionPhasesEnum.CRUISE).size()-1).to(NonSI.MINUTE) + "\n")
@@ -5986,10 +5977,10 @@ public class MissionProfileCalc {
 				.append("\t\tCruise CO2 emissions = " + emissionCO2Map.get(MissionPhasesEnum.CRUISE).get(emissionCO2Map.get(MissionPhasesEnum.CRUISE).size()-1).to(SI.GRAM) + "\n")
 				.append("\t\tCruise SOx emissions = " + emissionSOxMap.get(MissionPhasesEnum.CRUISE).get(emissionSOxMap.get(MissionPhasesEnum.CRUISE).size()-1).to(SI.GRAM) + "\n")
 				.append("\t\tCruise H2O emissions = " + emissionH2OMap.get(MissionPhasesEnum.CRUISE).get(emissionH2OMap.get(MissionPhasesEnum.CRUISE).size()-1).to(SI.GRAM) + "\n")
-				.append("\t\tCruise Fuel Power = " + fuelPowerMap.get(MissionPhasesEnum.CRUISE).get(fuelPowerMap.get(MissionPhasesEnum.CRUISE).size()-1).to(SI.KILO(SI.WATT)) + "\n")
-				.append("\t\tCruise Battery Power = " + batteryPowerMap.get(MissionPhasesEnum.CRUISE).get(batteryPowerMap.get(MissionPhasesEnum.CRUISE).size()-1).to(SI.KILO(SI.WATT)) + "\n")
+				.append("\t\tCruise Maximum Thermic Power = " + fuelPowerMap.get(MissionPhasesEnum.CRUISE).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble() + " kW\n")
+				.append("\t\tCruise Maximum AlternativeSource Power = " + alternativeSourcePowerMap.get(MissionPhasesEnum.CRUISE).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble() + " kW\n")
 				.append("\t\tCruise Fuel Energy = " + fuelEnergyMap.get(MissionPhasesEnum.CRUISE).get(fuelEnergyMap.get(MissionPhasesEnum.CRUISE).size()-1).doubleValue(MyUnits.KILOWATT_HOUR) + " kW*h\n")
-				.append("\t\tCruise Battery Energy = " + batteryEnergyMap.get(MissionPhasesEnum.CRUISE).get(batteryEnergyMap.get(MissionPhasesEnum.CRUISE).size()-1).doubleValue(MyUnits.KILOWATT_HOUR) + " kW*h\n")
+				.append("\t\tCruise AlternativeSource Energy = " + alternativeSourceEnergyMap.get(MissionPhasesEnum.CRUISE).get(alternativeSourceEnergyMap.get(MissionPhasesEnum.CRUISE).size()-1).doubleValue(MyUnits.KILOWATT_HOUR) + " kW*h\n")
 				.append("\t\t.....................................\n")
 				.append("\t\tFirst Descent range = " + rangeMap.get(MissionPhasesEnum.FIRST_DESCENT).get(rangeMap.get(MissionPhasesEnum.FIRST_DESCENT).size()-1).to(NonSI.NAUTICAL_MILE) + "\n")
 				.append("\t\tFirst Descent time = " + timeMap.get(MissionPhasesEnum.FIRST_DESCENT).get(timeMap.get(MissionPhasesEnum.FIRST_DESCENT).size()-1).to(NonSI.MINUTE) + "\n")
@@ -6001,10 +5992,10 @@ public class MissionProfileCalc {
 				.append("\t\tFirst Descent CO2 emissions = " + emissionCO2Map.get(MissionPhasesEnum.FIRST_DESCENT).get(emissionCO2Map.get(MissionPhasesEnum.FIRST_DESCENT).size()-1).to(SI.GRAM) + "\n")
 				.append("\t\tFirst Descent SOx emissions = " + emissionSOxMap.get(MissionPhasesEnum.FIRST_DESCENT).get(emissionSOxMap.get(MissionPhasesEnum.FIRST_DESCENT).size()-1).to(SI.GRAM) + "\n")
 				.append("\t\tFirst Descent H2O emissions = " + emissionH2OMap.get(MissionPhasesEnum.FIRST_DESCENT).get(emissionH2OMap.get(MissionPhasesEnum.FIRST_DESCENT).size()-1).to(SI.GRAM) + "\n")
-				.append("\t\tFirst Descent Fuel Power = " + fuelPowerMap.get(MissionPhasesEnum.FIRST_DESCENT).get(fuelPowerMap.get(MissionPhasesEnum.FIRST_DESCENT).size()-1).to(SI.KILO(SI.WATT)) + "\n")
-				.append("\t\tFirst Descent Battery Power = " + batteryPowerMap.get(MissionPhasesEnum.FIRST_DESCENT).get(batteryPowerMap.get(MissionPhasesEnum.FIRST_DESCENT).size()-1).to(SI.KILO(SI.WATT)) + "\n")
+				.append("\t\tFirst Descent Maximum Thermic Power = " + fuelPowerMap.get(MissionPhasesEnum.FIRST_DESCENT).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble() + " kW\n")
+				.append("\t\tFirst Descent Maximum AlternativeSource Power = " + alternativeSourcePowerMap.get(MissionPhasesEnum.FIRST_DESCENT).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble() + " kW\n")
 				.append("\t\tFirst Descent Fuel Energy = " + fuelEnergyMap.get(MissionPhasesEnum.FIRST_DESCENT).get(fuelEnergyMap.get(MissionPhasesEnum.FIRST_DESCENT).size()-1).doubleValue(MyUnits.KILOWATT_HOUR) + " kW*h\n")
-				.append("\t\tFirst Descent Battery Energy = " + batteryEnergyMap.get(MissionPhasesEnum.FIRST_DESCENT).get(batteryEnergyMap.get(MissionPhasesEnum.FIRST_DESCENT).size()-1).doubleValue(MyUnits.KILOWATT_HOUR) + " kW*h\n")
+				.append("\t\tFirst Descent AlternativeSource Energy = " + alternativeSourceEnergyMap.get(MissionPhasesEnum.FIRST_DESCENT).get(alternativeSourceEnergyMap.get(MissionPhasesEnum.FIRST_DESCENT).size()-1).doubleValue(MyUnits.KILOWATT_HOUR) + " kW*h\n")
 				.append("\t\t.....................................\n");
 		if(alternateCruiseAltitude.doubleValue(SI.METER) != Amount.valueOf(15.24, SI.METER).getEstimatedValue()) {
 			sb.append("\t\tSecond Climb range = " + rangeMap.get(MissionPhasesEnum.SECOND_CLIMB).get(rangeMap.get(MissionPhasesEnum.SECOND_CLIMB).size()-1).to(NonSI.NAUTICAL_MILE) + "\n")
@@ -6017,10 +6008,10 @@ public class MissionProfileCalc {
 			.append("\t\tSecond Climb CO2 emissions = " + emissionCO2Map.get(MissionPhasesEnum.SECOND_CLIMB).get(emissionCO2Map.get(MissionPhasesEnum.SECOND_CLIMB).size()-1).to(SI.GRAM) + "\n")
 			.append("\t\tSecond Climb SOx emissions = " + emissionSOxMap.get(MissionPhasesEnum.SECOND_CLIMB).get(emissionSOxMap.get(MissionPhasesEnum.SECOND_CLIMB).size()-1).to(SI.GRAM) + "\n")
 			.append("\t\tSecond Climb H2O emissions = " + emissionH2OMap.get(MissionPhasesEnum.SECOND_CLIMB).get(emissionH2OMap.get(MissionPhasesEnum.SECOND_CLIMB).size()-1).to(SI.GRAM) + "\n")
-			.append("\t\tSecond Climb Fuel Power = " + fuelPowerMap.get(MissionPhasesEnum.SECOND_CLIMB).get(fuelPowerMap.get(MissionPhasesEnum.SECOND_CLIMB).size()-1).to(SI.KILO(SI.WATT)) + "\n")
-			.append("\t\tSecond Climb Battery Power = " + batteryPowerMap.get(MissionPhasesEnum.SECOND_CLIMB).get(batteryPowerMap.get(MissionPhasesEnum.SECOND_CLIMB).size()-1).to(SI.KILO(SI.WATT)) + "\n")
+			.append("\t\tSecond Climb Maximum Thermic Power = " + fuelPowerMap.get(MissionPhasesEnum.SECOND_CLIMB).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble() + " kW\n")
+			.append("\t\tSecond Climb Maximum AlternativeSource Power = " + alternativeSourcePowerMap.get(MissionPhasesEnum.SECOND_CLIMB).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble() + " kW\n")
 			.append("\t\tSecond Climb Fuel Energy = " + fuelEnergyMap.get(MissionPhasesEnum.SECOND_CLIMB).get(fuelEnergyMap.get(MissionPhasesEnum.SECOND_CLIMB).size()-1).doubleValue(MyUnits.KILOWATT_HOUR) + " kW*h\n")
-			.append("\t\tSecond Climb Battery Energy = " + batteryEnergyMap.get(MissionPhasesEnum.SECOND_CLIMB).get(batteryEnergyMap.get(MissionPhasesEnum.SECOND_CLIMB).size()-1).doubleValue(MyUnits.KILOWATT_HOUR) + " kW*h\n")
+			.append("\t\tSecond Climb AlternativeSource Energy = " + alternativeSourceEnergyMap.get(MissionPhasesEnum.SECOND_CLIMB).get(alternativeSourceEnergyMap.get(MissionPhasesEnum.SECOND_CLIMB).size()-1).doubleValue(MyUnits.KILOWATT_HOUR) + " kW*h\n")
 			.append("\t\t.....................................\n")
 			.append("\t\tAlternate Cruise range = " + rangeMap.get(MissionPhasesEnum.ALTERNATE_CRUISE).get(rangeMap.get(MissionPhasesEnum.ALTERNATE_CRUISE).size()-1).to(NonSI.NAUTICAL_MILE) + "\n")
 			.append("\t\tAlternate Cruise time = " + timeMap.get(MissionPhasesEnum.ALTERNATE_CRUISE).get(timeMap.get(MissionPhasesEnum.ALTERNATE_CRUISE).size()-1).to(NonSI.MINUTE) + "\n")
@@ -6032,10 +6023,10 @@ public class MissionProfileCalc {
 			.append("\t\tAlternate Cruise CO2 emissions = " + emissionCO2Map.get(MissionPhasesEnum.ALTERNATE_CRUISE).get(emissionCO2Map.get(MissionPhasesEnum.ALTERNATE_CRUISE).size()-1).to(SI.GRAM) + "\n")
 			.append("\t\tAlternate Cruise SOx emissions = " + emissionSOxMap.get(MissionPhasesEnum.ALTERNATE_CRUISE).get(emissionSOxMap.get(MissionPhasesEnum.ALTERNATE_CRUISE).size()-1).to(SI.GRAM) + "\n")
 			.append("\t\tAlternate Cruise H2O emissions = " + emissionH2OMap.get(MissionPhasesEnum.ALTERNATE_CRUISE).get(emissionH2OMap.get(MissionPhasesEnum.ALTERNATE_CRUISE).size()-1).to(SI.GRAM) + "\n")
-			.append("\t\tAlternate Cruise Fuel Power = " + fuelPowerMap.get(MissionPhasesEnum.ALTERNATE_CRUISE).get(fuelPowerMap.get(MissionPhasesEnum.ALTERNATE_CRUISE).size()-1).to(SI.KILO(SI.WATT)) + "\n")
-			.append("\t\tAlternate Cruise Battery Power = " + batteryPowerMap.get(MissionPhasesEnum.ALTERNATE_CRUISE).get(batteryPowerMap.get(MissionPhasesEnum.ALTERNATE_CRUISE).size()-1).to(SI.KILO(SI.WATT)) + "\n")
+			.append("\t\tAlternate Cruise Maximum Thermic Power = " + fuelPowerMap.get(MissionPhasesEnum.ALTERNATE_CRUISE).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble() + " kW\n")
+			.append("\t\tAlternate Cruise Maximum AlternativeSource Power = " + alternativeSourcePowerMap.get(MissionPhasesEnum.ALTERNATE_CRUISE).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble() + " kW\n")
 			.append("\t\tAlternate Cruise Fuel Energy = " + fuelEnergyMap.get(MissionPhasesEnum.ALTERNATE_CRUISE).get(fuelEnergyMap.get(MissionPhasesEnum.ALTERNATE_CRUISE).size()-1).doubleValue(MyUnits.KILOWATT_HOUR) + " kW*h\n")
-			.append("\t\tAlternate Cruise Battery Energy = " + batteryEnergyMap.get(MissionPhasesEnum.ALTERNATE_CRUISE).get(batteryEnergyMap.get(MissionPhasesEnum.ALTERNATE_CRUISE).size()-1).doubleValue(MyUnits.KILOWATT_HOUR) + " kW*h\n")
+			.append("\t\tAlternate Cruise AlternativeSource Energy = " + alternativeSourceEnergyMap.get(MissionPhasesEnum.ALTERNATE_CRUISE).get(alternativeSourceEnergyMap.get(MissionPhasesEnum.ALTERNATE_CRUISE).size()-1).doubleValue(MyUnits.KILOWATT_HOUR) + " kW*h\n")
 			.append("\t\t.....................................\n")
 			.append("\t\tSecond Descent range = " + rangeMap.get(MissionPhasesEnum.SECOND_DESCENT).get(rangeMap.get(MissionPhasesEnum.SECOND_DESCENT).size()-1).to(NonSI.NAUTICAL_MILE) + "\n")
 			.append("\t\tSecond Descent time = " + timeMap.get(MissionPhasesEnum.SECOND_DESCENT).get(timeMap.get(MissionPhasesEnum.SECOND_DESCENT).size()-1).to(NonSI.MINUTE) + "\n")
@@ -6047,10 +6038,10 @@ public class MissionProfileCalc {
 			.append("\t\tSecond Descent CO2 emissions = " + emissionCO2Map.get(MissionPhasesEnum.SECOND_DESCENT).get(emissionCO2Map.get(MissionPhasesEnum.SECOND_DESCENT).size()-1).to(SI.GRAM) + "\n")
 			.append("\t\tSecond Descent SOx emissions = " + emissionSOxMap.get(MissionPhasesEnum.SECOND_DESCENT).get(emissionSOxMap.get(MissionPhasesEnum.SECOND_DESCENT).size()-1).to(SI.GRAM) + "\n")
 			.append("\t\tSecond Descent H2O emissions = " + emissionH2OMap.get(MissionPhasesEnum.SECOND_DESCENT).get(emissionH2OMap.get(MissionPhasesEnum.SECOND_DESCENT).size()-1).to(SI.GRAM) + "\n")
-			.append("\t\tSecond Descent Fuel Power = " + fuelPowerMap.get(MissionPhasesEnum.SECOND_DESCENT).get(fuelPowerMap.get(MissionPhasesEnum.SECOND_DESCENT).size()-1).to(SI.KILO(SI.WATT)) + "\n")
-			.append("\t\tSecond Descent Battery Power = " + batteryPowerMap.get(MissionPhasesEnum.SECOND_DESCENT).get(batteryPowerMap.get(MissionPhasesEnum.SECOND_DESCENT).size()-1).to(SI.KILO(SI.WATT)) + "\n")
+			.append("\t\tSecond Descent Maximum Thermic Power = " + fuelPowerMap.get(MissionPhasesEnum.SECOND_DESCENT).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble() + " kW\n")
+			.append("\t\tSecond Descent Maximum AlternativeSource Power = " + alternativeSourcePowerMap.get(MissionPhasesEnum.SECOND_DESCENT).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble() + " kW\n")
 			.append("\t\tSecond Descent Fuel Energy = " + fuelEnergyMap.get(MissionPhasesEnum.SECOND_DESCENT).get(fuelEnergyMap.get(MissionPhasesEnum.SECOND_DESCENT).size()-1).doubleValue(MyUnits.KILOWATT_HOUR) + " kW*h\n")
-			.append("\t\tSecond Descent Battery Energy = " + batteryEnergyMap.get(MissionPhasesEnum.SECOND_DESCENT).get(batteryEnergyMap.get(MissionPhasesEnum.SECOND_DESCENT).size()-1).doubleValue(MyUnits.KILOWATT_HOUR) + " kW*h\n")
+			.append("\t\tSecond Descent AlternativeSource Energy = " + alternativeSourceEnergyMap.get(MissionPhasesEnum.SECOND_DESCENT).get(alternativeSourceEnergyMap.get(MissionPhasesEnum.SECOND_DESCENT).size()-1).doubleValue(MyUnits.KILOWATT_HOUR) + " kW*h\n")
 			.append("\t\t.....................................\n");
 		}
 		if(holdingDuration.doubleValue(NonSI.MINUTE) != 0.0) {
@@ -6064,10 +6055,10 @@ public class MissionProfileCalc {
 			.append("\t\tHolding CO2 emissions = " + emissionCO2Map.get(MissionPhasesEnum.HOLDING).get(emissionCO2Map.get(MissionPhasesEnum.HOLDING).size()-1).to(SI.GRAM) + "\n")
 			.append("\t\tHolding SOx emissions = " + emissionSOxMap.get(MissionPhasesEnum.HOLDING).get(emissionSOxMap.get(MissionPhasesEnum.HOLDING).size()-1).to(SI.GRAM) + "\n")
 			.append("\t\tHolding H2O emissions = " + emissionH2OMap.get(MissionPhasesEnum.HOLDING).get(emissionH2OMap.get(MissionPhasesEnum.HOLDING).size()-1).to(SI.GRAM) + "\n")
-			.append("\t\tHolding Fuel Power = " + fuelPowerMap.get(MissionPhasesEnum.HOLDING).get(fuelPowerMap.get(MissionPhasesEnum.HOLDING).size()-1).to(SI.KILO(SI.WATT)) + "\n")
-			.append("\t\tHolding Battery Power = " + batteryPowerMap.get(MissionPhasesEnum.HOLDING).get(batteryPowerMap.get(MissionPhasesEnum.HOLDING).size()-1).to(SI.KILO(SI.WATT)) + "\n")
+			.append("\t\tHolding Maximum Thermic Power = " + fuelPowerMap.get(MissionPhasesEnum.HOLDING).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble() + " kW\n")
+			.append("\t\tHolding Maximum AlternativeSource Power = " + alternativeSourcePowerMap.get(MissionPhasesEnum.HOLDING).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble() + " kW\n")
 			.append("\t\tHolding Fuel Energy = " + fuelEnergyMap.get(MissionPhasesEnum.HOLDING).get(fuelEnergyMap.get(MissionPhasesEnum.HOLDING).size()-1).doubleValue(MyUnits.KILOWATT_HOUR) + " kW*h\n")
-			.append("\t\tHolding Battery Energy = " + batteryEnergyMap.get(MissionPhasesEnum.HOLDING).get(batteryEnergyMap.get(MissionPhasesEnum.HOLDING).size()-1).doubleValue(MyUnits.KILOWATT_HOUR) + " kW*h\n")
+			.append("\t\tHolding AlternativeSource Energy = " + alternativeSourceEnergyMap.get(MissionPhasesEnum.HOLDING).get(alternativeSourceEnergyMap.get(MissionPhasesEnum.HOLDING).size()-1).doubleValue(MyUnits.KILOWATT_HOUR) + " kW*h\n")
 			.append("\t\t.....................................\n");
 		}
 		sb.append("\t\tApproach and Landing range = " + rangeMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(rangeMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).size()-1).to(NonSI.NAUTICAL_MILE) + "\n")
@@ -6080,16 +6071,16 @@ public class MissionProfileCalc {
 		.append("\t\tApproach and Landing CO2 emissions = " + emissionCO2Map.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(emissionCO2Map.get(MissionPhasesEnum.APPROACH_AND_LANDING).size()-1).to(SI.GRAM) + "\n")
 		.append("\t\tApproach and Landing SOx emissions = " + emissionSOxMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(emissionSOxMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).size()-1).to(SI.GRAM) + "\n")
 		.append("\t\tApproach and Landing H2O emissions = " + emissionH2OMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(emissionH2OMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).size()-1).to(SI.GRAM) + "\n")
-		.append("\t\tApproach and Landing Fuel Power = " + fuelPowerMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(fuelPowerMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).size()-1).to(SI.KILO(SI.WATT)) + "\n")
-		.append("\t\tApproach and Landing Battery Power = " + batteryPowerMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(batteryPowerMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).size()-1).to(SI.KILO(SI.WATT)) + "\n")
+		.append("\t\tApproach and Landing Maximum Thermic Power = " + fuelPowerMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble() + " kW\n")
+		.append("\t\tApproach and Landing Maximum Alternative Source Power = " + alternativeSourcePowerMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble() + " kW\n")
 		.append("\t\tApproach and Landing Fuel Energy = " + fuelEnergyMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(fuelEnergyMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).size()-1).doubleValue(MyUnits.KILOWATT_HOUR) + " kW*h\n")
-		.append("\t\tApproach and Landing Battery Energy = " + batteryEnergyMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(batteryEnergyMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).size()-1).doubleValue(MyUnits.KILOWATT_HOUR) + " kW*h\n")
+		.append("\t\tApproach and Landing Alternative Source Energy = " + alternativeSourceEnergyMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(alternativeSourceEnergyMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).size()-1).doubleValue(MyUnits.KILOWATT_HOUR) + " kW*h\n")
 		.append("\t\t.....................................\n")
 		.append("\t\tPHASE SIMULATION DETAILS DATA\n")
 		.append("\t\t.....................................\n")
 		.append("\t\tTAKE-OFF\n")
 		.append("\t\t.....................................\n")
-		.append("\t\t\tTime\tRange\tAltitude\tFuel\tMass\tNOx\tCO\tHC\tSoot\tCO2\tSOx\tH2O\tTAS\tCAS\tMach\tCL\tCD\tE\tDrag\tTot. Thrust\tThermic Thrust\tElectric Thrust\tFuel Flow\tSFC\tRate of Climb\tClimb Gradient\tClimb Angle\tFuel Power\tBattery Power\tFuel Energy\tBattery Energy\n")
+		.append("\t\t\tTime\tRange\tAltitude\tFuel\tMass\tNOx\tCO\tHC\tSoot\tCO2\tSOx\tH2O\tTAS\tCAS\tMach\tCL\tCD\tE\tDrag\tTot. Thrust\tThermic Thrust\tElectric Thrust\tFuel Flow\tSFC\tRate of Climb\tClimb Gradient\tClimb Angle\tThermic Power\tAlternative Source Power\tThermic Energy\tAlternative Source Energy\n")
 		.append("\t\t\tmin\tnm\tft\tkg\tkg\tg\tg\tg\tg\tg\tg\tg\tkts\tkts\t\t\t\t\tlbf\tlbf\tlbf\tlbf\tkg/min\tlb/lb*hr\tft/min\t%\tdeg\tkW\tkW\tkW*h\tkW*h\n");
 		for(int i=0; i<timeMap.get(MissionPhasesEnum.TAKE_OFF).size(); i++)
 			sb.append("\t\t\t" + numberFormat.format(timeMap.get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(NonSI.MINUTE))  
@@ -6120,14 +6111,14 @@ public class MissionProfileCalc {
 					+ "\t" + numberFormat.format(climbAngleMissionMap.get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(SI.RADIAN)*100.0)
 					+ "\t" + numberFormat.format(climbAngleMissionMap.get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(NonSI.DEGREE_ANGLE))
 					+ "\t" + numberFormat.format(fuelPowerMap.get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(SI.KILO(SI.WATT)))
-					+ "\t" + numberFormat.format(batteryPowerMap.get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(SI.KILO(SI.WATT)))
+					+ "\t" + numberFormat.format(alternativeSourcePowerMap.get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(SI.KILO(SI.WATT)))
 					+ "\t" + numberFormat.format(fuelEnergyMap.get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(MyUnits.KILOWATT_HOUR))
-					+ "\t" + numberFormat.format(batteryEnergyMap.get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(MyUnits.KILOWATT_HOUR))
+					+ "\t" + numberFormat.format(alternativeSourceEnergyMap.get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(MyUnits.KILOWATT_HOUR))
 					+ "\n");
 		sb.append("\t\t.....................................\n")
 		.append("\t\tCLIMB\n")
 		.append("\t\t.....................................\n")
-		.append("\t\t\tTime\tRange\tAltitude\tFuel\tMass\tNOx\tCO\tHC\tSoot\tCO2\tSOx\tH2O\tTAS\tCAS\tMach\tCL\tCD\tE\tDrag\tTot. Thrust\tThermic Thrust\tElectric Thrust\tFuel Flow\tSFC\tRate of Climb\tClimb Gradient\tClimb Angle\tFuel Power\tBattery Power\tFuel Energy\tBattery Energy\n")
+		.append("\t\t\tTime\tRange\tAltitude\tFuel\tMass\tNOx\tCO\tHC\tSoot\tCO2\tSOx\tH2O\tTAS\tCAS\tMach\tCL\tCD\tE\tDrag\tTot. Thrust\tThermic Thrust\tElectric Thrust\tFuel Flow\tSFC\tRate of Climb\tClimb Gradient\tClimb Angle\tThermic Power\tAlternative Source Power\tThermic Energy\tAlternative Source Energy\n")
 		.append("\t\t\tmin\tnm\tft\tkg\tkg\tg\tg\tg\tg\tg\tg\tg\tkts\tkts\t\t\t\t\tlbf\tlbf\tlbf\tlbf\tkg/min\tlb/lb*hr\tft/min\t%\tdeg\tkW\tkW\tkW*h\tkW*h\n");
 		for(int i=0; i<timeMap.get(MissionPhasesEnum.CLIMB).size(); i++)
 			sb.append("\t\t\t" + numberFormat.format(timeMap.get(MissionPhasesEnum.CLIMB).get(i).doubleValue(NonSI.MINUTE))  
@@ -6158,14 +6149,14 @@ public class MissionProfileCalc {
 			+ "\t" + numberFormat.format(climbAngleMissionMap.get(MissionPhasesEnum.CLIMB).get(i).doubleValue(SI.RADIAN)*100.0)
 			+ "\t" + numberFormat.format(climbAngleMissionMap.get(MissionPhasesEnum.CLIMB).get(i).doubleValue(NonSI.DEGREE_ANGLE))
 			+ "\t" + numberFormat.format(fuelPowerMap.get(MissionPhasesEnum.CLIMB).get(i).doubleValue(SI.KILO(SI.WATT)))
-			+ "\t" + numberFormat.format(batteryPowerMap.get(MissionPhasesEnum.CLIMB).get(i).doubleValue(SI.KILO(SI.WATT)))
+			+ "\t" + numberFormat.format(alternativeSourcePowerMap.get(MissionPhasesEnum.CLIMB).get(i).doubleValue(SI.KILO(SI.WATT)))
 			+ "\t" + numberFormat.format(fuelEnergyMap.get(MissionPhasesEnum.CLIMB).get(i).doubleValue(MyUnits.KILOWATT_HOUR))
-			+ "\t" + numberFormat.format(batteryEnergyMap.get(MissionPhasesEnum.CLIMB).get(i).doubleValue(MyUnits.KILOWATT_HOUR))
+			+ "\t" + numberFormat.format(alternativeSourceEnergyMap.get(MissionPhasesEnum.CLIMB).get(i).doubleValue(MyUnits.KILOWATT_HOUR))
 			+ "\n");
 		sb.append("\t\t.....................................\n")
 		.append("\t\tCRUISE\n")
 		.append("\t\t.....................................\n")
-		.append("\t\t\tTime\tRange\tAltitude\tFuel\tMass\tNOx\tCO\tHC\tSoot\tCO2\tSOx\tH2O\tTAS\tCAS\tMach\tCL\tCD\tE\tDrag\tTot. Thrust\tThermic Thrust\tElectric Thrust\tFuel Flow\tSFC\tRate of Climb\tClimb Gradient\tClimb Angle\tFuel Power\tBattery Power\tFuel Energy\tBattery Energy\n")
+		.append("\t\t\tTime\tRange\tAltitude\tFuel\tMass\tNOx\tCO\tHC\tSoot\tCO2\tSOx\tH2O\tTAS\tCAS\tMach\tCL\tCD\tE\tDrag\tTot. Thrust\tThermic Thrust\tElectric Thrust\tFuel Flow\tSFC\tRate of Climb\tClimb Gradient\tClimb Angle\tThermic Power\tAlternative Source Power\tThermic Energy\tAlternative Source Energy\n")
 		.append("\t\t\tmin\tnm\tft\tkg\tkg\tg\tg\tg\tg\tg\tg\tg\tkts\tkts\t\t\t\t\tlbf\tlbf\tlbf\tlbf\tkg/min\tlb/lb*hr\tft/min\t%\tdeg\tkW\tkW\tkW*h\tkW*h\n");
 		for(int i=0; i<timeMap.get(MissionPhasesEnum.CRUISE).size(); i++)
 			sb.append("\t\t\t" + numberFormat.format(timeMap.get(MissionPhasesEnum.CRUISE).get(i).doubleValue(NonSI.MINUTE))  
@@ -6196,14 +6187,14 @@ public class MissionProfileCalc {
 			+ "\t" + numberFormat.format(climbAngleMissionMap.get(MissionPhasesEnum.CRUISE).get(i).doubleValue(SI.RADIAN)*100.0)
 			+ "\t" + numberFormat.format(climbAngleMissionMap.get(MissionPhasesEnum.CRUISE).get(i).doubleValue(NonSI.DEGREE_ANGLE))
 			+ "\t" + numberFormat.format(fuelPowerMap.get(MissionPhasesEnum.CRUISE).get(i).doubleValue(SI.KILO(SI.WATT)))
-			+ "\t" + numberFormat.format(batteryPowerMap.get(MissionPhasesEnum.CRUISE).get(i).doubleValue(SI.KILO(SI.WATT)))
+			+ "\t" + numberFormat.format(alternativeSourcePowerMap.get(MissionPhasesEnum.CRUISE).get(i).doubleValue(SI.KILO(SI.WATT)))
 			+ "\t" + numberFormat.format(fuelEnergyMap.get(MissionPhasesEnum.CRUISE).get(i).doubleValue(MyUnits.KILOWATT_HOUR))
-			+ "\t" + numberFormat.format(batteryEnergyMap.get(MissionPhasesEnum.CRUISE).get(i).doubleValue(MyUnits.KILOWATT_HOUR))
+			+ "\t" + numberFormat.format(alternativeSourceEnergyMap.get(MissionPhasesEnum.CRUISE).get(i).doubleValue(MyUnits.KILOWATT_HOUR))
 			+ "\n");
 		sb.append("\t\t.....................................\n")
 		.append("\t\tFIRST DESCENT\n")
 		.append("\t\t.....................................\n")
-		.append("\t\t\tTime\tRange\tAltitude\tFuel\tMass\tNOx\tCO\tHC\tSoot\tCO2\tSOx\tH2O\tTAS\tCAS\tMach\tCL\tCD\tE\tDrag\tTot. Thrust\tThermic Thrust\tElectric Thrust\tFuel Flow\tSFC\tRate of Climb\tClimb Gradient\tClimb Angle\tFuel Power\tBattery Power\tFuel Energy\tBattery Energy\n")
+		.append("\t\t\tTime\tRange\tAltitude\tFuel\tMass\tNOx\tCO\tHC\tSoot\tCO2\tSOx\tH2O\tTAS\tCAS\tMach\tCL\tCD\tE\tDrag\tTot. Thrust\tThermic Thrust\tElectric Thrust\tFuel Flow\tSFC\tRate of Climb\tClimb Gradient\tClimb Angle\tThermic Power\tAlternative Source Power\tThermic Energy\tAlternative Source Energy\n")
 		.append("\t\t\tmin\tnm\tft\tkg\tkg\tg\tg\tg\tg\tg\tg\tg\tkts\tkts\t\t\t\t\tlbf\tlbf\tlbf\tlbf\tkg/min\tlb/lb*hr\tft/min\t%\tdeg\tkW\tkW\tkW*h\tkW*h\n");
 		for(int i=0; i<timeMap.get(MissionPhasesEnum.FIRST_DESCENT).size(); i++)
 			sb.append("\t\t\t" + numberFormat.format(timeMap.get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(NonSI.MINUTE))  
@@ -6234,16 +6225,16 @@ public class MissionProfileCalc {
 			+ "\t" + numberFormat.format(climbAngleMissionMap.get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(SI.RADIAN)*100.0)
 			+ "\t" + numberFormat.format(climbAngleMissionMap.get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(NonSI.DEGREE_ANGLE))
 			+ "\t" + numberFormat.format(fuelPowerMap.get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(SI.KILO(SI.WATT)))
-			+ "\t" + numberFormat.format(batteryPowerMap.get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(SI.KILO(SI.WATT)))
+			+ "\t" + numberFormat.format(alternativeSourcePowerMap.get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(SI.KILO(SI.WATT)))
 			+ "\t" + numberFormat.format(fuelEnergyMap.get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(MyUnits.KILOWATT_HOUR))
-			+ "\t" + numberFormat.format(batteryEnergyMap.get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(MyUnits.KILOWATT_HOUR))
+			+ "\t" + numberFormat.format(alternativeSourceEnergyMap.get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(MyUnits.KILOWATT_HOUR))
 			+ "\n");
 
 		if(alternateCruiseAltitude.doubleValue(SI.METER) != Amount.valueOf(15.24, SI.METER).getEstimatedValue()) {
 			sb.append("\t\t.....................................\n")
 			.append("\t\tSECOND CLIMB\n")
 			.append("\t\t.....................................\n")
-			.append("\t\t\tTime\tRange\tAltitude\tFuel\tMass\tNOx\tCO\tHC\tSoot\tCO2\tSOx\tH2O\tTAS\tCAS\tMach\tCL\tCD\tE\tDrag\tTot. Thrust\tThermic Thrust\tElectric Thrust\tFuel Flow\tSFC\tRate of Climb\tClimb Gradient\tClimb Angle\tFuel Power\tBattery Power\tFuel Energy\tBattery Energy\n")
+			.append("\t\t\tTime\tRange\tAltitude\tFuel\tMass\tNOx\tCO\tHC\tSoot\tCO2\tSOx\tH2O\tTAS\tCAS\tMach\tCL\tCD\tE\tDrag\tTot. Thrust\tThermic Thrust\tElectric Thrust\tFuel Flow\tSFC\tRate of Climb\tClimb Gradient\tClimb Angle\tThermic Power\tAlternative Source Power\tThermic Energy\tAlternative Source Energy\n")
 			.append("\t\t\tmin\tnm\tft\tkg\tkg\tg\tg\tg\tg\tg\tg\tg\tkts\tkts\t\t\t\t\tlbf\tlbf\tlbf\tlbf\tkg/min\tlb/lb*hr\tft/min\t%\tdeg\tkW\tkW\tkW*h\tkW*h\n");
 			for(int i=0; i<timeMap.get(MissionPhasesEnum.SECOND_CLIMB).size(); i++)
 				sb.append("\t\t\t" + numberFormat.format(timeMap.get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(NonSI.MINUTE))  
@@ -6274,14 +6265,14 @@ public class MissionProfileCalc {
 				+ "\t" + numberFormat.format(climbAngleMissionMap.get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(SI.RADIAN)*100.0)
 				+ "\t" + numberFormat.format(climbAngleMissionMap.get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(NonSI.DEGREE_ANGLE))
 				+ "\t" + numberFormat.format(fuelPowerMap.get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(SI.KILO(SI.WATT)))
-				+ "\t" + numberFormat.format(batteryPowerMap.get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(SI.KILO(SI.WATT)))
+				+ "\t" + numberFormat.format(alternativeSourcePowerMap.get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(SI.KILO(SI.WATT)))
 				+ "\t" + numberFormat.format(fuelEnergyMap.get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(MyUnits.KILOWATT_HOUR))
-				+ "\t" + numberFormat.format(batteryEnergyMap.get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(MyUnits.KILOWATT_HOUR))
+				+ "\t" + numberFormat.format(alternativeSourceEnergyMap.get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(MyUnits.KILOWATT_HOUR))
 				+ "\n");
 			sb.append("\t\t.....................................\n")
 			.append("\t\tALTERNATE CRUISE\n")
 			.append("\t\t.....................................\n")
-			.append("\t\t\tTime\tRange\tAltitude\tFuel\tMass\tNOx\tCO\tHC\tSoot\tCO2\tSOx\tH2O\tTAS\tCAS\tMach\tCL\tCD\tE\tDrag\tTot. Thrust\tThermic Thrust\tElectric Thrust\tFuel Flow\tSFC\tRate of Climb\tClimb Gradient\tClimb Angle\tFuel Power\tBattery Power\tFuel Energy\tBattery Energy\n")
+			.append("\t\t\tTime\tRange\tAltitude\tFuel\tMass\tNOx\tCO\tHC\tSoot\tCO2\tSOx\tH2O\tTAS\tCAS\tMach\tCL\tCD\tE\tDrag\tTot. Thrust\tThermic Thrust\tElectric Thrust\tFuel Flow\tSFC\tRate of Climb\tClimb Gradient\tClimb Angle\tThermic Power\tAlternative Source Power\tThermic Energy\tAlternative Source Energy\n")
 			.append("\t\t\tmin\tnm\tft\tkg\tkg\tg\tg\tg\tg\tg\tg\tg\tkts\tkts\t\t\t\t\tlbf\tlbf\tlbf\tlbf\tkg/min\tlb/lb*hr\tft/min\t%\tdeg\tkW\tkW\tkW*h\tkW*h\n");
 			for(int i=0; i<timeMap.get(MissionPhasesEnum.ALTERNATE_CRUISE).size(); i++)
 				sb.append("\t\t\t" + numberFormat.format(timeMap.get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(NonSI.MINUTE))  
@@ -6312,14 +6303,14 @@ public class MissionProfileCalc {
 				+ "\t" + numberFormat.format(climbAngleMissionMap.get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(SI.RADIAN)*100.0)
 				+ "\t" + numberFormat.format(climbAngleMissionMap.get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(NonSI.DEGREE_ANGLE))
 				+ "\t" + numberFormat.format(fuelPowerMap.get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(SI.KILO(SI.WATT)))
-				+ "\t" + numberFormat.format(batteryPowerMap.get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(SI.KILO(SI.WATT)))
+				+ "\t" + numberFormat.format(alternativeSourcePowerMap.get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(SI.KILO(SI.WATT)))
 				+ "\t" + numberFormat.format(fuelEnergyMap.get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(MyUnits.KILOWATT_HOUR))
-				+ "\t" + numberFormat.format(batteryEnergyMap.get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(MyUnits.KILOWATT_HOUR))
+				+ "\t" + numberFormat.format(alternativeSourceEnergyMap.get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(MyUnits.KILOWATT_HOUR))
 				+ "\n");
 			sb.append("\t\t.....................................\n")
 			.append("\t\tSECOND DESCENT\n")
 			.append("\t\t.....................................\n")
-			.append("\t\t\tTime\tRange\tAltitude\tFuel\tMass\tNOx\tCO\tHC\tSoot\tCO2\tSOx\tH2O\tTAS\tCAS\tMach\tCL\tCD\tE\tDrag\tTot. Thrust\tThermic Thrust\tElectric Thrust\tFuel Flow\tSFC\tRate of Climb\tClimb Gradient\tClimb Angle\tFuel Power\tBattery Power\tFuel Energy\tBattery Energy\n")
+			.append("\t\t\tTime\tRange\tAltitude\tFuel\tMass\tNOx\tCO\tHC\tSoot\tCO2\tSOx\tH2O\tTAS\tCAS\tMach\tCL\tCD\tE\tDrag\tTot. Thrust\tThermic Thrust\tElectric Thrust\tFuel Flow\tSFC\tRate of Climb\tClimb Gradient\tClimb Angle\tThermic Power\tAlternative Source Power\tThermic Energy\tAlternative Source Energy\n")
 			.append("\t\t\tmin\tnm\tft\tkg\tkg\tg\tg\tg\tg\tg\tg\tg\tkts\tkts\t\t\t\t\tlbf\tlbf\tlbf\tlbf\tkg/min\tlb/lb*hr\tft/min\t%\tdeg\tkW\tkW\tkW*h\tkW*h\n");
 			for(int i=0; i<timeMap.get(MissionPhasesEnum.SECOND_DESCENT).size(); i++)
 				sb.append("\t\t\t" + numberFormat.format(timeMap.get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(NonSI.MINUTE))  
@@ -6350,16 +6341,16 @@ public class MissionProfileCalc {
 				+ "\t" + numberFormat.format(climbAngleMissionMap.get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(SI.RADIAN)*100.0)
 				+ "\t" + numberFormat.format(climbAngleMissionMap.get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(NonSI.DEGREE_ANGLE))
 				+ "\t" + numberFormat.format(fuelPowerMap.get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(SI.KILO(SI.WATT)))
-				+ "\t" + numberFormat.format(batteryPowerMap.get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(SI.KILO(SI.WATT)))
+				+ "\t" + numberFormat.format(alternativeSourcePowerMap.get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(SI.KILO(SI.WATT)))
 				+ "\t" + numberFormat.format(fuelEnergyMap.get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(MyUnits.KILOWATT_HOUR))
-				+ "\t" + numberFormat.format(batteryEnergyMap.get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(MyUnits.KILOWATT_HOUR))
+				+ "\t" + numberFormat.format(alternativeSourceEnergyMap.get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(MyUnits.KILOWATT_HOUR))
 				+ "\n");
 		}
 		if(holdingDuration.doubleValue(NonSI.MINUTE) != 0.0) {
 			sb.append("\t\t.....................................\n")
 			.append("\t\tHOLDING\n")
 			.append("\t\t.....................................\n")
-			.append("\t\t\tTime\tRange\tAltitude\tFuel\tMass\tNOx\tCO\tHC\tSoot\tCO2\tSOx\tH2O\tTAS\tCAS\tMach\tCL\tCD\tE\tDrag\tTot. Thrust\tThermic Thrust\tElectric Thrust\tFuel Flow\tSFC\tRate of Climb\tClimb Gradient\tClimb Angle\tFuel Power\tBattery Power\tFuel Energy\tBattery Energy\n")
+			.append("\t\t\tTime\tRange\tAltitude\tFuel\tMass\tNOx\tCO\tHC\tSoot\tCO2\tSOx\tH2O\tTAS\tCAS\tMach\tCL\tCD\tE\tDrag\tTot. Thrust\tThermic Thrust\tElectric Thrust\tFuel Flow\tSFC\tRate of Climb\tClimb Gradient\tClimb Angle\tThermic Power\tAlternative Source Power\tThermic Energy\tAlternative Source Energy\n")
 			.append("\t\t\tmin\tnm\tft\tkg\tkg\tg\tg\tg\tg\tg\tg\tg\tkts\tkts\t\t\t\t\tlbf\tlbf\tlbf\tlbf\tkg/min\tlb/lb*hr\tft/min\t%\tdeg\tkW\tkW\tkW*h\tkW*h\n");
 			for(int i=0; i<timeMap.get(MissionPhasesEnum.HOLDING).size(); i++)
 				sb.append("\t\t\t" + numberFormat.format(timeMap.get(MissionPhasesEnum.HOLDING).get(i).doubleValue(NonSI.MINUTE))  
@@ -6390,16 +6381,16 @@ public class MissionProfileCalc {
 				+ "\t" + numberFormat.format(climbAngleMissionMap.get(MissionPhasesEnum.HOLDING).get(i).doubleValue(SI.RADIAN)*100.0)
 				+ "\t" + numberFormat.format(climbAngleMissionMap.get(MissionPhasesEnum.HOLDING).get(i).doubleValue(NonSI.DEGREE_ANGLE))
 				+ "\t" + numberFormat.format(fuelPowerMap.get(MissionPhasesEnum.HOLDING).get(i).doubleValue(SI.KILO(SI.WATT)))
-				+ "\t" + numberFormat.format(batteryPowerMap.get(MissionPhasesEnum.HOLDING).get(i).doubleValue(SI.KILO(SI.WATT)))
+				+ "\t" + numberFormat.format(alternativeSourcePowerMap.get(MissionPhasesEnum.HOLDING).get(i).doubleValue(SI.KILO(SI.WATT)))
 				+ "\t" + numberFormat.format(fuelEnergyMap.get(MissionPhasesEnum.HOLDING).get(i).doubleValue(MyUnits.KILOWATT_HOUR))
-				+ "\t" + numberFormat.format(batteryEnergyMap.get(MissionPhasesEnum.HOLDING).get(i).doubleValue(MyUnits.KILOWATT_HOUR))
+				+ "\t" + numberFormat.format(alternativeSourceEnergyMap.get(MissionPhasesEnum.HOLDING).get(i).doubleValue(MyUnits.KILOWATT_HOUR))
 				+ "\n");
 		}
 
 		sb.append("\t\t.....................................\n")
 		.append("\t\tLANDING\n")
 		.append("\t\t.....................................\n")
-		.append("\t\t\tTime\tRange\tAltitude\tFuel\tMass\tNOx\tCO\tHC\tSoot\tCO2\tSOx\tH2O\tTAS\tCAS\tMach\tCL\tCD\tE\tDrag\tTot. Thrust\tThermic Thrust\tElectric Thrust\tFuel Flow\tSFC\tRate of Climb\tClimb Gradient\tClimb Angle\tFuel Power\tBattery Power\tFuel Energy\tBattery Energy\n")
+		.append("\t\t\tTime\tRange\tAltitude\tFuel\tMass\tNOx\tCO\tHC\tSoot\tCO2\tSOx\tH2O\tTAS\tCAS\tMach\tCL\tCD\tE\tDrag\tTot. Thrust\tThermic Thrust\tElectric Thrust\tFuel Flow\tSFC\tRate of Climb\tClimb Gradient\tClimb Angle\tThermic Power\tAlternative Source Power\tThermic Energy\tAlternative Source Energy\n")
 		.append("\t\t\tmin\tnm\tft\tkg\tkg\tg\tg\tg\tg\tg\tg\tg\tkts\tkts\t\t\t\t\tlbf\tlbf\tlbf\tlbf\tkg/min\tlb/lb*hr\tft/min\t%\tdeg\tkW\tkW\tkW*h\tkW*h\n");
 		for(int i=0; i<timeMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).size(); i++)
 			sb.append("\t\t\t" + numberFormat.format(timeMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(NonSI.MINUTE))  
@@ -6430,9 +6421,9 @@ public class MissionProfileCalc {
 			+ "\t" + numberFormat.format(climbAngleMissionMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(SI.RADIAN)*100.0)
 			+ "\t" + numberFormat.format(climbAngleMissionMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(NonSI.DEGREE_ANGLE))
 			+ "\t" + numberFormat.format(fuelPowerMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(SI.KILO(SI.WATT)))
-			+ "\t" + numberFormat.format(batteryPowerMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(SI.KILO(SI.WATT)))
+			+ "\t" + numberFormat.format(alternativeSourcePowerMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(SI.KILO(SI.WATT)))
 			+ "\t" + numberFormat.format(fuelEnergyMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(MyUnits.KILOWATT_HOUR))
-			+ "\t" + numberFormat.format(batteryEnergyMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(MyUnits.KILOWATT_HOUR))
+			+ "\t" + numberFormat.format(alternativeSourceEnergyMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(MyUnits.KILOWATT_HOUR))
 			+ "\n");
 		
 		sb.append("\t-------------------------------------\n")
@@ -7461,12 +7452,12 @@ public class MissionProfileCalc {
 		this.fuelPowerMap = fuelPowerMap;
 	}
 
-	public Map<MissionPhasesEnum, List<Amount<Power>>> getBatteryPowerMap() {
-		return batteryPowerMap;
+	public Map<MissionPhasesEnum, List<Amount<Power>>> getAlternativeSourcePowerMap() {
+		return alternativeSourcePowerMap;
 	}
 
-	public void setBatteryPowerMap(Map<MissionPhasesEnum, List<Amount<Power>>> batteryPowerMap) {
-		this.batteryPowerMap = batteryPowerMap;
+	public void setAlternativeSourcePowerMap(Map<MissionPhasesEnum, List<Amount<Power>>> alternativeSourcePowerMap) {
+		this.alternativeSourcePowerMap = alternativeSourcePowerMap;
 	}
 
 	public Map<MissionPhasesEnum, List<Amount<Energy>>> getFuelEnergyMap() {
@@ -7477,12 +7468,12 @@ public class MissionProfileCalc {
 		this.fuelEnergyMap = fuelEnergyMap;
 	}
 
-	public Map<MissionPhasesEnum, List<Amount<Energy>>> getBatteryEnergyMap() {
-		return batteryEnergyMap;
+	public Map<MissionPhasesEnum, List<Amount<Energy>>> getAlternativeSourceEnergyMap() {
+		return alternativeSourceEnergyMap;
 	}
 
-	public void setBatteryEnergyMap(Map<MissionPhasesEnum, List<Amount<Energy>>> batteryEnergyMap) {
-		this.batteryEnergyMap = batteryEnergyMap;
+	public void setAlternativeSourceEnergyMap(Map<MissionPhasesEnum, List<Amount<Energy>>> alternativeSourceEnergyMap) {
+		this.alternativeSourceEnergyMap = alternativeSourceEnergyMap;
 	}
 
 	public Amount<Mass> getInitialFuelMass() {
@@ -7557,12 +7548,12 @@ public class MissionProfileCalc {
 		this.totalFuelPower = totalFuelPower;
 	}
 
-	public Amount<Power> getTotalBatteryPower() {
-		return totalBatteryPower;
+	public Amount<Power> getTotalAlternativeSourcePower() {
+		return totalAlternativeSourcePower;
 	}
 
-	public void setTotalBatteryPower(Amount<Power> totalBatteryPower) {
-		this.totalBatteryPower = totalBatteryPower;
+	public void setTotalAlternativeSourcePower(Amount<Power> totalAlternativeSourcePower) {
+		this.totalAlternativeSourcePower = totalAlternativeSourcePower;
 	}
 
 	public Amount<Energy> getTotalFuelEnergy() {
@@ -7573,12 +7564,12 @@ public class MissionProfileCalc {
 		this.totalFuelEnergy = totalFuelEnergy;
 	}
 
-	public Amount<Energy> getTotalBatteryEnergy() {
-		return totalBatteryEnergy;
+	public Amount<Energy> getTotalAlternativeSourceEnergy() {
+		return totalAlternativeSourceEnergy;
 	}
 
-	public void setTotalBatteryEnergy(Amount<Energy> totalBatteryEnergy) {
-		this.totalBatteryEnergy = totalBatteryEnergy;
+	public void setTotalAlternativeSourceEnergy(Amount<Energy> totalAlternativeSourceEnergy) {
+		this.totalAlternativeSourceEnergy = totalAlternativeSourceEnergy;
 	}
 
 	public Map<MissionPhasesEnum, List<Amount<Force>>> getThermicThrustMissionMap() {

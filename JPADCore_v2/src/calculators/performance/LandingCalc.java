@@ -546,8 +546,8 @@ public class LandingCalc {
 			theIntegrator = new HighamHall54Integrator(
 					1e-10,
 					1,
-					1e-4,
-					1e-4
+					1e-6,
+					1e-6
 					);
 			ode = new DynamicsEquationsLanding();
 			
@@ -848,9 +848,9 @@ public class LandingCalc {
 				}
 			};
 
-			theIntegrator.addEventHandler(ehCheckObstacle, 1.0, 1e-2, 20);
-			theIntegrator.addEventHandler(ehCheckFlareAltitude, 1.0, 1e-6, 20);
-			theIntegrator.addEventHandler(ehCheckTouchDown, 1.0, 1e-6, 20);
+			theIntegrator.addEventHandler(ehCheckObstacle, 1.0, 1e-2, 50);
+			theIntegrator.addEventHandler(ehCheckFlareAltitude, 1.0, 1e-6, 50);
+			theIntegrator.addEventHandler(ehCheckTouchDown, 1.0, 1e-6, 50);
 			theIntegrator.addEventHandler(ehCheckStop, 1.0, 1e-6, 50);
 			theIntegrator.addEventHandler(ehCheckPositiveRateOfClimb, 1.0, 1e-2, 50);
 
@@ -1124,7 +1124,7 @@ public class LandingCalc {
 						newAlphaDotFlare = alphaDotFlare + 0.5;
 			}
 			else
-				newAlphaDotFlare = alphaDotFlare - 0.025;
+				newAlphaDotFlare = alphaDotFlare - 0.01;
 
 			if(Math.abs(altitudeAtFlareEnding.doubleValue(SI.METER) - 1e-2) < 1 
 					&& Math.abs(rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE)) < Math.abs(targetRateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE))

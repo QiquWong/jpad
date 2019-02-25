@@ -302,9 +302,9 @@ public class ACPerformanceManager {
 	private Map<Double, Map<MissionPhasesEnum, List<Amount<Velocity>>>> _rateOfClimbMissionMap;
 	private Map<Double, Map<MissionPhasesEnum, List<Amount<Angle>>>> _climbAngleMissionMap;
 	private Map<Double, Map<MissionPhasesEnum, List<Amount<Power>>>> _fuelPowerMap;
-	private Map<Double, Map<MissionPhasesEnum, List<Amount<Power>>>> _batteryPowerMap;
+	private Map<Double, Map<MissionPhasesEnum, List<Amount<Power>>>> _alternativeSourcePowerMap;
 	private Map<Double, Map<MissionPhasesEnum, List<Amount<Energy>>>> _fuelEnergyMap;
-	private Map<Double, Map<MissionPhasesEnum, List<Amount<Energy>>>> _batteryEnergyMap;	
+	private Map<Double, Map<MissionPhasesEnum, List<Amount<Energy>>>> _alternativeSourceEnergyMap;	
 	
 	private Map<Double, Amount<Mass>> _initialFuelMassMap;
 	private Map<Double, Amount<Mass>> _totalFuelUsedMap;
@@ -315,9 +315,9 @@ public class ACPerformanceManager {
 	private Map<Double, Amount<Mass>> _endMissionMassMap;
 	private Map<Double, Amount<Length>> _totalMissionRangeMap;
 	private Map<Double, Amount<Power>> _totalFuelPowerMap;
-	private Map<Double, Amount<Power>> _totalBatteryPowerMap;
+	private Map<Double, Amount<Power>> _totalAlternativeSourcePowerMap;
 	private Map<Double, Amount<Energy>> _totalFuelEnergyMap;
-	private Map<Double, Amount<Energy>> _totalBatteryEnergyMap;
+	private Map<Double, Amount<Energy>> _totalAlternativeSourceEnergyMap;
 	
 	//..............................................................................
 	// Noise trajectories
@@ -537,9 +537,9 @@ public class ACPerformanceManager {
 		this._rateOfClimbMissionMap= new HashMap<>();
 		this._climbAngleMissionMap= new HashMap<>();
 		this._fuelPowerMap= new HashMap<>();
-		this._batteryPowerMap= new HashMap<>();
+		this._alternativeSourcePowerMap= new HashMap<>();
 		this._fuelEnergyMap= new HashMap<>();
-		this._batteryEnergyMap= new HashMap<>();
+		this._alternativeSourceEnergyMap= new HashMap<>();
 		
 		this._initialFuelMassMap= new HashMap<>();
 		this._totalFuelUsedMap= new HashMap<>();
@@ -550,9 +550,9 @@ public class ACPerformanceManager {
 		this._endMissionMassMap= new HashMap<>();
 		this._totalMissionRangeMap= new HashMap<>();
 		this._totalFuelPowerMap= new HashMap<>();
-		this._totalBatteryPowerMap= new HashMap<>();
+		this._totalAlternativeSourcePowerMap= new HashMap<>();
 		this._totalFuelEnergyMap= new HashMap<>();
-		this._totalBatteryEnergyMap= new HashMap<>();
+		this._totalAlternativeSourceEnergyMap= new HashMap<>();
 		
 		//..............................................................................
 		// Noise Trajectories
@@ -3999,10 +3999,10 @@ public class ACPerformanceManager {
         		dataListMissionProfile.add(new Object[] {"Block fuel","kg", _blockFuelMap.get(xcg).doubleValue(SI.KILOGRAM)});
         		dataListMissionProfile.add(new Object[] {"Total fuel used","kg", _totalFuelUsedMap.get(xcg).doubleValue(SI.KILOGRAM)});
         		dataListMissionProfile.add(new Object[] {"Fuel reserve","%", _thePerformanceInterface.getFuelReserve()*100});
-        		dataListMissionProfile.add(new Object[] {"Total fuel power","kW", _totalFuelPowerMap.get(xcg).doubleValue(SI.KILO(SI.WATT))});
-        		dataListMissionProfile.add(new Object[] {"Total battery power","kW", _totalBatteryPowerMap.get(xcg).doubleValue(SI.KILO(SI.WATT))});
+        		dataListMissionProfile.add(new Object[] {"Max thermic power requirement","kW", _totalFuelPowerMap.get(xcg).doubleValue(SI.KILO(SI.WATT))});
+        		dataListMissionProfile.add(new Object[] {"Max alternative source power requirement","kW", _totalAlternativeSourcePowerMap.get(xcg).doubleValue(SI.KILO(SI.WATT))});
         		dataListMissionProfile.add(new Object[] {"Total fuel energy","kWh", _totalFuelEnergyMap.get(xcg).doubleValue(MyUnits.KILOWATT_HOUR)});
-        		dataListMissionProfile.add(new Object[] {"Total battery energy","kWh", _totalBatteryEnergyMap.get(xcg).doubleValue(MyUnits.KILOWATT_HOUR)});
+        		dataListMissionProfile.add(new Object[] {"Total alternative source energy","kWh", _totalAlternativeSourceEnergyMap.get(xcg).doubleValue(MyUnits.KILOWATT_HOUR)});
         		dataListMissionProfile.add(new Object[] {"Design passengers number","", Integer.valueOf(_thePerformanceInterface.getTheAircraft().getCabinConfiguration().getDesignPassengerNumber()).doubleValue()});
         		dataListMissionProfile.add(new Object[] {"Passengers number for this mission","", Integer.valueOf(_theMissionProfileCalculatorMap.get(xcg).getDeisngPassengersNumber()).doubleValue()});
         		dataListMissionProfile.add(new Object[] {" "});
@@ -4018,10 +4018,10 @@ public class ACPerformanceManager {
         		dataListMissionProfile.add(new Object[] {"CO2 emissions","g", _emissionCO2Map.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(_emissionCO2Map.get(xcg).get(MissionPhasesEnum.TAKE_OFF).size()-1).doubleValue(SI.GRAM)});
         		dataListMissionProfile.add(new Object[] {"SOx emissions","g", _emissionSOxMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(_emissionSOxMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).size()-1).doubleValue(SI.GRAM)});
         		dataListMissionProfile.add(new Object[] {"H2O emissions","g", _emissionH2OMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(_emissionH2OMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).size()-1).doubleValue(SI.GRAM)});
-        		dataListMissionProfile.add(new Object[] {"Fuel Power","kW", _fuelPowerMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(_fuelPowerMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).size()-1).doubleValue(SI.KILO(SI.WATT))});
-        		dataListMissionProfile.add(new Object[] {"Battery Power","kW", _batteryPowerMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(_batteryPowerMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).size()-1).doubleValue(SI.KILO(SI.WATT))});
-        		dataListMissionProfile.add(new Object[] {"Fuel Energy","kWh", _fuelEnergyMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});        		
-        		dataListMissionProfile.add(new Object[] {"Battery Energy","kWh", _batteryEnergyMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(_batteryEnergyMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});
+        		dataListMissionProfile.add(new Object[] {"Max Thermic Power","kW", _fuelPowerMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble()});
+        		dataListMissionProfile.add(new Object[] {"Max Alternative Source Power","kW", _alternativeSourcePowerMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble()});
+        		dataListMissionProfile.add(new Object[] {"Thermic Energy","kWh", _fuelEnergyMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});        		
+        		dataListMissionProfile.add(new Object[] {"Alternative Source Energy","kWh", _alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(_alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});
         		dataListMissionProfile.add(new Object[] {" "});
         		dataListMissionProfile.add(new Object[] {"CLIMB overall data"});
         		dataListMissionProfile.add(new Object[] {"Range","nm", _rangeMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(_rangeMap.get(xcg).get(MissionPhasesEnum.CLIMB).size()-1).doubleValue(NonSI.NAUTICAL_MILE)});        		
@@ -4034,10 +4034,10 @@ public class ACPerformanceManager {
         		dataListMissionProfile.add(new Object[] {"CO2 emissions","g", _emissionCO2Map.get(xcg).get(MissionPhasesEnum.CLIMB).get(_emissionCO2Map.get(xcg).get(MissionPhasesEnum.CLIMB).size()-1).doubleValue(SI.GRAM)});
         		dataListMissionProfile.add(new Object[] {"SOx emissions","g", _emissionSOxMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(_emissionSOxMap.get(xcg).get(MissionPhasesEnum.CLIMB).size()-1).doubleValue(SI.GRAM)});
         		dataListMissionProfile.add(new Object[] {"H2O emissions","g", _emissionH2OMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(_emissionH2OMap.get(xcg).get(MissionPhasesEnum.CLIMB).size()-1).doubleValue(SI.GRAM)});
-        		dataListMissionProfile.add(new Object[] {"Fuel Power","kW", _fuelPowerMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(_fuelPowerMap.get(xcg).get(MissionPhasesEnum.CLIMB).size()-1).doubleValue(SI.KILO(SI.WATT))});
-        		dataListMissionProfile.add(new Object[] {"Battery Power","kW", _batteryPowerMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(_batteryPowerMap.get(xcg).get(MissionPhasesEnum.CLIMB).size()-1).doubleValue(SI.KILO(SI.WATT))});
-        		dataListMissionProfile.add(new Object[] {"Fuel Energy","kWh", _fuelEnergyMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.CLIMB).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});        		
-        		dataListMissionProfile.add(new Object[] {"Battery Energy","kWh", _batteryEnergyMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(_batteryEnergyMap.get(xcg).get(MissionPhasesEnum.CLIMB).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});
+        		dataListMissionProfile.add(new Object[] {"Max Thermic Power","kW", _fuelPowerMap.get(xcg).get(MissionPhasesEnum.CLIMB).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble()});
+        		dataListMissionProfile.add(new Object[] {"Max Alternative Source Power","kW", _alternativeSourcePowerMap.get(xcg).get(MissionPhasesEnum.CLIMB).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble()});
+        		dataListMissionProfile.add(new Object[] {"Thermic Energy","kWh", _fuelEnergyMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.CLIMB).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});        		
+        		dataListMissionProfile.add(new Object[] {"Alternative Source Energy","kWh", _alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(_alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.CLIMB).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});
         		dataListMissionProfile.add(new Object[] {" "});
         		dataListMissionProfile.add(new Object[] {"CRUISE overall data"});
         		dataListMissionProfile.add(new Object[] {"Range","nm", _rangeMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(_rangeMap.get(xcg).get(MissionPhasesEnum.CRUISE).size()-1).doubleValue(NonSI.NAUTICAL_MILE)});        		
@@ -4050,10 +4050,10 @@ public class ACPerformanceManager {
         		dataListMissionProfile.add(new Object[] {"CO2 emissions","g", _emissionCO2Map.get(xcg).get(MissionPhasesEnum.CRUISE).get(_emissionCO2Map.get(xcg).get(MissionPhasesEnum.CRUISE).size()-1).doubleValue(SI.GRAM)});
         		dataListMissionProfile.add(new Object[] {"SOx emissions","g", _emissionSOxMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(_emissionSOxMap.get(xcg).get(MissionPhasesEnum.CRUISE).size()-1).doubleValue(SI.GRAM)});
         		dataListMissionProfile.add(new Object[] {"H2O emissions","g", _emissionH2OMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(_emissionH2OMap.get(xcg).get(MissionPhasesEnum.CRUISE).size()-1).doubleValue(SI.GRAM)});
-        		dataListMissionProfile.add(new Object[] {"Fuel Power","kW", _fuelPowerMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(_fuelPowerMap.get(xcg).get(MissionPhasesEnum.CRUISE).size()-1).doubleValue(SI.KILO(SI.WATT))});
-        		dataListMissionProfile.add(new Object[] {"Battery Power","kW", _batteryPowerMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(_batteryPowerMap.get(xcg).get(MissionPhasesEnum.CRUISE).size()-1).doubleValue(SI.KILO(SI.WATT))});
-        		dataListMissionProfile.add(new Object[] {"Fuel Energy","kWh", _fuelEnergyMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.CRUISE).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});        		
-        		dataListMissionProfile.add(new Object[] {"Battery Energy","kWh", _batteryEnergyMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(_batteryEnergyMap.get(xcg).get(MissionPhasesEnum.CRUISE).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});
+        		dataListMissionProfile.add(new Object[] {"Max Thermic Power","kW", _fuelPowerMap.get(xcg).get(MissionPhasesEnum.CRUISE).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble()});
+        		dataListMissionProfile.add(new Object[] {"Max Alternative Source Power","kW", _alternativeSourcePowerMap.get(xcg).get(MissionPhasesEnum.CRUISE).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble()});
+        		dataListMissionProfile.add(new Object[] {"Thermic Energy","kWh", _fuelEnergyMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.CRUISE).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});        		
+        		dataListMissionProfile.add(new Object[] {"Alternative Source Energy","kWh", _alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(_alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.CRUISE).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});
         		dataListMissionProfile.add(new Object[] {" "});
         		dataListMissionProfile.add(new Object[] {"FIRST DESCENT overall data"});
         		dataListMissionProfile.add(new Object[] {"Range","nm", _rangeMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(_rangeMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).size()-1).doubleValue(NonSI.NAUTICAL_MILE)});        		
@@ -4066,10 +4066,10 @@ public class ACPerformanceManager {
         		dataListMissionProfile.add(new Object[] {"CO2 emissions","g", _emissionCO2Map.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(_emissionCO2Map.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).size()-1).doubleValue(SI.GRAM)});
         		dataListMissionProfile.add(new Object[] {"SOx emissions","g", _emissionSOxMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(_emissionSOxMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).size()-1).doubleValue(SI.GRAM)});
         		dataListMissionProfile.add(new Object[] {"H2O emissions","g", _emissionH2OMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(_emissionH2OMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).size()-1).doubleValue(SI.GRAM)});
-        		dataListMissionProfile.add(new Object[] {"Fuel Power","kW", _fuelPowerMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(_fuelPowerMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).size()-1).doubleValue(SI.KILO(SI.WATT))});
-        		dataListMissionProfile.add(new Object[] {"Battery Power","kW", _batteryPowerMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(_batteryPowerMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).size()-1).doubleValue(SI.KILO(SI.WATT))});
-        		dataListMissionProfile.add(new Object[] {"Fuel Energy","kWh", _fuelEnergyMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});        		
-        		dataListMissionProfile.add(new Object[] {"Battery Energy","kWh", _batteryEnergyMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(_batteryEnergyMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});
+        		dataListMissionProfile.add(new Object[] {"Max Thermic Power","kW", _fuelPowerMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble()});
+        		dataListMissionProfile.add(new Object[] {"Max Alternative Source Power","kW", _alternativeSourcePowerMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble()});
+        		dataListMissionProfile.add(new Object[] {"Thermic Energy","kWh", _fuelEnergyMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});        		
+        		dataListMissionProfile.add(new Object[] {"Alternative Source Energy","kWh", _alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(_alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});
         		dataListMissionProfile.add(new Object[] {" "});
         		if(_thePerformanceInterface.getAlternateCruiseAltitude().doubleValue(SI.METER) != Amount.valueOf(15.24, SI.METER).getEstimatedValue()) {
         			dataListMissionProfile.add(new Object[] {"SECOND CLIMB overall data"});
@@ -4083,10 +4083,10 @@ public class ACPerformanceManager {
         			dataListMissionProfile.add(new Object[] {"CO2 emissions","g", _emissionCO2Map.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(_emissionCO2Map.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).size()-1).doubleValue(SI.GRAM)});
         			dataListMissionProfile.add(new Object[] {"SOx emissions","g", _emissionSOxMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(_emissionSOxMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).size()-1).doubleValue(SI.GRAM)});
         			dataListMissionProfile.add(new Object[] {"H2O emissions","g", _emissionH2OMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(_emissionH2OMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).size()-1).doubleValue(SI.GRAM)});
-        			dataListMissionProfile.add(new Object[] {"Fuel Power","kW", _fuelPowerMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(_fuelPowerMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).size()-1).doubleValue(SI.KILO(SI.WATT))});
-        			dataListMissionProfile.add(new Object[] {"Battery Power","kW", _batteryPowerMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(_batteryPowerMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).size()-1).doubleValue(SI.KILO(SI.WATT))});
-        			dataListMissionProfile.add(new Object[] {"Fuel Energy","kWh", _fuelEnergyMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});        		
-        			dataListMissionProfile.add(new Object[] {"Battery Energy","kWh", _batteryEnergyMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(_batteryEnergyMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});
+        			dataListMissionProfile.add(new Object[] {"Max Thermic Power","kW", _fuelPowerMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble()});
+        			dataListMissionProfile.add(new Object[] {"Max Alternative Source Power","kW", _alternativeSourcePowerMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble()});
+        			dataListMissionProfile.add(new Object[] {"Thermic Energy","kWh", _fuelEnergyMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});        		
+        			dataListMissionProfile.add(new Object[] {"AlternativeSource Energy","kWh", _alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(_alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});
         			dataListMissionProfile.add(new Object[] {" "});
         			dataListMissionProfile.add(new Object[] {"ALTERNATE CRUISE overall data"});
         			dataListMissionProfile.add(new Object[] {"Range","nm", _rangeMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(_rangeMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).size()-1).doubleValue(NonSI.NAUTICAL_MILE)});        		
@@ -4099,10 +4099,10 @@ public class ACPerformanceManager {
         			dataListMissionProfile.add(new Object[] {"CO2 emissions","g", _emissionCO2Map.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(_emissionCO2Map.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).size()-1).doubleValue(SI.GRAM)});
         			dataListMissionProfile.add(new Object[] {"SOx emissions","g", _emissionSOxMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(_emissionSOxMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).size()-1).doubleValue(SI.GRAM)});
         			dataListMissionProfile.add(new Object[] {"H2O emissions","g", _emissionH2OMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(_emissionH2OMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).size()-1).doubleValue(SI.GRAM)});
-        			dataListMissionProfile.add(new Object[] {"Fuel Power","kW", _fuelPowerMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(_fuelPowerMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).size()-1).doubleValue(SI.KILO(SI.WATT))});
-        			dataListMissionProfile.add(new Object[] {"Battery Power","kW", _batteryPowerMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(_batteryPowerMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).size()-1).doubleValue(SI.KILO(SI.WATT))});
-        			dataListMissionProfile.add(new Object[] {"Fuel Energy","kWh", _fuelEnergyMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});        		
-        			dataListMissionProfile.add(new Object[] {"Battery Energy","kWh", _batteryEnergyMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(_batteryEnergyMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});
+        			dataListMissionProfile.add(new Object[] {"Max Thermic Power","kW", _fuelPowerMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble()});
+        			dataListMissionProfile.add(new Object[] {"Max Alternative Source Power","kW", _alternativeSourcePowerMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble()});
+        			dataListMissionProfile.add(new Object[] {"Thermic Energy","kWh", _fuelEnergyMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});        		
+        			dataListMissionProfile.add(new Object[] {"AlternativeSource Energy","kWh", _alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(_alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});
         			dataListMissionProfile.add(new Object[] {" "});
         			dataListMissionProfile.add(new Object[] {"SECOND DESCENT overall data"});
         			dataListMissionProfile.add(new Object[] {"Range","nm", _rangeMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(_rangeMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).size()-1).doubleValue(NonSI.NAUTICAL_MILE)});        		
@@ -4115,10 +4115,10 @@ public class ACPerformanceManager {
         			dataListMissionProfile.add(new Object[] {"CO2 emissions","g", _emissionCO2Map.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(_emissionCO2Map.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).size()-1).doubleValue(SI.GRAM)});
         			dataListMissionProfile.add(new Object[] {"SOx emissions","g", _emissionSOxMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(_emissionSOxMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).size()-1).doubleValue(SI.GRAM)});
         			dataListMissionProfile.add(new Object[] {"H2O emissions","g", _emissionH2OMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(_emissionH2OMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).size()-1).doubleValue(SI.GRAM)});
-        			dataListMissionProfile.add(new Object[] {"Fuel Power","kW", _fuelPowerMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(_fuelPowerMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).size()-1).doubleValue(SI.KILO(SI.WATT))});
-        			dataListMissionProfile.add(new Object[] {"Battery Power","kW", _batteryPowerMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(_batteryPowerMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).size()-1).doubleValue(SI.KILO(SI.WATT))});
-        			dataListMissionProfile.add(new Object[] {"Fuel Energy","kWh", _fuelEnergyMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});        		
-        			dataListMissionProfile.add(new Object[] {"Battery Energy","kWh", _batteryEnergyMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(_batteryEnergyMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});
+        			dataListMissionProfile.add(new Object[] {"Max Thermic Power","kW", _fuelPowerMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble()});
+        			dataListMissionProfile.add(new Object[] {"Max Alternative Source Power","kW", _alternativeSourcePowerMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble()});
+        			dataListMissionProfile.add(new Object[] {"Thermic Energy","kWh", _fuelEnergyMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});        		
+        			dataListMissionProfile.add(new Object[] {"AlternativeSource Energy","kWh", _alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(_alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});
         			dataListMissionProfile.add(new Object[] {" "});
         		}
         		if(_thePerformanceInterface.getHoldingDuration().doubleValue(NonSI.MINUTE) != 0.0) {
@@ -4133,10 +4133,10 @@ public class ACPerformanceManager {
         			dataListMissionProfile.add(new Object[] {"CO2 emissions","g", _emissionCO2Map.get(xcg).get(MissionPhasesEnum.HOLDING).get(_emissionCO2Map.get(xcg).get(MissionPhasesEnum.HOLDING).size()-1).doubleValue(SI.GRAM)});
         			dataListMissionProfile.add(new Object[] {"SOx emissions","g", _emissionSOxMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(_emissionSOxMap.get(xcg).get(MissionPhasesEnum.HOLDING).size()-1).doubleValue(SI.GRAM)});
         			dataListMissionProfile.add(new Object[] {"H2O emissions","g", _emissionH2OMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(_emissionH2OMap.get(xcg).get(MissionPhasesEnum.HOLDING).size()-1).doubleValue(SI.GRAM)});
-        			dataListMissionProfile.add(new Object[] {"Fuel Power","kW", _fuelPowerMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(_fuelPowerMap.get(xcg).get(MissionPhasesEnum.HOLDING).size()-1).doubleValue(SI.KILO(SI.WATT))});
-        			dataListMissionProfile.add(new Object[] {"Battery Power","kW", _batteryPowerMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(_batteryPowerMap.get(xcg).get(MissionPhasesEnum.HOLDING).size()-1).doubleValue(SI.KILO(SI.WATT))});
-        			dataListMissionProfile.add(new Object[] {"Fuel Energy","kWh", _fuelEnergyMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.HOLDING).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});        		
-        			dataListMissionProfile.add(new Object[] {"Battery Energy","kWh", _batteryEnergyMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(_batteryEnergyMap.get(xcg).get(MissionPhasesEnum.HOLDING).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});
+        			dataListMissionProfile.add(new Object[] {"Max Thermic Power","kW", _fuelPowerMap.get(xcg).get(MissionPhasesEnum.HOLDING).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble()});
+        			dataListMissionProfile.add(new Object[] {"Max Alternative Source Power","kW", _alternativeSourcePowerMap.get(xcg).get(MissionPhasesEnum.HOLDING).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble()});
+        			dataListMissionProfile.add(new Object[] {"Thermic Energy","kWh", _fuelEnergyMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.HOLDING).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});        		
+        			dataListMissionProfile.add(new Object[] {"AlternativeSource Energy","kWh", _alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(_alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.HOLDING).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});
         			dataListMissionProfile.add(new Object[] {" "});
         		}
         		dataListMissionProfile.add(new Object[] {"APPROACH and LANDING overall data"});
@@ -4150,13 +4150,13 @@ public class ACPerformanceManager {
         		dataListMissionProfile.add(new Object[] {"CO2 emissions","g", _emissionCO2Map.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(_emissionCO2Map.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).size()-1).doubleValue(SI.GRAM)});
         		dataListMissionProfile.add(new Object[] {"SOx emissions","g", _emissionSOxMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(_emissionSOxMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).size()-1).doubleValue(SI.GRAM)});
         		dataListMissionProfile.add(new Object[] {"H2O emissions","g", _emissionH2OMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(_emissionH2OMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).size()-1).doubleValue(SI.GRAM)});
-        		dataListMissionProfile.add(new Object[] {"Fuel Power","kW", _fuelPowerMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(_fuelPowerMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).size()-1).doubleValue(SI.KILO(SI.WATT))});
-        		dataListMissionProfile.add(new Object[] {"Battery Power","kW", _batteryPowerMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(_batteryPowerMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).size()-1).doubleValue(SI.KILO(SI.WATT))});
-        		dataListMissionProfile.add(new Object[] {"Fuel Energy","kWh", _fuelEnergyMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});        		
-        		dataListMissionProfile.add(new Object[] {"Battery Energy","kWh", _batteryEnergyMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(_batteryEnergyMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});
+        		dataListMissionProfile.add(new Object[] {"Max Thermic Power","kW", _fuelPowerMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble()});
+        		dataListMissionProfile.add(new Object[] {"Max Alternative Source Power","kW", _alternativeSourcePowerMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble()});
+        		dataListMissionProfile.add(new Object[] {"Thermic Energy","kWh", _fuelEnergyMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});        		
+        		dataListMissionProfile.add(new Object[] {"AlternativeSource Energy","kWh", _alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(_alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});
         		dataListMissionProfile.add(new Object[] {" "});
         		dataListMissionProfile.add(new Object[] {" "});
-        		dataListMissionProfile.add(new Object[] {"Phase","Time","Range","Altitude","Fuel","Mass","NOx","CO","HC","Soot","CO2","SOx","H2O","Speed TAS","Speed CAS","Mach","CL","CD","Efficiency","Drag","Total Thrust","Thermic Thrust", "Electric Thrust", "Fuel Flow", "SFC", "Rate of Climb", "Climb Gradient", "Climb Angle", "Fuel Power","Battery Power","Fuel Energy","Battery Energy"});
+        		dataListMissionProfile.add(new Object[] {"Phase","Time","Range","Altitude","Fuel","Mass","NOx","CO","HC","Soot","CO2","SOx","H2O","Speed TAS","Speed CAS","Mach","CL","CD","Efficiency","Drag","Total Thrust","Thermic Thrust", "Electric Thrust", "Fuel Flow", "SFC", "Rate of Climb", "Climb Gradient", "Climb Angle", "Thermic Power","Alternative Source Power","Thermic Energy","Alternative Source Energy"});
         		dataListMissionProfile.add(new Object[] {"","min","nm","ft","kg","kg","g","g","g","g","g","g","g","kts","kts","","","","","lbf","lbf","lbf", "lbf", "kg/min", "lb/lb*hr", "ft/min", "%", "deg", "kW","kW","kWh","kWh"});
         		for(int i=0; i<_timeMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).size(); i++) {
         			dataListMissionProfile.add(new Object[] {
@@ -4189,9 +4189,9 @@ public class ACPerformanceManager {
         					_climbAngleMissionMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(SI.RADIAN)*100,
         					_climbAngleMissionMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(NonSI.DEGREE_ANGLE),
         					_fuelPowerMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(SI.KILO(SI.WATT)),
-        					_batteryPowerMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(SI.KILO(SI.WATT)),
+        					_alternativeSourcePowerMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(SI.KILO(SI.WATT)),
         					_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
-        					_batteryEnergyMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
+        					_alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
         					});
         		}
         		dataListMissionProfile.add(new Object[] {" "});
@@ -4226,9 +4226,9 @@ public class ACPerformanceManager {
         					_climbAngleMissionMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(SI.RADIAN)*100,
         					_climbAngleMissionMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(NonSI.DEGREE_ANGLE),
         					_fuelPowerMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(SI.KILO(SI.WATT)),
-        					_batteryPowerMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(SI.KILO(SI.WATT)),
+        					_alternativeSourcePowerMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(SI.KILO(SI.WATT)),
         					_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
-        					_batteryEnergyMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
+        					_alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
         					});
         		}
         		dataListMissionProfile.add(new Object[] {" "});
@@ -4263,9 +4263,9 @@ public class ACPerformanceManager {
         					_climbAngleMissionMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(SI.RADIAN)*100,
         					_climbAngleMissionMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(NonSI.DEGREE_ANGLE),
         					_fuelPowerMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(SI.KILO(SI.WATT)),
-        					_batteryPowerMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(SI.KILO(SI.WATT)),
+        					_alternativeSourcePowerMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(SI.KILO(SI.WATT)),
         					_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
-        					_batteryEnergyMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
+        					_alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
         					});
         		}
         		dataListMissionProfile.add(new Object[] {" "});
@@ -4300,9 +4300,9 @@ public class ACPerformanceManager {
         					_climbAngleMissionMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(SI.RADIAN)*100,
         					_climbAngleMissionMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(NonSI.DEGREE_ANGLE),
         					_fuelPowerMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(SI.KILO(SI.WATT)),
-        					_batteryPowerMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(SI.KILO(SI.WATT)),
+        					_alternativeSourcePowerMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(SI.KILO(SI.WATT)),
         					_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
-        					_batteryEnergyMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
+        					_alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
         					});
         		}
         		dataListMissionProfile.add(new Object[] {" "});
@@ -4338,9 +4338,9 @@ public class ACPerformanceManager {
             					_climbAngleMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(SI.RADIAN)*100,
             					_climbAngleMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(NonSI.DEGREE_ANGLE),
             					_fuelPowerMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(SI.KILO(SI.WATT)),
-            					_batteryPowerMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(SI.KILO(SI.WATT)),
+            					_alternativeSourcePowerMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(SI.KILO(SI.WATT)),
             					_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
-            					_batteryEnergyMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
+            					_alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
             					});
             		}
         			dataListMissionProfile.add(new Object[] {" "});
@@ -4375,9 +4375,9 @@ public class ACPerformanceManager {
             					_climbAngleMissionMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(SI.RADIAN)*100,
             					_climbAngleMissionMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(NonSI.DEGREE_ANGLE),
             					_fuelPowerMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(SI.KILO(SI.WATT)),
-            					_batteryPowerMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(SI.KILO(SI.WATT)),
+            					_alternativeSourcePowerMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(SI.KILO(SI.WATT)),
             					_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
-            					_batteryEnergyMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
+            					_alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
             					});
             		}
         			dataListMissionProfile.add(new Object[] {" "});
@@ -4412,9 +4412,9 @@ public class ACPerformanceManager {
             					_climbAngleMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(SI.RADIAN)*100,
             					_climbAngleMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(NonSI.DEGREE_ANGLE),
             					_fuelPowerMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(SI.KILO(SI.WATT)),
-            					_batteryPowerMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(SI.KILO(SI.WATT)),
+            					_alternativeSourcePowerMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(SI.KILO(SI.WATT)),
             					_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
-            					_batteryEnergyMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
+            					_alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
             					});
             		}
         			dataListMissionProfile.add(new Object[] {" "});
@@ -4451,9 +4451,9 @@ public class ACPerformanceManager {
             					_climbAngleMissionMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(SI.RADIAN)*100,
             					_climbAngleMissionMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(NonSI.DEGREE_ANGLE),
             					_fuelPowerMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(SI.KILO(SI.WATT)),
-            					_batteryPowerMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(SI.KILO(SI.WATT)),
+            					_alternativeSourcePowerMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(SI.KILO(SI.WATT)),
             					_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
-            					_batteryEnergyMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
+            					_alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
             					});
             		}
         			dataListMissionProfile.add(new Object[] {" "});
@@ -4489,12 +4489,24 @@ public class ACPerformanceManager {
         					_climbAngleMissionMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(SI.RADIAN)*100,
         					_climbAngleMissionMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(NonSI.DEGREE_ANGLE),
         					_fuelPowerMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(SI.KILO(SI.WATT)),
-        					_batteryPowerMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(SI.KILO(SI.WATT)),
+        					_alternativeSourcePowerMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(SI.KILO(SI.WATT)),
         					_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
-        					_batteryEnergyMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
+        					_alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
         					});
         		}
 
+        		int indexOfPhaseDetailsHeaderStart = 164;
+        		if(_thePerformanceInterface.getAlternateCruiseAltitude().doubleValue(SI.METER) == Amount.valueOf(15.24, SI.METER).getEstimatedValue()) {
+        			indexOfPhaseDetailsHeaderStart = 164 
+        					- _timeMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).size()
+        					- _timeMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).size()
+        					- _timeMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).size();
+        		}
+        		if(_thePerformanceInterface.getHoldingDuration().doubleValue(NonSI.MINUTE) == 0.0) 
+        			indexOfPhaseDetailsHeaderStart = 164 - _timeMap.get(xcg).get(MissionPhasesEnum.HOLDING).size();
+        		
+        		int indexOfPhaseDetailsHeaderEnd = indexOfPhaseDetailsHeaderStart+2;
+        		
         		Row rowMissionProfile = sheetMissionProfile.createRow(0);
         		Object[] objArrMissionProfile = dataListMissionProfile.get(0);
         		int cellnumMissionProfile = 0;
@@ -4510,11 +4522,11 @@ public class ACPerformanceManager {
         			} else if (obj instanceof Double) {
         				cell.setCellValue((Double) obj);
         			}
-        			sheetMissionProfile.setDefaultColumnWidth(30);
+        			sheetMissionProfile.setDefaultColumnWidth(35);
         		}
 
         		int rownumMissionProfile = 1;
-        		for (int i = 1; i < 19; i++) {
+        		for (int i = 1; i < indexOfPhaseDetailsHeaderStart; i++) {
         			objArrMissionProfile = dataListMissionProfile.get(i);
         			rowMissionProfile = sheetMissionProfile.createRow(rownumMissionProfile++);
         			cellnumMissionProfile = 0;
@@ -4531,8 +4543,8 @@ public class ACPerformanceManager {
         				}
         			}
         		}
-        		int rownumMissionProfileDetailsHeader = 19;
-        		for (int i = 19; i < 21; i++) {
+        		int rownumMissionProfileDetailsHeader = indexOfPhaseDetailsHeaderStart;
+        		for (int i = indexOfPhaseDetailsHeaderStart; i < indexOfPhaseDetailsHeaderEnd; i++) {
         			objArrMissionProfile = dataListMissionProfile.get(i);
         			rowMissionProfile = sheetMissionProfile.createRow(rownumMissionProfileDetailsHeader++);
         			cellnumMissionProfile = 0;
@@ -4550,8 +4562,8 @@ public class ACPerformanceManager {
         				}
         			}
         		}
-        		int rownumMissionProfileDeatils = 21;
-        		for (int i = 21; i < dataListMissionProfile.size(); i++) {
+        		int rownumMissionProfileDeatils = indexOfPhaseDetailsHeaderEnd;
+        		for (int i = indexOfPhaseDetailsHeaderEnd; i < dataListMissionProfile.size(); i++) {
         			objArrMissionProfile = dataListMissionProfile.get(i);
         			rowMissionProfile = sheetMissionProfile.createRow(rownumMissionProfileDeatils++);
         			cellnumMissionProfile = 0;
@@ -8106,9 +8118,9 @@ public class ACPerformanceManager {
 			_rateOfClimbMissionMap.put(xcg, _theMissionProfileCalculatorMap.get(xcg).getRateOfClimbMissionMap());
 			_climbAngleMissionMap.put(xcg, _theMissionProfileCalculatorMap.get(xcg).getClimbAngleMissionMap());
 			_fuelPowerMap.put(xcg, _theMissionProfileCalculatorMap.get(xcg).getFuelPowerMap());
-			_batteryPowerMap.put(xcg, _theMissionProfileCalculatorMap.get(xcg).getBatteryPowerMap());
+			_alternativeSourcePowerMap.put(xcg, _theMissionProfileCalculatorMap.get(xcg).getAlternativeSourcePowerMap());
 			_fuelEnergyMap.put(xcg, _theMissionProfileCalculatorMap.get(xcg).getFuelEnergyMap());
-			_batteryEnergyMap.put(xcg, _theMissionProfileCalculatorMap.get(xcg).getBatteryEnergyMap());
+			_alternativeSourceEnergyMap.put(xcg, _theMissionProfileCalculatorMap.get(xcg).getAlternativeSourceEnergyMap());
 			
 			_initialFuelMassMap.put(xcg, _theMissionProfileCalculatorMap.get(xcg).getInitialFuelMass());
 			_totalFuelUsedMap.put(xcg, _theMissionProfileCalculatorMap.get(xcg).getTotalFuel());
@@ -8119,9 +8131,9 @@ public class ACPerformanceManager {
 			_endMissionMassMap.put(xcg, _theMissionProfileCalculatorMap.get(xcg).getEndMissionMass());
 			_totalMissionRangeMap.put(xcg, _theMissionProfileCalculatorMap.get(xcg).getTotalRange());
 			_totalFuelPowerMap.put(xcg, _theMissionProfileCalculatorMap.get(xcg).getTotalFuelPower());
-			_totalBatteryPowerMap.put(xcg, _theMissionProfileCalculatorMap.get(xcg).getTotalBatteryPower());
+			_totalAlternativeSourcePowerMap.put(xcg, _theMissionProfileCalculatorMap.get(xcg).getTotalAlternativeSourcePower());
 			_totalFuelEnergyMap.put(xcg, _theMissionProfileCalculatorMap.get(xcg).getTotalFuelEnergy());
-			_totalBatteryEnergyMap.put(xcg, _theMissionProfileCalculatorMap.get(xcg).getTotalBatteryEnergy());
+			_totalAlternativeSourceEnergyMap.put(xcg, _theMissionProfileCalculatorMap.get(xcg).getTotalAlternativeSourceEnergy());
 		}
 		
 		public void plotProfiles(String missionProfilesFolderPath, Double xcg) {
@@ -9405,12 +9417,12 @@ public class ACPerformanceManager {
 		this._totalFuelPowerMap = _totalFuelPowerMap;
 	}
 
-	public Map<Double, Amount<Power>> getTotalBatteryPowerMap() {
-		return _totalBatteryPowerMap;
+	public Map<Double, Amount<Power>> getTotalAlternativeSourcePowerMap() {
+		return _totalAlternativeSourcePowerMap;
 	}
 
-	public void setTotalBatteryPowerMap(Map<Double, Amount<Power>> _totalBatteryPowerMap) {
-		this._totalBatteryPowerMap = _totalBatteryPowerMap;
+	public void setTotalAlternativeSourcePowerMap(Map<Double, Amount<Power>> _totalAlternativeSourcePowerMap) {
+		this._totalAlternativeSourcePowerMap = _totalAlternativeSourcePowerMap;
 	}
 
 	public Map<Double, Amount<Energy>> getTotalFuelEnergyMap() {
@@ -9421,12 +9433,12 @@ public class ACPerformanceManager {
 		this._totalFuelEnergyMap = _totalFuelEnergyMap;
 	}
 
-	public Map<Double, Amount<Energy>> getTotalBatteryEnergyMap() {
-		return _totalBatteryEnergyMap;
+	public Map<Double, Amount<Energy>> getTotalAlternativeSourceEnergyMap() {
+		return _totalAlternativeSourceEnergyMap;
 	}
 
-	public void setTotalBatteryEnergyMap(Map<Double, Amount<Energy>> _totalBatteryEnergyMap) {
-		this._totalBatteryEnergyMap = _totalBatteryEnergyMap;
+	public void setTotalAlternativeSourceEnergyMap(Map<Double, Amount<Energy>> _totalAlternativeSourceEnergyMap) {
+		this._totalAlternativeSourceEnergyMap = _totalAlternativeSourceEnergyMap;
 	}
 
 	public Map<Double, Map<MissionPhasesEnum, List<Amount<Length>>>> getRangeMap() {
@@ -9649,12 +9661,12 @@ public class ACPerformanceManager {
 		this._fuelPowerMap = fuelPowerMap;
 	}
 
-	public Map<Double, Map<MissionPhasesEnum, List<Amount<Power>>>> getBatteryPowerMap() {
-		return _batteryPowerMap;
+	public Map<Double, Map<MissionPhasesEnum, List<Amount<Power>>>> getAlternativeSourcePowerMap() {
+		return _alternativeSourcePowerMap;
 	}
 
-	public void setBatteryPowerMap(Map<Double, Map<MissionPhasesEnum, List<Amount<Power>>>> batteryPowerMap) {
-		this._batteryPowerMap = batteryPowerMap;
+	public void setAlternativeSourcePowerMap(Map<Double, Map<MissionPhasesEnum, List<Amount<Power>>>> alternativeSourcePowerMap) {
+		this._alternativeSourcePowerMap = alternativeSourcePowerMap;
 	}
 
 	public Map<Double, Map<MissionPhasesEnum, List<Amount<Energy>>>> getFuelEnergyMap() {
@@ -9665,12 +9677,12 @@ public class ACPerformanceManager {
 		this._fuelEnergyMap = fuelEnergyMap;
 	}
 
-	public Map<Double, Map<MissionPhasesEnum, List<Amount<Energy>>>> getBatteryEnergyMap() {
-		return _batteryEnergyMap;
+	public Map<Double, Map<MissionPhasesEnum, List<Amount<Energy>>>> getAlternativeSourceEnergyMap() {
+		return _alternativeSourceEnergyMap;
 	}
 
-	public void setBatteryEnergyMap(Map<Double, Map<MissionPhasesEnum, List<Amount<Energy>>>> batteryEnergyMap) {
-		this._batteryEnergyMap = batteryEnergyMap;
+	public void setAlternativeSourceEnergyMap(Map<Double, Map<MissionPhasesEnum, List<Amount<Energy>>>> alternativeSourceEnergyMap) {
+		this._alternativeSourceEnergyMap = alternativeSourceEnergyMap;
 	}
 
 	public Map<Double, List<Amount<Mass>>> getPayloadArrayMassMap() {

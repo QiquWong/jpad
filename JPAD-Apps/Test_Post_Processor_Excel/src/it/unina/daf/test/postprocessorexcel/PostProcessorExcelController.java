@@ -59,7 +59,7 @@ public class PostProcessorExcelController {
 			}
 		});
 		System.setOut(filterStream);
-
+		
 		String pathToXML = PostProcessorExcelMain.getInputFilePathTextField().getText();
 		if(pathToAircraftXML.endsWith(".xml")) {
 			File inputFile = new File(pathToAircraftXML);

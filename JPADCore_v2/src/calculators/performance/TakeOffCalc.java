@@ -724,7 +724,7 @@ public class TakeOffCalc {
 				theIntegrator.addEventHandler(ehCheckVRot, 1.0, 1e-3, 20);
 				theIntegrator.addEventHandler(ehCheckFailure, 1.0, 1e-3, 20);
 				theIntegrator.addEventHandler(ehCheckBrakes, 1.0, 1e-3, 20);
-				theIntegrator.addEventHandler(ehCheckStop, 1.0, 1e-10, 50);
+				theIntegrator.addEventHandler(ehCheckStop, 1.0, 1e-15, 50);
 			}
 
 			// handle detailed info
