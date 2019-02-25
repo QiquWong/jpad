@@ -3368,7 +3368,7 @@
                                                                      <content>
                                                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="230.0" prefWidth="1070.0">
                                                                            <children>
-                                                                              <Label layoutX="5.0" layoutY="4.0" prefHeight="21.0" prefWidth="220.0" text="Template nacelle file:">
+                                                                              <Label layoutX="5.0" layoutY="4.0" prefHeight="21.0" prefWidth="220.0" text="Nacelle template file:">
                                                                                  <font>
                                                                                     <Font size="15.0" />
                                                                                  </font>
@@ -3382,7 +3382,7 @@
                                                                               </Label>
                                                                               <TextField id="textFieldSurfaceRoughness" fx:id="enginesCADBladePitchAngleTextField1" layoutX="5.0" layoutY="146.0" prefHeight="31.0" prefWidth="315.0" />
                                                                               <Button fx:id="enginesCADChooseNacelleTemplateFileButton1" layoutX="328.0" layoutY="28.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="44.0" text="..." />
-                                                                              <Label layoutX="5.0" layoutY="64.0" prefHeight="21.0" prefWidth="220.0" text="Template blade file:">
+                                                                              <Label layoutX="5.0" layoutY="64.0" prefHeight="21.0" prefWidth="220.0" text="Blade template file:">
                                                                                  <font>
                                                                                     <Font size="15.0" />
                                                                                  </font>

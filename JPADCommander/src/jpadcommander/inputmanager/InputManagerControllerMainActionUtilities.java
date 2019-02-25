@@ -5,8 +5,16 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+
+import javax.measure.quantity.Angle;
+import javax.measure.unit.NonSI;
+import javax.measure.unit.SI;
+
+import org.jscience.physics.amount.Amount;
 
 import aircraft.Aircraft;
 import aircraft.components.liftingSurface.creator.LiftingSurfacePanelCreator;
@@ -21,6 +29,7 @@ import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
 import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
 import it.unina.daf.jpadcad.CADManager;
 import it.unina.daf.jpadcad.ICADManager;
+import it.unina.daf.jpadcad.enums.EngineCADComponentsEnum;
 import it.unina.daf.jpadcad.enums.FileExtension;
 import it.unina.daf.jpadcad.enums.WingTipType;
 import it.unina.daf.jpadcad.enums.XSpacingType;
@@ -358,7 +367,6 @@ public class InputManagerControllerMainActionUtilities {
 		theController.getFuselageSideViewPane().getChildren().clear();
 		theController.getFuselageFrontViewPane().getChildren().clear();
 
-		
 	}
 	
 	private void cleanCabinConfigurationData() {
@@ -1091,6 +1099,21 @@ public class InputManagerControllerMainActionUtilities {
 		theController.getGenerateCanardCADCheckBox().setSelected(false);
 		theController.getCanardCADTipTypeChoiceBox().getSelectionModel().clearSelection();
 		
+		theController.getGenerateEnginesCADCheckBox().setSelected(false);
+		theController.getEnginesCADNacelleTemplateFileTextFieldList().forEach(tf -> tf.clear());
+		if (theController.getEnginesCADNacelleTemplateFileTextFieldList().size() > 1)
+			theController.getEnginesCADNacelleTemplateFileTextFieldList().subList(1, theController.getEnginesCADNacelleTemplateFileTextFieldList().size()).clear();		
+		theController.getEnginesCADBladeTemplateFileTextFieldList().forEach(tf -> tf.clear());
+		if (theController.getEnginesCADBladeTemplateFileTextFieldList().size() > 1)
+			theController.getEnginesCADBladeTemplateFileTextFieldList().subList(1, theController.getEnginesCADBladeTemplateFileTextFieldList().size()).clear();
+		theController.getEnginesCADBladePitchAngleTextFieldList().forEach(tf -> tf.clear());
+		if (theController.getEnginesCADBladePitchAngleTextFieldList().size() > 1) 
+			theController.getEnginesCADBladePitchAngleTextFieldList().subList(1, theController.getEnginesCADBladePitchAngleTextFieldList().size()).clear();
+		theController.getEnginesCADBladePitchAngleUnitList().forEach(cb -> cb.getSelectionModel().clearSelection());
+		if (theController.getEnginesCADBladePitchAngleUnitList().size() > 1)
+			theController.getEnginesCADBladePitchAngleUnitList().subList(1, theController.getEnginesCADBladePitchAngleUnitList().size()).clear();
+		theController.getTabPaneCAD3DViewEngines().getTabs().remove(1, theController.getTabPaneCAD3DViewEngines().getTabs().size());
+		
 		theController.getGenerateWingFairingCADCheckBox().setSelected(false);
 		theController.getWingFairingCADFrontLengthFactorTextField().clear();
 		theController.getWingFairingCADBackLengthFactorTextField().clear();
@@ -1695,6 +1718,10 @@ public class InputManagerControllerMainActionUtilities {
 				Main.getTheCADManager().getTheCADBuilderInterface().getGenerateCanard() :
 				theController.getGenerateCanardCADCheckBox().isSelected();
 				
+		boolean generateEngines = (theController.getGenerateEnginesCADCheckBox().isDisabled()) ?
+				Main.getTheCADManager().getTheCADBuilderInterface().getGenerateEngines() :
+				theController.getGenerateEnginesCADCheckBox().isSelected();
+				
 		boolean generateWingFairing = (theController.getGenerateWingFairingCADCheckBox().isDisabled()) ?
 				Main.getTheCADManager().getTheCADBuilderInterface().getGenerateWingFairing() :
 				theController.getGenerateWingFairingCADCheckBox().isSelected();
@@ -1821,6 +1848,35 @@ public class InputManagerControllerMainActionUtilities {
 												  theController.getCanardFairingCADFilletRadiusFactorTextField().getText().equals("")) ?
 			    Main.getTheCADManager().getTheCADBuilderInterface().getCanardFairingFilletRadiusFactor() :
                 Double.valueOf(theController.getCanardFairingCADFilletRadiusFactorTextField().getText());
+			    
+		List<Map<EngineCADComponentsEnum, String>> engineTemplatesFileMapList = new ArrayList<>();
+		List<Amount<Angle>> propellerBladeAngleList = new ArrayList<>();
+		for (int i = 0; i < theController.getTabPaneCAD3DViewEngines().getTabs().size(); i++) {
+			
+			String nacelleFile = (theController.getEnginesCADNacelleTemplateFileTextFieldList().get(i).isDisabled()) ? 
+					"" : theController.getEnginesCADNacelleTemplateFileTextFieldList().get(i).getText();
+			String bladeFile = (theController.getEnginesCADBladeTemplateFileTextFieldList().get(i).isDisabled()) ?
+					"" : theController.getEnginesCADBladeTemplateFileTextFieldList().get(i).getText();
+			
+			HashMap<EngineCADComponentsEnum, String> engineTemplatesFileMap = new HashMap<>();
+			engineTemplatesFileMap.put(EngineCADComponentsEnum.NACELLE, nacelleFile);
+			engineTemplatesFileMap.put(EngineCADComponentsEnum.BLADE, bladeFile);
+			engineTemplatesFileMapList.add(engineTemplatesFileMap);
+			
+			// TODO: check on pitch angles!
+			int bladeAngleUnitIndex = theController.getEnginesCADBladePitchAngleUnitList().get(i).getSelectionModel().getSelectedIndex();		
+			if (bladeAngleUnitIndex == 0) {
+				propellerBladeAngleList.add(Amount.valueOf(
+						Double.valueOf(theController.getEnginesCADBladePitchAngleTextFieldList().get(i).getText()), 
+						NonSI.DEGREE_ANGLE
+						));
+			} else {
+				propellerBladeAngleList.add(Amount.valueOf(
+						Double.valueOf(theController.getEnginesCADBladePitchAngleTextFieldList().get(i).getText()), 
+						SI.RADIAN
+						));
+			}			
+		}		
 		
 		// First update the CADManager with the updated values provided by the user
 		ICADManager cadManagerInterface = new ICADManager.Builder()
@@ -1842,6 +1898,9 @@ public class InputManagerControllerMainActionUtilities {
 				.setHTailTipType(hTailTipType)
 				.setVTailTipType(vTailTipType)
 				.setCanardTipType(canardTipType)
+				.setGenerateEngines(generateEngines)
+				.addAllEngineTemplatesList(engineTemplatesFileMapList)
+				.addAllPropellerBladePitchAngleList(propellerBladeAngleList)
 				.setWingFairingFrontLengthFactor(wingFairingFrontLengthFactor)
 				.setWingFairingBackLengthFactor(wingFairingBackLenghtFactor)
 				.setWingFairingWidthFactor(wingFairingWidthFactor)
