@@ -319,8 +319,7 @@ public class CADManager {
 		} else {
 			
 			generateEngines = false;
-		}
-		
+		}		
 		
 		//---------------------------------------------------------------
 		// WING-FUSELAGE FAIRING CAD OPERATIONS

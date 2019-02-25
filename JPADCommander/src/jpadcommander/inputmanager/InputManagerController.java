@@ -2033,9 +2033,8 @@ public class InputManagerController {
 			inputManagerControllerSecondaryActionUtilities.removeContentOnEngineTabClose(tabPaneAircraftEngines.getTabs().get(i));
 		
 		tabPaneCAD3DViewEngines.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
-//		for(int i=0; i<tabPaneCAD3DViewEngines.getTabs().size(); i++)
-			// TODO:
-			
+		for(int i=0; i<tabPaneCAD3DViewEngines.getTabs().size(); i++)
+			 inputManagerControllerSecondaryActionUtilities.removeContentOnCADEngineTabClose(tabPaneCAD3DViewEngines.getTabs().get(i));		
 		
 		//.......................................................................................
 		// CHOICE BOX INITIALIZATION
@@ -2069,6 +2068,7 @@ public class InputManagerController {
 		hTailCADTipTypeChoiceBox.setItems(liftingSurfaceTipTypesList);
 		vTailCADTipTypeChoiceBox.setItems(liftingSurfaceTipTypesList);
 		canardCADTipTypeChoiceBox.setItems(liftingSurfaceTipTypesList);
+		enginesCADBladePitchAngleUnitChoiceBox1.setItems(angleUnitsList);
 		
 		// Units 
 		fuselageXUnitChoiceBox.setItems(lengthUnitsList);
@@ -2862,6 +2862,26 @@ public class InputManagerController {
 		enginePistonNumberOfBladesTextFieldMap = new HashMap<>();
 		enginePistonPropellerEfficiencyTextFieldMap = new HashMap<>();
 		
+		//..................................................................
+		// CAD 3D VIEW LISTS INITIALIZATION
+		enginesCADNacelleTemplateFileTextFieldList = new ArrayList<>();
+		enginesCADNacelleTemplateFileTextFieldList.add(enginesCADNacelleTemplateFileTextField1);
+		
+		enginesCADBladeTemplateFileTextFieldList = new ArrayList<>();
+		enginesCADBladeTemplateFileTextFieldList.add(enginesCADBladeTemplateFileTextField1);
+		
+		enginesCADBladePitchAngleTextFieldList = new ArrayList<>();
+		enginesCADBladePitchAngleTextFieldList.add(enginesCADBladePitchAngleTextField1);
+		
+		enginesCADChooseNacelleTemplateFileButtonList = new ArrayList<>();
+		enginesCADChooseNacelleTemplateFileButtonList.add(enginesCADChooseNacelleTemplateFileButton1);
+		
+		enginesCADChooseBladeTemplateFileButtonList = new ArrayList<>();
+		enginesCADChooseBladeTemplateFileButtonList.add(enginesCADChooseBladeTemplateFileButton1);
+		
+		enginesCADBladePitchAngleUnitList = new ArrayList<>();
+		enginesCADBladePitchAngleUnitList.add(enginesCADBladePitchAngleUnitChoiceBox1);
+		
 		inputManagerControllerSecondaryActionUtilities.aircraftLoadButtonDisableCheck();
 		inputManagerControllerSecondaryActionUtilities.setChooseNacelleFileAction();
 		inputManagerControllerSecondaryActionUtilities.setChooseEngineFileAction();
@@ -2898,7 +2918,9 @@ public class InputManagerController {
 		inputManagerControllerSecondaryActionUtilities.setShowEngineDataAction(powerPlantJetRadioButton1, 0, EngineTypeEnum.TURBOFAN);
 		inputManagerControllerSecondaryActionUtilities.setShowEngineDataAction(powerPlantTurbopropRadioButton1, 0, EngineTypeEnum.TURBOPROP);
 		inputManagerControllerSecondaryActionUtilities.setShowEngineDataAction(powerPlantPistonRadioButton1, 0, EngineTypeEnum.PISTON);
-		inputManagerControllerSecondaryActionUtilities.cadConfigurationLoadButtonDisableCheck();	
+		inputManagerControllerSecondaryActionUtilities.cadConfigurationLoadButtonDisableCheck();
+		inputManagerControllerSecondaryActionUtilities.setChooseCADEngineNacelleFileAction();
+		inputManagerControllerSecondaryActionUtilities.setChooseCADEngineBladeFileAction();
 	}
 	
 	@FXML
@@ -2938,8 +2960,6 @@ public class InputManagerController {
 		newEngineWaring.show();
 		
 	}
-	
-
 	
 	@FXML
 	private void addAircraftNacelle() throws IOException {
@@ -3278,6 +3298,7 @@ public class InputManagerController {
 		panelInnerSectionAirfoilDetailsButton.setPrefHeight(31);
 		panelInnerSectionAirfoilDetailsButton.setFont(Font.font("System", FontWeight.BOLD, 12));
 		panelInnerSectionAirfoilDetailsButton.setOnAction(new EventHandler<ActionEvent>() {
+			
 			@Override
 			public void handle(ActionEvent event) {
 				
@@ -5610,12 +5631,8 @@ public class InputManagerController {
 		newNacelleWaring.setScene(scene);
 		newNacelleWaring.sizeToScene();
 		newNacelleWaring.show();
-		
-		
-		
+			
 	}
-	
-
 	
 	@FXML
 	private void addEngine() throws IOException {
@@ -5652,12 +5669,8 @@ public class InputManagerController {
 		newEngineWaring.setScene(scene);
 		newEngineWaring.sizeToScene();
 		newEngineWaring.show();
-		
-		
-		
+			
 	}
-	
-
 	
 	@FXML
 	public void showTurbojetTurboFanDataRadioButton (int indexOfEngineTab) {
@@ -5686,9 +5699,7 @@ public class InputManagerController {
 					);
 		
 	}
-	
-
-	
+		
 	@FXML
 	public void showPistonDataRadioButton (int indexOfEngineTab) {
 		
@@ -5977,10 +5988,7 @@ public class InputManagerController {
 			
 		default:
 			break;
-		}
-		
-		
-		
+		}	
 	}
 	
 	@FXML
@@ -5998,9 +6006,7 @@ public class InputManagerController {
 		if (file != null) {
 			panelInnerSectionAirfoilPathTextField.setText(file.getAbsolutePath());
 		}
-		
-		
-		
+			
 	}
 	
 	@FXML
@@ -6015,9 +6021,7 @@ public class InputManagerController {
 		if (file != null) {
 			engineDatabasePathTextField.setText(Paths.get(file.getAbsolutePath()).getFileName().toString());
 		}
-		
-		
-		
+				
 	}
 	
 	@FXML
@@ -6034,8 +6038,6 @@ public class InputManagerController {
 			chooseAircraftFileButton.setStyle("");
 			loadAircraftButton.setStyle(buttonSuggestedActionStyle);
 		}
-		
-		
 		
 	}
 	
@@ -6058,6 +6060,7 @@ public class InputManagerController {
 			// get full path and populate the text box
 			textFieldAircraftCabinConfigurationFile.setText(file.getAbsolutePath());
 		}
+		
 	}
 	
 	@FXML
@@ -6079,9 +6082,7 @@ public class InputManagerController {
 			// get full path and populate the text box
 			textFieldAircraftFuselageFile.setText(file.getAbsolutePath());
 		}
-		
-		
-		
+			
 	}
 	
 	@FXML
@@ -6103,9 +6104,7 @@ public class InputManagerController {
 			// get full path and populate the text box
 			textFieldAircraftWingFile.setText(file.getAbsolutePath());
 		}
-		
-		
-		
+				
 	}
 	
 	@FXML
@@ -6127,9 +6126,7 @@ public class InputManagerController {
 			// get full path and populate the text box
 			textFieldAircraftHTailFile.setText(file.getAbsolutePath());
 		}
-		
-		
-		
+			
 	}
 	
 	@FXML
@@ -6151,9 +6148,7 @@ public class InputManagerController {
 			// get full path and populate the text box
 			textFieldAircraftVTailFile.setText(file.getAbsolutePath());
 		}
-		
-		
-		
+			
 	}
 	
 	@FXML
@@ -6214,6 +6209,7 @@ public class InputManagerController {
 			
 			loadCADConfigurationFileButton.setStyle(buttonSuggestedActionStyle);
 		}		
+		
 	}
 	
 	@FXML
