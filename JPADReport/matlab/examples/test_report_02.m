@@ -9,4 +9,4 @@ reportData.author = 'agodemar';
 reportData.wingSpan = 13.5;
 
 %% Create a report object
-rpt = makeReport02('test_report_02', 'html', reportData);
+rpt = makeReport02('test_report_02', 'pdf', reportData);

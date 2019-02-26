@@ -4,5 +4,9 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JPADConfigs"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JPADCore_v2"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/args4j/args4j-2.0.21.jar"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/jscience-4.3/jscience.jar" sourcepath="/LIBRARY_FOLDER"/>
+	<classpathentry kind="var" path="MATLAB_RUNTIME_ROOT/toolbox/javabuilder/jar/javabuilder.jar"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/matlab_report/MReportUtils.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

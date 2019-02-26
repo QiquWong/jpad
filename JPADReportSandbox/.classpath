@@ -3,5 +3,7 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JPADReport"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/JPADConfigs"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/JPADCore_v2"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
