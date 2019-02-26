@@ -80,8 +80,8 @@
 	
 	<performance
 			file="analysis_performance_IRON_CANARD_LOOP2_FINAL_no_riblets.xml"
-			plot="FALSE"
-			create_CSV="FALSE"
+			plot="TRUE"
+			create_CSV="TRUE"
 			take_off="FALSE"
 			climb="FALSE"
 			cruise="FALSE"

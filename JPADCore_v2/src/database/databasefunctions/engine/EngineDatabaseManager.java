@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import javax.measure.quantity.Length;
@@ -67,7 +68,7 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 			System.exit(1);
 		}
 
-		Map<String, List<List<String>>> dataMap = new HashMap<>(); 
+		Map<String, List<List<String>>> dataMap = new TreeMap<>(); 
 		DataFormatter dataFormatter = new DataFormatter();
 		try {
 			Workbook workbook = WorkbookFactory.create(engineDatabaseFile);
@@ -82,11 +83,19 @@ public class EngineDatabaseManager extends EngineDatabaseReader {
 			for (int i = 1; i < workbook.getNumberOfSheets(); i++) {
 				List<List<String>> sheetData = new ArrayList<>();
 				workbook.getSheetAt(i).forEach(row -> {
-					List<String> sheetRowData = new ArrayList<>();
-					row.forEach(cell -> {
-						sheetRowData.add(dataFormatter.formatCellValue(cell));
-					});
-					sheetData.add(sheetRowData.stream().collect(Collectors.toList()));
+					if(row != null) {
+						List<String> sheetRowData = new ArrayList<>();
+						for(int k=0; k<row.getLastCellNum(); k++) {
+							if(row.getCell(k) != null)
+								if(!row.getCell(k).toString().isEmpty())
+									sheetRowData.add(row.getCell(k).toString());
+								else
+									sheetRowData.add("");
+							else
+								sheetRowData.add("");
+						}
+						sheetData.add(sheetRowData.stream().collect(Collectors.toList()));
+					}
 				});
 				for(int j=0; j<sheetData.size(); j++) {
 					List<Boolean> isRemove = new ArrayList<>();
