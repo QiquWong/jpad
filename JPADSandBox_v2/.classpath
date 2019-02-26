@@ -127,6 +127,5 @@
 	<classpathentry kind="var" path="LIBRARY_FOLDER/jcommon/jcommon-1.0.20.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/jMetal/JMetal-4.3.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/jfreechart/jfreechart-1.5.0.jar"/>
-	<classpathentry kind="var" path="MATLAB_RUNTIME/toolbox/javabuilder/jar/javabuilder.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

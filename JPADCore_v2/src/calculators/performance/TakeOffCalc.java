@@ -1234,7 +1234,7 @@ public class TakeOffCalc {
 		}
 		
 		if(vFailure == null)
-			manageOutputData(0.75, continuousOutputModel);
+			manageOutputData(0.1, continuousOutputModel);
 		
 		
 		System.out.println("\n---------------------------END!!-------------------------------");

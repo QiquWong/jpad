@@ -91,11 +91,6 @@ public class TakeOffNoiseTrajectoryCalc {
 	private Amount<Velocity> vSTakeOff, vRot, vLO, vWind, v1, v2, vClimb;
 	private Amount<Length> wingToGroundDistance, obstacle, xEndSimulation, cutbackAltitude;
 	private Amount<Angle> alphaGround, fuselageUpsweepAngle;
-	private List<Amount<Angle>> alpha;
-	private List<Amount<Duration>> time;
-	private List<Amount<Acceleration>> acceleration;
-	private List<Amount<Force>> weight;
-	private List<Double> loadFactor, cL, cD, timeBreakPoints;
 	private double kAlphaDot, kcLMax, kRot, phi, cLmaxTO, alphaDotInitial, deltaCD0LandingGear, deltaCD0OEI, 
 	alphaRed, cL0, thrustCorrectionFactor, sfcCorrectionFactor;
 	private Double phiCutback;
@@ -108,7 +103,19 @@ public class TakeOffNoiseTrajectoryCalc {
 	private FirstOrderIntegrator theIntegrator;
 	private FirstOrderDifferentialEquations ode;
 
-	//OUTPUTS MAPS:
+	// STEP HANDLERS LISTS
+	private List<Amount<Velocity>> speedPerStep, rateOfClimbPerStep;
+	private List<Amount<Force>> thrustPerStep, thrustHorizontalPerStep, thrustVerticalPerStep,
+	liftPerStep, dragPerStep, totalForcePerStep, frictionPerStep;
+	private List<Amount<Angle>> alphaPerStep, gammaPerStep, thetaPerStep;
+	private List<Double> alphaDotPerStep, gammaDotPerStep, cLPerStep, loadFactorPerStep, cDPerStep, timeBreakPoints;
+	private List<Amount<Acceleration>> accelerationPerStep;
+	private List<Amount<Length>> groundDistancePerStep, verticalDistancePerStep;
+	private List<Amount<Duration>> timePerStep;
+	private List<Amount<Mass>> fuelUsedPerStep;
+	private List<Amount<Force>> weightPerStep;
+	
+	// OUTPUTS MAPS:
 	private Map<Double, List<Amount<Velocity>>> speedMap, rateOfClimbMap;
 	private Map<Double, List<Amount<Force>>> thrustMap, thrustHorizontalMap, thrustVerticalMap,
 	liftMap, dragMap, totalForceMap, frictionMap;
@@ -218,15 +225,34 @@ public class TakeOffNoiseTrajectoryCalc {
 		System.out.println("-----------------------------------------------------------\n");
 
 		// List initialization
-		this.time = new ArrayList<Amount<Duration>>();
-		this.alpha = new ArrayList<Amount<Angle>>();
-		this.acceleration = new ArrayList<Amount<Acceleration>>();
-		this.loadFactor = new ArrayList<Double>();
-		this.cL = new ArrayList<Double>();
-		this.cD = new ArrayList<Double>();
-		this.weight = new ArrayList<Amount<Force>>();
-		this.timeBreakPoints = new ArrayList<Double>();
-
+		this.speedPerStep = new ArrayList<>();
+		this.rateOfClimbPerStep = new ArrayList<>();
+		this.thrustPerStep = new ArrayList<>();
+		this.thrustHorizontalPerStep = new ArrayList<>();
+		this.thrustVerticalPerStep = new ArrayList<>();
+		this.liftPerStep = new ArrayList<>();
+		this.dragPerStep = new ArrayList<>();
+		this.totalForcePerStep = new ArrayList<>();
+		this.frictionPerStep = new ArrayList<>();
+		this.alphaPerStep = new ArrayList<>();
+		this.gammaPerStep = new ArrayList<>();
+		this.thetaPerStep = new ArrayList<>();
+		this.alphaDotPerStep = new ArrayList<>();
+		this.gammaDotPerStep = new ArrayList<>();
+		this.thetaPerStep = new ArrayList<>();
+		this.alphaDotPerStep = new ArrayList<>();
+		this.gammaDotPerStep = new ArrayList<>();
+		this.cLPerStep = new ArrayList<>();
+		this.loadFactorPerStep = new ArrayList<>();
+		this.cDPerStep = new ArrayList<>();
+		this.accelerationPerStep = new ArrayList<>();
+		this.groundDistancePerStep = new ArrayList<>();
+		this.verticalDistancePerStep = new ArrayList<>();
+		this.timePerStep = new ArrayList<>();
+		this.fuelUsedPerStep = new ArrayList<>();
+		this.weightPerStep = new ArrayList<>();
+		this.timeBreakPoints = new ArrayList<>();
+		
 		// Output maps initialization
 		this.timeMap = new HashMap<>();
 		this.speedMap = new HashMap<>();
@@ -276,13 +302,32 @@ public class TakeOffNoiseTrajectoryCalc {
 	public void initialize() {
 
 		// lists cleaning
-		time.clear();
-		alpha.clear();
-		acceleration.clear();
-		loadFactor.clear();
-		cL.clear();
-		cD.clear();
-		weight.clear();
+		speedPerStep.clear();
+		rateOfClimbPerStep.clear();
+		thrustPerStep.clear();
+		thrustHorizontalPerStep.clear();
+		thrustVerticalPerStep.clear();
+		liftPerStep.clear();
+		dragPerStep.clear();
+		totalForcePerStep.clear();
+		frictionPerStep.clear();
+		alphaPerStep.clear();
+		gammaPerStep.clear();
+		thetaPerStep.clear();
+		alphaDotPerStep.clear();
+		gammaDotPerStep.clear();
+		thetaPerStep.clear();
+		alphaDotPerStep.clear();
+		gammaDotPerStep.clear();
+		cLPerStep.clear();
+		loadFactorPerStep.clear();
+		cDPerStep.clear();
+		accelerationPerStep.clear();
+		groundDistancePerStep.clear();
+		verticalDistancePerStep.clear();
+		timePerStep.clear();
+		fuelUsedPerStep.clear();
+		weightPerStep.clear();
 		timeBreakPoints.clear();
 
 		tHold = Amount.valueOf(10000.0, SI.SECOND); // initialization to an impossible time
@@ -938,60 +983,236 @@ public class TakeOffNoiseTrajectoryCalc {
 					// PICKING UP ALL VARIABLES AT EVERY STEP (RECOGNIZING IF THE TAKE-OFF IS CONTINUED OR ABORTED)
 					//----------------------------------------------------------------------------------------
 					Amount<Duration> time = Amount.valueOf(t, SI.SECOND);
+					Amount<Length> groundDistance = Amount.valueOf(x[0], SI.METER);
+					Amount<Velocity> speed = Amount.valueOf(x[1], SI.METERS_PER_SECOND);
 					Amount<Angle> gamma = Amount.valueOf(x[2], NonSI.DEGREE_ANGLE);
 					Amount<Length> altitude = Amount.valueOf(x[3], SI.METER);
-					Amount<Velocity> speed = Amount.valueOf(x[1], SI.METERS_PER_SECOND);
 					Amount<Force> weight = Amount.valueOf( 
 							(maxTakeOffMass.doubleValue(SI.KILOGRAM) - x[4])*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
 							SI.NEWTON
 							);
 					Amount<Angle> alpha = ((DynamicsEquationsTakeOffNoiseTrajectory)ode).alpha(time, speed, altitude, deltaTemperature, gamma, weight);
 					
+					List<Amount<Force>> totalThrustList = ((DynamicsEquationsTakeOffNoiseTrajectory)ode).thrust(speed, time, gamma, altitude, deltaTemperature);
+					List<Amount<Force>> totalThrustListHorizontal = new ArrayList<>();
+					List<Amount<Force>> totalThrustListVertical = new ArrayList<>();
+					for(int j=0; j<totalThrustList.size(); j++) 
+						totalThrustListHorizontal.add(totalThrustList.get(j).times(Math.cos(thePowerPlant.getEngineList().get(j).getTiltingAngle().doubleValue(SI.RADIAN))));
+					for(int j=0; j<totalThrustList.size(); j++) 
+						totalThrustListVertical.add(totalThrustList.get(j).times(Math.sin(thePowerPlant.getEngineList().get(j).getTiltingAngle().doubleValue(SI.RADIAN))));
+					
 					//----------------------------------------------------------------------------------------
 					// TIME:
-					TakeOffNoiseTrajectoryCalc.this.getTime().add(time);
+					TakeOffNoiseTrajectoryCalc.this.timePerStep.add(time);
 					//----------------------------------------------------------------------------------------
-					// ALPHA:
-					TakeOffNoiseTrajectoryCalc.this.getAlpha().add(alpha);
+					// GROUND DISTANCE:
+					TakeOffNoiseTrajectoryCalc.this.groundDistancePerStep.add(groundDistance);
 					//----------------------------------------------------------------------------------------
-					// LOAD FACTOR:
-					TakeOffNoiseTrajectoryCalc.this.getLoadFactor().add(
-							(  ((DynamicsEquationsTakeOffNoiseTrajectory)ode).lift(speed, alpha, gamma, altitude, deltaTemperature).doubleValue(SI.NEWTON)
-									+ (  ((DynamicsEquationsTakeOffNoiseTrajectory)ode).thrust(speed, time, gamma, altitude, deltaTemperature)
-											.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
-											*Math.sin(alpha.doubleValue(SI.RADIAN))
+					// VERTICAL DISTANCE:
+					TakeOffNoiseTrajectoryCalc.this.verticalDistancePerStep.add(altitude);
+					//----------------------------------------------------------------------------------------
+					// THRUST:
+					TakeOffNoiseTrajectoryCalc.this.thrustPerStep.add(
+							Amount.valueOf(
+							totalThrustList.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum(),
+							SI.NEWTON)
+							);
+					//--------------------------------------------------------------------------------
+					// FUEL USED (kg):
+					TakeOffNoiseTrajectoryCalc.this.fuelUsedPerStep.add(Amount.valueOf(x[4], SI.KILOGRAM));
+					//----------------------------------------------------------------------------------------
+					if(timeHistories) {
+						//----------------------------------------------------------------------------------------
+						// WEIGHT:
+						TakeOffNoiseTrajectoryCalc.this.weightPerStep.add(weight);
+						//----------------------------------------------------------------------------------------
+						// SPEED:
+						TakeOffNoiseTrajectoryCalc.this.speedPerStep.add(speed);
+						//----------------------------------------------------------------------------------------
+						// THRUST HORIZONTAL:
+						TakeOffNoiseTrajectoryCalc.this.thrustHorizontalPerStep.add(
+								Amount.valueOf(
+										totalThrustListHorizontal
+										.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
+										*Math.cos(alpha.doubleValue(SI.RADIAN)),
+										SI.NEWTON)
+								);
+						//----------------------------------------------------------------------------------------
+						// THRUST VERTICAL:
+						TakeOffNoiseTrajectoryCalc.this.thrustVerticalPerStep.add(
+								Amount.valueOf(
+										totalThrustListVertical
+										.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
+										*Math.sin(alpha.doubleValue(SI.RADIAN)),
+										SI.NEWTON)
+								);
+						//--------------------------------------------------------------------------------
+						// FRICTION:
+						if(time.doubleValue(SI.SECOND) < tEndRot.doubleValue(SI.SECOND))
+							TakeOffNoiseTrajectoryCalc.this.frictionPerStep.add(Amount.valueOf(
+									((DynamicsEquationsTakeOffNoiseTrajectory)ode).mu(speed)
+									*(weight.doubleValue(SI.NEWTON)
+											- ((DynamicsEquationsTakeOffNoiseTrajectory)ode).lift(
+													speed,
+													alpha,
+													gamma,
+													altitude,
+													deltaTemperature
+													).doubleValue(SI.NEWTON)
+											),
+									SI.NEWTON)
+									);
+						else
+							TakeOffNoiseTrajectoryCalc.this.frictionPerStep.add(Amount.valueOf(0.0, SI.NEWTON));
+						//----------------------------------------------------------------------------------------
+						// LIFT:
+						TakeOffNoiseTrajectoryCalc.this.liftPerStep.add( 
+								((DynamicsEquationsTakeOffNoiseTrajectory)ode).lift(
+										speed,
+										alpha,
+										gamma,
+										altitude,
+										deltaTemperature
+										)
+								);
+						//----------------------------------------------------------------------------------------
+						// DRAG:
+						TakeOffNoiseTrajectoryCalc.this.dragPerStep.add(
+								((DynamicsEquationsTakeOffNoiseTrajectory)ode).drag(
+										speed,
+										alpha,
+										gamma,
+										time,
+										altitude,
+										deltaTemperature
+										)
+								);
+						//----------------------------------------------------------------------------------------
+						// TOTAL FORCE:
+						TakeOffNoiseTrajectoryCalc.this.totalForcePerStep.add(
+								Amount.valueOf(
+										( totalThrustListHorizontal.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
+												*Math.cos(alpha.doubleValue(SI.RADIAN))
+												)
+										- ((DynamicsEquationsTakeOffNoiseTrajectory)ode).drag(
+												speed,
+												alpha,
+												gamma,
+												time,
+												altitude,
+												deltaTemperature
+												).doubleValue(SI.NEWTON)
+										- ( ((DynamicsEquationsTakeOffNoiseTrajectory)ode).mu(speed)
+												*(weight.doubleValue(SI.NEWTON)
+														- ((DynamicsEquationsTakeOffNoiseTrajectory)ode).lift(
+																speed,
+																alpha,
+																gamma,
+																altitude,
+																deltaTemperature
+																).doubleValue(SI.NEWTON)
+														)
+												)
+										- (weight.doubleValue(SI.NEWTON)
+												*Math.sin(gamma.doubleValue(SI.RADIAN))
+												),
+										SI.NEWTON
+										)
+								);
+						//----------------------------------------------------------------------------------------
+						// LOAD FACTOR:
+						TakeOffNoiseTrajectoryCalc.this.loadFactorPerStep.add(
+								(  ((DynamicsEquationsTakeOffNoiseTrajectory)ode).lift(speed, alpha, gamma, altitude, deltaTemperature).doubleValue(SI.NEWTON)
+										+ (  ((DynamicsEquationsTakeOffNoiseTrajectory)ode).thrust(speed, time, gamma, altitude, deltaTemperature)
+												.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
+												*Math.sin(alpha.doubleValue(SI.RADIAN))
+												)
+										)
+								/ ( weight.doubleValue(SI.NEWTON)*Math.cos(gamma.doubleValue(SI.RADIAN))	)
+								);
+						//----------------------------------------------------------------------------------------
+						// RATE OF CLIMB:
+						TakeOffNoiseTrajectoryCalc.this.rateOfClimbPerStep.add(Amount.valueOf(
+								xDot[3],
+								SI.METERS_PER_SECOND)
+								);
+						//----------------------------------------------------------------------------------------
+						// ACCELERATION:
+						TakeOffNoiseTrajectoryCalc.this.accelerationPerStep.add(
+								Amount.valueOf(xDot[1], SI.METERS_PER_SQUARE_SECOND)
+								);
+						//----------------------------------------------------------------------------------------
+						// ALPHA:
+						TakeOffNoiseTrajectoryCalc.this.alphaPerStep.add(alpha);
+						//----------------------------------------------------------------------------------------
+						// GAMMA:
+						TakeOffNoiseTrajectoryCalc.this.gammaPerStep.add(gamma);
+						//----------------------------------------------------------------------------------------
+						// ALPHA DOT:
+						if((time.doubleValue(SI.SECOND) > tRot.doubleValue(SI.SECOND)) 
+								&& (time.doubleValue(SI.SECOND) < tHold.doubleValue(SI.SECOND))) {
+							TakeOffNoiseTrajectoryCalc.this.alphaDotPerStep.add(
+									TakeOffNoiseTrajectoryCalc.this.getAlphaDotInitial()
+									*(1-(TakeOffNoiseTrajectoryCalc.this.getkAlphaDot()
+											*alpha.doubleValue(NonSI.DEGREE_ANGLE)
 											)
-									)
-							/ ( weight.doubleValue(SI.NEWTON)*Math.cos(gamma.doubleValue(SI.RADIAN))	)
-							);
-					//----------------------------------------------------------------------------------------
-					// CL:				
-					TakeOffNoiseTrajectoryCalc.this.getcL().add(
-							((DynamicsEquationsTakeOffNoiseTrajectory)ode).cL(alpha)
-							);
-					//----------------------------------------------------------------------------------------
-					// CD:				
-					TakeOffNoiseTrajectoryCalc.this.getcD().add(
-							((DynamicsEquationsTakeOffNoiseTrajectory)ode).cD(
-									((DynamicsEquationsTakeOffNoiseTrajectory)ode).cL(alpha),
-									time,
-									speed,
-									altitude)
-							);
-					//----------------------------------------------------------------------------------------
-					// ACCELERATION:
-					TakeOffNoiseTrajectoryCalc.this.getAcceleration().add(
-							Amount.valueOf(xDot[1], SI.METERS_PER_SQUARE_SECOND)
-							);
-					//----------------------------------------------------------------------------------------
-					// WEIGHT:
-					TakeOffNoiseTrajectoryCalc.this.getWeight().add(weight);
+											)
+									);
+						}
+						else if((time.doubleValue(SI.SECOND) > tEndHold.doubleValue(SI.SECOND))
+								&& (time.doubleValue(SI.SECOND) < tZeroAcceleration.doubleValue(SI.SECOND))) {
+							TakeOffNoiseTrajectoryCalc.this.alphaDotPerStep.add(alphaRed);
+						}
+						else if(time.doubleValue(SI.SECOND) > tZeroAcceleration.doubleValue(SI.SECOND)) {
+							double deltaAlpha = 
+									TakeOffNoiseTrajectoryCalc.this.alphaPerStep.get(
+											TakeOffNoiseTrajectoryCalc.this.alphaPerStep.size()-1
+											).doubleValue(NonSI.DEGREE_ANGLE)
+									- TakeOffNoiseTrajectoryCalc.this.alphaPerStep.get(
+											TakeOffNoiseTrajectoryCalc.this.alphaPerStep.size()-2
+											).doubleValue(NonSI.DEGREE_ANGLE);
+							double deltaTime = 
+									TakeOffNoiseTrajectoryCalc.this.timePerStep.get(
+											TakeOffNoiseTrajectoryCalc.this.timePerStep.size()-1
+											).doubleValue(SI.SECOND)
+									- TakeOffNoiseTrajectoryCalc.this.timePerStep.get(
+											TakeOffNoiseTrajectoryCalc.this.timePerStep.size()-2
+											).doubleValue(SI.SECOND);
+							TakeOffNoiseTrajectoryCalc.this.alphaDotPerStep.add(deltaAlpha/deltaTime);
+						}
+						else
+							TakeOffNoiseTrajectoryCalc.this.alphaDotPerStep.add(0.0);
+						//----------------------------------------------------------------------------------------
+						// GAMMA DOT:
+						TakeOffNoiseTrajectoryCalc.this.gammaDotPerStep.add(xDot[2]);
+						//----------------------------------------------------------------------------------------
+						// THETA:
+						TakeOffNoiseTrajectoryCalc.this.thetaPerStep.add(Amount.valueOf(
+								gamma.doubleValue(NonSI.DEGREE_ANGLE) + alpha.doubleValue(NonSI.DEGREE_ANGLE),
+								NonSI.DEGREE_ANGLE)
+								);
+						//----------------------------------------------------------------------------------------
+						// CL:				
+						TakeOffNoiseTrajectoryCalc.this.cLPerStep.add(
+								((DynamicsEquationsTakeOffNoiseTrajectory)ode).cL(alpha)
+								);
+						//----------------------------------------------------------------------------------------
+						// CD:
+						TakeOffNoiseTrajectoryCalc.this.cDPerStep.add(
+								((DynamicsEquationsTakeOffNoiseTrajectory)ode).cD(
+										((DynamicsEquationsTakeOffNoiseTrajectory)ode).cL(alpha),
+										time,
+										speed,
+										altitude)
+								);
 
+					}
+					
 					//========================================================================================
 					// CHECK ON LOAD FACTOR --> END ROTATION WHEN n=1
 					if((t > tRot.doubleValue(SI.SECOND)) && (tEndRot.doubleValue(SI.SECOND) == 10000.0) &&
-							(TakeOffNoiseTrajectoryCalc.this.getLoadFactor().get(TakeOffNoiseTrajectoryCalc.this.getLoadFactor().size()-1) > 1.0) &&
-							(TakeOffNoiseTrajectoryCalc.this.getLoadFactor().get(TakeOffNoiseTrajectoryCalc.this.getLoadFactor().size()-2) < 1.0)) {
+							(TakeOffNoiseTrajectoryCalc.this.getLoadFactorPerStep().get(TakeOffNoiseTrajectoryCalc.this.getLoadFactorPerStep().size()-1) > 1.0) &&
+							(TakeOffNoiseTrajectoryCalc.this.getLoadFactorPerStep().get(TakeOffNoiseTrajectoryCalc.this.getLoadFactorPerStep().size()-2) < 1.0)) {
 						System.out.println("\n\t\tEND OF ROTATION PHASE");
 						System.out.println(
 								"\n\tx[0] = s = " + x[0] + " m" +
@@ -1011,8 +1232,8 @@ public class TakeOffNoiseTrajectoryCalc {
 					//========================================================================================
 					// CHECK IF THE THRESHOLD CL IS REACHED --> FROM THIS POINT ON THE BAR IS LOCKED
 					if((t > tRot.doubleValue(SI.SECOND)) && (t <= tObstacle.doubleValue(SI.SECOND)) && 
-							(TakeOffNoiseTrajectoryCalc.this.getcL().get(TakeOffNoiseTrajectoryCalc.this.getcL().size()-1) - (kcLMax*cLmaxTO) >= 0.0) &&
-							((TakeOffNoiseTrajectoryCalc.this.getcL().get(TakeOffNoiseTrajectoryCalc.this.getcL().size()-2) - (kcLMax*cLmaxTO)) < 0.0)) {
+							(TakeOffNoiseTrajectoryCalc.this.getcLPerStep().get(TakeOffNoiseTrajectoryCalc.this.getcLPerStep().size()-1) - (kcLMax*cLmaxTO) >= 0.0) &&
+							((TakeOffNoiseTrajectoryCalc.this.getcLPerStep().get(TakeOffNoiseTrajectoryCalc.this.getcLPerStep().size()-2) - (kcLMax*cLmaxTO)) < 0.0)) {
 						System.out.println("\n\t\tBEGIN BAR HOLDING");
 						System.out.println(
 								"\n\tCL = " + ((DynamicsEquationsTakeOffNoiseTrajectory)ode).cL(alpha) + 
@@ -1028,8 +1249,8 @@ public class TakeOffNoiseTrajectoryCalc {
 					//========================================================================================
 					// CHECK ON LOAD FACTOR TO ENSTABLISH WHEN n=1 WHILE DECREASING ALPHA AND CL
 					if((t > tEndHold.doubleValue(SI.SECOND)) && (tClimb.doubleValue(SI.SECOND) == 10000.0) &&
-							(TakeOffNoiseTrajectoryCalc.this.getLoadFactor().get(TakeOffNoiseTrajectoryCalc.this.getLoadFactor().size()-1) < 1.0) &&
-							(TakeOffNoiseTrajectoryCalc.this.getLoadFactor().get(TakeOffNoiseTrajectoryCalc.this.getLoadFactor().size()-2) > 1.0) ) {
+							(TakeOffNoiseTrajectoryCalc.this.getLoadFactorPerStep().get(TakeOffNoiseTrajectoryCalc.this.getLoadFactorPerStep().size()-1) < 1.0) &&
+							(TakeOffNoiseTrajectoryCalc.this.getLoadFactorPerStep().get(TakeOffNoiseTrajectoryCalc.this.getLoadFactorPerStep().size()-2) > 1.0) ) {
 						System.out.println("\n\t\tLOAD FACTOR = 1 IN CLIMB");
 						System.out.println( 
 								"\n\tt = " + t + " s"
@@ -1043,8 +1264,8 @@ public class TakeOffNoiseTrajectoryCalc {
 					//========================================================================================
 					// CHECK ON ACCELERATION --> DEFINING THE ISTANT AT WHICH THE SPEED MUST BE KEPT CONSTANT 
 					if(t > tEndRot.doubleValue(SI.SECOND) && tZeroAcceleration.doubleValue(SI.SECOND) == 10000 &&
-							(TakeOffNoiseTrajectoryCalc.this.getAcceleration().get(TakeOffNoiseTrajectoryCalc.this.getAcceleration().size()-1).doubleValue(SI.METERS_PER_SQUARE_SECOND) < 0.0) &&
-							(TakeOffNoiseTrajectoryCalc.this.getAcceleration().get(TakeOffNoiseTrajectoryCalc.this.getAcceleration().size()-2).doubleValue(SI.METERS_PER_SQUARE_SECOND) > 0.0)
+							(TakeOffNoiseTrajectoryCalc.this.getAccelerationPerStep().get(TakeOffNoiseTrajectoryCalc.this.getAccelerationPerStep().size()-1).doubleValue(SI.METERS_PER_SQUARE_SECOND) < 0.0) &&
+							(TakeOffNoiseTrajectoryCalc.this.getAccelerationPerStep().get(TakeOffNoiseTrajectoryCalc.this.getAccelerationPerStep().size()-2).doubleValue(SI.METERS_PER_SQUARE_SECOND) > 0.0)
 							) {
 
 						System.out.println("\n\t\tZERO ACCELERATION REACHED ... ");
@@ -1065,7 +1286,6 @@ public class TakeOffNoiseTrajectoryCalc {
 						timeBreakPoints.add(t);
 
 					}
-
 
 				}
 			};
@@ -1155,63 +1375,145 @@ public class TakeOffNoiseTrajectoryCalc {
 	 */
 	public void manageOutputData(double dt, double phi, boolean timeHistories, StepHandler handler) {
 
-		List<Amount<Length>> groundDistanceList = new ArrayList<Amount<Length>>();
-		List<Amount<Length>> verticalDistanceList = new ArrayList<Amount<Length>>();
-
+		// temporary lists
+		List<Amount<Velocity>> speedList = new ArrayList<>();
+		List<Amount<Velocity>> rateOfClimbList = new ArrayList<>();
+		List<Amount<Force>> thrustList = new ArrayList<>();
+		List<Amount<Force>> thrustHorizontalList = new ArrayList<>();
+		List<Amount<Force>> thrustVerticalList = new ArrayList<>();
+		List<Amount<Force>> liftList = new ArrayList<>();
+		List<Amount<Force>> dragList = new ArrayList<>();
+		List<Amount<Force>> totalForceList = new ArrayList<>();
+		List<Amount<Force>> frictionList = new ArrayList<>();
+		List<Amount<Angle>> alphaList = new ArrayList<>();
+		List<Amount<Angle>> gammaList = new ArrayList<>();
+		List<Amount<Angle>> thetaList = new ArrayList<>();
+		List<Double> alphaDotList = new ArrayList<>();
+		List<Double> gammaDotList = new ArrayList<>();
+		List<Double> cLList = new ArrayList<>();
+		List<Double> loadFactorList = new ArrayList<>();
+		List<Double> cDList = new ArrayList<>();
+		List<Amount<Acceleration>> accelerationList = new ArrayList<>();
+		List<Amount<Length>> groundDistanceList = new ArrayList<>();
+		List<Amount<Length>> verticalDistanceList = new ArrayList<>();
+		List<Amount<Duration>> timeList = new ArrayList<>();
+		List<Amount<Mass>> fuelUsedList = new ArrayList<>();
+		List<Amount<Force>> weightList = new ArrayList<>();
+		
+		// step handler interpolating functions
+		MyInterpolatingFunction speedFunction = new MyInterpolatingFunction();
+		MyInterpolatingFunction rateOfClimbFunction = new MyInterpolatingFunction();
+		MyInterpolatingFunction thrustFunction = new MyInterpolatingFunction();
+		MyInterpolatingFunction thrustHorizontalFunction = new MyInterpolatingFunction();
+		MyInterpolatingFunction thrustVerticalFunction = new MyInterpolatingFunction();
+		MyInterpolatingFunction liftFunction = new MyInterpolatingFunction();
+		MyInterpolatingFunction dragFunction = new MyInterpolatingFunction();
+		MyInterpolatingFunction totalForceFunction = new MyInterpolatingFunction();
+		MyInterpolatingFunction frictionFunction = new MyInterpolatingFunction();
 		MyInterpolatingFunction alphaFunction = new MyInterpolatingFunction();
-		MyInterpolatingFunction loadFactorFunction = new MyInterpolatingFunction();
-		MyInterpolatingFunction accelerationFunction = new MyInterpolatingFunction();
+		MyInterpolatingFunction gammaFunction = new MyInterpolatingFunction();
+		MyInterpolatingFunction thetaFunction = new MyInterpolatingFunction();
+		MyInterpolatingFunction alphaDotFunction = new MyInterpolatingFunction();
+		MyInterpolatingFunction gammaDotFunction = new MyInterpolatingFunction();
 		MyInterpolatingFunction cLFunction = new MyInterpolatingFunction();
+		MyInterpolatingFunction loadFactorFunction = new MyInterpolatingFunction();
 		MyInterpolatingFunction cDFunction = new MyInterpolatingFunction();
+		MyInterpolatingFunction accelerationFunction = new MyInterpolatingFunction();
+		MyInterpolatingFunction groundDistanceFunction = new MyInterpolatingFunction();
+		MyInterpolatingFunction verticalDistanceFunction = new MyInterpolatingFunction();
+		MyInterpolatingFunction fuelUsedFunction = new MyInterpolatingFunction();
 		MyInterpolatingFunction weightFunction = new MyInterpolatingFunction();
-
-		List<Amount<Velocity>> speedList = new ArrayList<Amount<Velocity>>();
-		List<Amount<Force>> thrustList = new ArrayList<Amount<Force>>();
-		List<Amount<Force>> thrustHorizontalList = new ArrayList<Amount<Force>>();
-		List<Amount<Force>> thrustVerticalList = new ArrayList<Amount<Force>>();
-		List<Amount<Angle>> alphaList = new ArrayList<Amount<Angle>>();
-		List<Double> alphaDotList = new ArrayList<Double>();
-		List<Amount<Angle>> gammaList = new ArrayList<Amount<Angle>>();
-		List<Double> gammaDotList = new ArrayList<Double>();
-		List<Amount<Angle>> thetaList = new ArrayList<Amount<Angle>>();
-		List<Double> cLList = new ArrayList<Double>();
-		List<Amount<Force>> liftList = new ArrayList<Amount<Force>>();
-		List<Double> loadFactorList = new ArrayList<Double>();
-		List<Double> cDList = new ArrayList<Double>();
-		List<Amount<Force>> dragList = new ArrayList<Amount<Force>>();
-		List<Amount<Force>> frictionList = new ArrayList<Amount<Force>>();
-		List<Amount<Force>> totalForceList = new ArrayList<Amount<Force>>();
-		List<Amount<Acceleration>> accelerationList = new ArrayList<Amount<Acceleration>>();
-		List<Amount<Velocity>> rateOfClimbList = new ArrayList<Amount<Velocity>>();
-		List<Amount<Mass>> fuelUsedList = new ArrayList<Amount<Mass>>();
-		List<Amount<Force>> weightList = new ArrayList<Amount<Force>>();
-
+		
 		alphaFunction.interpolateLinear(
-				MyArrayUtils.convertListOfAmountTodoubleArray(this.time), 
-				MyArrayUtils.convertListOfAmountTodoubleArray(this.alpha)
+				MyArrayUtils.convertListOfAmountTodoubleArray(this.timePerStep), 
+				MyArrayUtils.convertListOfAmountTodoubleArray(this.alphaPerStep)
 				);
 
 		if(timeHistories) {
 
+			speedFunction.interpolateLinear(
+					MyArrayUtils.convertListOfAmountTodoubleArray(this.timePerStep), 
+					MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfAmountToDoubleArray(this.speedPerStep))
+					);
+			rateOfClimbFunction.interpolateLinear(
+					MyArrayUtils.convertListOfAmountTodoubleArray(this.timePerStep), 
+					MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfAmountToDoubleArray(this.rateOfClimbPerStep))
+					);
+			thrustFunction.interpolateLinear(
+					MyArrayUtils.convertListOfAmountTodoubleArray(this.timePerStep), 
+					MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfAmountToDoubleArray(this.thrustPerStep))
+					);
+			thrustHorizontalFunction.interpolateLinear(
+					MyArrayUtils.convertListOfAmountTodoubleArray(this.timePerStep), 
+					MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfAmountToDoubleArray(this.thrustHorizontalPerStep))
+					);
+			thrustVerticalFunction.interpolateLinear(
+					MyArrayUtils.convertListOfAmountTodoubleArray(this.timePerStep), 
+					MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfAmountToDoubleArray(this.thrustVerticalPerStep))
+					);
+			liftFunction.interpolateLinear(
+					MyArrayUtils.convertListOfAmountTodoubleArray(this.timePerStep), 
+					MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfAmountToDoubleArray(this.liftPerStep))
+					);
+			dragFunction.interpolateLinear(
+					MyArrayUtils.convertListOfAmountTodoubleArray(this.timePerStep), 
+					MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfAmountToDoubleArray(this.dragPerStep))
+					);
+			frictionFunction.interpolateLinear(
+					MyArrayUtils.convertListOfAmountTodoubleArray(this.timePerStep), 
+					MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfAmountToDoubleArray(this.frictionPerStep))
+					);
+			totalForceFunction.interpolateLinear(
+					MyArrayUtils.convertListOfAmountTodoubleArray(this.timePerStep), 
+					MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfAmountToDoubleArray(this.totalForcePerStep))
+					);
+			gammaFunction.interpolateLinear(
+					MyArrayUtils.convertListOfAmountTodoubleArray(this.timePerStep), 
+					MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfAmountToDoubleArray(this.gammaPerStep))
+					);
+			thetaFunction.interpolateLinear(
+					MyArrayUtils.convertListOfAmountTodoubleArray(this.timePerStep), 
+					MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfAmountToDoubleArray(this.thetaPerStep))
+					);
+			alphaDotFunction.interpolateLinear(
+					MyArrayUtils.convertListOfAmountTodoubleArray(this.timePerStep), 
+					MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(this.alphaDotPerStep))
+					);
+			gammaDotFunction.interpolateLinear(
+					MyArrayUtils.convertListOfAmountTodoubleArray(this.timePerStep), 
+					MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(this.gammaDotPerStep))
+					);
 			loadFactorFunction.interpolateLinear(
-					MyArrayUtils.convertListOfAmountTodoubleArray(this.time), 
-					MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(this.loadFactor))
+					MyArrayUtils.convertListOfAmountTodoubleArray(this.timePerStep), 
+					MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(this.loadFactorPerStep))
 					);
 			accelerationFunction.interpolateLinear(
-					MyArrayUtils.convertListOfAmountTodoubleArray(this.time), 
-					MyArrayUtils.convertListOfAmountTodoubleArray(this.acceleration)
+					MyArrayUtils.convertListOfAmountTodoubleArray(this.timePerStep), 
+					MyArrayUtils.convertListOfAmountTodoubleArray(this.accelerationPerStep)
 					);
 			cLFunction.interpolateLinear(
-					MyArrayUtils.convertListOfAmountTodoubleArray(this.time), 
-					MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(this.cL))
+					MyArrayUtils.convertListOfAmountTodoubleArray(this.timePerStep), 
+					MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(this.cLPerStep))
 					);
 			cDFunction.interpolateLinear(
-					MyArrayUtils.convertListOfAmountTodoubleArray(this.time), 
-					MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(this.cD))
+					MyArrayUtils.convertListOfAmountTodoubleArray(this.timePerStep), 
+					MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(this.cDPerStep))
 					);
 			weightFunction.interpolateLinear(
-					MyArrayUtils.convertListOfAmountTodoubleArray(this.time), 
-					MyArrayUtils.convertListOfAmountTodoubleArray(this.weight)
+					MyArrayUtils.convertListOfAmountTodoubleArray(this.timePerStep), 
+					MyArrayUtils.convertListOfAmountTodoubleArray(this.weightPerStep)
+					);
+			fuelUsedFunction.interpolateLinear(
+					MyArrayUtils.convertListOfAmountTodoubleArray(this.timePerStep), 
+					MyArrayUtils.convertListOfAmountTodoubleArray(this.fuelUsedPerStep)
+					);
+			groundDistanceFunction.interpolateLinear(
+					MyArrayUtils.convertListOfAmountTodoubleArray(this.timePerStep), 
+					MyArrayUtils.convertListOfAmountTodoubleArray(this.groundDistancePerStep)
+					);
+			verticalDistanceFunction.interpolateLinear(
+					MyArrayUtils.convertListOfAmountTodoubleArray(this.timePerStep), 
+					MyArrayUtils.convertListOfAmountTodoubleArray(this.verticalDistancePerStep)
 					);
 		}
 
@@ -1257,43 +1559,45 @@ public class TakeOffNoiseTrajectoryCalc {
 			// Reconstruct the auxiliary/derived variables
 			for(int i = 0; i < times.size(); i++) {
 
-				double[] x = states.get(i);
-				double[] xDot = stateDerivatives.get(i);
-				//========================================================================================
-				// PICKING UP ALL VARIABLES AT EVERY STEP (RECOGNIZING IF THE TAKE-OFF IS CONTINUED OR ABORTED)
-				//----------------------------------------------------------------------------------------
 				Amount<Duration> time = times.get(i);
-				Amount<Length> groundDistance = Amount.valueOf(x[0], SI.METER);
-				Amount<Velocity> speed = Amount.valueOf(x[1], SI.METERS_PER_SECOND);
-				Amount<Angle> gamma = Amount.valueOf(x[2], NonSI.DEGREE_ANGLE);
-				Amount<Length> altitude = Amount.valueOf(x[3], SI.METER);
-				
-				List<Amount<Force>> totalThrustList = ((DynamicsEquationsTakeOffNoiseTrajectory)ode).thrust(speed, time, gamma, altitude, deltaTemperature);
-				List<Amount<Force>> totalThrustListHorizontal = new ArrayList<>();
-				List<Amount<Force>> totalThrustListVertical = new ArrayList<>();
-				for(int j=0; j<totalThrustList.size(); j++) 
-					totalThrustListHorizontal.add(totalThrustList.get(j).times(Math.cos(thePowerPlant.getEngineList().get(j).getTiltingAngle().doubleValue(SI.RADIAN))));
-				for(int j=0; j<totalThrustList.size(); j++) 
-					totalThrustListVertical.add(totalThrustList.get(j).times(Math.sin(thePowerPlant.getEngineList().get(j).getTiltingAngle().doubleValue(SI.RADIAN))));
 				
 				//========================================================================================
 				// PICKING UP ALL DATA AT EVERY STEP (RECOGNIZING IF THE TAKE-OFF IS CONTINUED OR ABORTED)
 				//----------------------------------------------------------------------------------------
+				// TIME:
+				timeList.add(time);
+				//----------------------------------------------------------------------------------------
 				// GROUND DISTANCE:
-				groundDistanceList.add(groundDistance);
+				groundDistanceList.add(
+						Amount.valueOf(
+								groundDistanceFunction.value(time.doubleValue(SI.SECOND)),
+								SI.METER
+								)
+						);
 				//----------------------------------------------------------------------------------------
 				// VERTICAL DISTANCE:
-				verticalDistanceList.add(altitude);
+				verticalDistanceList.add(
+						Amount.valueOf(
+								verticalDistanceFunction.value(time.doubleValue(SI.SECOND)),
+								SI.METER
+								)
+						);
 				//----------------------------------------------------------------------------------------
 				// THRUST:
-				thrustList.add(Amount.valueOf(
-						((DynamicsEquationsTakeOffNoiseTrajectory)ode).thrust(speed, time, gamma, altitude, deltaTemperature)
-						.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum(),
-						SI.NEWTON)
+				thrustList.add(
+						Amount.valueOf(
+								thrustFunction.value(time.doubleValue(SI.SECOND)),
+								SI.NEWTON
+								)
 						);
 				//--------------------------------------------------------------------------------
 				// FUEL USED (kg):
-				fuelUsedList.add(Amount.valueOf(x[4], SI.KILOGRAM));
+				fuelUsedList.add(
+						Amount.valueOf(
+								fuelUsedFunction.value(time.doubleValue(SI.SECOND)),
+								SI.KILOGRAM
+								)
+						);
 				//----------------------------------------------------------------------------------------
 				if(timeHistories) {
 					//----------------------------------------------------------------------------------------
@@ -1306,106 +1610,57 @@ public class TakeOffNoiseTrajectoryCalc {
 							);
 					//----------------------------------------------------------------------------------------
 					// SPEED:
-					speedList.add(speed);
+					speedList.add(
+							Amount.valueOf(
+									speedFunction.value(time.doubleValue(SI.SECOND)),
+									SI.METERS_PER_SECOND
+									)
+							);
 					//----------------------------------------------------------------------------------------
 					// THRUST HORIZONTAL:
-					thrustHorizontalList.add(Amount.valueOf(
-							totalThrustListHorizontal
-							.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
-							*Math.cos(
-									Amount.valueOf(
-											alphaFunction.value(times.get(i).doubleValue(SI.SECOND)),
-											NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
-									),
-							SI.NEWTON)
+					thrustHorizontalList.add(
+							Amount.valueOf(
+									thrustHorizontalFunction.value(time.doubleValue(SI.SECOND)),
+									SI.NEWTON
+									)
 							);
 					//----------------------------------------------------------------------------------------
 					// THRUST VERTICAL:
-					thrustVerticalList.add(Amount.valueOf(
-							totalThrustListVertical
-							.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
-							*Math.sin(
-									Amount.valueOf(
-											alphaFunction.value(times.get(i).doubleValue(SI.SECOND)),
-											NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
-									),
-							SI.NEWTON)
+					thrustVerticalList.add(
+							Amount.valueOf(
+									thrustVerticalFunction.value(time.doubleValue(SI.SECOND)),
+									SI.NEWTON
+									)
 							);
 					//--------------------------------------------------------------------------------
 					// FRICTION:
-					if(times.get(i).doubleValue(SI.SECOND) < tEndRot.doubleValue(SI.SECOND))
-						frictionList.add(Amount.valueOf(
-								((DynamicsEquationsTakeOffNoiseTrajectory)ode).mu(speed)
-								*(weightFunction.value(times.get(i).doubleValue(SI.SECOND))
-										- ((DynamicsEquationsTakeOffNoiseTrajectory)ode).lift(
-												speed,
-												Amount.valueOf(alphaFunction.value(times.get(i).doubleValue(SI.SECOND)), NonSI.DEGREE_ANGLE),
-												gamma,
-												altitude,
-												deltaTemperature
-												).doubleValue(SI.NEWTON)
-										),
-								SI.NEWTON)
+					frictionList.add(
+							Amount.valueOf(
+									frictionFunction.value(time.doubleValue(SI.SECOND)),
+									SI.NEWTON
+									)
 								);
-					else
-						frictionList.add(Amount.valueOf(0.0, SI.NEWTON));
 					//----------------------------------------------------------------------------------------
 					// LIFT:
 					liftList.add( 
-							((DynamicsEquationsTakeOffNoiseTrajectory)ode).lift(
-									speed,
-									Amount.valueOf(alphaFunction.value(times.get(i).doubleValue(SI.SECOND)), NonSI.DEGREE_ANGLE),
-									gamma,
-									altitude,
-									deltaTemperature
+							Amount.valueOf(
+									liftFunction.value(time.doubleValue(SI.SECOND)),
+									SI.NEWTON
 									)
 							);
 					//----------------------------------------------------------------------------------------
 					// DRAG:
 					dragList.add(
-							((DynamicsEquationsTakeOffNoiseTrajectory)ode).drag(
-									speed,
-									Amount.valueOf(alphaFunction.value(times.get(i).doubleValue(SI.SECOND)), NonSI.DEGREE_ANGLE),
-									gamma,
-									times.get(i),
-									altitude,
-									deltaTemperature
+							Amount.valueOf(
+									dragFunction.value(time.doubleValue(SI.SECOND)),
+									SI.NEWTON
 									)
 							);
 					//----------------------------------------------------------------------------------------
 					// TOTAL FORCE:
 					totalForceList.add(
 							Amount.valueOf(
-									( ((DynamicsEquationsTakeOffNoiseTrajectory)ode).thrust(speed, time, gamma, altitude, deltaTemperature)
-											.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
-											*Math.cos(
-													Amount.valueOf(
-															alphaFunction.value(times.get(i).doubleValue(SI.SECOND)),
-															NonSI.DEGREE_ANGLE).doubleValue(SI.RADIAN)
-													)
-											)
-									- ((DynamicsEquationsTakeOffNoiseTrajectory)ode).drag(
-											speed,
-											Amount.valueOf(alphaFunction.value(times.get(i).doubleValue(SI.SECOND)), NonSI.DEGREE_ANGLE),
-											gamma,
-											times.get(i),
-											altitude,
-											deltaTemperature
-											).doubleValue(SI.NEWTON)
-									- ( ((DynamicsEquationsTakeOffNoiseTrajectory)ode).mu(speed)
-											*(weightFunction.value(times.get(i).doubleValue(SI.SECOND))
-													- ((DynamicsEquationsTakeOffNoiseTrajectory)ode).lift(
-															speed,
-															Amount.valueOf(alphaFunction.value(times.get(i).doubleValue(SI.SECOND)), NonSI.DEGREE_ANGLE),
-															gamma,
-															altitude,
-															deltaTemperature
-															).doubleValue(SI.NEWTON)
-													)
-											)
-									- (weightFunction.value(times.get(i).doubleValue(SI.SECOND))
-											*Math.sin(gamma.doubleValue(SI.RADIAN))
-											),
+									totalForceFunction.value(time.doubleValue(SI.SECOND)),
 									SI.NEWTON
 									)
 							);
@@ -1414,60 +1669,49 @@ public class TakeOffNoiseTrajectoryCalc {
 					loadFactorList.add(loadFactorFunction.value(times.get(i).doubleValue(SI.SECOND)));
 					//----------------------------------------------------------------------------------------
 					// RATE OF CLIMB:
-					rateOfClimbList.add(Amount.valueOf(
-							xDot[3],
-							SI.METERS_PER_SECOND)
+					rateOfClimbList.add(
+							Amount.valueOf(
+									rateOfClimbFunction.value(time.doubleValue(SI.SECOND)),
+									SI.METERS_PER_SECOND
+									)
 							);
 					//----------------------------------------------------------------------------------------
 					// ACCELERATION:
-					accelerationList.add(Amount.valueOf(
-							accelerationFunction.value(times.get(i).doubleValue(SI.SECOND)),
-							SI.METERS_PER_SQUARE_SECOND)
+					accelerationList.add(
+							Amount.valueOf(
+									accelerationFunction.value(times.get(i).doubleValue(SI.SECOND)),
+									SI.METERS_PER_SQUARE_SECOND
+									)
 							);
 					//----------------------------------------------------------------------------------------
 					// ALPHA:
-					alphaList.add(Amount.valueOf(
-							alphaFunction.value(times.get(i).doubleValue(SI.SECOND)),
-							NonSI.DEGREE_ANGLE)
+					alphaList.add(
+							Amount.valueOf(
+									alphaFunction.value(times.get(i).doubleValue(SI.SECOND)),
+									NonSI.DEGREE_ANGLE
+									)
 							);
 					//----------------------------------------------------------------------------------------
 					// GAMMA:
-					gammaList.add(gamma);
+					gammaList.add(
+							Amount.valueOf(
+									gammaFunction.value(time.doubleValue(SI.SECOND)),
+									NonSI.DEGREE_ANGLE
+									)
+							);
 					//----------------------------------------------------------------------------------------
 					// ALPHA DOT:
-					if((times.get(i).doubleValue(SI.SECOND) > tRot.doubleValue(SI.SECOND)) 
-							&& (times.get(i).doubleValue(SI.SECOND) < tHold.doubleValue(SI.SECOND))) {
-						alphaDotList.add(
-								TakeOffNoiseTrajectoryCalc.this.getAlphaDotInitial()
-								*(1-(TakeOffNoiseTrajectoryCalc.this.getkAlphaDot()
-										*alphaFunction.value(times.get(i).doubleValue(SI.SECOND))
-										)
-										)
-								);
-					}
-					else if((times.get(i).doubleValue(SI.SECOND) > tEndHold.doubleValue(SI.SECOND))
-							&& (times.get(i).doubleValue(SI.SECOND) < tZeroAcceleration.doubleValue(SI.SECOND))) {
-						alphaDotList.add(alphaRed);
-					}
-					else if(times.get(i).doubleValue(SI.SECOND) > tZeroAcceleration.doubleValue(SI.SECOND)) {
-						double deltaAlpha = 
-								alphaList.get(i).doubleValue(NonSI.DEGREE_ANGLE)
-								- alphaList.get(i-1).doubleValue(NonSI.DEGREE_ANGLE);
-						double deltaTime = 
-								times.get(i).doubleValue(SI.SECOND)
-								- times.get(i-1).doubleValue(SI.SECOND);
-						alphaDotList.add(deltaAlpha/deltaTime);
-					}
-					else
-						alphaDotList.add(0.0);
+					alphaDotList.add(alphaDotFunction.value(time.doubleValue(SI.SECOND)));
 					//----------------------------------------------------------------------------------------
 					// GAMMA DOT:
-					gammaDotList.add(xDot[2]);
+					gammaDotList.add(gammaDotFunction.value(time.doubleValue(SI.SECOND)));
 					//----------------------------------------------------------------------------------------
 					// THETA:
-					thetaList.add(Amount.valueOf(
-							gamma.doubleValue(NonSI.DEGREE_ANGLE) + alphaFunction.value(times.get(i).doubleValue(SI.SECOND)),
-							NonSI.DEGREE_ANGLE)
+					thetaList.add(
+							Amount.valueOf(
+									thetaFunction.value(time.doubleValue(SI.SECOND)),
+									NonSI.DEGREE_ANGLE
+									)
 							);
 					//----------------------------------------------------------------------------------------
 					// CL:				
@@ -2625,19 +2869,19 @@ public class TakeOffNoiseTrajectoryCalc {
 
 			if((time.doubleValue(SI.SECOND) > tRot.doubleValue(SI.SECOND)) && (time.doubleValue(SI.SECOND) < tHold.doubleValue(SI.SECOND))) {
 				alphaDot = TakeOffNoiseTrajectoryCalc.this.getAlphaDotInitial()
-						*(1-(TakeOffNoiseTrajectoryCalc.this.getkAlphaDot()*(TakeOffNoiseTrajectoryCalc.this.getAlpha().get(
-								TakeOffNoiseTrajectoryCalc.this.getAlpha().size()-1).getEstimatedValue()))
+						*(1-(TakeOffNoiseTrajectoryCalc.this.getkAlphaDot()*(TakeOffNoiseTrajectoryCalc.this.getAlphaPerStep().get(
+								TakeOffNoiseTrajectoryCalc.this.getAlphaPerStep().size()-1).getEstimatedValue()))
 								);
 			}
 			else if((time.doubleValue(SI.SECOND) > tEndHold.doubleValue(SI.SECOND)) && (time.doubleValue(SI.SECOND) <= tClimb.doubleValue(SI.SECOND))) 
 				alphaDot = alphaRed;
 			else if((time.doubleValue(SI.SECOND) > tZeroAcceleration.doubleValue(SI.SECOND)))
-				alphaDot = (TakeOffNoiseTrajectoryCalc.this.alpha.get(
-						TakeOffNoiseTrajectoryCalc.this.alpha.size()-1).doubleValue(NonSI.DEGREE_ANGLE)
-						- TakeOffNoiseTrajectoryCalc.this.alpha.get(
-								TakeOffNoiseTrajectoryCalc.this.alpha.size()-2).doubleValue(NonSI.DEGREE_ANGLE)
-						) / (TakeOffNoiseTrajectoryCalc.this.time.get(TakeOffNoiseTrajectoryCalc.this.time.size()-1).doubleValue(SI.SECOND)
-								- TakeOffNoiseTrajectoryCalc.this.time.get(TakeOffNoiseTrajectoryCalc.this.time.size()-2).doubleValue(SI.SECOND)
+				alphaDot = (TakeOffNoiseTrajectoryCalc.this.alphaPerStep.get(
+						TakeOffNoiseTrajectoryCalc.this.alphaPerStep.size()-1).doubleValue(NonSI.DEGREE_ANGLE)
+						- TakeOffNoiseTrajectoryCalc.this.alphaPerStep.get(
+								TakeOffNoiseTrajectoryCalc.this.alphaPerStep.size()-2).doubleValue(NonSI.DEGREE_ANGLE)
+						) / (TakeOffNoiseTrajectoryCalc.this.timePerStep.get(TakeOffNoiseTrajectoryCalc.this.timePerStep.size()-1).doubleValue(SI.SECOND)
+								- TakeOffNoiseTrajectoryCalc.this.timePerStep.get(TakeOffNoiseTrajectoryCalc.this.timePerStep.size()-2).doubleValue(SI.SECOND)
 								);
 			
 			return alphaDot;
@@ -2651,20 +2895,20 @@ public class TakeOffNoiseTrajectoryCalc {
 					&& time.doubleValue(SI.SECOND) <= tZeroAcceleration.doubleValue(SI.SECOND) 
 					)
 				alpha = Amount.valueOf(
-						TakeOffNoiseTrajectoryCalc.this.getAlpha().get(
-								TakeOffNoiseTrajectoryCalc.this.getAlpha().size()-1).doubleValue(NonSI.DEGREE_ANGLE)
-						+(alphaDot(time)*(TakeOffNoiseTrajectoryCalc.this.getTime().get(
-								TakeOffNoiseTrajectoryCalc.this.getTime().size()-1).doubleValue(SI.SECOND)
-								- TakeOffNoiseTrajectoryCalc.this.getTime().get(
-										TakeOffNoiseTrajectoryCalc.this.getTime().size()-2).doubleValue(SI.SECOND))),
+						TakeOffNoiseTrajectoryCalc.this.getAlphaPerStep().get(
+								TakeOffNoiseTrajectoryCalc.this.getAlphaPerStep().size()-1).doubleValue(NonSI.DEGREE_ANGLE)
+						+(alphaDot(time)*(TakeOffNoiseTrajectoryCalc.this.getTimePerStep().get(
+								TakeOffNoiseTrajectoryCalc.this.getTimePerStep().size()-1).doubleValue(SI.SECOND)
+								- TakeOffNoiseTrajectoryCalc.this.getTimePerStep().get(
+										TakeOffNoiseTrajectoryCalc.this.getTimePerStep().size()-2).doubleValue(SI.SECOND))),
 						NonSI.DEGREE_ANGLE
 						);
 			else if(time.doubleValue(SI.SECOND) > tZeroAcceleration.doubleValue(SI.SECOND)) {
 
 				int j=0;
 				
-				alpha = TakeOffNoiseTrajectoryCalc.this.alpha.get(
-						TakeOffNoiseTrajectoryCalc.this.alpha.size()-1);
+				alpha = TakeOffNoiseTrajectoryCalc.this.alphaPerStep.get(
+						TakeOffNoiseTrajectoryCalc.this.alphaPerStep.size()-1);
 				
 				List<Amount<Angle>> alphaList = new ArrayList<>();
 				alphaList.add(alpha);
@@ -2785,22 +3029,6 @@ public class TakeOffNoiseTrajectoryCalc {
 
 	public void setAlphaGround(Amount<Angle> alphaGround) {
 		this.alphaGround = alphaGround;
-	}
-
-	public List<Amount<Angle>> getAlpha() {
-		return alpha;
-	}
-
-	public void setAlpha(List<Amount<Angle>> alpha) {
-		this.alpha = alpha;
-	}
-
-	public List<Amount<Duration>> getTime() {
-		return time;
-	}
-
-	public void setTime(List<Amount<Duration>> time) {
-		this.time = time;
 	}
 
 	public double getkAlphaDot() {
@@ -3011,22 +3239,6 @@ public class TakeOffNoiseTrajectoryCalc {
 		this.theIntegrator = theIntegrator;
 	}
 
-	public List<Double> getLoadFactor() {
-		return loadFactor;
-	}
-
-	public void setLoadFactor(List<Double> loadFactor) {
-		this.loadFactor = loadFactor;
-	}
-
-	public List<Double> getcL() {
-		return cL;
-	}
-
-	public void setcL(List<Double> cL) {
-		this.cL = cL;
-	}
-
 	public List<Double> getTimeBreakPoints() {
 		return timeBreakPoints;
 	}
@@ -3097,14 +3309,6 @@ public class TakeOffNoiseTrajectoryCalc {
 
 	public void settObstacle(Amount<Duration> tObstacle) {
 		this.tObstacle = tObstacle;
-	}
-
-	public List<Amount<Acceleration>> getAcceleration() {
-		return acceleration;
-	}
-
-	public void setAcceleration(List<Amount<Acceleration>> acceleration) {
-		this.acceleration = acceleration;
 	}
 
 	public Amount<Duration> gettZeroAccelration() {
@@ -3331,14 +3535,6 @@ public class TakeOffNoiseTrajectoryCalc {
 		this.timeMap = timeMap;
 	}
 
-	public List<Amount<Force>> getWeight() {
-		return weight;
-	}
-
-	public void setWeight(List<Amount<Force>> weight) {
-		this.weight = weight;
-	}
-
 	public Map<Double, List<Amount<Force>>> getWeightMap() {
 		return weightMap;
 	}
@@ -3377,14 +3573,6 @@ public class TakeOffNoiseTrajectoryCalc {
 
 	public void setSfcCorrectionFactor(double sfcCorrectionFactor) {
 		this.sfcCorrectionFactor = sfcCorrectionFactor;
-	}
-
-	public List<Double> getcD() {
-		return cD;
-	}
-
-	public void setcD(List<Double> cD) {
-		this.cD = cD;
 	}
 
 	public Map<Double, List<Amount<Length>>> getVerticalDistanceMap() {
@@ -3473,6 +3661,190 @@ public class TakeOffNoiseTrajectoryCalc {
 
 	public void setRotationSpeedWarningFlag(boolean rotationSpeedWarningFlag) {
 		this.rotationSpeedWarningFlag = rotationSpeedWarningFlag;
+	}
+
+	public List<Amount<Velocity>> getSpeedPerStep() {
+		return speedPerStep;
+	}
+
+	public void setSpeedPerStep(List<Amount<Velocity>> speedPerStep) {
+		this.speedPerStep = speedPerStep;
+	}
+
+	public List<Amount<Velocity>> getRateOfClimbPerStep() {
+		return rateOfClimbPerStep;
+	}
+
+	public void setRateOfClimbPerStep(List<Amount<Velocity>> rateOfClimbPerStep) {
+		this.rateOfClimbPerStep = rateOfClimbPerStep;
+	}
+
+	public List<Amount<Force>> getThrustPerStep() {
+		return thrustPerStep;
+	}
+
+	public void setThrustPerStep(List<Amount<Force>> thrustPerStep) {
+		this.thrustPerStep = thrustPerStep;
+	}
+
+	public List<Amount<Force>> getThrustHorizontalPerStep() {
+		return thrustHorizontalPerStep;
+	}
+
+	public void setThrustHorizontalPerStep(List<Amount<Force>> thrustHorizontalPerStep) {
+		this.thrustHorizontalPerStep = thrustHorizontalPerStep;
+	}
+
+	public List<Amount<Force>> getThrustVerticalPerStep() {
+		return thrustVerticalPerStep;
+	}
+
+	public void setThrustVerticalPerStep(List<Amount<Force>> thrustVerticalPerStep) {
+		this.thrustVerticalPerStep = thrustVerticalPerStep;
+	}
+
+	public List<Amount<Force>> getLiftPerStep() {
+		return liftPerStep;
+	}
+
+	public void setLiftPerStep(List<Amount<Force>> liftPerStep) {
+		this.liftPerStep = liftPerStep;
+	}
+
+	public List<Amount<Force>> getDragPerStep() {
+		return dragPerStep;
+	}
+
+	public void setDragPerStep(List<Amount<Force>> dragPerStep) {
+		this.dragPerStep = dragPerStep;
+	}
+
+	public List<Amount<Force>> getTotalForcePerStep() {
+		return totalForcePerStep;
+	}
+
+	public void setTotalForcePerStep(List<Amount<Force>> totalForcePerStep) {
+		this.totalForcePerStep = totalForcePerStep;
+	}
+
+	public List<Amount<Force>> getFrictionPerStep() {
+		return frictionPerStep;
+	}
+
+	public void setFrictionPerStep(List<Amount<Force>> frictionPerStep) {
+		this.frictionPerStep = frictionPerStep;
+	}
+
+	public List<Amount<Angle>> getAlphaPerStep() {
+		return alphaPerStep;
+	}
+
+	public void setAlphaPerStep(List<Amount<Angle>> alphaPerStep) {
+		this.alphaPerStep = alphaPerStep;
+	}
+
+	public List<Amount<Angle>> getGammaPerStep() {
+		return gammaPerStep;
+	}
+
+	public void setGammaPerStep(List<Amount<Angle>> gammaPerStep) {
+		this.gammaPerStep = gammaPerStep;
+	}
+
+	public List<Amount<Angle>> getThetaPerStep() {
+		return thetaPerStep;
+	}
+
+	public void setThetaPerStep(List<Amount<Angle>> thetaPerStep) {
+		this.thetaPerStep = thetaPerStep;
+	}
+
+	public List<Double> getAlphaDotPerStep() {
+		return alphaDotPerStep;
+	}
+
+	public void setAlphaDotPerStep(List<Double> alphaDotPerStep) {
+		this.alphaDotPerStep = alphaDotPerStep;
+	}
+
+	public List<Double> getGammaDotPerStep() {
+		return gammaDotPerStep;
+	}
+
+	public void setGammaDotPerStep(List<Double> gammaDotPerStep) {
+		this.gammaDotPerStep = gammaDotPerStep;
+	}
+
+	public List<Double> getcLPerStep() {
+		return cLPerStep;
+	}
+
+	public void setcLPerStep(List<Double> cLPerStep) {
+		this.cLPerStep = cLPerStep;
+	}
+
+	public List<Double> getLoadFactorPerStep() {
+		return loadFactorPerStep;
+	}
+
+	public void setLoadFactorPerStep(List<Double> loadFactorPerStep) {
+		this.loadFactorPerStep = loadFactorPerStep;
+	}
+
+	public List<Double> getcDPerStep() {
+		return cDPerStep;
+	}
+
+	public void setcDPerStep(List<Double> cDPerStep) {
+		this.cDPerStep = cDPerStep;
+	}
+
+	public List<Amount<Acceleration>> getAccelerationPerStep() {
+		return accelerationPerStep;
+	}
+
+	public void setAccelerationPerStep(List<Amount<Acceleration>> accelerationPerStep) {
+		this.accelerationPerStep = accelerationPerStep;
+	}
+
+	public List<Amount<Length>> getGroundDistancePerStep() {
+		return groundDistancePerStep;
+	}
+
+	public void setGroundDistancePerStep(List<Amount<Length>> groundDistancePerStep) {
+		this.groundDistancePerStep = groundDistancePerStep;
+	}
+
+	public List<Amount<Length>> getVerticalDistancePerStep() {
+		return verticalDistancePerStep;
+	}
+
+	public void setVerticalDistancePerStep(List<Amount<Length>> verticalDistancePerStep) {
+		this.verticalDistancePerStep = verticalDistancePerStep;
+	}
+
+	public List<Amount<Duration>> getTimePerStep() {
+		return timePerStep;
+	}
+
+	public void setTimePerStep(List<Amount<Duration>> timePerStep) {
+		this.timePerStep = timePerStep;
+	}
+
+	public List<Amount<Mass>> getFuelUsedPerStep() {
+		return fuelUsedPerStep;
+	}
+
+	public void setFuelUsedPerStep(List<Amount<Mass>> fuelUsedPerStep) {
+		this.fuelUsedPerStep = fuelUsedPerStep;
+	}
+
+	public List<Amount<Force>> getWeightPerStep() {
+		return weightPerStep;
+	}
+
+	public void setWeightPerStep(List<Amount<Force>> weightPerStep) {
+		this.weightPerStep = weightPerStep;
 	}
 
 }

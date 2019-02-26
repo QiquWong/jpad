@@ -523,7 +523,7 @@ public class LandingCalc {
 
 		int i=0;
 		int maxIter = 200;
-		dtFlare = Amount.valueOf(5.0, SI.SECOND); // First guess value
+		dtFlare = Amount.valueOf(5.0, SI.SECOND); 
 		alphaDotFlare = 1.0; /* deg/s - First guess value */
 		double newAlphaDotFlare = 0.0;
 		Amount<Velocity> targetRateOfDescent = Amount.valueOf(-100, MyUnits.FOOT_PER_MINUTE);
@@ -546,8 +546,8 @@ public class LandingCalc {
 			theIntegrator = new HighamHall54Integrator(
 					1e-10,
 					1,
-					1e-4,
-					1e-4
+					1e-3,
+					1e-3
 					);
 			ode = new DynamicsEquationsLanding();
 			
