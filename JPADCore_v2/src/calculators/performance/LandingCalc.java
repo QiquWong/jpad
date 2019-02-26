@@ -546,8 +546,8 @@ public class LandingCalc {
 			theIntegrator = new HighamHall54Integrator(
 					1e-10,
 					1,
-					1e-6,
-					1e-6
+					1e-4,
+					1e-4
 					);
 			ode = new DynamicsEquationsLanding();
 			
