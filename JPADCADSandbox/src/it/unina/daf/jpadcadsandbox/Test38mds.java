@@ -255,6 +255,12 @@ public class Test38mds {
 		engineSolid.add(0, caseSolid);
 		
 		// ----------------------------------------------------
+		// Revert engine shapes
+		// ----------------------------------------------------
+		System.out.println("Orientation before: " + engineSolid.get(0).orientation());
+		System.out.println("Orientation after: " + engineSolid.get(0).reversed().orientation());
+		
+		// ----------------------------------------------------
 		// Get engine reference dimensions, points, and edges
 		// ----------------------------------------------------
 		BRep_Builder engineCompSolidBuilder = new BRep_Builder();
@@ -353,7 +359,7 @@ public class Test38mds {
 		// ----------------------
 		MyConfiguration.setDir(FoldersEnum.OUTPUT_DIR, MyConfiguration.inputDirectory);
 		String outputFolderPath = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR) + 
-				  "CAD_engine_templates" + File.separator + 
+				  "Template_CADEngines" + File.separator + 
 				  "turbofan_templates" + File.separator;
 		
 		OCCUtils.write(outputFolderPath + "TF_complete_01", FileExtension.STEP, engineSolid);

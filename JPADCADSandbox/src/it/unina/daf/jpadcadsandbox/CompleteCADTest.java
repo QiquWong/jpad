@@ -133,7 +133,7 @@ public class CompleteCADTest extends Application {
 	// Console output management
 	public final static PrintStream originalOut = System.out;
 	public final static PrintStream filterStream = new PrintStream(new OutputStream() {
-		public void write(int b) {} // write nothing
+		public void write(int b) {}
 	});
 	
 	@Override
@@ -183,11 +183,14 @@ public class CompleteCADTest extends Application {
 		//---------------------------------------------------------------
 		// GENERATE THE AIRCRAFT CAD
 		//---------------------------------------------------------------
+		MyConfiguration.setDir(FoldersEnum.INPUT_DIR, MyConfiguration.inputDirectory);
+		String inputFolderPath = MyConfiguration.getDir(FoldersEnum.INPUT_DIR);
+		
 		System.setOut(filterStream);
-		theCADManager.generateCAD();
+		theCADManager.generateCAD(inputFolderPath);
 		System.setOut(originalOut);
 		
-		System.out.println("\tAIRCRAFT CAD SUCCESFULLY GENERATED ... \n");
+		System.out.println("\n\tAIRCRAFT CAD SUCCESFULLY GENERATED ... \n");
 		
 		//---------------------------------------------------------------
 		// EXPORT THE AIRCRAFT CAD TO FILE

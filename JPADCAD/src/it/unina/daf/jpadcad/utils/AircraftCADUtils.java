@@ -16,6 +16,7 @@ import java.util.stream.IntStream;
 
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Length;
+import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
@@ -1084,17 +1085,17 @@ public class AircraftCADUtils {
 		return requestedShapes;
 	}
 	
-	public static List<OCCShape> getEnginesCAD(List<NacelleCreator> nacelles, List<Engine> engines,
+	public static List<OCCShape> getEnginesCAD(String inputDirectory, List<NacelleCreator> nacelles, List<Engine> engines,
 			List<Map<EngineCADComponentsEnum, String>> templateMapsList,
 			boolean exportSupportShapes, boolean exportShells, boolean exportSolids) {
 		
-		return getEnginesCAD(nacelles, engines,
+		return getEnginesCAD(inputDirectory, nacelles, engines,
 				templateMapsList, new ArrayList<>(),
 				exportSupportShapes, exportShells, exportSolids
 				);
 	}
  	
-	public static List<OCCShape> getEnginesCAD(List<NacelleCreator> nacelles, List<Engine> engines,
+	public static List<OCCShape> getEnginesCAD(String inputDirectory, List<NacelleCreator> nacelles, List<Engine> engines,
 			List<Map<EngineCADComponentsEnum, String>> templateMapsList, List<Amount<Angle>> propellerBladePitchAngleList,
 			boolean exportSupportShapes, boolean exportShells, boolean exportSolids) {
 		
@@ -1126,52 +1127,74 @@ public class AircraftCADUtils {
 		List<EngineCAD> engineCADList = new ArrayList<>();
 		IntStream.range(0, engines.size())
 				 .forEach(i -> engineCADList.add(
-						 new EngineCAD(nacelles.get(i), engines.get(i), templateMapsList.get(i))
+						 new EngineCAD(inputDirectory, nacelles.get(i), engines.get(i), templateMapsList.get(i))
 						 ));
+		
+		List<Tuple2<EngineCAD, Amount<Angle>>> engineCADPitchTupleList = new ArrayList<>();
+		if (!propellerBladePitchAngleList.isEmpty()) {		
+			for (int i = 0; i < engineCADList.size(); i++) 
+				engineCADPitchTupleList.add(
+						new Tuple2<EngineCAD, Amount<Angle>>(
+								engineCADList.get(i), 
+								propellerBladePitchAngleList.get(i)));
+				
+			List<Tuple2<EngineCAD, Amount<Angle>>> sortedEngineBladePitchAngleList = engineCADPitchTupleList.stream()
+				.sorted(Comparator.comparing(t -> t._1().getEngineYApex()))
+				.collect(Collectors.toList());
+			
+			engineCADPitchTupleList.clear();
+			engineCADPitchTupleList.addAll(sortedEngineBladePitchAngleList);
+			
+		} else {
+			engineCADList.stream()
+				.sorted(Comparator.comparing(e -> e.getEngineYApex()))
+				.forEach(e -> engineCADPitchTupleList.add(
+						new Tuple2<EngineCAD, Amount<Angle>>(e, Amount.valueOf(0.0, NonSI.DEGREE_ANGLE))));
+		}
 		
 		// Check the indexes of the engines that can be reused, based on:
 		// - sharing the same y apex coordinate (absolute value);
 		// - sharing the same type, templates and dimensions.
-		// First, it is necessary to sort the engines.
-		List<EngineCAD> sortedEngineCADList = engineCADList.stream()
-				.sorted(Comparator.comparing(e -> e.getEngineYApex()))
-				.collect(Collectors.toList());
-		
+		// First, it is necessary to sort the engines.	
 		int[] symmEngines = new int[engines.size()];
 		Arrays.fill(symmEngines, 0);
 		if ((engines.size() & 1) == 0) { // even number of engines		
 			for (int i = 0; i < engines.size()/2; i++) {				
-				if (sortedEngineCADList.get(i).symmetrical(sortedEngineCADList.get(engines.size()-1-i))) {				
+				if (engineCADPitchTupleList.get(i)._1().symmetrical(engineCADPitchTupleList.get(engines.size()-1-i)._1()) && 
+					engineCADPitchTupleList.get(i)._2().equals(engineCADPitchTupleList.get(engines.size()-1-i)._2())) {				
 					symmEngines[i] = i + 1;
 					symmEngines[engines.size()-1-i] = i + 1;
 				}					
 			}		
 		} else { // odd	number of engines
 			for (int i = 0; i < (engines.size()-1)/2; i++) {
-				if (sortedEngineCADList.get(i).symmetrical(sortedEngineCADList.get(engines.size()-1-i))) {
+				if (engineCADPitchTupleList.get(i)._1().symmetrical(engineCADPitchTupleList.get(engines.size()-1-i)._1()) && 
+					engineCADPitchTupleList.get(i)._2().equals(engineCADPitchTupleList.get(engines.size()-1-i)._2())) {
 					symmEngines[i] = i + 1;
 					symmEngines[engines.size()-1-i] = i + 1;
 				}
 			}
 		}
 		
+		System.out.println("Engines symmetry array: " + Arrays.toString(symmEngines));
+		
 		for (int i = 0; i < engines.size(); i++) {
 			
 			if (symmEngines[i] != 0 && i < engines.size()/2) {
 				
-				List<OCCShape> engineShapes = getEngineCAD(sortedEngineCADList.get(i));
+				List<OCCShape> engineShapes = getEngineCAD(inputDirectory, engineCADPitchTupleList.get(i));
 				
 				List<OCCShape> symmEngineShapes = OCCUtils.getShapesTranslated(
 						engineShapes, 
 						new double[] {
-								sortedEngineCADList.get(i).getEngineXApex(),
-								sortedEngineCADList.get(i).getEngineYApex(),
-								sortedEngineCADList.get(i).getEngineZApex()
+								engineCADPitchTupleList.get(i)._1().getEngineXApex(),
+								engineCADPitchTupleList.get(i)._1().getEngineYApex(),
+								engineCADPitchTupleList.get(i)._1().getEngineZApex()
 						}, 
 						new double[] {
-								sortedEngineCADList.get(i).getEngineXApex(),
-							    sortedEngineCADList.get(i).getEngineYApex()*(-1),
-								sortedEngineCADList.get(i).getEngineZApex()
+								engineCADPitchTupleList.get(i)._1().getEngineXApex(),
+								engineCADPitchTupleList.get(i)._1().getEngineYApex()*(-1),
+								engineCADPitchTupleList.get(i)._1().getEngineZApex()
 						});		
 				
 				solidShapes.addAll(engineShapes);
@@ -1179,7 +1202,7 @@ public class AircraftCADUtils {
 				
 			} else if (symmEngines[i] == 0) {
 				
-				solidShapes.addAll(getEngineCAD(sortedEngineCADList.get(i)));
+				solidShapes.addAll(getEngineCAD(inputDirectory, engineCADPitchTupleList.get(i)));
 			}
 		}
 		
@@ -3806,27 +3829,28 @@ public class AircraftCADUtils {
 		return new Tuple2<double[], double[]>(mainSidePnt, subSidePnt);
 	}
 	
-	private static List<OCCShape> getEngineCAD(EngineCAD engineCAD) {
+	private static List<OCCShape> getEngineCAD(String inputDirectory, Tuple2<EngineCAD, Amount<Angle>> engineCADPitchTuple) {
 		
 		List<OCCShape> requestedShapes = new ArrayList<>();	
 		
 		// -----------------------------------
 		// Call to specific CAD engine method
 		// -----------------------------------
-		switch (engineCAD.getEngineType()) {
+		switch (engineCADPitchTuple._1().getEngineType()) {
 		
 		case TURBOPROP:
-			requestedShapes.addAll(getTurbopropEngineCAD(engineCAD));
+			requestedShapes.addAll(getTurbopropEngineCAD(inputDirectory, engineCADPitchTuple));
 			
 			break;
 			
 		case TURBOFAN:
-			requestedShapes.addAll(getTurbofanEngineCAD(engineCAD));
+			requestedShapes.addAll(getTurbofanEngineCAD(inputDirectory, engineCADPitchTuple._1()));
 			
 			break;
 			
 		default:
-			System.err.println("No CAD templates are currently available for " +  engineCAD.getEngineType() + " engines. "
+			System.err.println("No CAD templates are currently available for "
+					+ engineCADPitchTuple._1().getEngineType() + " engines. "
 					+ "No engine CAD shapes will be produced!");
 			
 			break;
@@ -3835,7 +3859,7 @@ public class AircraftCADUtils {
 		return requestedShapes;
 	} 
 	
-	private static List<OCCShape> getTurbopropEngineCAD(EngineCAD engineCAD) {
+	private static List<OCCShape> getTurbopropEngineCAD(String inputDirectory, Tuple2<EngineCAD, Amount<Angle>> engineCADPitchTuple) {
 		
 		// ----------------------------------------------------------
 		// Check the factory
@@ -3853,10 +3877,11 @@ public class AircraftCADUtils {
 		// ----------------------------------------------------------
 		// Importing the templates
 		// ----------------------------------------------------------	
-		MyConfiguration.setDir(FoldersEnum.INPUT_DIR, MyConfiguration.inputDirectory);
-		String inputFolderPath = MyConfiguration.getDir(FoldersEnum.INPUT_DIR) + 
-				 				 "CAD_engine_templates" + File.separator + 
+		String inputFolderPath = inputDirectory +
+				 				 "Template_CADEngines" + File.separator + 
 				                 "turboprop_templates" + File.separator;
+		
+		EngineCAD engineCAD = engineCADPitchTuple._1();
 		
 		// Reading the NACELLE
 		OCCShape nacelleShapes = ((OCCShape) OCCUtils.theFactory.newShape(
@@ -3866,12 +3891,18 @@ public class AircraftCADUtils {
 		OCCShape bladeShapes = ((OCCShape) OCCUtils.theFactory.newShape(
 				inputFolderPath + engineCAD.getEngineCADTemplates().get(EngineCADComponentsEnum.BLADE), "M"));
 		
+		// -----------------------------------------------------------
+		// Check the orientation
+		// -----------------------------------------------------------
+		if (nacelleShapes.orientation() == 0)
+			nacelleShapes = nacelleShapes.reversed();
+		
+		if (bladeShapes.orientation() == 0)
+			bladeShapes = bladeShapes.reversed();
+		
 		// ------------------------------------------------------------------------
 		// Instantiate necessary translations, rotations, scalings, and affinities
-		// ------------------------------------------------------------------------		
-//		nacelleShapes.Reverse(); // TODO: add this correction to the turboprop templates
-//		bladeShapes.Reverse();	 // TODO: add this correction to the turboprop templates	 
-		
+		// ------------------------------------------------------------------------			
 		double[] xDir = new double[] {1.0, 0.0, 0.0};	
 		double[] yDir = new double[] {0.0, 1.0, 0.0};
 		double[] zDir = new double[] {0.0, 0.0, 1.0};
@@ -3951,7 +3982,16 @@ public class AircraftCADUtils {
 			scaledBlade = bladeYStretched;			
 		}
 		
-		OCCShape hubTranslatedBlade = OCCUtils.getShapeTranslated(scaledBlade, bladeRefPnt, new double[] {0.0, 0.0, scaledHubRadius});
+		// Blade rotation, whether it is necessary
+		OCCShape bladeRotated;
+		if (engineCADPitchTuple._2().doubleValue(SI.RADIAN) != 0) {
+			double bladePitchAngle = engineCADPitchTuple._2().doubleValue(SI.RADIAN);			
+			bladeRotated = OCCUtils.getShapeRotated(scaledBlade, bladeCG, zDir, bladePitchAngle);
+		} else {
+			bladeRotated = scaledBlade;
+		}
+		
+		OCCShape hubTranslatedBlade = OCCUtils.getShapeTranslated(bladeRotated, bladeRefPnt, new double[] {0.0, 0.0, scaledHubRadius});
 			
 		List<OCCShape> rotatedBlades = new ArrayList<>();
 		rotatedBlades.add(hubTranslatedBlade);
@@ -4010,7 +4050,7 @@ public class AircraftCADUtils {
 		return solidShapes;
 	}
 	
-	private static List<OCCShape> getTurbofanEngineCAD(EngineCAD engineCAD) {
+	private static List<OCCShape> getTurbofanEngineCAD(String inputDirectory, EngineCAD engineCAD) {
 		
 		// ----------------------------------------------------------
 		// Check the factory
@@ -4035,13 +4075,18 @@ public class AircraftCADUtils {
 		// ----------------------------------------------------------
 		// Importing the template
 		// ----------------------------------------------------------	
-		MyConfiguration.setDir(FoldersEnum.INPUT_DIR, MyConfiguration.inputDirectory);
-		String inputFolderPath = MyConfiguration.getDir(FoldersEnum.INPUT_DIR) + 
-				 				 "CAD_engine_templates" + File.separator + 
+		String inputFolderPath = inputDirectory + 
+				 				 "Template_CADEngines" + File.separator + 
 				                 "turbofan_templates" + File.separator;
 		
 		OCCShape engineShapes = (OCCShape) OCCUtils.theFactory.newShape(
 				inputFolderPath + engineCAD.getEngineCADTemplates().get(EngineCADComponentsEnum.NACELLE), "M");
+		
+		// -----------------------------------------------------------
+		// Check the orientation
+		// -----------------------------------------------------------
+		if (engineShapes.orientation() == 0)
+			engineShapes = engineShapes.reversed();
 		
 		OCCExplorer engineShapesExp = new OCCExplorer();
 		engineShapesExp.init(engineShapes, CADShapeTypes.SOLID);
@@ -4055,11 +4100,13 @@ public class AircraftCADUtils {
 		// ------------------------------------------------------------------------
 		// Apply transformation to the imported template
 		// ------------------------------------------------------------------------	
-		double[] engineCG = OCCUtils.getShapeCG(engineShapes);
+		double[] engineCG = OCCUtils.getShapeCG(engineShapes);	
 		
-		OCCCompound engineRefCompound = (OCCCompound) OCCUtils.theFactory.newCompound(
+		OCCCompound engineCasingRefCompound = (OCCCompound) OCCUtils.theFactory.newCompound(
 				OCCUtils.theFactory.newVertex(0.0, 0.0, 0.0),
-				engineShapes
+				engineSolids.get(0),
+				engineSolids.get(1),
+				engineSolids.get(2)
 				);
 		
 		double engineInnerCasingRadiusRatio = 1 - engineCAD.getTurbofanTemplateInnerOuterCasingCoeff()*engineCAD.getByPassRatio();
@@ -4068,25 +4115,27 @@ public class AircraftCADUtils {
 		double engineHeightStretchingFactor = engineCAD.getNacelleMaxDiameter()/engineCAD.getTurbofanTemplateNacelleMaxDiameter();
 		double engineInnerCasingHeightStretchingFactor = engineInnerCasingRadiusRatio*engineHeightStretchingFactor;
 		
-		OCCShape xStretchedEngine = OCCUtils.getShapeStretched(engineRefCompound, engineCG, xDir, engineLengthStretchingFactor);
-		OCCShape xzStretchedEngine = OCCUtils.getShapeStretched(xStretchedEngine, engineCG, zDir, engineHeightStretchingFactor);
-		OCCShape xyzStretchedEngine = OCCUtils.getShapeStretched(xzStretchedEngine, engineCG, yDir, engineHeightStretchingFactor);
+		OCCShape xStretchedEngineCasing = OCCUtils.getShapeStretched(engineCasingRefCompound, engineCG, xDir, engineLengthStretchingFactor);
+		OCCShape xzStretchedEnginecasing = OCCUtils.getShapeStretched(xStretchedEngineCasing, engineCG, zDir, engineHeightStretchingFactor);
+		OCCShape xyzStretchedEngineCasing = OCCUtils.getShapeStretched(xzStretchedEnginecasing, engineCG, yDir, engineHeightStretchingFactor);
 		
-		OCCExplorer engineRefCompoundExp = new OCCExplorer();
+		OCCShape scaledEngineFan = OCCUtils.getShapeScaled(engineSolids.get(3), engineCG, engineHeightStretchingFactor);
 		
-		engineRefCompoundExp.init(xyzStretchedEngine, CADShapeTypes.VERTEX);
-		OCCVertex newEngineApex = (OCCVertex) engineRefCompoundExp.current();
+		OCCExplorer engineCasingRefCompoundExp = new OCCExplorer();
 		
-		engineRefCompoundExp.init(xyzStretchedEngine, CADShapeTypes.SOLID);	
-		List<OCCShape> engineStretchedSolids = new ArrayList<>();
-		while (engineRefCompoundExp.more()) {
-			engineStretchedSolids.add((OCCShape) engineRefCompoundExp.current());
-			engineRefCompoundExp.next();
+		engineCasingRefCompoundExp.init(xyzStretchedEngineCasing, CADShapeTypes.VERTEX);
+		OCCVertex newEngineApex = (OCCVertex) engineCasingRefCompoundExp.current();
+		
+		engineCasingRefCompoundExp.init(xyzStretchedEngineCasing, CADShapeTypes.SOLID);	
+		List<OCCShape> engineCasingStretchedSolids = new ArrayList<>();
+		while (engineCasingRefCompoundExp.more()) {
+			engineCasingStretchedSolids.add((OCCShape) engineCasingRefCompoundExp.current());
+			engineCasingRefCompoundExp.next();
 		}	
 		
 		OCCCompound engineInnerCasingCompound = (OCCCompound) OCCUtils.theFactory.newCompound(
-				engineStretchedSolids.get(1),
-				engineStretchedSolids.get(2)
+				engineCasingStretchedSolids.get(1),
+				engineCasingStretchedSolids.get(2)
 				);
 		
 		double[] engineInnerCasingCG = OCCUtils.getShapeCG(engineInnerCasingCompound);
@@ -4106,9 +4155,9 @@ public class AircraftCADUtils {
 		}
 		
 		List<OCCShape> stretchedEngineSolids = new ArrayList<>();
-		stretchedEngineSolids.add(engineStretchedSolids.get(0));
+		stretchedEngineSolids.add(engineCasingStretchedSolids.get(0));
 		stretchedEngineSolids.addAll(stretchedEngineInnerCasingSolids);
-		stretchedEngineSolids.add(engineStretchedSolids.get(3));
+		stretchedEngineSolids.add(scaledEngineFan);
 		
 		OCCCompound stretchedEngineCompound = (OCCCompound) OCCUtils.theFactory.newCompound(
 				stretchedEngineSolids.stream().map(s -> (CADShape) s).collect(Collectors.toList()));
