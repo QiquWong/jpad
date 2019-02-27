@@ -65,26 +65,23 @@ public class JPADReportUtils {
 
 	public static void makeReport02a(Aircraft aircraft, String pathToMatlabWorkingDirectory) throws Exception {
 
-		Map<String, Object> reportDataMap = Stream.of(new Object[][] { 
-			{ "title", "Title from Java" }, 
-			{ "subtitle", "Subtitle from Java" }, 
-			{ "author", "jagodemar" }, 
-			{ "wingSpan", aircraft.getWing().getSpan().doubleValue(SI.METER) }, 
-		}).collect(Collectors.toMap(data -> (String) data[0], data -> (Object) data[1]));
+//		Map<String, Object> reportDataMap = Stream.of(new Object[][] { 
+//			{ "title", "Title from Java" }, 
+//			{ "subtitle", "Subtitle from Java" }, 
+//			{ "author", "jagodemar" }, 
+//			{ "wingSpan", aircraft.getWing().getSpan().doubleValue(SI.METER) }, 
+//		}).collect(Collectors.toMap(data -> (String) data[0], data -> (Object) data[1]));
 
 		ReportMaker reportMaker = new ReportMaker();
 
-		//Object[] res = reportMaker.makeReport02(0, (Object)"JPADReport_Test", (Object)"docx", (Object)reportDataMap);
-
 		List<MWArray> lhs = new ArrayList<>(); // this remains empty, means 0 output
-		
 		List<MWArray> rhs = new ArrayList<>();
 		
-		// add "reportName" makeReport02.m
-		rhs.add(new MWCharArray("JPADReport_Test"));
+		// add "fileName" makeReport02.m
+		rhs.add(new MWCharArray(new String("JPADReport_Test")));
 		
-		// add "reportType" makeReport02.m
-		rhs.add(new MWCharArray("docx"));
+		// add "type" makeReport02.m
+		rhs.add(new MWCharArray(new String("docx")));
 
 		// Make a Struct according to class MWStructArray
 		// https://it.mathworks.com/help/javabuilder/MWArrayAPI/com/mathworks/toolbox/javabuilder/MWStructArray.html
@@ -96,16 +93,16 @@ public class JPADReportUtils {
 				"wingSpan"		// 4
 		};
 		
-		MWStructArray reportDataMapStructArray = new MWStructArray(sdims, sfields);
-		int totNumElem = reportDataMapStructArray.numberOfElements() * reportDataMapStructArray.numberOfFields();
+		MWStructArray reportDataStructArray = new MWStructArray(sdims, sfields);
+		int totNumElem = reportDataStructArray.numberOfElements() * reportDataStructArray.numberOfFields();
 
-		reportDataMapStructArray.set(1, "Title from Java");
-		reportDataMapStructArray.set(2, "Subtitle from Java");
-		reportDataMapStructArray.set(3, "jagodemar");
-		reportDataMapStructArray.set(4, aircraft.getWing().getSpan().doubleValue(SI.METER));
+		reportDataStructArray.set(1, "Title from Java");
+		reportDataStructArray.set(2, "Subtitle from Java");
+		reportDataStructArray.set(3, "jagodemar");
+		reportDataStructArray.set(4, aircraft.getWing().getSpan().doubleValue(SI.METER));
 		
 		// finally add the Struct "reportData" makeReport02.m
-		rhs.add(reportDataMapStructArray);
+		rhs.add(reportDataStructArray);
 		
 		reportMaker.makeReport02(lhs, rhs);
 

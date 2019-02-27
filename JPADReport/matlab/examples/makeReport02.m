@@ -1,5 +1,13 @@
 function [rpt] = makeReport02(fileName, type, reportData)
 %% import the base classes
+
+%% https://it.mathworks.com/help/rptgen/ug/compile-a-report-program.html
+% If compiling, make the DOM compilable
+if ismcc || isdeployed
+    % Make sure DOM is compilable
+    makeDOMCompilable()
+end
+
 import mlreportgen.report.* 
 import mlreportgen.dom.* 
 
@@ -39,19 +47,7 @@ para = Paragraph([ ...
 'lower row of numbers in the square.']); 
 add(sec2,para) 
 add(ch1,sec2) 
-
-durerImage=load(which('durer.mat'),'-mat'); 
-figure('Units','Pixels','Position',... 
-[200 200 size(durerImage.X,2)*.5 ... 
-size(durerImage.X,1)*.5 ]); 
-image(durerImage.X); 
-colormap(durerImage.map); 
-axis('image'); 
-set(gca,'Xtick',[],'Ytick',[],... 
-'Units','normal','Position',[0 0 1 1]); 
-add(sec2,Figure) 
 add(rpt,ch1) 
-close gcf 
 
 ch2 = Chapter(); 
 ch2.Title = sprintf('10 x 10 Magic Square'); 
