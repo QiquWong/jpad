@@ -1174,7 +1174,7 @@ public class InputManagerControllerMainActionUtilities {
 						
 						System.setOut(filterStream);
 						
-						int numberOfOperations = 28;
+						int numberOfOperations = 29;
 						double progressIncrement = 100/numberOfOperations;
 						
 						MyConfiguration.setDir(FoldersEnum.DATABASE_DIR, Main.getDatabaseDirectoryPath());
@@ -1569,8 +1569,22 @@ public class InputManagerControllerMainActionUtilities {
 							updateMessage("Creating Nacelles FrontView...");
 							updateTitle(String.valueOf(progressIncrement*27) + "%");	
 						}
+						//...................................
+						// Update CAD 3D view engine tabs
+						if (Main.getTheAircraft().getNacelles() != null && Main.getTheAircraft().getPowerPlant() != null) {
+							Platform.runLater(new Runnable() {
+								
+								@Override
+								public void run() {
+									theController.getInputManagerControllerSecondaryActionUtilities().addCADEnginesImplementation();
+								}
+							});
+							updateProgress(28, numberOfOperations);
+							updateMessage("Updating CAD engine tabs...");
+							updateTitle(String.valueOf(progressIncrement*28) + "%");
+						}
 
-						updateProgress(28, numberOfOperations);
+						updateProgress(29, numberOfOperations);
 						updateMessage("Aircraft Loaded!");
 						updateTitle(String.valueOf(100) + "%");
 						
@@ -1863,20 +1877,29 @@ public class InputManagerControllerMainActionUtilities {
 			engineTemplatesFileMap.put(EngineCADComponentsEnum.BLADE, bladeFile);
 			engineTemplatesFileMapList.add(engineTemplatesFileMap);
 			
-			// TODO: check on pitch angles!
-			int bladeAngleUnitIndex = theController.getEnginesCADBladePitchAngleUnitList().get(i).getSelectionModel().getSelectedIndex();		
+			int bladeAngleUnitIndex = theController.getEnginesCADBladePitchAngleUnitList().get(i).getSelectionModel().getSelectedIndex();	
+			String bladeAngleString = (theController.getEnginesCADBladePitchAngleTextFieldList().get(i).isDisabled()) ?
+					"" : theController.getEnginesCADBladePitchAngleTextFieldList().get(i).getText();
 			if (bladeAngleUnitIndex == 0) {
 				propellerBladeAngleList.add(Amount.valueOf(
-						Double.valueOf(theController.getEnginesCADBladePitchAngleTextFieldList().get(i).getText()), 
+						Double.valueOf(bladeAngleString), 
 						NonSI.DEGREE_ANGLE
 						));
 			} else {
 				propellerBladeAngleList.add(Amount.valueOf(
-						Double.valueOf(theController.getEnginesCADBladePitchAngleTextFieldList().get(i).getText()), 
+						Double.valueOf(bladeAngleString), 
 						SI.RADIAN
 						));
 			}			
 		}		
+		
+		FileExtension fileExtension = (theController.getFileExtensionCADChoiceBox().isDisabled()) ?
+				Main.getTheCADManager().getTheCADBuilderInterface().getFileExtension() :
+				FileExtension.valueOf(theController.getFileExtensionCADChoiceBox().getSelectionModel().getSelectedItem());
+				
+		boolean exportWireframe = (theController.getExportCADWireframeCheckBox().isDisabled()) ?
+				Main.getTheCADManager().getTheCADBuilderInterface().getExportWireframe() :
+				theController.getExportCADWireframeCheckBox().isSelected();
 		
 		// First update the CADManager with the updated values provided by the user
 		ICADManager cadManagerInterface = new ICADManager.Builder()
@@ -1916,8 +1939,8 @@ public class InputManagerControllerMainActionUtilities {
 				.setCanardFairingHeightAboveReferenceFactor(canardFairingHeightAboveReferenceFactor)
 				.setCanardFairingFilletRadiusFactor(canardFairingFilletRadiusFactor)
 				.setExportToFile(false)
-				.setFileExtension(FileExtension.valueOf(theController.getFileExtensionCADChoiceBox().getSelectionModel().getSelectedItem()))
-				.setExportWireframe(theController.getExportCADWireframeCheckBox().isSelected())
+				.setFileExtension(fileExtension)
+				.setExportWireframe(exportWireframe)
 				.build();
 		
 		CADManager cadManager = new CADManager();

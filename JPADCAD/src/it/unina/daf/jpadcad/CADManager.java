@@ -54,6 +54,7 @@ public class CADManager {
 	private Aircraft _theAircraft;
 	private List<OCCShape> _theAircraftShapes = new ArrayList<>();
 	private Map<CADComponentEnum, List<OCCShape>> _theAircraftSolidsMap = new HashMap<>();
+	private String _theInputDirectory;
 	
 	// ------- JavaFX material ---------- //
 	private Scene _theScene;
@@ -286,36 +287,75 @@ public class CADManager {
 		
 		List<Map<EngineCADComponentsEnum, String>> engineTemplatesList = new ArrayList<>();
 		List<Amount<Angle>> propellerBladePitchAngleList = new ArrayList<>();
+		List<String> propellerBladePitchAngleStringList = reader.getXMLPropertiesByPath("//engine/propellerBladePitchAngle");
 		
 		// Read ENGINES CAD parameters from the XML file	
-		if (generateEngines && (enginesNodeList.getLength() == theAircraft.getPowerPlant().getEngineNumber())) {
+		if (generateEngines) {
 			
-			List<String> propellerBladePitchAngleStringList = reader.getXMLPropertiesByPath("//engine/propellerBladePitchAngle");
+			if (enginesNodeList.getLength() >= theAircraft.getPowerPlant().getEngineNumber()) {
+				
+				for (int i = 0; i < theAircraft.getPowerPlant().getEngineNumber(); i++) {
+					
+					Element engineElement = (Element) enginesNodeList.item(i);
+					String templateNacelle = engineElement.getAttribute("templateNacelle");
+					String templateBlade = engineElement.getAttribute("templateBlade");
+					
+					Map<EngineCADComponentsEnum, String> engineTemplatesMap = new HashMap<>();
+					engineTemplatesMap.put(EngineCADComponentsEnum.NACELLE, templateNacelle);
+					engineTemplatesMap.put(EngineCADComponentsEnum.BLADE, templateBlade);			
+					engineTemplatesList.add(engineTemplatesMap);
+					
+					if (theAircraft.getPowerPlant().getEngineList().get(i).getEngineType().equals(EngineTypeEnum.PISTON) ||
+						theAircraft.getPowerPlant().getEngineList().get(i).getEngineType().equals(EngineTypeEnum.PROPFAN) ||
+						theAircraft.getPowerPlant().getEngineList().get(i).getEngineType().equals(EngineTypeEnum.TURBOPROP)) {
+					
+						if (!propellerBladePitchAngleStringList.get(i).equals(""))
+							propellerBladePitchAngleList.add(Amount.valueOf(Double.valueOf(propellerBladePitchAngleStringList.get(i)), NonSI.DEGREE_ANGLE));
+						else
+							propellerBladePitchAngleList.add(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));								
+					} else 					
+						propellerBladePitchAngleList.add(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
 			
-			for (int i = 0; i < enginesNodeList.getLength(); i++) {
+				}
 				
-				Element engineElement = (Element) enginesNodeList.item(i);
-				String templateNacelle = engineElement.getAttribute("templateNacelle");
-				String templateBlade = engineElement.getAttribute("templateBlade");
+			} else {
 				
-				Map<EngineCADComponentsEnum, String> engineTemplatesMap = new HashMap<>();
-				engineTemplatesMap.put(EngineCADComponentsEnum.NACELLE, templateNacelle);
-				engineTemplatesMap.put(EngineCADComponentsEnum.BLADE, templateBlade);			
-				engineTemplatesList.add(engineTemplatesMap);
-				
-				if (theAircraft.getPowerPlant().getEngineList().get(i).getEngineType().equals(EngineTypeEnum.PISTON) ||
-					theAircraft.getPowerPlant().getEngineList().get(i).getEngineType().equals(EngineTypeEnum.PROPFAN) ||
-					theAircraft.getPowerPlant().getEngineList().get(i).getEngineType().equals(EngineTypeEnum.TURBOPROP)) {
-				
-					if (!propellerBladePitchAngleStringList.get(i).equals(""))
-						propellerBladePitchAngleList.add(Amount.valueOf(Double.valueOf(propellerBladePitchAngleStringList.get(i)), NonSI.DEGREE_ANGLE));
-					else
-						propellerBladePitchAngleList.add(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));								
-				} else 					
-					propellerBladePitchAngleList.add(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
-		
+				for (int i = 0; i < theAircraft.getPowerPlant().getEngineNumber(); i++) {
+					
+					if (i < enginesNodeList.getLength()) {
+						
+						Element engineElement = (Element) enginesNodeList.item(i);
+						String templateNacelle = engineElement.getAttribute("templateNacelle");
+						String templateBlade = engineElement.getAttribute("templateBlade");
+						
+						Map<EngineCADComponentsEnum, String> engineTemplatesMap = new HashMap<>();
+						engineTemplatesMap.put(EngineCADComponentsEnum.NACELLE, templateNacelle);
+						engineTemplatesMap.put(EngineCADComponentsEnum.BLADE, templateBlade);			
+						engineTemplatesList.add(engineTemplatesMap);
+						
+						if (theAircraft.getPowerPlant().getEngineList().get(i).getEngineType().equals(EngineTypeEnum.PISTON) ||
+							theAircraft.getPowerPlant().getEngineList().get(i).getEngineType().equals(EngineTypeEnum.PROPFAN) ||
+							theAircraft.getPowerPlant().getEngineList().get(i).getEngineType().equals(EngineTypeEnum.TURBOPROP)) {
+						
+							if (!propellerBladePitchAngleStringList.get(i).equals(""))
+								propellerBladePitchAngleList.add(Amount.valueOf(Double.valueOf(propellerBladePitchAngleStringList.get(i)), NonSI.DEGREE_ANGLE));
+							else
+								propellerBladePitchAngleList.add(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));								
+						} else 					
+							propellerBladePitchAngleList.add(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
+						
+					} else {
+						
+						Map<EngineCADComponentsEnum, String> engineTemplatesMap = new HashMap<>();
+						engineTemplatesMap.put(EngineCADComponentsEnum.NACELLE, "");
+						engineTemplatesMap.put(EngineCADComponentsEnum.BLADE, "");			
+						engineTemplatesList.add(engineTemplatesMap);
+						
+						propellerBladePitchAngleList.add(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
+					}
+				} 
 			}
-			
+				
 		} else {
 			
 			generateEngines = false;
@@ -551,12 +591,12 @@ public class CADManager {
 		else {
 			stringBuilder.append("\tNumber of engines: " + _theCADBuilderInterface.getEngineTemplatesList().size() + ".\n");
 			for (int i = 0; i < _theCADBuilderInterface.getEngineTemplatesList().size(); i++) {
-				stringBuilder.append("\t Engine #" + (i+1) + ":\n")
-							 .append("\t\t Nacelle template file: ")
+				stringBuilder.append("\tEngine #" + (i+1) + ":\n")
+							 .append("\t\tNacelle template file: ")
 							 .append(_theCADBuilderInterface.getEngineTemplatesList().get(i).get(EngineCADComponentsEnum.NACELLE) + ".\n")
-							 .append("\t\t Blade template file: ")
+							 .append("\t\tBlade template file: ")
 							 .append(_theCADBuilderInterface.getEngineTemplatesList().get(i).get(EngineCADComponentsEnum.BLADE) + ".\n")
-							 .append("\t\t Propeller blade pitch angle: ");
+							 .append("\t\tPropeller blade pitch angle: ");
 				if (_theAircraft.getPowerPlant().getEngineList().get(i).getEngineType().equals(EngineTypeEnum.PISTON) ||
 					_theAircraft.getPowerPlant().getEngineList().get(i).getEngineType().equals(EngineTypeEnum.PROPFAN) ||
 					_theAircraft.getPowerPlant().getEngineList().get(i).getEngineType().equals(EngineTypeEnum.TURBOPROP)) 
@@ -580,7 +620,7 @@ public class CADManager {
 						 .append("\tFillet radius factor: " + _theCADBuilderInterface.getWingFairingFilletRadiusFactor() + ".\n")
 						 .append("\n");
 		
-		stringBuilder.append("\t[Generate Canard/Fuselage Fairing CAD]: " + _theCADBuilderInterface.getGenerateCanardFairing() + ".\n");
+		stringBuilder.append("\t[Generate Canard-Fuselage Fairing CAD]: " + _theCADBuilderInterface.getGenerateCanardFairing() + ".\n");
 		if (!_theCADBuilderInterface.getGenerateCanardFairing()) 
 			stringBuilder.append("\n");
 		else
@@ -604,7 +644,7 @@ public class CADManager {
 		return stringBuilder.toString();
 	}
 	
-	private void initializeCADMap() {
+	private void initializeCADMap(String inputDirectory) {
 		
 		if (_theCADBuilderInterface.getGenerateFuselage()) {
 			_theAircraftSolidsMap.put(CADComponentEnum.FUSELAGE, new ArrayList<OCCShape>());
@@ -628,6 +668,7 @@ public class CADManager {
 		
 		if (_theCADBuilderInterface.getGenerateEngines()) {
 			_theAircraftSolidsMap.put(CADComponentEnum.ENGINES, new ArrayList<OCCShape>());
+			_theInputDirectory = inputDirectory;		
 		}
 		
 		if (_theCADBuilderInterface.getGenerateWingFairing()) {
@@ -639,8 +680,8 @@ public class CADManager {
 		}
 	}
 	
-	public void generateCAD() {
-		initializeCADMap();
+	public void generateCAD(String inputDirectory) {
+		initializeCADMap(inputDirectory);
 		
 		//---------------------------------------------------------------
 		// GENERATE THE AIRCRAFT CAD
@@ -740,9 +781,11 @@ public class CADManager {
 			_theAircraftSolidsMap.get(CADComponentEnum.CANARD).addAll(AircraftCADUtils.filterAircraftPartSolids(canardShapes));
 		}
 		
+		// ENGINES
 		if (_theCADBuilderInterface.getGenerateEngines()) {
 			
 			List<OCCShape> enginesShapes = AircraftCADUtils.getEnginesCAD(
+					_theInputDirectory,
 					_theAircraft.getNacelles().getNacellesList(), 
 					_theAircraft.getPowerPlant().getEngineList(), 
 					_theCADBuilderInterface.getEngineTemplatesList(), 

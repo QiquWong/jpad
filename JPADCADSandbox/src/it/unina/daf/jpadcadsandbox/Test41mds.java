@@ -13,6 +13,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import javax.measure.quantity.Angle;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
@@ -77,6 +78,8 @@ public class Test41mds {
 		System.out.println("------------------ CAD engine modeling test -----------------");
 		System.out.println("-------------------------------------------------------------");
 		
+		String inputDirectory = MyConfiguration.inputDirectory;
+		
 		// ----------------------
 		// Import the aircraft
 		// ----------------------
@@ -103,22 +106,36 @@ public class Test41mds {
 		tfTemplatesMap.put(EngineCADComponentsEnum.NACELLE, "TF_complete_01.step");
 		
 		List<Map<EngineCADComponentsEnum, String>> templatesMapList = new ArrayList<>();
+		templatesMapList.add(tpTemplatesMap);
 		templatesMapList.add(tfTemplatesMap);
 		templatesMapList.add(tfTemplatesMap);
+		templatesMapList.add(tpTemplatesMap);
+		templatesMapList.add(tfTemplatesMap);
+		templatesMapList.add(tfTemplatesMap);
+		templatesMapList.add(tpTemplatesMap);
+		
+		List<Amount<Angle>> bladePitchAngleList = new ArrayList<>();
+		bladePitchAngleList.add(Amount.valueOf(35.0, NonSI.DEGREE_ANGLE));
+		bladePitchAngleList.add(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
+		bladePitchAngleList.add(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
+		bladePitchAngleList.add(Amount.valueOf(90.0, NonSI.DEGREE_ANGLE));
+		bladePitchAngleList.add(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
+		bladePitchAngleList.add(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
+		bladePitchAngleList.add(Amount.valueOf(70.0, NonSI.DEGREE_ANGLE));
 		
 		boolean exportWires = false;
 		boolean exportShells = false;
 		boolean exportSolids = true;
 		
-		List<OCCShape> engineShapes = AircraftCADUtils.getEnginesCAD(
-				nacelles, engines, templatesMapList, exportWires, exportShells, exportSolids);
+		List<OCCShape> engineShapes = AircraftCADUtils.getEnginesCAD(inputDirectory,
+				nacelles, engines, templatesMapList, bladePitchAngleList, exportWires, exportShells, exportSolids);
 		
 		// Generate CAD for the remaining components
 		List<OCCShape> fuselageShapes = AircraftCADUtils.getFuselageCAD(
 				fuselage, 7, 7, exportWires, exportShells, exportSolids);
 		
 		List<OCCShape> wingShapes = AircraftCADUtils.getLiftingSurfaceWingletCAD(
-				wing, 1.00, 0.35, 0.25, exportWires, exportShells, exportSolids);
+				wing, 0.75, 0.25, 0.20, exportWires, exportShells, exportSolids);
 		
 		List<OCCShape> hTailShapes = AircraftCADUtils.getLiftingSurfaceCAD(
 				hTail, WingTipType.ROUNDED, exportWires, exportShells, exportSolids);
@@ -142,7 +159,7 @@ public class Test41mds {
 		exportShapes.addAll(fairingShapes);
 		exportShapes.addAll(engineShapes);
 			
-		OCCUtils.write("Test41mds", FileExtension.STEP, exportShapes);
+		OCCUtils.write("test_wing_matlab", FileExtension.STEP, exportShapes);
 	}
 	
 //	public static List<OCCShape> getEnginesCAD(List<NacelleCreator> nacelles, List<Engine> engines,

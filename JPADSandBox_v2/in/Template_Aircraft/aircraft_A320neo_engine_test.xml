@@ -40,10 +40,19 @@
             </fuselage>
         </fuselages>
 		<power_plant>
+			<engine file="engine_ATR72.xml">
+                <position>
+                    <x unit="m">12.50</x>
+                    <y unit="m">16.00</y>
+                    <z unit="m">-1.00</z>
+                </position>
+                <tilting_angle unit="deg">0.0</tilting_angle>
+				<mounting_point>WING</mounting_point>
+            </engine>
 			<engine file="engine_CS300.xml">
                 <position>
                     <x unit="m">12.00</x>
-                    <y unit="m">8.75</y>
+                    <y unit="m">10.75</y>
                     <z unit="m">-1.85</z>
                 </position>
                 <tilting_angle unit="deg">-5.0</tilting_angle>
@@ -55,7 +64,7 @@
                     <y unit="m">5.75</y>
                     <z unit="m">-2.02</z>
                 </position>
-                <tilting_angle unit="deg">0.0</tilting_angle>
+                <tilting_angle unit="deg">10.0</tilting_angle>
 				<mounting_point>WING</mounting_point>
             </engine>
 			<engine file="engine_ATR72.xml">
@@ -64,7 +73,7 @@
                     <y unit="m">0.00</y>
                     <z unit="m">5.00</z>
                 </position>
-                <tilting_angle unit="deg">10.0</tilting_angle>
+                <tilting_angle unit="deg">3.0</tilting_angle>
 				<mounting_point>HTAIL</mounting_point>
             </engine>
             <engine file="engine_A320neo.xml">
@@ -73,20 +82,37 @@
                     <y unit="m">-5.75</y>
                     <z unit="m">-2.02</z>
                 </position>
-                <tilting_angle unit="deg">0.0</tilting_angle>
+                <tilting_angle unit="deg">10.0</tilting_angle>
                 <mounting_point>WING</mounting_point>
             </engine>
 			<engine file="engine_CS300.xml">
                 <position>
                     <x unit="m">12.00</x>
-                    <y unit="m">-8.75</y>
+                    <y unit="m">-10.75</y>
                     <z unit="m">-1.85</z>
                 </position>
                 <tilting_angle unit="deg">-5.0</tilting_angle>
 				<mounting_point>WING</mounting_point>
             </engine>
+			<engine file="engine_ATR72.xml">
+                <position>
+                    <x unit="m">12.50</x>
+                    <y unit="m">-16.00</y>
+                    <z unit="m">-1.00</z>
+                </position>
+                <tilting_angle unit="deg">0.0</tilting_angle>
+				<mounting_point>WING</mounting_point>
+            </engine>
 		</power_plant> 
 		<nacelles>
+			<nacelle file="nacelle_ATR72.xml">
+                <position>
+                    <x unit="m">12.50</x>
+                    <y unit="m">16.00</y>
+                    <z unit="m">-1.00</z>
+                </position>
+                <mounting_point>WING</mounting_point>
+            </nacelle>
 			<nacelle file="nacelle_CS300.xml">
                 <position>
                     <x unit="m">12.00</x>
@@ -126,6 +152,14 @@
                     <z unit="m">-1.85</z>
                 </position>
 				<mounting_point>WING</mounting_point>
+            </nacelle>
+			<nacelle file="nacelle_ATR72.xml">
+                <position>
+                    <x unit="m">12.50</x>
+                    <y unit="m">-16.00</y>
+                    <z unit="m">-1.00</z>
+                </position>
+                <mounting_point>WING</mounting_point>
             </nacelle>
 		</nacelles> 
 		<landing_gears file="landing_gear_A320neo.xml">

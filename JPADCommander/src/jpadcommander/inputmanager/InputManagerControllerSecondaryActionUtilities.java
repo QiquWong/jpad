@@ -716,7 +716,7 @@ public class InputManagerControllerSecondaryActionUtilities {
 				@Override
 				public void handle(ActionEvent event) {
 					try {
-						chooseCADEngineNacelleFile(indexOfBlade);
+						chooseCADEngineBladeFile(indexOfBlade);
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
@@ -1690,7 +1690,20 @@ public class InputManagerControllerSecondaryActionUtilities {
 		
 	}
 	
-	public void addCADEngineImplementation() {
+	public void addCADEnginesImplementation() {
+		
+		if (Main.getTheAircraft().getPowerPlant().getEngineList().size() >= 
+				theController.getTabPaneCAD3DViewEngines().getTabs().size()) {
+			
+			int i = theController.getTabPaneCAD3DViewEngines().getTabs().size();
+			while (i < Main.getTheAircraft().getPowerPlant().getEngineList().size()) {
+				addCADEngineImplementation();
+				i++;
+			}			
+		}
+	}
+	
+	private void addCADEngineImplementation() {
 		
 		Tab newCADEngineTab = new Tab("Engine " + (theController.getTabPaneCAD3DViewEngines().getTabs().size() + 1));
 		Pane contentPane = new Pane();
@@ -2436,6 +2449,15 @@ public class InputManagerControllerSecondaryActionUtilities {
 	
 	public void chooseCADEngineNacelleFile(int indexOfNacelle) throws IOException {
 		
+		String engineTemplateFolder = "";
+		if (Main.getTheAircraft() != null) {
+			if (Main.getTheAircraft().getPowerPlant().getEngineList().get(indexOfNacelle).getEngineType().equals(EngineTypeEnum.TURBOFAN) ||
+				Main.getTheAircraft().getPowerPlant().getEngineList().get(indexOfNacelle).getEngineType().equals(EngineTypeEnum.TURBOJET))
+				engineTemplateFolder = "turbofan_templates";
+			else
+				engineTemplateFolder = "turboprop_templates";
+		} 
+		
 		theController.setCADNacelleFileChooser(new FileChooser());
 		theController.getCADNacelleFileChooser().setTitle("Open file");
 		theController.getCADNacelleFileChooser().setInitialDirectory(
@@ -2443,11 +2465,12 @@ public class InputManagerControllerSecondaryActionUtilities {
 						Main.getInputDirectoryPath()
 						+ File.separator
 						+ "Template_CADEngines"
+						+ File.separator
+						+ engineTemplateFolder
 						)
 				);
 		File file = theController.getCADNacelleFileChooser().showOpenDialog(null);
 		if (file != null) {
-			// get full path and populate the text box
 			theController.getEnginesCADNacelleTemplateFileTextFieldList().get(indexOfNacelle).setText(file.getName());
 		}
 	}
@@ -2461,11 +2484,12 @@ public class InputManagerControllerSecondaryActionUtilities {
 						Main.getInputDirectoryPath()
 						+ File.separator
 						+ "Template_CADEngines"
+						+ File.separator
+						+ "turboprop_templates"
 						)
 				);
 		File file = theController.getCADBladeFileChooser().showOpenDialog(null);
 		if (file != null) {
-			// get full path and populate the text box
 			theController.getEnginesCADBladeTemplateFileTextFieldList().get(indexOfBlade).setText(file.getName());
 		}
 	}
@@ -2503,7 +2527,6 @@ public class InputManagerControllerSecondaryActionUtilities {
 		final PrintStream originalOut = System.out;
 		PrintStream filterStream = new PrintStream(new OutputStream() {
 			public void write(int b) {
-				// write nothing
 			}
 		});
 		System.setOut(filterStream);
