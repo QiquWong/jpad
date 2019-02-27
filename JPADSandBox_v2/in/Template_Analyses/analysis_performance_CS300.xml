@@ -211,7 +211,7 @@
 			</emission_index_H2O>
 		</calibrations>
     </analysis>
-	<plot>
+		<plot>
 		<takeoff>
 			<simulations perform="TRUE"/>
 			<balanced_field_length perform="TRUE"/>
@@ -232,7 +232,7 @@
 			<thrust_drag perform="TRUE"/>
 			<power_needed_and_available perform="TRUE"/>
 			<efficiency perform="TRUE"/>
-			<cruise_grid perform="FALSE"/>
+			<cruise_grid perform="TRUE"/>
 			<flight_envelope perform="TRUE"/>
 		</cruise>
 		<descent perform="TRUE"/>

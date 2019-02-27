@@ -285,6 +285,7 @@ public class TakeOffCalc {
 		this.machPerStep = new ArrayList<>();
 		this.thetaPerStep = new ArrayList<>();
 		this.gammaPerStep = new ArrayList<>();
+		this.alphaPerStep = new ArrayList<>();
 		this.timePerStep = new ArrayList<>();
 		this.fuelUsedPerStep = new ArrayList<>();
 		this.emissionsNOxPerStep = new ArrayList<>();
@@ -367,6 +368,7 @@ public class TakeOffCalc {
 		machPerStep.clear();
 		thetaPerStep.clear();
 		gammaPerStep.clear();
+		alphaPerStep.clear();
 		timePerStep.clear();
 		fuelUsedPerStep.clear();
 		emissionsNOxPerStep.clear();
@@ -497,10 +499,10 @@ public class TakeOffCalc {
 				this.vFailure = vFailure;
 
 			theIntegrator = new HighamHall54Integrator(
-					1e-20,
+					1e-10,
 					1,
-					1e-13,
-					1e-13
+					1e-8,
+					1e-8
 					);
 			ode = new DynamicsEquationsTakeOff();
 
@@ -880,7 +882,7 @@ public class TakeOffCalc {
 									SI.NEWTON)
 									);
 						else
-							TakeOffCalc.this.friction.add(Amount.valueOf(0.0, SI.NEWTON));
+							TakeOffCalc.this.frictionPerStep.add(Amount.valueOf(0.0, SI.NEWTON));
 					}
 					else {
 						if(currentTime.doubleValue(SI.SECOND) < tRec.doubleValue(SI.SECOND))

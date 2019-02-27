@@ -7749,6 +7749,7 @@ public class ACPerformanceManager {
 			         // write nothing
 			    }
 			});
+//			PrintStream filterStream = System.out;
 			
 			System.setOut(filterStream);
 			
@@ -7893,6 +7894,7 @@ public class ACPerformanceManager {
 			         // write nothing
 			    }
 			});
+//			PrintStream filterStream = System.out;
 			
 			System.setOut(filterStream);
 			
