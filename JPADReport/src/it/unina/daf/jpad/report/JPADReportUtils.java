@@ -87,10 +87,11 @@ public class JPADReportUtils {
 		// https://it.mathworks.com/help/javabuilder/MWArrayAPI/com/mathworks/toolbox/javabuilder/MWStructArray.html
 		int[] sdims = {1, 2};
 		String[] sfields = {
-				"title",		// 1 
-				"subtitle", 	// 2
-				"author",		// 3
-				"wingSpan"		// 4
+				"title",			// 1 
+				"subtitle", 		// 2
+				"author",			// 3
+				"wingSpan",			// 4
+				"wingAspectRatio"	// 5
 		};
 		
 		MWStructArray reportDataStructArray = new MWStructArray(sdims, sfields);
@@ -99,7 +100,8 @@ public class JPADReportUtils {
 		reportDataStructArray.set(1, "Title from Java");
 		reportDataStructArray.set(2, "Subtitle from Java");
 		reportDataStructArray.set(3, "jagodemar");
-		reportDataStructArray.set(4, aircraft.getWing().getSpan().doubleValue(SI.METER));
+		reportDataStructArray.set(4, aircraft.getWing().getSpan().doubleValue(SI.METER)); // TODO: pass it as a String containing unit?
+		reportDataStructArray.set(5, aircraft.getWing().getAspectRatio());
 		
 		// finally add the Struct "reportData" makeReport02.m
 		rhs.add(reportDataStructArray);

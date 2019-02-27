@@ -1,6 +1,6 @@
 /*
  * MATLAB Compiler: 7.0 (R2018b)
- * Date: Wed Feb 27 11:57:55 2019
+ * Date: Wed Feb 27 15:24:01 2019
  * Arguments: 
  * "-B""macro_default""-W""java:MReportUtils,ReportMaker""-T""link:lib""-d""C:\\Users\\DeMarco-PC\\JPAD_PROJECT\\jpad\\JPADReport\\matlab\\examples\\MReportUtils\\for_testing""class{ReportMaker:C:\\Users\\DeMarco-PC\\JPAD_PROJECT\\jpad\\JPADReport\\matlab\\examples\\makeReport02.m}"
  */
@@ -45,7 +45,16 @@ public interface ReportMakerRemote extends Poolable
      *
      * Documentation as provided by the author of the MATLAB function:
      * <pre>
-     * %% import the base classes
+     * % MAKEREPORT02 create a report of type reportType and save it as
+     * %   reportFileName (extension will be appended depending on document type)
+     * %
+     * % Usage:
+     * %   reportData.title         = 'My title';
+     * %   reportData.subtitle      = 'My subtitle';
+     * %   reportData.author        = 'A. U. Thor';
+     * %   reportData.wingSpan      = '34.5'; % m
+     * %   reportData.aspectRatio   = '8.4';
+     * %   rpt = makeReport02('MyReport', 'docx', reportData);
      * </pre>
      *
      * @param nargout Number of outputs to return.

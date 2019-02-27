@@ -1,6 +1,6 @@
 /*
  * MATLAB Compiler: 7.0 (R2018b)
- * Date: Wed Feb 27 11:57:55 2019
+ * Date: Wed Feb 27 15:24:01 2019
  * Arguments: 
  * "-B""macro_default""-W""java:MReportUtils,ReportMaker""-T""link:lib""-d""C:\\Users\\DeMarco-PC\\JPAD_PROJECT\\jpad\\JPADReport\\matlab\\examples\\MReportUtils\\for_testing""class{ReportMaker:C:\\Users\\DeMarco-PC\\JPAD_PROJECT\\jpad\\JPADReport\\matlab\\examples\\makeReport02.m}"
  */
@@ -142,7 +142,16 @@ public class ReportMaker extends MWComponentInstance<ReportMaker>
      * Description as provided by the author of the MATLAB function:
      * </p>
      * <pre>
-     * %% import the base classes
+     * % MAKEREPORT02 create a report of type reportType and save it as
+     * %   reportFileName (extension will be appended depending on document type)
+     * %
+     * % Usage:
+     * %   reportData.title         = 'My title';
+     * %   reportData.subtitle      = 'My subtitle';
+     * %   reportData.author        = 'A. U. Thor';
+     * %   reportData.wingSpan      = '34.5'; % m
+     * %   reportData.aspectRatio   = '8.4';
+     * %   rpt = makeReport02('MyReport', 'docx', reportData);
      * </pre>
      * @param lhs List in which to return outputs. Number of outputs (nargout) is
      * determined by allocated size of this List. Outputs are returned as
@@ -170,7 +179,16 @@ public class ReportMaker extends MWComponentInstance<ReportMaker>
      * Description as provided by the author of the MATLAB function:
      * </p>
      * <pre>
-     * %% import the base classes
+     * % MAKEREPORT02 create a report of type reportType and save it as
+     * %   reportFileName (extension will be appended depending on document type)
+     * %
+     * % Usage:
+     * %   reportData.title         = 'My title';
+     * %   reportData.subtitle      = 'My subtitle';
+     * %   reportData.author        = 'A. U. Thor';
+     * %   reportData.wingSpan      = '34.5'; % m
+     * %   reportData.aspectRatio   = '8.4';
+     * %   rpt = makeReport02('MyReport', 'docx', reportData);
      * </pre>
      * @param lhs array in which to return outputs. Number of outputs (nargout)
      * is determined by allocated size of this array. Outputs are returned as
@@ -203,7 +221,16 @@ public class ReportMaker extends MWComponentInstance<ReportMaker>
      * Description as provided by the author of the MATLAB function:
      * </p>
      * <pre>
-     * %% import the base classes
+     * % MAKEREPORT02 create a report of type reportType and save it as
+     * %   reportFileName (extension will be appended depending on document type)
+     * %
+     * % Usage:
+     * %   reportData.title         = 'My title';
+     * %   reportData.subtitle      = 'My subtitle';
+     * %   reportData.author        = 'A. U. Thor';
+     * %   reportData.wingSpan      = '34.5'; % m
+     * %   reportData.aspectRatio   = '8.4';
+     * %   rpt = makeReport02('MyReport', 'docx', reportData);
      * </pre>
      * @param nargout Number of outputs to return.
      * @param rhs The inputs to the MATLAB function.

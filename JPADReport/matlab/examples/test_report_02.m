@@ -6,7 +6,8 @@ reportData.title = 'Title coming from reportData';
 reportData.subtitle = 'test_report_02';
 reportData.author = 'agodemar';
 
-reportData.wingSpan = 13.5;
+reportData.wingSpan        = 13.5;
+reportData.wingAspectRatio = 9.5;
 
 %% Create a report object
-rpt = makeReport02('test_report_02', 'pdf', reportData);
+rpt = makeReport02('test_report_02', 'docx', reportData);
