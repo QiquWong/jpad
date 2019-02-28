@@ -4179,9 +4179,9 @@ public class ACAerodynamicAndStabilityManager_v2 {
 					sb.append("\t\tCL_total equilibrium = " + _totalEquilibriumLiftCoefficient.get(
 							_theAerodynamicBuilderInterface.getXCGAircraft().get(i)
 							).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium+1) + "\n");
-					sb.append("\t\tCD_h equilibrium = " + _horizontalTailEquilibriumDragCoefficient.get(
-							_theAerodynamicBuilderInterface.getXCGAircraft().get(i)
-							).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium+1) + "\n");
+//					sb.append("\t\tCD_h equilibrium = " + _horizontalTailEquilibriumDragCoefficient.get(
+//							_theAerodynamicBuilderInterface.getXCGAircraft().get(i)
+//							).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium+1) + "\n");
 					sb.append("\t\tCD_total equilibrium = " + _totalEquilibriumDragCoefficient.get(
 							_theAerodynamicBuilderInterface.getXCGAircraft().get(i)
 							).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium+1) + "\n");
@@ -4206,66 +4206,66 @@ public class ACAerodynamicAndStabilityManager_v2 {
 				}
 			}
 			
-			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY)) {
-				
-				sb.append("\n\t-------------------------------------\n")
-				.append("\tDIRECTIONAL STABILITY AND CONTROL\n")
-				.append("\t-------------------------------------\n");
-				
-				sb.append("\n\tBeta (deg) = " + _betaList.stream().map(b -> b.doubleValue(NonSI.DEGREE_ANGLE)).collect(Collectors.toList()) + "\n");
-				
-				for (int i = 0; i < _theAerodynamicBuilderInterface.getXCGAircraft().size(); i++) {
-					
-					sb.append("\n\tXcg/C = " + _theAerodynamicBuilderInterface.getXCGAircraft().get(i) + "\n");
-					
-					sb.append("\t\tCN_beta_vertical_tail = " + _cNBetaVertical.get(i)._2() + "\n");
-					
-					sb.append("\t\tCN_beta_fuselage = " + _cNBetaFuselage.get(i)._2() + "\n");
-					
-					sb.append("\t\tCN_beta_wing = " + _cNBetaWing.get(i)._2() + "\n");
-					
-					sb.append("\t\tCN_beta_total = " + _cNBetaTotal.get(i)._2() + "\n");
-					
-					sb.append("\n\t\tDelta_rudder (deg) = " + _theAerodynamicBuilderInterface.getDeltaRudderList().stream().map(
-							dr -> dr.doubleValue(NonSI.DEGREE_ANGLE))
-							.collect(Collectors.toList()) 
-							+ "\n");
-					
-					sb.append("\t\tCN_delta_rudder = "); 
-					for(int j=0; j<_theAerodynamicBuilderInterface.getDeltaRudderList().size(); j++) 
-						sb.append("[" + _cNDeltaR.get(_theAerodynamicBuilderInterface.getDeltaRudderList().get(j)).get(i)._2() + ", ");
-					
-					sb.append("]\n\n\t\tCN_vertical_tail = " + _cNVertical.get(i)._2()
-							+ "\n");
-					
-					sb.append("\t\tCN_fuselage = " + _cNFuselage.get(i)._2()
-							+ "\n");
-					
-					sb.append("\t\tCN_wing = " + _cNWing.get(i)._2()
-							+ "\n");
-					
-					sb.append("\t\tCN_total = " + _cNTotal.get(i)._2()
-							+ "\n\n");
-					
-					for (int j = 0; j < _theAerodynamicBuilderInterface.getDeltaRudderList().size(); j++) {
-						
-						sb.append("\t\tCN at delta rudder = " + 
-								_theAerodynamicBuilderInterface.getDeltaRudderList().get(j).doubleValue(NonSI.DEGREE_ANGLE) + " deg = " +
-								_cNDueToDeltaRudder.get(_theAerodynamicBuilderInterface.getDeltaRudderList().get(j)).get(i)._2()
-								+ "\n");
-						
-					}
-					
-					sb.append("\n\t\tDelta_rudder equilibrium (deg) = " + _betaOfEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).stream()
-							.map(dr -> dr._1().doubleValue(NonSI.DEGREE_ANGLE))
-							.collect(Collectors.toList())
-							+ "\n");
-					sb.append("\t\tBeta equilibrium (deg) = " + _betaOfEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).stream()
-							.map(dr -> dr._2().doubleValue(NonSI.DEGREE_ANGLE))
-							.collect(Collectors.toList())
-							+ "\n");
-				}
-			}
+//			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY)) {
+//				
+//				sb.append("\n\t-------------------------------------\n")
+//				.append("\tDIRECTIONAL STABILITY AND CONTROL\n")
+//				.append("\t-------------------------------------\n");
+//				
+//				sb.append("\n\tBeta (deg) = " + _betaList.stream().map(b -> b.doubleValue(NonSI.DEGREE_ANGLE)).collect(Collectors.toList()) + "\n");
+//				
+//				for (int i = 0; i < _theAerodynamicBuilderInterface.getXCGAircraft().size(); i++) {
+//					
+//					sb.append("\n\tXcg/C = " + _theAerodynamicBuilderInterface.getXCGAircraft().get(i) + "\n");
+//					
+////					sb.append("\t\tCN_beta_vertical_tail = " + _cNBetaVertical.get(i)._2() + "\n");
+//					
+////					sb.append("\t\tCN_beta_fuselage = " + _cNBetaFuselage.get(i)._2() + "\n");
+//					
+////					sb.append("\t\tCN_beta_wing = " + _cNBetaWing.get(i)._2() + "\n");
+//					
+////					sb.append("\t\tCN_beta_total = " + _cNBetaTotal.get(i)._2() + "\n");
+//					
+//					sb.append("\n\t\tDelta_rudder (deg) = " + _theAerodynamicBuilderInterface.getDeltaRudderList().stream().map(
+//							dr -> dr.doubleValue(NonSI.DEGREE_ANGLE))
+//							.collect(Collectors.toList()) 
+//							+ "\n");
+//					
+////					sb.append("\t\tCN_delta_rudder = "); 
+////					for(int j=0; j<_theAerodynamicBuilderInterface.getDeltaRudderList().size(); j++) 
+////						sb.append("[" + _cNDeltaR.get(_theAerodynamicBuilderInterface.getDeltaRudderList().get(j)).get(i)._2() + ", ");
+////					
+////					sb.append("]\n\n\t\tCN_vertical_tail = " + _cNVertical.get(i)._2()
+////							+ "\n");
+////					
+////					sb.append("\t\tCN_fuselage = " + _cNFuselage.get(i)._2()
+////							+ "\n");
+////					
+////					sb.append("\t\tCN_wing = " + _cNWing.get(i)._2()
+////							+ "\n");
+////					
+////					sb.append("\t\tCN_total = " + _cNTotal.get(i)._2()
+////							+ "\n\n");
+////					
+////					for (int j = 0; j < _theAerodynamicBuilderInterface.getDeltaRudderList().size(); j++) {
+////						
+////						sb.append("\t\tCN at delta rudder = " + 
+////								_theAerodynamicBuilderInterface.getDeltaRudderList().get(j).doubleValue(NonSI.DEGREE_ANGLE) + " deg = " +
+////								_cNDueToDeltaRudder.get(_theAerodynamicBuilderInterface.getDeltaRudderList().get(j)).get(i)._2()
+////								+ "\n");
+////						
+////					}
+////					
+////					sb.append("\n\t\tDelta_rudder equilibrium (deg) = " + _betaOfEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).stream()
+////							.map(dr -> dr._1().doubleValue(NonSI.DEGREE_ANGLE))
+////							.collect(Collectors.toList())
+////							+ "\n");
+////					sb.append("\t\tBeta equilibrium (deg) = " + _betaOfEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).stream()
+////							.map(dr -> dr._2().doubleValue(NonSI.DEGREE_ANGLE))
+////							.collect(Collectors.toList())
+////							+ "\n");
+////				}
+//			}
 			
 			/*
 			 * TODO : CONTINUE WITH ALL THE MISSING ANALYSES !!

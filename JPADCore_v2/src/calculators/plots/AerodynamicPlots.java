@@ -5109,74 +5109,74 @@ public class AerodynamicPlots {
 
 		//-----------------------------------------------------------------------------------------------------------------------
 		// CD HTAIL EQUILIBRIUM
-		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.AIRCRAFT).contains(AerodynamicAndStabilityPlotEnum.TRIMMED_POLAR_CURVE_HTAIL)) {
-
-			try {
-			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.LONGITUDINAL_STABILITY)) {
-
-				xVectorMatrix = new ArrayList<Double[]>();
-				yVectorMatrix = new ArrayList<Double[]>();
-				legend  = new ArrayList<>(); 
-
-				for(int i=0; i<_theAerodynamicBuilderInterface.getXCGAircraft().size(); i++){
-					
-					
-					xVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
-							_horizontalTailEquilibriumLiftCoefficient.get(
-									_theAerodynamicBuilderInterface.getXCGAircraft().get(i)
-									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium.get(i))
-							));
-					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
-							_horizontalTailEquilibriumDragCoefficient.get(
-									_theAerodynamicBuilderInterface.getXCGAircraft().get(i)
-									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium.get(i))
-							));
-					legend.add("Xcg = " + 
-							_theAerodynamicBuilderInterface.getXCGAircraft().get(i));
-				}
-
-				xMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
-				yMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
-				legendString = new String[xVectorMatrix.size()];
-
-				for(int i=0; i <xVectorMatrix.size(); i++){
-					xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
-					legendString [i] = legend.get(i);
-				}
-
-				try {
-					MyChartToFileUtils.plot(
-							xVectorMatrix, 
-							yVectorMatrix, 
-							"Horizontal Tail Equilibrium Drag Coefficient", 
-							"CLh_e", 
-							"CDh_e",
-							null, 
-							null, 
-							null, 
-							null, 
-							"",
-							"", 
-							true,
-							legend,
-							aircraftPlotFolderPath,
-							"Htail_Equilibrium_Drag_Coefficient", 
-							_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability()
-							);
-				} catch (InstantiationException | IllegalAccessException e) {
-					e.printStackTrace();
-				}
-				
-			}
-			else
-				System.err.println("WARNING!! THE TRIMMED HORIZONTAL TAIL DRAG POLAR CURVE HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE TRIMMED HORIZONTAL TAIL DRAG POLAR CURVE");
-			}
-			catch (NoSuchElementException e) {
-				System.err.println("WARNING: (PLOT HTAIL EQUILIBRIUM POLAR CURVE) MISSING VALUES ...");
-			}
-			}
-		
+//		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.AIRCRAFT).contains(AerodynamicAndStabilityPlotEnum.TRIMMED_POLAR_CURVE_HTAIL)) {
+//
+//			try {
+//			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.LONGITUDINAL_STABILITY)) {
+//
+//				xVectorMatrix = new ArrayList<Double[]>();
+//				yVectorMatrix = new ArrayList<Double[]>();
+//				legend  = new ArrayList<>(); 
+//
+//				for(int i=0; i<_theAerodynamicBuilderInterface.getXCGAircraft().size(); i++){
+//					
+//					
+//					xVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
+//							_horizontalTailEquilibriumLiftCoefficient.get(
+//									_theAerodynamicBuilderInterface.getXCGAircraft().get(i)
+//									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium.get(i))
+//							));
+//					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
+//							_horizontalTailEquilibriumDragCoefficient.get(
+//									_theAerodynamicBuilderInterface.getXCGAircraft().get(i)
+//									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium.get(i))
+//							));
+//					legend.add("Xcg = " + 
+//							_theAerodynamicBuilderInterface.getXCGAircraft().get(i));
+//				}
+//
+//				xMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+//				yMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+//				legendString = new String[xVectorMatrix.size()];
+//
+//				for(int i=0; i <xVectorMatrix.size(); i++){
+//					xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
+//					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
+//					legendString [i] = legend.get(i);
+//				}
+//
+//				try {
+//					MyChartToFileUtils.plot(
+//							xVectorMatrix, 
+//							yVectorMatrix, 
+//							"Horizontal Tail Equilibrium Drag Coefficient", 
+//							"CLh_e", 
+//							"CDh_e",
+//							null, 
+//							null, 
+//							null, 
+//							null, 
+//							"",
+//							"", 
+//							true,
+//							legend,
+//							aircraftPlotFolderPath,
+//							"Htail_Equilibrium_Drag_Coefficient", 
+//							_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability()
+//							);
+//				} catch (InstantiationException | IllegalAccessException e) {
+//					e.printStackTrace();
+//				}
+//				
+//			}
+//			else
+//				System.err.println("WARNING!! THE TRIMMED HORIZONTAL TAIL DRAG POLAR CURVE HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE TRIMMED HORIZONTAL TAIL DRAG POLAR CURVE");
+//			}
+//			catch (NoSuchElementException e) {
+//				System.err.println("WARNING: (PLOT HTAIL EQUILIBRIUM POLAR CURVE) MISSING VALUES ...");
+//			}
+//			}
+//		
 		//-----------------------------------------------------------------------------------------------------------------------
 		// TOTAL TRIMMED EFFICIENCY CURVES VS ALPHA
 		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.AIRCRAFT).contains(AerodynamicAndStabilityPlotEnum.TRIMMED_EFFICIENCY_CURVE_VS_ALPHA)) {
@@ -5647,209 +5647,210 @@ public class AerodynamicPlots {
 		// TODO: check the type of method used, e.g. VEDESC or NAPOLITANO_DATCOM
 		//       and use arrays accordingly
 
-		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.AIRCRAFT).contains(AerodynamicAndStabilityPlotEnum.TOTAL_CN_BREAKDOWN)) {
+//		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.AIRCRAFT).contains(AerodynamicAndStabilityPlotEnum.TOTAL_CN_BREAKDOWN)) {
+//
+//			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY)) {
+//
+//				for(int i=0; i<_theAerodynamicBuilderInterface.getXCGAircraft().size(); i++){
+//					xVectorMatrix = new ArrayList<Double[]>();
+//					yVectorMatrix = new ArrayList<Double[]>();
+//					legend  = new ArrayList<>(); 
+//
+//					xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_betaList));
+//					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
+//							_cNVertical
+//							.get(i)._2));
+//					legend.add("Vertical Tail");
+//
+//					xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_betaList));
+//					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
+//							_cNFuselage
+//							.get(i)._2));
+//					legend.add("Fuselage");
+//
+//					xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_betaList));
+//					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
+//							_cNWing
+//							.get(i)._2));
+//					legend.add("Wing");
+//
+//					xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_betaList));
+//					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
+//							_cNTotal
+//							.get(i)._2));
+//					legend.add("Total Aircraft");
+//					
+//					xMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+//					yMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+//					legendString = new String[xVectorMatrix.size()];
+//
+//					for(int ii=0; ii <xVectorMatrix.size(); ii++){
+//						xMatrix[ii] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(ii));
+//						yMatrix[ii] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(ii));
+//						legendString [ii] = legend.get(ii);
+//					}
+//
+//					MyChartToFileUtils.plotNOCSV(
+//							xMatrix,
+//							yMatrix, 
+//							null, 
+//							null, 
+//							null, 
+//							null,
+//							"beta", 
+//							"CN",
+//							"deg", 
+//							"", 
+//							legendString, 
+//							aircraftPlotFolderPath,
+//							"Total_Yawing_Coefficient_Breakdown_at_CG" + _theAerodynamicBuilderInterface.getXCGAircraft().get(i));
+//				}
+//			}
+//			else
+//				System.err.println("WARNING!! THE CN CURVES FOR EACH COMPONENT HAVE NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE CN BREAKDOWN");
+//		}
+//		
+//		//-----------------------------------------------------------------------------------------------------------------------
+//		// CN DELTA RUDDER EFFECT
+//		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.AIRCRAFT).contains(AerodynamicAndStabilityPlotEnum.TOTAL_CN_VS_BETA_VS_DELTA_RUDDER)) {
+//
+//			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY)) {
+//				for(int i=0; i<_theAerodynamicBuilderInterface.getXCGAircraft().size(); i++){
+//
+//				xVectorMatrix = new ArrayList<Double[]>();
+//				yVectorMatrix = new ArrayList<Double[]>();
+//				legend  = new ArrayList<>(); 
+//
+//					for(int j=0; j<_theAerodynamicBuilderInterface.getDeltaRudderList().size(); j++){
+//						xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_betaList));
+//						yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
+//								_cNDueToDeltaRudder
+//								.get(_theAerodynamicBuilderInterface.getDeltaRudderList().get(j))
+//								.get(i)
+//								._2()));
+//						legend.add("delta_r = " + 
+//								_theAerodynamicBuilderInterface.getDeltaRudderList().get(j));
+//					}
+// 
+//					xMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+//					yMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+//					legendString = new String[xVectorMatrix.size()];
+//
+//					for(int k=0; k <xVectorMatrix.size(); k++){
+//						xMatrix[k] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(k));
+//						yMatrix[k] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(k));
+//						legendString [k] = legend.get(k);
+//					}
+//
+//					MyChartToFileUtils.plotNOCSV(
+//							xMatrix,
+//							yMatrix, 
+//							null, 
+//							null, 
+//							null, 
+//							null,
+//							"beta",  
+//							"CN_total",
+//							"deg", 
+//							"", 
+//							legendString, 
+//							aircraftPlotFolderPath,
+//							"Total_Yawing_Coefficient_with respect_to_beta_at_CG" + _theAerodynamicBuilderInterface.getXCGAircraft().get(i));
+//				}
+//			}
+//			else
+//				System.err.println("WARNING!! THE CN CURVES FOR EACH CHOSEN DELTA RUDDER HAVE NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE CN CURVES");
+//		}
+//		
+//		//-----------------------------------------------------------------------------------------------------------------------
+//		// BETA - CN EQUILIBRIUM
+//		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.AIRCRAFT).contains(AerodynamicAndStabilityPlotEnum.DELTA_RUDDER_EQUILIBRIUM)) {
+//
+//			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY)) {
+//
+//				xVectorMatrix = new ArrayList<Double[]>();
+//				yVectorMatrix = new ArrayList<Double[]>();
+//				legend  = new ArrayList<>(); 
+//
+//				for(int i=0; i<_theAerodynamicBuilderInterface.getXCGAircraft().size(); i++){
+//					
+//					MyInterpolatingFunction betaEquilibriumFunction = new MyInterpolatingFunction();
+//					betaEquilibriumFunction.interpolate(
+//							MyArrayUtils.convertToDoublePrimitive(
+//									_betaOfEquilibrium
+//									.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i))
+//									.stream()
+//									.map(tpl -> tpl._2.doubleValue(NonSI.DEGREE_ANGLE)).collect(Collectors.toList())
+//									),
+//							MyArrayUtils.convertToDoublePrimitive(
+//									_betaOfEquilibrium
+//									.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i))
+//									.stream()
+//									.map(tpl -> tpl._1.doubleValue(NonSI.DEGREE_ANGLE)).collect(Collectors.toList())
+//									)
+//							);
+//					Double[] deltaRudderEquilibriumFitted = MyArrayUtils.linspaceDouble(
+//							MyArrayUtils.convertToDoublePrimitive(
+//									_betaOfEquilibrium
+//									.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i))
+//									.stream()
+//									.map(tpl -> tpl._2.doubleValue(NonSI.DEGREE_ANGLE)).collect(Collectors.toList())
+//									)[0], 
+//							MyArrayUtils.convertToDoublePrimitive(
+//									_betaOfEquilibrium
+//									.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i))
+//									.stream()
+//									.map(tpl -> tpl._2.doubleValue(NonSI.DEGREE_ANGLE)).collect(Collectors.toList())
+//									)[MyArrayUtils.convertToDoublePrimitive(
+//											_betaOfEquilibrium
+//											.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i))
+//											.stream()
+//											.map(tpl -> tpl._2.doubleValue(NonSI.DEGREE_ANGLE)).collect(Collectors.toList())
+//											).length-1],
+//							100
+//							);
+//					
+//					Double[] betaEquilibriumFitted = new Double[deltaRudderEquilibriumFitted.length];
+//					for (int j=0; j<deltaRudderEquilibriumFitted.length; j++) 
+//						betaEquilibriumFitted[j] = betaEquilibriumFunction.value(deltaRudderEquilibriumFitted[j]);
+//					
+//					xVectorMatrix.add(betaEquilibriumFitted);
+//					yVectorMatrix.add(deltaRudderEquilibriumFitted);
+//					legend.add("Xcg = " + 
+//							_theAerodynamicBuilderInterface.getXCGAircraft().get(i));
+//				}
+//
+//				xMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+//				yMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+//				legendString = new String[xVectorMatrix.size()];
+//
+//				for(int i=0; i <xVectorMatrix.size(); i++){
+//					xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
+//					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
+//					legendString [i] = legend.get(i);
+//				}
+//
+//				MyChartToFileUtils.plotNOCSV(
+//						xMatrix,
+//						yMatrix, 
+//						null, 
+//						null, 
+//						null, 
+//						null,
+//						"beta", 
+//						"delta_r",
+//						"deg", 
+//						"deg", 
+//						legendString, 
+//						aircraftPlotFolderPath,
+//						"Delta_Rudder_Equilibrium");
+//				
+//			}
+//		}
+//			else
+//				System.err.println("WARNING!! THE EQUILIBRIUM DELTA RUDDER ARRAY HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE EQUILIBRIUM DELTA RUDDER");	
+//		
+//	}
 
-			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY)) {
-
-				for(int i=0; i<_theAerodynamicBuilderInterface.getXCGAircraft().size(); i++){
-					xVectorMatrix = new ArrayList<Double[]>();
-					yVectorMatrix = new ArrayList<Double[]>();
-					legend  = new ArrayList<>(); 
-
-					xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_betaList));
-					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
-							_cNVertical
-							.get(i)._2));
-					legend.add("Vertical Tail");
-
-					xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_betaList));
-					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
-							_cNFuselage
-							.get(i)._2));
-					legend.add("Fuselage");
-
-					xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_betaList));
-					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
-							_cNWing
-							.get(i)._2));
-					legend.add("Wing");
-
-					xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_betaList));
-					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
-							_cNTotal
-							.get(i)._2));
-					legend.add("Total Aircraft");
-					
-					xMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
-					yMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
-					legendString = new String[xVectorMatrix.size()];
-
-					for(int ii=0; ii <xVectorMatrix.size(); ii++){
-						xMatrix[ii] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(ii));
-						yMatrix[ii] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(ii));
-						legendString [ii] = legend.get(ii);
-					}
-
-					MyChartToFileUtils.plotNOCSV(
-							xMatrix,
-							yMatrix, 
-							null, 
-							null, 
-							null, 
-							null,
-							"beta", 
-							"CN",
-							"deg", 
-							"", 
-							legendString, 
-							aircraftPlotFolderPath,
-							"Total_Yawing_Coefficient_Breakdown_at_CG" + _theAerodynamicBuilderInterface.getXCGAircraft().get(i));
-				}
-			}
-			else
-				System.err.println("WARNING!! THE CN CURVES FOR EACH COMPONENT HAVE NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE CN BREAKDOWN");
-		}
-		
-		//-----------------------------------------------------------------------------------------------------------------------
-		// CN DELTA RUDDER EFFECT
-		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.AIRCRAFT).contains(AerodynamicAndStabilityPlotEnum.TOTAL_CN_VS_BETA_VS_DELTA_RUDDER)) {
-
-			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY)) {
-				for(int i=0; i<_theAerodynamicBuilderInterface.getXCGAircraft().size(); i++){
-
-				xVectorMatrix = new ArrayList<Double[]>();
-				yVectorMatrix = new ArrayList<Double[]>();
-				legend  = new ArrayList<>(); 
-
-					for(int j=0; j<_theAerodynamicBuilderInterface.getDeltaRudderList().size(); j++){
-						xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_betaList));
-						yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
-								_cNDueToDeltaRudder
-								.get(_theAerodynamicBuilderInterface.getDeltaRudderList().get(j))
-								.get(i)
-								._2()));
-						legend.add("delta_r = " + 
-								_theAerodynamicBuilderInterface.getDeltaRudderList().get(j));
-					}
- 
-					xMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
-					yMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
-					legendString = new String[xVectorMatrix.size()];
-
-					for(int k=0; k <xVectorMatrix.size(); k++){
-						xMatrix[k] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(k));
-						yMatrix[k] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(k));
-						legendString [k] = legend.get(k);
-					}
-
-					MyChartToFileUtils.plotNOCSV(
-							xMatrix,
-							yMatrix, 
-							null, 
-							null, 
-							null, 
-							null,
-							"beta",  
-							"CN_total",
-							"deg", 
-							"", 
-							legendString, 
-							aircraftPlotFolderPath,
-							"Total_Yawing_Coefficient_with respect_to_beta_at_CG" + _theAerodynamicBuilderInterface.getXCGAircraft().get(i));
-				}
-			}
-			else
-				System.err.println("WARNING!! THE CN CURVES FOR EACH CHOSEN DELTA RUDDER HAVE NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE CN CURVES");
-		}
-		
-		//-----------------------------------------------------------------------------------------------------------------------
-		// BETA - CN EQUILIBRIUM
-		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.AIRCRAFT).contains(AerodynamicAndStabilityPlotEnum.DELTA_RUDDER_EQUILIBRIUM)) {
-
-			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY)) {
-
-				xVectorMatrix = new ArrayList<Double[]>();
-				yVectorMatrix = new ArrayList<Double[]>();
-				legend  = new ArrayList<>(); 
-
-				for(int i=0; i<_theAerodynamicBuilderInterface.getXCGAircraft().size(); i++){
-					
-					MyInterpolatingFunction betaEquilibriumFunction = new MyInterpolatingFunction();
-					betaEquilibriumFunction.interpolate(
-							MyArrayUtils.convertToDoublePrimitive(
-									_betaOfEquilibrium
-									.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i))
-									.stream()
-									.map(tpl -> tpl._2.doubleValue(NonSI.DEGREE_ANGLE)).collect(Collectors.toList())
-									),
-							MyArrayUtils.convertToDoublePrimitive(
-									_betaOfEquilibrium
-									.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i))
-									.stream()
-									.map(tpl -> tpl._1.doubleValue(NonSI.DEGREE_ANGLE)).collect(Collectors.toList())
-									)
-							);
-					Double[] deltaRudderEquilibriumFitted = MyArrayUtils.linspaceDouble(
-							MyArrayUtils.convertToDoublePrimitive(
-									_betaOfEquilibrium
-									.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i))
-									.stream()
-									.map(tpl -> tpl._2.doubleValue(NonSI.DEGREE_ANGLE)).collect(Collectors.toList())
-									)[0], 
-							MyArrayUtils.convertToDoublePrimitive(
-									_betaOfEquilibrium
-									.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i))
-									.stream()
-									.map(tpl -> tpl._2.doubleValue(NonSI.DEGREE_ANGLE)).collect(Collectors.toList())
-									)[MyArrayUtils.convertToDoublePrimitive(
-											_betaOfEquilibrium
-											.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i))
-											.stream()
-											.map(tpl -> tpl._2.doubleValue(NonSI.DEGREE_ANGLE)).collect(Collectors.toList())
-											).length-1],
-							100
-							);
-					
-					Double[] betaEquilibriumFitted = new Double[deltaRudderEquilibriumFitted.length];
-					for (int j=0; j<deltaRudderEquilibriumFitted.length; j++) 
-						betaEquilibriumFitted[j] = betaEquilibriumFunction.value(deltaRudderEquilibriumFitted[j]);
-					
-					xVectorMatrix.add(betaEquilibriumFitted);
-					yVectorMatrix.add(deltaRudderEquilibriumFitted);
-					legend.add("Xcg = " + 
-							_theAerodynamicBuilderInterface.getXCGAircraft().get(i));
-				}
-
-				xMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
-				yMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
-				legendString = new String[xVectorMatrix.size()];
-
-				for(int i=0; i <xVectorMatrix.size(); i++){
-					xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
-					legendString [i] = legend.get(i);
-				}
-
-				MyChartToFileUtils.plotNOCSV(
-						xMatrix,
-						yMatrix, 
-						null, 
-						null, 
-						null, 
-						null,
-						"beta", 
-						"delta_r",
-						"deg", 
-						"deg", 
-						legendString, 
-						aircraftPlotFolderPath,
-						"Delta_Rudder_Equilibrium");
-				
-			}
-		}
-			else
-				System.err.println("WARNING!! THE EQUILIBRIUM DELTA RUDDER ARRAY HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE EQUILIBRIUM DELTA RUDDER");	
-		
-	}
-
+}
 }

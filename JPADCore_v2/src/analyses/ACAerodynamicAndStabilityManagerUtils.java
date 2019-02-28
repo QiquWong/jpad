@@ -2833,7 +2833,7 @@ public class ACAerodynamicAndStabilityManagerUtils {
 							xcg, 
 							AerodynamicCalc.calculateTrimmedEfficiencyCurve(
 									aerodynamicAndStabilityManager.getTotalEquilibriumLiftCoefficient().get(xcg),
-									aerodynamicAndStabilityManager.getTotalDragCoefficient().get(xcg)
+									aerodynamicAndStabilityManager.getTotalEquilibriumDragCoefficient().get(xcg)
 									)
 							);
 					
@@ -2852,8 +2852,13 @@ public class ACAerodynamicAndStabilityManagerUtils {
 				// Calculating MSS position vs alpha body ...
 				//=======================================================================================
 
-				int alphaBodyZero = aerodynamicAndStabilityManager.getAlphaBodyList().indexOf(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
+				int alphaBodyZero;
+				int i=0;
+					while(aerodynamicAndStabilityManager.getAlphaBodyList().get(i).minus(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE)).doubleValue(NonSI.DEGREE_ANGLE)>0.5)
+						i++;
 				
+					alphaBodyZero = i;
+					
 				_theAerodynamicBuilderInterface.getXCGAircraft().stream().forEach(xcg -> {	
 
 					aerodynamicAndStabilityManager.getStaticStabilityMarginMap().put(

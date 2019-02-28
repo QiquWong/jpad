@@ -2309,6 +2309,8 @@ public class LiftCalc {
 			horizontalTailHorizontalDistanceACtoCG = Amount.valueOf(
 					xCGPosition.doubleValue(SI.METER) - xACHorizontalTail.doubleValue(SI.METER),
 					SI.METER);
+			
+			horizontalTailSurface  = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getTheLiftingSurface().getSurfacePlanform();
 		}
 		
 		if(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.CANARD) != null) {
