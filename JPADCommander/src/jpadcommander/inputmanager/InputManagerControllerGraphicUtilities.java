@@ -4322,8 +4322,10 @@ public class InputManagerControllerGraphicUtilities {
 	
 	public void createAircraft3DView() {
 		
+		String inputDirectory = Main.getInputDirectoryPath() + File.separator;
+		
 		// generate the CAD object
-		Main.getTheCADManager().generateCAD();
+		Main.getTheCADManager().generateCAD(inputDirectory);
 		
 		// generate the 3D view scene
 		OCCFX3DView sceneView = new OCCFX3DView(Main.getTheCADManager().getTheAircraftSolidsMap(), 1024, 550, true);

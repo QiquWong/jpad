@@ -3,6 +3,7 @@ package jpadcommander.inputmanager;
 import java.io.File;
 import java.util.Arrays;
 
+import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
 import org.w3c.dom.Element;
@@ -19,6 +20,7 @@ import aircraft.components.powerplant.Engine;
 import configuration.enumerations.ClassTypeEnum;
 import configuration.enumerations.FlapTypeEnum;
 import configuration.enumerations.WindshieldTypeEnum;
+import it.unina.daf.jpadcad.enums.EngineCADComponentsEnum;
 import it.unina.daf.jpadcad.enums.FileExtension;
 import it.unina.daf.jpadcad.enums.WingTipType;
 import it.unina.daf.jpadcad.enums.XSpacingType;
@@ -5807,6 +5809,58 @@ public class InputManagerControllerLogUtilities {
 			theController.getGenerateCanardCADCheckBox().setDisable(true);
 			theController.getCanardCADTipTypeChoiceBox().setDisable(true);
 			
+		}
+		
+		//-------------------------------------------------------------------------
+		// ENGINES OPTIONS
+		if (Main.getTheAircraft().getNacelles() != null && Main.getTheAircraft().getPowerPlant() != null) {
+			
+			if (theController.getGenerateEnginesCADCheckBox().isDisabled())
+				theController.getGenerateEnginesCADCheckBox().setDisable(false);
+			theController.getGenerateEnginesCADCheckBox().setSelected(
+					Main.getTheCADManager().getTheCADBuilderInterface().getGenerateEngines());
+			
+			for (int i = 0; i < theController.getTabPaneCAD3DViewEngines().getTabs().size(); i++) {
+				
+				int numConfigEngines = Main.getTheCADManager().getTheCADBuilderInterface().getEngineTemplatesList().size();	
+				
+				if (i < numConfigEngines) {			
+					
+					if (theController.getEnginesCADNacelleTemplateFileTextFieldList().get(i).isDisabled())
+						theController.getEnginesCADNacelleTemplateFileTextFieldList().get(i).setDisable(false);
+					theController.getEnginesCADNacelleTemplateFileTextFieldList().get(i).setText(
+							Main.getTheCADManager().getTheCADBuilderInterface().getEngineTemplatesList().get(i).get(EngineCADComponentsEnum.NACELLE));
+					
+					if (theController.getEnginesCADBladeTemplateFileTextFieldList().get(i).isDisabled())
+						theController.getEnginesCADBladeTemplateFileTextFieldList().get(i).setDisable(false);
+					theController.getEnginesCADBladeTemplateFileTextFieldList().get(i).setText(
+							Main.getTheCADManager().getTheCADBuilderInterface().getEngineTemplatesList().get(i).get(EngineCADComponentsEnum.BLADE));
+					
+					if (theController.getEnginesCADBladePitchAngleTextFieldList().get(i).isDisabled())
+						theController.getEnginesCADBladePitchAngleTextFieldList().get(i).setDisable(false);
+					theController.getEnginesCADBladePitchAngleTextFieldList().get(i).setText(
+							String.valueOf(Main.getTheCADManager().getTheCADBuilderInterface().getPropellerBladePitchAngleList().get(i).doubleValue(NonSI.DEGREE_ANGLE)));
+					theController.getEnginesCADBladePitchAngleUnitList().get(i).getSelectionModel().select(0);
+					
+				} else {
+					
+					if (theController.getEnginesCADNacelleTemplateFileTextFieldList().get(i).isDisabled())
+						theController.getEnginesCADNacelleTemplateFileTextFieldList().get(i).setDisable(false);
+					theController.getEnginesCADNacelleTemplateFileTextFieldList().get(i).setText(
+							Main.getTheCADManager().getTheCADBuilderInterface().getEngineTemplatesList().get(numConfigEngines-1).get(EngineCADComponentsEnum.NACELLE));
+				
+					if (theController.getEnginesCADBladeTemplateFileTextFieldList().get(i).isDisabled())
+						theController.getEnginesCADBladeTemplateFileTextFieldList().get(i).setDisable(false);
+					theController.getEnginesCADBladeTemplateFileTextFieldList().get(i).setText(
+							Main.getTheCADManager().getTheCADBuilderInterface().getEngineTemplatesList().get(numConfigEngines-1).get(EngineCADComponentsEnum.BLADE));
+				
+					if (theController.getEnginesCADBladePitchAngleTextFieldList().get(i).isDisabled())
+						theController.getEnginesCADBladePitchAngleTextFieldList().get(i).setDisable(false);
+					theController.getEnginesCADBladePitchAngleTextFieldList().get(i).setText(
+							String.valueOf(Main.getTheCADManager().getTheCADBuilderInterface().getPropellerBladePitchAngleList().get(numConfigEngines-1).doubleValue(NonSI.DEGREE_ANGLE)));
+					theController.getEnginesCADBladePitchAngleUnitList().get(i).getSelectionModel().select(0);
+				}			
+			}		
 		}
 		
 		//-------------------------------------------------------------------------

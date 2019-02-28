@@ -18,9 +18,7 @@ import org.w3c.dom.NodeList;
 
 import aircraft.components.nacelles.NacelleCreator;
 import aircraft.components.powerplant.Engine;
-import configuration.MyConfiguration;
 import configuration.enumerations.EngineTypeEnum;
-import configuration.enumerations.FoldersEnum;
 import it.unina.daf.jpadcad.enums.EngineCADComponentsEnum;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyXMLReaderUtils;
@@ -85,10 +83,10 @@ public class EngineCAD {
 	// ------------
 	// Constructor
 	// ------------
-	public EngineCAD(NacelleCreator nacelle, Engine engine, Map<EngineCADComponentsEnum, String> templateFilenames) {
+	public EngineCAD(String inputDirectory, NacelleCreator nacelle, Engine engine, Map<EngineCADComponentsEnum, String> templateFilenames) {
 		
 		if (checkTemplateListsEmptiness()) {			
-			setTemplatesLists();
+			setTemplatesLists(inputDirectory);
 		}			
 		
 		this.engineType = engine.getEngineType();
@@ -108,14 +106,24 @@ public class EngineCAD {
 					
 					this.engineCADTemplates = templateFilenames;
 					
-				} else {
-					System.err.println("Error: the selected templates are incorrect. Default templates assigned ...");
+				} else if (templateFilenames.get(EngineCADComponentsEnum.BLADE).equals("") ||
+						   templateFilenames.get(EngineCADComponentsEnum.NACELLE).equals("")) {
+					
+					System.err.println("Warning: no specific templates have been selected for the turboprop engine.\n"
+							+ " Using turboprop default templates ...");
 
+					this.engineCADTemplates = defEngineCADTemplates;
+					
+				} else {				
+					System.err.println("Warning: the selected templates are incorrect.\n"
+							+ " Default turboprop templates assigned ...");
+					
 					this.engineCADTemplates = defEngineCADTemplates;
 				}
 				
 			} else {				
-				System.err.println("Error: the selected templates are incorrect. Default templates assigned ...");
+				System.err.println("Warning: the templates map is missing one or more keys.\n"
+						+ " Default turboprop templates assigned ...");
 				
 				this.engineCADTemplates = defEngineCADTemplates;
 			}
@@ -131,14 +139,23 @@ public class EngineCAD {
 					
 					this.engineCADTemplates = templateFilenames;
 					
+				} else if (templateFilenames.get(EngineCADComponentsEnum.NACELLE).equals("")) {
+					
+					System.err.println("Warning: no specific templates have been selected for the turbofan engine.\n"
+							+ " Using turbofan default templates ...");
+					
+					this.engineCADTemplates = defEngineCADTemplates;
+					
 				} else {
-					System.err.println("Error: the selected templates are incorrect. Default templates assigned ...");
+					System.err.println("Warning: the selected templates are incorrect.\n"
+							+ " Default turbofan templates assigned ...");
 
 					this.engineCADTemplates = defEngineCADTemplates;				
 				}
 
 			} else {	
-				System.err.println("Error: the selected templates are incorrect. Default templates assigned ...");
+				System.err.println("Warning: the templates map is missing one or more keys.\n"
+						+ " Default turbofan templates assigned ...");
 
 				this.engineCADTemplates = defEngineCADTemplates;
 			}
@@ -189,11 +206,10 @@ public class EngineCAD {
 							.contains(true);
 	}
 	
-	private void setTemplatesLists() {
-		MyConfiguration.setDir(FoldersEnum.INPUT_DIR, MyConfiguration.inputDirectory);
-		engineTemplatesDataFilePath = MyConfiguration.inputDirectory + 
-				"CAD_Engine_Templates" + File.separator + 
-				"engine_templates_data.xml";
+	private void setTemplatesLists(String inputDirectory) {
+		engineTemplatesDataFilePath = inputDirectory +  
+									  "Template_CADEngines" + File.separator + 
+									  "engine_templates_data.xml";
 		
 		templatesDataReader = new JPADXmlReader(engineTemplatesDataFilePath);
 		

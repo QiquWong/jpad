@@ -157,6 +157,25 @@ public class InputManagerControllerSecondaryActionUtilities {
 		});
 	}
 	
+	public void removeContentOnCADEngineTabClose(Tab tab) {
+		
+		tab.setOnCloseRequest(new EventHandler<Event>() {
+			
+			@Override
+			public void handle(Event event) {
+				
+				int indexEngine = theController.getTabPaneCAD3DViewEngines().getTabs().indexOf(tab);
+				theController.getEnginesCADNacelleTemplateFileTextFieldList().remove(indexEngine);
+				theController.getEnginesCADBladeTemplateFileTextFieldList().remove(indexEngine);
+				theController.getEnginesCADBladePitchAngleTextFieldList().remove(indexEngine);
+				
+				theController.getEnginesCADChooseNacelleTemplateFileButtonList().remove(indexEngine);
+				theController.getEnginesCADChooseBladeTemplateFileButtonList().remove(indexEngine);
+				theController.getEnginesCADBladePitchAngleUnitList().remove(indexEngine);
+			}
+		});
+	}
+	
 	public void removeAirfoilDetailsButtonFromMapOnTabClose(Tab tab, ComponentEnum type) {
 		
 		tab.setOnCloseRequest(new EventHandler<Event>() {
@@ -663,6 +682,44 @@ public class InputManagerControllerSecondaryActionUtilities {
 					} catch (IOException e) {
 						e.printStackTrace();
 					}					
+				}
+			});
+		}
+	}
+	
+	public void setChooseCADEngineNacelleFileAction() {
+		
+		for(int i=0; i<theController.getTabPaneCAD3DViewEngines().getTabs().size(); i++) {
+			
+			int indexOfNacelle = i;
+			theController.getEnginesCADChooseNacelleTemplateFileButtonList().get(i).setOnAction(new EventHandler<ActionEvent>() {
+				
+				@Override
+				public void handle(ActionEvent event) {
+					try {
+						chooseCADEngineNacelleFile(indexOfNacelle);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			});
+		}
+	}
+	
+	public void setChooseCADEngineBladeFileAction() {
+
+		for(int i=0; i<theController.getTabPaneCAD3DViewEngines().getTabs().size(); i++) {
+
+			int indexOfBlade = i;
+			theController.getEnginesCADChooseBladeTemplateFileButtonList().get(i).setOnAction(new EventHandler<ActionEvent>() {
+
+				@Override
+				public void handle(ActionEvent event) {
+					try {
+						chooseCADEngineBladeFile(indexOfBlade);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
 			});
 		}
@@ -1633,6 +1690,122 @@ public class InputManagerControllerSecondaryActionUtilities {
 		
 	}
 	
+	public void addCADEnginesImplementation() {
+		
+		if (Main.getTheAircraft().getPowerPlant().getEngineList().size() >= 
+				theController.getTabPaneCAD3DViewEngines().getTabs().size()) {
+			
+			int i = theController.getTabPaneCAD3DViewEngines().getTabs().size();
+			while (i < Main.getTheAircraft().getPowerPlant().getEngineList().size()) {
+				addCADEngineImplementation();
+				i++;
+			}			
+		}
+	}
+	
+	private void addCADEngineImplementation() {
+		
+		Tab newCADEngineTab = new Tab("Engine " + (theController.getTabPaneCAD3DViewEngines().getTabs().size() + 1));
+		Pane contentPane = new Pane();
+		
+		Label nacelleTemplateFileLabel = new Label("Nacelle template file:");
+		nacelleTemplateFileLabel.setFont(Font.font("System", 15));
+		nacelleTemplateFileLabel.setLayoutX(5.0);
+		nacelleTemplateFileLabel.setLayoutY(4.0);
+		contentPane.getChildren().add(nacelleTemplateFileLabel);
+		
+		TextField nacelleTemplateFileTextField = new TextField();
+		nacelleTemplateFileTextField.setLayoutX(5.0);
+		nacelleTemplateFileTextField.setLayoutY(28.0);
+		nacelleTemplateFileTextField.setPrefWidth(315.0);
+		nacelleTemplateFileTextField.setPrefHeight(31.0);
+		contentPane.getChildren().add(nacelleTemplateFileTextField);
+		
+		Button nacelleTemplateChooseFileButton = new Button("...");
+		nacelleTemplateChooseFileButton.setLayoutX(328.0);
+		nacelleTemplateChooseFileButton.setLayoutY(28.0);
+		nacelleTemplateChooseFileButton.setPrefWidth(44.0);
+		nacelleTemplateChooseFileButton.setPrefHeight(31.0);
+		nacelleTemplateChooseFileButton.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent arg0) {
+				
+				try {
+					chooseCADEngineNacelleFile(theController.getTabPaneCAD3DViewEngines().getTabs().size() - 1);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				
+			}
+		});
+		contentPane.getChildren().add(nacelleTemplateChooseFileButton);
+		
+		Label bladeTemplateFileLabel = new Label("Blade template file:");
+		bladeTemplateFileLabel.setFont(Font.font("System", 15));
+		bladeTemplateFileLabel.setLayoutX(5.0);
+		bladeTemplateFileLabel.setLayoutY(64.0);
+		contentPane.getChildren().add(bladeTemplateFileLabel);
+		
+		TextField bladeTemplateFileTextField = new TextField();
+		bladeTemplateFileTextField.setLayoutX(5.0);
+		bladeTemplateFileTextField.setLayoutY(86.0);
+		bladeTemplateFileTextField.setPrefWidth(315.0);
+		bladeTemplateFileTextField.setPrefHeight(31.0);
+		contentPane.getChildren().add(bladeTemplateFileTextField);
+		
+		Button bladeTemplateChooseFileButton = new Button("...");
+		bladeTemplateChooseFileButton.setLayoutX(328.0);
+		bladeTemplateChooseFileButton.setLayoutY(86.0);
+		bladeTemplateChooseFileButton.setPrefWidth(44.0);
+		bladeTemplateChooseFileButton.setPrefHeight(31.0);
+		bladeTemplateChooseFileButton.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent arg0) {
+				
+				try {
+					chooseCADEngineBladeFile(theController.getTabPaneCAD3DViewEngines().getTabs().size() - 1);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				
+			}
+		});
+		contentPane.getChildren().add(bladeTemplateChooseFileButton);
+		
+		Label propellerBladePitchAngleLabel = new Label("Propeller blade pitch angle:");
+		propellerBladePitchAngleLabel.setFont(Font.font("System", 15));
+		propellerBladePitchAngleLabel.setLayoutX(5.0);
+		propellerBladePitchAngleLabel.setLayoutY(124.0);
+		contentPane.getChildren().add(propellerBladePitchAngleLabel);
+		
+		TextField propellerBladePitchAngleTextField = new TextField();
+		propellerBladePitchAngleTextField.setLayoutX(5.0);
+		propellerBladePitchAngleTextField.setLayoutY(146.0);
+		propellerBladePitchAngleTextField.setPrefWidth(315.0);
+		propellerBladePitchAngleTextField.setPrefHeight(31.0);
+		contentPane.getChildren().add(propellerBladePitchAngleTextField);
+		
+		ChoiceBox<String> propellerBladePitchAngleChoiceBox = new ChoiceBox<String>();
+		propellerBladePitchAngleChoiceBox.setLayoutX(329.0);
+		propellerBladePitchAngleChoiceBox.setLayoutY(146.0);
+		propellerBladePitchAngleChoiceBox.setPrefWidth(42.0);
+		propellerBladePitchAngleChoiceBox.setPrefHeight(31.0);
+		propellerBladePitchAngleChoiceBox.setItems(theController.getAngleUnitsList());
+		contentPane.getChildren().add(propellerBladePitchAngleChoiceBox);
+		
+		theController.getEnginesCADNacelleTemplateFileTextFieldList().add(nacelleTemplateFileTextField);
+		theController.getEnginesCADBladeTemplateFileTextFieldList().add(bladeTemplateFileTextField);
+		theController.getEnginesCADBladePitchAngleTextFieldList().add(propellerBladePitchAngleTextField);
+		theController.getEnginesCADChooseNacelleTemplateFileButtonList().add(nacelleTemplateChooseFileButton);
+		theController.getEnginesCADChooseBladeTemplateFileButtonList().add(bladeTemplateChooseFileButton);
+		theController.getEnginesCADBladePitchAngleUnitList().add(propellerBladePitchAngleChoiceBox);
+		
+		newCADEngineTab.setContent(contentPane);
+		theController.getTabPaneCAD3DViewEngines().getTabs().add(newCADEngineTab);
+	}
+	
 	public void showTurbojetTurboFanDataRadioButtonImplementation (int indexOfEngineTab) {
 		
 		Pane engineDataPane = new Pane();
@@ -2273,6 +2446,53 @@ public class InputManagerControllerSecondaryActionUtilities {
 		}
 		
 	}
+	
+	public void chooseCADEngineNacelleFile(int indexOfNacelle) throws IOException {
+		
+		String engineTemplateFolder = "";
+		if (Main.getTheAircraft() != null) {
+			if (Main.getTheAircraft().getPowerPlant().getEngineList().get(indexOfNacelle).getEngineType().equals(EngineTypeEnum.TURBOFAN) ||
+				Main.getTheAircraft().getPowerPlant().getEngineList().get(indexOfNacelle).getEngineType().equals(EngineTypeEnum.TURBOJET))
+				engineTemplateFolder = "turbofan_templates";
+			else
+				engineTemplateFolder = "turboprop_templates";
+		} 
+		
+		theController.setCADNacelleFileChooser(new FileChooser());
+		theController.getCADNacelleFileChooser().setTitle("Open file");
+		theController.getCADNacelleFileChooser().setInitialDirectory(
+				new File(
+						Main.getInputDirectoryPath()
+						+ File.separator
+						+ "Template_CADEngines"
+						+ File.separator
+						+ engineTemplateFolder
+						)
+				);
+		File file = theController.getCADNacelleFileChooser().showOpenDialog(null);
+		if (file != null) {
+			theController.getEnginesCADNacelleTemplateFileTextFieldList().get(indexOfNacelle).setText(file.getName());
+		}
+	}
+	
+	public void chooseCADEngineBladeFile(int indexOfBlade) throws IOException {
+		
+		theController.setCADBladeFileChooser(new FileChooser());
+		theController.getCADBladeFileChooser().setTitle("Open file");
+		theController.getCADBladeFileChooser().setInitialDirectory(
+				new File(
+						Main.getInputDirectoryPath()
+						+ File.separator
+						+ "Template_CADEngines"
+						+ File.separator
+						+ "turboprop_templates"
+						)
+				);
+		File file = theController.getCADBladeFileChooser().showOpenDialog(null);
+		if (file != null) {
+			theController.getEnginesCADBladeTemplateFileTextFieldList().get(indexOfBlade).setText(file.getName());
+		}
+	}
 
 	public boolean isAircraftFile(String pathToAircraftXML) {
 
@@ -2307,7 +2527,6 @@ public class InputManagerControllerSecondaryActionUtilities {
 		final PrintStream originalOut = System.out;
 		PrintStream filterStream = new PrintStream(new OutputStream() {
 			public void write(int b) {
-				// write nothing
 			}
 		});
 		System.setOut(filterStream);

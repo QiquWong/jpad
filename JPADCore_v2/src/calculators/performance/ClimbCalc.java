@@ -314,17 +314,6 @@ public class ClimbCalc {
 								LiftCalc.calculateLiftCoeff(
 										Amount.valueOf(
 												startClimbMassAEO.doubleValue(SI.KILOGRAM)
-												*Math.cos(
-														MyMathUtils.getInterpolatedValue1DLinear(
-																MyArrayUtils.convertListOfAmountTodoubleArray(_rcMapAEO.get(i).getSpeedList()
-																		.stream().map(v -> v.to(SI.METERS_PER_SECOND)).collect(Collectors.toList())
-																		),
-																MyArrayUtils.convertListOfAmountTodoubleArray(_rcMapAEO.get(i).getClimbAngleList()
-																		.stream().map(ca -> ca.to(NonSI.DEGREE_ANGLE)).collect(Collectors.toList())
-																		),
-																_dragListAEO.get(i).getSpeed().get(j).doubleValue(SI.METERS_PER_SECOND)
-																)
-														)
 												*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
 												SI.NEWTON
 												),
@@ -460,17 +449,6 @@ public class ClimbCalc {
 									LiftCalc.calculateLiftCoeff(
 											Amount.valueOf(
 													startClimbMassOEI.doubleValue(SI.KILOGRAM)
-													*Math.cos(
-															MyMathUtils.getInterpolatedValue1DLinear(
-																	MyArrayUtils.convertListOfAmountTodoubleArray(_rcMapOEI.get(i).getSpeedList()
-																			.stream().map(v -> v.to(SI.METERS_PER_SECOND)).collect(Collectors.toList())
-																			),
-																	MyArrayUtils.convertListOfAmountTodoubleArray(_rcMapOEI.get(i).getClimbAngleList()
-																			.stream().map(ca -> ca.to(NonSI.DEGREE_ANGLE)).collect(Collectors.toList())
-																			),
-																	_dragListOEI.get(i).getSpeed().get(j).doubleValue(SI.METERS_PER_SECOND)
-																	)
-															)
 													*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
 													SI.NEWTON
 													),
@@ -1960,7 +1938,7 @@ public class ClimbCalc {
 						speedTAS_SI, rateOfClimbAEO_SI,
 						"Rate of Climb curves (AEO)",
 						"Speed (TAS)", "Rate of Climb",
-						null, null, null, null,
+						null, null, 0.0, null,
 						"m/s", "m/s",
 						true, legend_SI,
 						climbFolderPath, "Rate_of_Climb_curves_AEO_TAS_SI",
@@ -1970,7 +1948,7 @@ public class ClimbCalc {
 						speedCAS_SI, rateOfClimbAEO_SI,
 						"Rate of Climb curves (AEO)",
 						"Speed (CAS)", "Rate of Climb",
-						null, null, null, null,
+						null, null, 0.0, null,
 						"m/s", "m/s",
 						true, legend_SI,
 						climbFolderPath, "Rate_of_Climb_curves_AEO_CAS_SI",
@@ -1980,7 +1958,7 @@ public class ClimbCalc {
 						mach, rateOfClimbAEO_SI,
 						"Rate of Climb curves (AEO)",
 						"Mach", "Rate of Climb",
-						null, null, null, null,
+						null, null, 0.0, null,
 						" ", "m/s",
 						true, legend_SI,
 						climbFolderPath, "Rate_of_Climb_curves_AEO_MACH_SI",
@@ -1990,7 +1968,7 @@ public class ClimbCalc {
 						speedTAS_Imperial, rateOfClimbAEO_Imperial,
 						"Rate of Climb curves (AEO)",
 						"Speed (TAS)", "Rate of Climb",
-						null, null, null, null,
+						null, null, 0.0, null,
 						"kn", "ft/min",
 						true, legend_Imperial,
 						climbFolderPath, "Rate_of_Climb_curves_AEO_TAS_IMPERIAL",
@@ -2000,7 +1978,7 @@ public class ClimbCalc {
 						speedCAS_Imperial, rateOfClimbAEO_Imperial,
 						"Rate of Climb curves (AEO)",
 						"Speed (CAS)", "Rate of Climb",
-						null, null, null, null,
+						null, null, 0.0, null,
 						"kn", "ft/min",
 						true, legend_Imperial,
 						climbFolderPath, "Rate_of_Climb_curves_AEO_CAS_IMPERIAL",
@@ -2010,7 +1988,7 @@ public class ClimbCalc {
 						mach, rateOfClimbAEO_Imperial,
 						"Rate of Climb curves (AEO)",
 						"Mach", "Rate of Climb",
-						null, null, null, null,
+						null, null, 0.0, null,
 						" ", "ft/min",
 						true, legend_Imperial,
 						climbFolderPath, "Rate_of_Climb_curves_AEO_MACH_IMPERIAL",
@@ -2043,7 +2021,7 @@ public class ClimbCalc {
 						speedTAS_SI, rateOfClimbOEI_SI,
 						"Rate of Climb curves (OEI)",
 						"Speed (TAS)", "Rate of Climb",
-						null, null, null, null,
+						null, null, 0.0, null,
 						"m/s", "m/s",
 						true, legend_SI,
 						climbFolderPath, "Rate_of_Climb_curves_OEI_TAS_SI",
@@ -2053,7 +2031,7 @@ public class ClimbCalc {
 						speedCAS_SI, rateOfClimbOEI_SI,
 						"Rate of Climb curves (OEI)",
 						"Speed (CAS)", "Rate of Climb",
-						null, null, null, null,
+						null, null, 0.0, null,
 						"m/s", "m/s",
 						true, legend_SI,
 						climbFolderPath, "Rate_of_Climb_curves_OEI_CAS_SI",
@@ -2063,7 +2041,7 @@ public class ClimbCalc {
 						mach, rateOfClimbOEI_SI,
 						"Rate of Climb curves (OEI)",
 						"Mach", "Rate of Climb",
-						null, null, null, null,
+						null, null, 0.0, null,
 						" ", "m/s",
 						true, legend_SI,
 						climbFolderPath, "Rate_of_Climb_curves_OEI_MACH_SI",
@@ -2073,7 +2051,7 @@ public class ClimbCalc {
 						speedTAS_Imperial, rateOfClimbOEI_Imperial,
 						"Rate of Climb curves (OEI)",
 						"Speed (TAS)", "Rate of Climb",
-						null, null, null, null,
+						null, null, 0.0, null,
 						"kn", "ft/min",
 						true, legend_Imperial,
 						climbFolderPath, "Rate_of_Climb_curves_OEI_TAS_IMPERIAL",
@@ -2083,7 +2061,7 @@ public class ClimbCalc {
 						speedCAS_Imperial, rateOfClimbOEI_Imperial,
 						"Rate of Climb curves (OEI)",
 						"Speed (CAS)", "Rate of Climb",
-						null, null, null, null,
+						null, null, 0.0, null,
 						"kn", "ft/min",
 						true, legend_Imperial,
 						climbFolderPath, "Rate_of_Climb_curves_OEI_CAS_IMPERIAL",
@@ -2093,7 +2071,7 @@ public class ClimbCalc {
 						mach, rateOfClimbOEI_Imperial,
 						"Rate of Climb curves (OEI)",
 						"Mach", "Rate of Climb",
-						null, null, null, null,
+						null, null, 0.0, null,
 						" ", "ft/min",
 						true, legend_Imperial,
 						climbFolderPath, "Rate_of_Climb_curves_OEI_MACH_IMPERIAL",
@@ -2184,7 +2162,7 @@ public class ClimbCalc {
 						speedTAS_SI, climbAngleAEO,
 						"Climb Angle curves (AEO)",
 						"Speed (TAS)", "Climb Angle",
-						null, null, null, null,
+						null, null, 0.0, null,
 						"m/s", "deg",
 						true, legend_SI,
 						climbFolderPath, "Climb_angle_curves_AEO_TAS_SI",
@@ -2194,7 +2172,7 @@ public class ClimbCalc {
 						speedCAS_SI, climbAngleAEO,
 						"Climb Angle curves (AEO)",
 						"Speed (CAS)", "Climb Angle",
-						null, null, null, null,
+						null, null, 0.0, null,
 						"m/s", "deg",
 						true, legend_SI,
 						climbFolderPath, "Climb_angle_curves_AEO_CAS_SI",
@@ -2204,7 +2182,7 @@ public class ClimbCalc {
 						speedTAS_Imperial, climbAngleAEO,
 						"Climb Angle curves (AEO)",
 						"Speed (TAS)", "Climb Angle",
-						null, null, null, null,
+						null, null, 0.0, null,
 						"kn", "deg",
 						true, legend_Imperial,
 						climbFolderPath, "Climb_angle_curves_AEO_TAS_IMPERIAL",
@@ -2214,7 +2192,7 @@ public class ClimbCalc {
 						speedCAS_Imperial, climbAngleAEO,
 						"Climb Angle curves (AEO)",
 						"Speed (CAS)", "Climb Angle",
-						null, null, null, null,
+						null, null, 0.0, null,
 						"kn", "deg",
 						true, legend_Imperial,
 						climbFolderPath, "Climb_angle_curves_AEO_CAS_IMPERIAL",
@@ -2224,7 +2202,7 @@ public class ClimbCalc {
 						mach, climbAngleAEO,
 						"Climb Angle curves (AEO)",
 						"Mach", "Climb Angle",
-						null, null, null, null,
+						null, null, 0.0, null,
 						" ", "deg",
 						true, legend_SI,
 						climbFolderPath, "Climb_angle_curves_AEO_MACH_SI",
@@ -2234,7 +2212,7 @@ public class ClimbCalc {
 						mach, climbAngleAEO,
 						"Climb Angle curves (AEO)",
 						"Mach", "Climb Angle",
-						null, null, null, null,
+						null, null, 0.0, null,
 						" ", "deg",
 						true, legend_Imperial,
 						climbFolderPath, "Climb_angle_curves_AEO_MACH_IMPERIAL",
@@ -2264,7 +2242,7 @@ public class ClimbCalc {
 						speedTAS_SI, climbAngleOEI,
 						"Climb Angle curves (OEI)",
 						"Speed (TAS)", "Climb Angle",
-						null, null, null, null,
+						null, null, 0.0, null,
 						"m/s", "deg",
 						true, legend_SI,
 						climbFolderPath, "Climb_angle_curves_OEI_TAS_SI",
@@ -2274,7 +2252,7 @@ public class ClimbCalc {
 						speedCAS_SI, climbAngleOEI,
 						"Climb Angle curves (OEI)",
 						"Speed (CAS)", "Climb Angle",
-						null, null, null, null,
+						null, null, 0.0, null,
 						"m/s", "deg",
 						true, legend_SI,
 						climbFolderPath, "Climb_angle_curves_OEI_CAS_SI",
@@ -2284,7 +2262,7 @@ public class ClimbCalc {
 						speedTAS_Imperial, climbAngleOEI,
 						"Climb Angle curves (OEI)",
 						"Speed (TAS)", "Climb Angle",
-						null, null, null, null,
+						null, null, 0.0, null,
 						"kn", "deg",
 						true, legend_Imperial,
 						climbFolderPath, "Climb_angle_curves_OEI_TAS_IMPERIAL",
@@ -2294,7 +2272,7 @@ public class ClimbCalc {
 						speedCAS_Imperial, climbAngleOEI,
 						"Climb Angle curves (OEI)",
 						"Speed (CAS)", "Climb Angle",
-						null, null, null, null,
+						null, null, 0.0, null,
 						"kn", "deg",
 						true, legend_Imperial,
 						climbFolderPath, "Climb_angle_curves_OEI_CAS_IMPERIAL",
@@ -2304,7 +2282,7 @@ public class ClimbCalc {
 						mach, climbAngleOEI,
 						"Climb Angle curves (OEI)",
 						"Mach", "Climb Angle",
-						null, null, null, null,
+						null, null, 0.0, null,
 						" ", "deg",
 						true, legend_SI,
 						climbFolderPath, "Climb_angle_curves_OEI_MACH_SI",
@@ -2314,7 +2292,7 @@ public class ClimbCalc {
 						mach, climbAngleOEI,
 						"Climb Angle curves (OEI)",
 						"Mach", "Climb Angle",
-						null, null, null, null,
+						null, null, 0.0, null,
 						" ", "deg",
 						true, legend_Imperial,
 						climbFolderPath, "Climb_angle_curves_OEI_MACH_IMPERIAL",

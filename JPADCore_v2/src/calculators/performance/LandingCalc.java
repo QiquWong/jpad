@@ -522,18 +522,19 @@ public class LandingCalc {
 		StepHandler continuousOutputModel = null;
 
 		int i=0;
-		int maxIter = 200;
-		dtFlare = Amount.valueOf(5.0, SI.SECOND); // First guess value
+		int maxIter = 25;
+		dtFlare = Amount.valueOf(5.0, SI.SECOND); 
 		alphaDotFlare = 1.0; /* deg/s - First guess value */
 		double newAlphaDotFlare = 0.0;
 		Amount<Velocity> targetRateOfDescent = Amount.valueOf(-100, MyUnits.FOOT_PER_MINUTE);
+		Amount<Length> targetAltitude = Amount.valueOf(1.0, SI.METER);
 
 		rateOfDescentAtFlareEnding = Amount.valueOf(10000.0, SI.METERS_PER_SECOND);  // Initialization at an impossible value
 		altitudeAtFlareEnding = Amount.valueOf(10000.0, SI.METER);  // Initialization at an impossible value
 
 		aircraftStopFlag = false;
 		
-		while ( (Math.abs(altitudeAtFlareEnding.doubleValue(SI.METER) - 1e-2) >= 1.0 
+		while ( (Math.abs(altitudeAtFlareEnding.doubleValue(SI.METER) - targetAltitude.doubleValue(SI.METER)) >= 1e-2 
 				|| Math.abs(rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE)) >= Math.abs(targetRateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE)) 
 				) || maximumFlareCLFlag == false ) {
 
@@ -546,8 +547,8 @@ public class LandingCalc {
 			theIntegrator = new HighamHall54Integrator(
 					1e-10,
 					1,
-					1e-4,
-					1e-4
+					1e-3,
+					1e-3
 					);
 			ode = new DynamicsEquationsLanding();
 			
@@ -568,7 +569,10 @@ public class LandingCalc {
 				// Discrete event, switching function
 				@Override
 				public double g(double t, double[] x) {
-					return t - tErrorRC.doubleValue(SI.SECOND);
+					if(t < tTouchDown.doubleValue(SI.SECOND))
+						return t - tErrorRC.doubleValue(SI.SECOND);
+					else
+						return 10.0; /* Generic negative value to trigger the event only one time */
 				}
 
 				@Override
@@ -576,8 +580,14 @@ public class LandingCalc {
 					// Handle an event and choose what to do next.
 					System.out.println("\n\tPOSITIVE RATE OF CLIMB :: ERROR ... REDUCING ALPHA DOT");
 					System.out.println("\n\tswitching function changes sign at t = " + t);
+					Amount<Velocity> currentRateOfDescent = Amount.valueOf(
+							x[1]*Math.sin(x[2]/57.3),
+							SI.METERS_PER_SECOND
+							);
+					System.out.println("\n\tCurrent Rate of Descent = " + currentRateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE)+ " ft/min\n");
 					System.out.println("\n\tCurrent Alpha Dot = " + alphaDotFlare);
-					System.out.println("\tNext Alpha Dot = " + (alphaDotFlare - 0.05) + "\n");
+					System.out.println("\tNext Alpha Dot = " + (alphaDotFlare - 0.1) + "\n");
+					System.out.println("\n---------------------------DONE!-------------------------------");
 					positiveRCFlag = true;
 					if(maximumFlareCLFlag == false)
 						return  Action.STOP;
@@ -807,7 +817,7 @@ public class LandingCalc {
 				@Override
 				public double g(double t, double[] x) {
 					if(t < tTouchDown.doubleValue(SI.SECOND))
-						return x[3] - 1e-2;
+						return x[3] - targetAltitude.doubleValue(SI.METER);
 					else
 						return -10.0; /* Generic negative value to trigger the event only one time */
 				}
@@ -840,7 +850,7 @@ public class LandingCalc {
 					timeBreakPoints.add(t);
 					System.out.println("\n---------------------------DONE!-------------------------------");
 					Action action = Action.CONTINUE;
-					if ( Math.abs(altitudeAtFlareEnding.doubleValue(SI.METER) - 1.0) >= 1.0 
+					if ( Math.abs(altitudeAtFlareEnding.doubleValue(SI.METER) - targetAltitude.doubleValue(SI.METER)) >= 1e-2 
 							|| Math.abs(rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE)) >= Math.abs(targetRateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE))
 							)
 						action = Action.STOP;
@@ -848,11 +858,11 @@ public class LandingCalc {
 				}
 			};
 
-			theIntegrator.addEventHandler(ehCheckObstacle, 1.0, 1e-2, 20);
-			theIntegrator.addEventHandler(ehCheckFlareAltitude, 1.0, 1e-6, 20);
-			theIntegrator.addEventHandler(ehCheckTouchDown, 1.0, 1e-6, 20);
-			theIntegrator.addEventHandler(ehCheckStop, 1.0, 1e-6, 50);
-			theIntegrator.addEventHandler(ehCheckPositiveRateOfClimb, 1.0, 1e-2, 50);
+			theIntegrator.addEventHandler(ehCheckObstacle, 1e-2, 1e-3, 50);
+			theIntegrator.addEventHandler(ehCheckFlareAltitude, 1e-2, 1e-3, 50);
+			theIntegrator.addEventHandler(ehCheckTouchDown, 1e-2, 1e-3, 50);
+			theIntegrator.addEventHandler(ehCheckStop, 1e-2, 1e-3, 50);
+			theIntegrator.addEventHandler(ehCheckPositiveRateOfClimb, 1e-2, 1e-3, 50);
 
 			// handle detailed info
 			StepHandler stepHandler = new StepHandler() {
@@ -886,8 +896,10 @@ public class LandingCalc {
 					for(int j=0; j<totalThrustList.size(); j++) 
 						totalThrustListVertical.add(totalThrustList.get(j).times(Math.sin(thePowerPlant.getEngineList().get(j).getTiltingAngle().doubleValue(SI.RADIAN))));
 					
-					if(currentTime.doubleValue(SI.SECOND) >= tTouchDown.doubleValue(SI.SECOND))
+					if(currentTime.doubleValue(SI.SECOND) >= tTouchDown.doubleValue(SI.SECOND)) {
 						gamma = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+						xDot[3] = 0.0;
+					}
 					
 					//========================================================================================
 					// PICKING UP ALL DATA AT EVERY STEP (RECOGNIZING IF THE TAKE-OFF IS CONTINUED OR ABORTED)
@@ -1088,9 +1100,9 @@ public class LandingCalc {
 					
 					//----------------------------------------------------------------------------------------
 					// RATE OF CLIMB CHECK:
-//					if (Math.abs(x[2] - 1e-2) <= 1.0 && xDot[3] > 0.0)
-					if (xDot[3] > 0.0)
+					if (xDot[3] > 0.0) {
 						tErrorRC = currentTime;
+					}
 				}
 			};
 			theIntegrator.addStepHandler(stepHandler);
@@ -1119,14 +1131,14 @@ public class LandingCalc {
 			if(positiveRCFlag == false) {
 				if(Math.abs(rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE)) > Math.abs(targetRateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE)))
 					if(Math.abs(rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE) - targetRateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE)) < 250.0)
-						newAlphaDotFlare = alphaDotFlare + 0.1;
+						newAlphaDotFlare = alphaDotFlare + 0.05;
 					else
 						newAlphaDotFlare = alphaDotFlare + 0.5;
 			}
 			else
-				newAlphaDotFlare = alphaDotFlare - 0.025;
+				newAlphaDotFlare = alphaDotFlare - 0.1;
 
-			if(Math.abs(altitudeAtFlareEnding.doubleValue(SI.METER) - 1e-2) < 1 
+			if(Math.abs(altitudeAtFlareEnding.doubleValue(SI.METER) - targetAltitude.doubleValue(SI.METER)) < 1e-2 
 					&& Math.abs(rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE)) < Math.abs(targetRateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE))
 					)
 				targetRDandAltitudeFlag = true;
@@ -4084,7 +4096,7 @@ public class LandingCalc {
 				} while (Math.abs(gammaDot) >= 1e-3);
 				
 			}
-			else if( time.doubleValue(SI.SECOND) > tFlareAltitude.doubleValue(SI.SECOND) && time.doubleValue(SI.SECOND) <= tTouchDown.doubleValue(SI.SECOND)) {
+			else if( time.doubleValue(SI.SECOND) > tFlareAltitude.doubleValue(SI.SECOND) && time.doubleValue(SI.SECOND) < tTouchDown.doubleValue(SI.SECOND)) {
 
 				alpha = Amount.valueOf(
 						LandingCalc.this.getAlphaPerStep().get(

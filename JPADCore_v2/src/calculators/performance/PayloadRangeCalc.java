@@ -907,7 +907,6 @@ public class PayloadRangeCalc {
 			}
 
 			List<Double> sfcFormDatabaseList = new ArrayList<>();
-			List<Double> fuelFlowFormDatabaseList = new ArrayList<>();
 			for(int iEng=0; iEng<theAircraft.getPowerPlant().getEngineNumber(); iEng++) {
 				sfcFormDatabaseList.add(
 						theAircraft.getPowerPlant().getEngineDatabaseReaderList().get(iEng).getSfc(
@@ -919,18 +918,17 @@ public class PayloadRangeCalc {
 								cruiseCalibrationFactorSFC
 								)
 						);
-				fuelFlowFormDatabaseList.add(
-						thrustFormDatabaseList.get(iEng).doubleValue(SI.NEWTON)
-						*(0.224809)*(0.454/60)
-						*sfcFormDatabaseList.get(iEng)
-						);
 			}
 
 			List<Double> sfcList = new ArrayList<>();
 			sfcList.add(sfcFormDatabaseList.stream().mapToDouble(ff -> ff.doubleValue()).average().getAsDouble());
 
 			List<Double> fuelFlows = new ArrayList<>();
-			fuelFlows.add(fuelFlowFormDatabaseList.stream().mapToDouble(ff -> ff.doubleValue()).sum());
+			fuelFlows.add(
+					dragPerStep.get(0).doubleValue(SI.NEWTON)
+					*(0.224809)*(0.454/60)
+					*sfcFormDatabaseList.stream().mapToDouble(sfc -> sfc).average().getAsDouble()
+					);
 
 			List<Amount<Duration>> times = new ArrayList<>();
 			times.add(Amount.valueOf(0.0, SI.SECOND));
@@ -1121,7 +1119,6 @@ public class PayloadRangeCalc {
 				}
 
 				sfcFormDatabaseList = new ArrayList<>();
-				fuelFlowFormDatabaseList = new ArrayList<>();
 				for(int iEng=0; iEng<theAircraft.getPowerPlant().getEngineNumber(); iEng++) {
 					sfcFormDatabaseList.add(
 							theAircraft.getPowerPlant().getEngineDatabaseReaderList().get(iEng).getSfc(
@@ -1133,16 +1130,15 @@ public class PayloadRangeCalc {
 									cruiseCalibrationFactorSFC
 									)
 							);
-					fuelFlowFormDatabaseList.add(
-							thrustFormDatabaseList.get(iEng).doubleValue(SI.NEWTON)
-							*(0.224809)*(0.454/60)
-							*sfcFormDatabaseList.get(iEng)
-							);
 				}
 
 				sfcList.add(sfcFormDatabaseList.stream().mapToDouble(ff -> ff.doubleValue()).average().getAsDouble());
 
-				fuelFlows.add(fuelFlowFormDatabaseList.stream().mapToDouble(ff -> ff.doubleValue()).sum());
+				fuelFlows.add(
+						dragPerStep.get(j).doubleValue(SI.NEWTON)
+						*(0.224809)*(0.454/60)
+						*sfcFormDatabaseList.stream().mapToDouble(sfc -> sfc).average().getAsDouble()
+						);
 
 			}
 
@@ -1494,7 +1490,6 @@ public class PayloadRangeCalc {
 				}
 
 				List<Double> sfcAlternateCruiseFormDatabaseList = new ArrayList<>();
-				List<Double> fuelFlowAlternateCruiseFormDatabaseList = new ArrayList<>();
 				for(int iEng=0; iEng<theAircraft.getPowerPlant().getEngineNumber(); iEng++) {
 					sfcAlternateCruiseFormDatabaseList.add(
 							theAircraft.getPowerPlant().getEngineDatabaseReaderList().get(iEng).getSfc(
@@ -1506,18 +1501,17 @@ public class PayloadRangeCalc {
 									cruiseCalibrationFactorSFC
 									)
 							);
-					fuelFlowAlternateCruiseFormDatabaseList.add(
-							thrustAlternateCruiseFormDatabaseList.get(iEng).doubleValue(SI.NEWTON)
-							*(0.224809)*(0.454/60)
-							*sfcAlternateCruiseFormDatabaseList.get(iEng)
-							);
 				}
 
 				List<Double> sfcAlternateCruiseList = new ArrayList<>();
 				sfcAlternateCruiseList.add(sfcAlternateCruiseFormDatabaseList.stream().mapToDouble(ff -> ff.doubleValue()).average().getAsDouble());
 
 				List<Double> fuelFlowsAlternateCruise = new ArrayList<>();
-				fuelFlowsAlternateCruise.add(fuelFlowAlternateCruiseFormDatabaseList.stream().mapToDouble(ff -> ff.doubleValue()).sum());
+				fuelFlowsAlternateCruise.add(
+						dragPerStepAlternateCruise.get(0).doubleValue(SI.NEWTON)
+						*(0.224809)*(0.454/60)
+						*sfcAlternateCruiseFormDatabaseList.stream().mapToDouble(sfc -> sfc).average().getAsDouble()
+						);
 
 				List<Amount<Duration>> timesAlternateCruise = new ArrayList<>();
 				timesAlternateCruise.add(Amount.valueOf(0.0, SI.SECOND));
@@ -1744,7 +1738,6 @@ public class PayloadRangeCalc {
 					}
 
 					sfcAlternateCruiseFormDatabaseList = new ArrayList<>();
-					fuelFlowAlternateCruiseFormDatabaseList = new ArrayList<>();
 					for(int iEng=0; iEng<theAircraft.getPowerPlant().getEngineNumber(); iEng++) {
 						sfcAlternateCruiseFormDatabaseList.add(
 								theAircraft.getPowerPlant().getEngineDatabaseReaderList().get(iEng).getSfc(
@@ -1756,16 +1749,15 @@ public class PayloadRangeCalc {
 										cruiseCalibrationFactorSFC
 										)
 								);
-						fuelFlowAlternateCruiseFormDatabaseList.add(
-								thrustAlternateCruiseFormDatabaseList.get(iEng).doubleValue(SI.NEWTON)
-								*(0.224809)*(0.454/60)
-								*sfcAlternateCruiseFormDatabaseList.get(iEng)
-								);
 					}
 
 					sfcAlternateCruiseList.add(sfcAlternateCruiseFormDatabaseList.stream().mapToDouble(ff -> ff.doubleValue()).average().getAsDouble());
 
-					fuelFlowsAlternateCruise.add(fuelFlowAlternateCruiseFormDatabaseList.stream().mapToDouble(ff -> ff.doubleValue()).sum());
+					fuelFlowsAlternateCruise.add(
+							dragPerStepAlternateCruise.get(j).doubleValue(SI.NEWTON)
+							*(0.224809)*(0.454/60)
+							*sfcAlternateCruiseFormDatabaseList.stream().mapToDouble(sfc -> sfc).average().getAsDouble()
+							);
 
 				}
 
@@ -2066,7 +2058,6 @@ public class PayloadRangeCalc {
 				}
 
 				List<Double> sfcHoldingFormDatabaseList = new ArrayList<>();
-				List<Double> fuelFlowHoldingFormDatabaseList = new ArrayList<>();
 				for(int iEng=0; iEng<theAircraft.getPowerPlant().getEngineNumber(); iEng++) {
 					sfcHoldingFormDatabaseList.add(
 							theAircraft.getPowerPlant().getEngineDatabaseReaderList().get(iEng).getSfc(
@@ -2078,18 +2069,17 @@ public class PayloadRangeCalc {
 									cruiseCalibrationFactorSFC
 									)
 							);
-					fuelFlowHoldingFormDatabaseList.add(
-							thrustHoldingFormDatabaseList.get(iEng).doubleValue(SI.NEWTON)
-							*(0.224809)*(0.454/60)
-							*sfcHoldingFormDatabaseList.get(iEng)
-							);
 				}
 
 				List<Double> sfcHoldingList = new ArrayList<>();
 				sfcHoldingList.add(sfcHoldingFormDatabaseList.stream().mapToDouble(ff -> ff.doubleValue()).average().getAsDouble());
 
 				List<Double> fuelFlowsHolding = new ArrayList<>();
-				fuelFlowsHolding.add(fuelFlowHoldingFormDatabaseList.stream().mapToDouble(ff -> ff.doubleValue()).sum());
+				fuelFlowsHolding.add(
+						dragPerStepHolding.get(0).doubleValue(SI.NEWTON)
+						*(0.224809)*(0.454/60)
+						*sfcHoldingFormDatabaseList.stream().mapToDouble(sfc -> sfc).average().getAsDouble()
+						);
 
 				List<Amount<Mass>> fuelUsedPerStepHolding = new ArrayList<>();
 				fuelUsedPerStepHolding.add(Amount.valueOf(0.0, SI.KILOGRAM));
@@ -2298,7 +2288,6 @@ public class PayloadRangeCalc {
 					}
 
 					sfcHoldingFormDatabaseList = new ArrayList<>();
-					fuelFlowHoldingFormDatabaseList = new ArrayList<>();
 					for(int iEng=0; iEng<theAircraft.getPowerPlant().getEngineNumber(); iEng++) {
 						sfcHoldingFormDatabaseList.add(
 								theAircraft.getPowerPlant().getEngineDatabaseReaderList().get(iEng).getSfc(
@@ -2310,16 +2299,15 @@ public class PayloadRangeCalc {
 										cruiseCalibrationFactorSFC
 										)
 								);
-						fuelFlowHoldingFormDatabaseList.add(
-								thrustHoldingFormDatabaseList.get(iEng).doubleValue(SI.NEWTON)
-								*(0.224809)*(0.454/60)
-								*sfcHoldingFormDatabaseList.get(iEng)
-								);
 					}
 
 					sfcHoldingList.add(sfcHoldingFormDatabaseList.stream().mapToDouble(ff -> ff.doubleValue()).average().getAsDouble());
 
-					fuelFlowsHolding.add(fuelFlowHoldingFormDatabaseList.stream().mapToDouble(ff -> ff.doubleValue()).sum());
+					fuelFlowsHolding.add(
+							dragPerStepHolding.get(j).doubleValue(SI.NEWTON)
+							*(0.224809)*(0.454/60)
+							*sfcHoldingFormDatabaseList.stream().mapToDouble(sfc -> sfc).average().getAsDouble()
+							);
 
 				}
 
