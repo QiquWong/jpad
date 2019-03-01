@@ -1152,10 +1152,6 @@ public class AircraftCADUtils {
 						new Tuple2<EngineCAD, Amount<Angle>>(e, Amount.valueOf(0.0, NonSI.DEGREE_ANGLE))));
 		}
 		
-		// Check the indexes of the engines that can be reused, based on:
-		// - sharing the same y apex coordinate (absolute value);
-		// - sharing the same type, templates and dimensions.
-		// First, it is necessary to sort the engines.	
 		int[] symmEngines = new int[engines.size()];
 		Arrays.fill(symmEngines, 0);
 		if ((engines.size() & 1) == 0) { // even number of engines		
@@ -1175,9 +1171,7 @@ public class AircraftCADUtils {
 				}
 			}
 		}
-		
-		System.out.println("Engines symmetry array: " + Arrays.toString(symmEngines));
-		
+				
 		for (int i = 0; i < engines.size(); i++) {
 			
 			if (symmEngines[i] != 0 && i < engines.size()/2) {
@@ -1320,17 +1314,6 @@ public class AircraftCADUtils {
 				.collect(Collectors.toList()));
 		
 		return generatePtsAtY(basePts, yStation, liftingSurface);
-	}
-	
-	public static List<OCCShape> filterAircraftPartSolids(List<OCCShape> shapes) {
-
-		List<OCCShape> solid = new ArrayList<>();
-
-		solid.addAll(shapes.stream()
-				.filter(s -> s instanceof OCCSolid)
-				.collect(Collectors.toList()));
-
-		return solid;
 	}
 	
 	private static Tuple2<OCCShell, List<OCCShape>> generateRoundedWingTip(LiftingSurface liftingSurface, 
@@ -3956,37 +3939,38 @@ public class AircraftCADUtils {
 		double scaledHubZCoord = nacelleHeightStretchingFactor*engineCAD.getTurbopropTemplateHubCenterZCoord();
 		
 		OCCShape scaledBladeRefCompound = OCCUtils.getShapeScaled(bladeRefCompound, bladeCG, bladeScalingFactor);
-		
-		OCCExplorer bladeRefCompoundExp = new OCCExplorer();
-		
-		bladeRefCompoundExp.init(scaledBladeRefCompound, CADShapeTypes.VERTEX);	
-		double[] bladeRefPnt = ((OCCVertex) bladeRefCompoundExp.current()).pnt();
-		
-		bladeRefCompoundExp.init(scaledBladeRefCompound, CADShapeTypes.SOLID);	
-		OCCShape scaledBlade = (OCCShape) bladeRefCompoundExp.current();
 			
 		// Blade stretching, whether it is necessary
-		double bladeLengthScaled = bladeScalingFactor*engineCAD.getTurbopropTemplateBladeMaxBaseDiameter();
-		double totalBladeBaseLength = engineCAD.getNumberOfBlades()*bladeLengthScaled;
-		double scaledHubCircle = 2*Math.PI*scaledHubRadius;
+		double scaledBladeMaxBaseDiameter = bladeScalingFactor*engineCAD.getTurbopropTemplateBladeMaxBaseDiameter();
+		double totalBladeBaseLength = engineCAD.getNumberOfBlades()*scaledBladeMaxBaseDiameter;
+		double scaledHubCircle = 2*Math.PI*scaledHubRadius;		
 		
-		if (totalBladeBaseLength > 1.10*scaledHubCircle) {
-			System.out.println("... Stretching the blade in order to fit it on the hub ...");
+		if (totalBladeBaseLength > 1.25*scaledHubCircle || scaledBladeMaxBaseDiameter > scaledHubLength) {
 			
-			double bladeLengthScalingFactor = 0.95*(scaledHubCircle/engineCAD.getNumberOfBlades())/
-					engineCAD.getTurbopropTemplateBladeMaxBaseDiameter();
+			double bladeLengthScalingFactor = Math.min(
+					0.90*(scaledHubCircle/engineCAD.getNumberOfBlades()/engineCAD.getTurbopropTemplateBladeMaxBaseDiameter()), 
+					0.95*(scaledHubLength/scaledBladeMaxBaseDiameter)
+					);
 			
-			OCCShape bladeXStretched = OCCUtils.getShapeStretched(scaledBlade, bladeCG, xDir, bladeLengthScalingFactor);
+			OCCShape bladeXStretched = OCCUtils.getShapeStretched(scaledBladeRefCompound, bladeCG, xDir, bladeLengthScalingFactor);
 			OCCShape bladeYStretched = OCCUtils.getShapeStretched(bladeXStretched, bladeCG, yDir, bladeLengthScalingFactor);
 			
-			scaledBlade = bladeYStretched;			
+			scaledBladeRefCompound = bladeYStretched;			
 		}
+		
+		OCCExplorer bladeRefCompoundExp = new OCCExplorer();
+
+		bladeRefCompoundExp.init(scaledBladeRefCompound, CADShapeTypes.VERTEX);	
+		double[] bladeRefPnt = ((OCCVertex) bladeRefCompoundExp.current()).pnt();
+
+		bladeRefCompoundExp.init(scaledBladeRefCompound, CADShapeTypes.SOLID);	
+		OCCShape scaledBlade = (OCCShape) bladeRefCompoundExp.current();
 		
 		// Blade rotation, whether it is necessary
 		OCCShape bladeRotated;
 		if (engineCADPitchTuple._2().doubleValue(SI.RADIAN) != 0) {
 			double bladePitchAngle = engineCADPitchTuple._2().doubleValue(SI.RADIAN);			
-			bladeRotated = OCCUtils.getShapeRotated(scaledBlade, bladeCG, zDir, bladePitchAngle);
+			bladeRotated = OCCUtils.getShapeRotated(scaledBlade, bladeRefPnt, zDir, bladePitchAngle);
 		} else {
 			bladeRotated = scaledBlade;
 		}
@@ -4109,11 +4093,12 @@ public class AircraftCADUtils {
 				engineSolids.get(2)
 				);
 		
-		double engineInnerCasingRadiusRatio = 1 - engineCAD.getTurbofanTemplateInnerOuterCasingCoeff()*engineCAD.getByPassRatio();
+		double engineCasingRadiusRatio = 1 - (1 - engineCAD.getTurbofanTemplateCasingRadiusRatio())/
+				(engineCAD.getTurbofanTemplateByPassRatio())*engineCAD.getByPassRatio();
 		
 		double engineLengthStretchingFactor = engineCAD.getNacelleLength()/engineCAD.getTurbofanTemplateNacelleLength();
 		double engineHeightStretchingFactor = engineCAD.getNacelleMaxDiameter()/engineCAD.getTurbofanTemplateNacelleMaxDiameter();
-		double engineInnerCasingHeightStretchingFactor = engineInnerCasingRadiusRatio*engineHeightStretchingFactor;
+		double engineInnerCasingHeightStretchingFactor = engineCasingRadiusRatio/engineCAD.getTurbofanTemplateCasingRadiusRatio();
 		
 		OCCShape xStretchedEngineCasing = OCCUtils.getShapeStretched(engineCasingRefCompound, engineCG, xDir, engineLengthStretchingFactor);
 		OCCShape xzStretchedEnginecasing = OCCUtils.getShapeStretched(xStretchedEngineCasing, engineCG, zDir, engineHeightStretchingFactor);

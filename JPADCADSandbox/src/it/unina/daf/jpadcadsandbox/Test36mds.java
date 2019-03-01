@@ -2,15 +2,25 @@ package it.unina.daf.jpadcadsandbox;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import javax.measure.quantity.Angle;
+import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
+
+import org.jscience.physics.amount.Amount;
 
 import aircraft.Aircraft;
 import aircraft.components.fuselage.Fuselage;
 import aircraft.components.liftingSurface.LiftingSurface;
+import aircraft.components.nacelles.Nacelles;
+import aircraft.components.powerplant.PowerPlant;
+import configuration.MyConfiguration;
+import it.unina.daf.jpadcad.enums.EngineCADComponentsEnum;
 import it.unina.daf.jpadcad.enums.FileExtension;
 import it.unina.daf.jpadcad.enums.WingTipType;
 import it.unina.daf.jpadcad.occ.CADShapeTypes;
@@ -48,140 +58,157 @@ public class Test36mds {
 			OCCUtils.initCADShapeFactory();
 		}
 		
-		STEPControl_Reader stepReader = new STEPControl_Reader();
-		stepReader.ReadFile("C:\\Users\\Mario\\Desktop\\ATR-42\\atr42_engine.step");
-		
-		Interface_Static.SetCVal("xstep.cascade.unit", "M");
-		
-		// Check whether the .step file can be read
-		stepReader.PrintCheckLoad(1, IFSelect_PrintCount.IFSelect_ListByItem);
-		
-		stepReader.TransferRoots();
-		TopoDS_Shape transferredShape = stepReader.OneShape();
-		
-		System.out.println(transferredShape.ShapeType().toString());
-		
-		List<OCCShell> engineShapes = new ArrayList<>();
-		
-		TopTools_IndexedMapOfShape mapOfShells = new TopTools_IndexedMapOfShape();
-		TopExp.MapShapes(transferredShape, TopAbs_ShapeEnum.TopAbs_SHELL, mapOfShells);
-		
-		System.out.println("Number of shell entities found: " + mapOfShells.Size());
-		
-		IntStream.range(1, mapOfShells.Size() + 1)
-				 .forEach(i -> engineShapes.add(
-						 (OCCShell) OCCUtils.theFactory.newShape(
-								 TopoDS.ToShell(mapOfShells.FindKey(i)))
-						 ));
-		
-		System.out.println("Number of transferred shell entities: " + engineShapes.size());	
-		
-		// Mirroring the engine with respect to the aircraft symmetry plane and YZ plane
-		List<OCCShape> mirrEngineShapes = new ArrayList<>();
-		mirrEngineShapes.addAll(engineShapes.stream()
-				.map(shape -> OCCUtils.getShapeMirrored(shape, 
-						new PVector(0.0f, 0.0f, 0.0f), 
-						new PVector(0.0f, 1.0f, 0.0f), 
-						new PVector(1.0f, 0.0f, 0.0f)
-						))
-				.collect(Collectors.toList())
-				);
-		
-		List<OCCShape> rightEngineShapes = new ArrayList<>();
-		rightEngineShapes.addAll(mirrEngineShapes.stream()
-				.map(shape -> OCCUtils.getShapeMirrored(shape, 
-						new PVector(0.0f, 0.0f, 0.0f), 
-						new PVector(1.0f, 0.0f, 0.0f), 
-						new PVector(0.0f, 1.0f, 0.0f)
-						))
-				.collect(Collectors.toList())
-				);	
-		
-		double[] boundBoxNacelle = rightEngineShapes.get(2).boundingBox();
-		System.out.println("Original nacelle bounding box: " + Arrays.toString(boundBoxNacelle));
-		
-		double nacelleXRef = boundBoxNacelle[0];
-		double nacelleYRef = boundBoxNacelle[1] + (boundBoxNacelle[4] - boundBoxNacelle[1])/2;
-		double nacelleZRef = boundBoxNacelle[2] + (boundBoxNacelle[5] - boundBoxNacelle[2])/2;
-		
-		BRep_Builder compoundBuilder = new BRep_Builder();
-		TopoDS_Compound engineCompound = new TopoDS_Compound();
-		compoundBuilder.MakeCompound(engineCompound);
-		
-		rightEngineShapes.forEach(shape -> compoundBuilder.Add(engineCompound, shape.getShape()));
-		
-		OCCShape engineCompoundRight = (OCCShape) OCCUtils.theFactory.newShape(
-				scale(engineCompound, getCG(engineCompound), 0.75));
-		
-		OCCExplorer exp = new OCCExplorer();
-		exp.init(engineCompoundRight, CADShapeTypes.SHELL);
-		exp.next();
-		exp.next();
-		OCCShape nacelle = (OCCShape) exp.current();
-		double[] boundBoxNacelleScaled = nacelle.boundingBox();
-		System.out.println("Scaled nacelle bounding box: " + Arrays.toString(boundBoxNacelleScaled));
-		
-		nacelleXRef = boundBoxNacelleScaled[0];
-		nacelleYRef = boundBoxNacelleScaled[1] + (boundBoxNacelleScaled[4] - boundBoxNacelleScaled[1])/2;
-		nacelleZRef = boundBoxNacelleScaled[2] + (boundBoxNacelleScaled[5] - boundBoxNacelleScaled[2])/2;
+//		STEPControl_Reader stepReader = new STEPControl_Reader();
+//		stepReader.ReadFile("C:\\Users\\Mario\\Desktop\\ATR-42\\atr42_engine.step");
+//		
+//		Interface_Static.SetCVal("xstep.cascade.unit", "M");
+//		
+//		// Check whether the .step file can be read
+//		stepReader.PrintCheckLoad(1, IFSelect_PrintCount.IFSelect_ListByItem);
+//		
+//		stepReader.TransferRoots();
+//		TopoDS_Shape transferredShape = stepReader.OneShape();
+//		
+//		System.out.println(transferredShape.ShapeType().toString());
+//		
+//		List<OCCShell> engineShapes = new ArrayList<>();
+//		
+//		TopTools_IndexedMapOfShape mapOfShells = new TopTools_IndexedMapOfShape();
+//		TopExp.MapShapes(transferredShape, TopAbs_ShapeEnum.TopAbs_SHELL, mapOfShells);
+//		
+//		System.out.println("Number of shell entities found: " + mapOfShells.Size());
+//		
+//		IntStream.range(1, mapOfShells.Size() + 1)
+//				 .forEach(i -> engineShapes.add(
+//						 (OCCShell) OCCUtils.theFactory.newShape(
+//								 TopoDS.ToShell(mapOfShells.FindKey(i)))
+//						 ));
+//		
+//		System.out.println("Number of transferred shell entities: " + engineShapes.size());	
+//		
+//		// Mirroring the engine with respect to the aircraft symmetry plane and YZ plane
+//		List<OCCShape> mirrEngineShapes = new ArrayList<>();
+//		mirrEngineShapes.addAll(engineShapes.stream()
+//				.map(shape -> OCCUtils.getShapeMirrored(shape, 
+//						new PVector(0.0f, 0.0f, 0.0f), 
+//						new PVector(0.0f, 1.0f, 0.0f), 
+//						new PVector(1.0f, 0.0f, 0.0f)
+//						))
+//				.collect(Collectors.toList())
+//				);
+//		
+//		List<OCCShape> rightEngineShapes = new ArrayList<>();
+//		rightEngineShapes.addAll(mirrEngineShapes.stream()
+//				.map(shape -> OCCUtils.getShapeMirrored(shape, 
+//						new PVector(0.0f, 0.0f, 0.0f), 
+//						new PVector(1.0f, 0.0f, 0.0f), 
+//						new PVector(0.0f, 1.0f, 0.0f)
+//						))
+//				.collect(Collectors.toList())
+//				);	
+//		
+//		double[] boundBoxNacelle = rightEngineShapes.get(2).boundingBox();
+//		System.out.println("Original nacelle bounding box: " + Arrays.toString(boundBoxNacelle));
+//		
+//		double nacelleXRef = boundBoxNacelle[0];
+//		double nacelleYRef = boundBoxNacelle[1] + (boundBoxNacelle[4] - boundBoxNacelle[1])/2;
+//		double nacelleZRef = boundBoxNacelle[2] + (boundBoxNacelle[5] - boundBoxNacelle[2])/2;
+//		
+//		BRep_Builder compoundBuilder = new BRep_Builder();
+//		TopoDS_Compound engineCompound = new TopoDS_Compound();
+//		compoundBuilder.MakeCompound(engineCompound);
+//		
+//		rightEngineShapes.forEach(shape -> compoundBuilder.Add(engineCompound, shape.getShape()));
+//		
+//		OCCShape engineCompoundRight = (OCCShape) OCCUtils.theFactory.newShape(
+//				scale(engineCompound, getCG(engineCompound), 0.75));
+//		
+//		OCCExplorer exp = new OCCExplorer();
+//		exp.init(engineCompoundRight, CADShapeTypes.SHELL);
+//		exp.next();
+//		exp.next();
+//		OCCShape nacelle = (OCCShape) exp.current();
+//		double[] boundBoxNacelleScaled = nacelle.boundingBox();
+//		System.out.println("Scaled nacelle bounding box: " + Arrays.toString(boundBoxNacelleScaled));
+//		
+//		nacelleXRef = boundBoxNacelleScaled[0];
+//		nacelleYRef = boundBoxNacelleScaled[1] + (boundBoxNacelleScaled[4] - boundBoxNacelleScaled[1])/2;
+//		nacelleZRef = boundBoxNacelleScaled[2] + (boundBoxNacelleScaled[5] - boundBoxNacelleScaled[2])/2;
 		
 		Aircraft aircraft = AircraftUtils.importAircraft(args);
 		
-		double nacelleXApex = aircraft.getNacelles().getNacellesList().get(0).getXApexConstructionAxes().doubleValue(SI.METER);
-		double nacelleYApex = aircraft.getNacelles().getNacellesList().get(0).getYApexConstructionAxes().doubleValue(SI.METER);
-		double nacelleZApex = aircraft.getNacelles().getNacellesList().get(0).getZApexConstructionAxes().doubleValue(SI.METER);
+//		double nacelleXApex = aircraft.getNacelles().getNacellesList().get(0).getXApexConstructionAxes().doubleValue(SI.METER);
+//		double nacelleYApex = aircraft.getNacelles().getNacellesList().get(0).getYApexConstructionAxes().doubleValue(SI.METER);
+//		double nacelleZApex = aircraft.getNacelles().getNacellesList().get(0).getZApexConstructionAxes().doubleValue(SI.METER);
+//		
+//		double semispan = aircraft.getWing().getSemiSpan().doubleValue(SI.METER);
+//		
+//		List<OCCShape> enginesShapes = new ArrayList<>();
+//		
+//		gp_Trsf translate1 = new gp_Trsf();
+//		translate1.SetTranslation(
+//				new gp_Pnt(nacelleXRef, nacelleYRef, nacelleZRef), 
+//				new gp_Pnt(
+//						nacelleXApex + 0.5, 
+//						nacelleYApex, 
+//						nacelleZApex + 0.25)
+//				);
+//			
+//		OCCShape engineCompoundRight1 = (OCCShape) OCCUtils.theFactory.newShape(
+//				TopoDS.ToCompound(
+//						new BRepBuilderAPI_Transform(engineCompoundRight.getShape(), translate1, 0).Shape()
+//						));	
+//		
+//		gp_Trsf translate2 = new gp_Trsf();
+//		translate2.SetTranslation( 
+//				new gp_Pnt(nacelleXRef, nacelleYRef, nacelleZRef),
+//				new gp_Pnt(
+//						nacelleXRef + 0.7, 
+//						nacelleYRef + (semispan - nacelleYRef)/2, 
+//						nacelleZRef - 0.10)
+//				);
+//		
+//		OCCShape engineCompoundRight2 = (OCCShape) OCCUtils.theFactory.newShape(
+//				TopoDS.ToCompound(
+//						new BRepBuilderAPI_Transform(engineCompoundRight1.getShape(), translate2, 0).Shape()
+//						));
+//		
+//		enginesShapes.add(engineCompoundRight1);
+//		enginesShapes.add(engineCompoundRight2);
+//		
+//		enginesShapes.add(OCCUtils.getShapeMirrored(
+//				engineCompoundRight1, 
+//				new PVector(0.0f, 0.0f, 0.0f), 
+//				new PVector(0.0f, 1.0f, 0.0f), 
+//				new PVector(1.0f, 0.0f, 0.0f)));
+//		
+//		enginesShapes.add(OCCUtils.getShapeMirrored(
+//				engineCompoundRight2, 
+//				new PVector(0.0f, 0.0f, 0.0f), 
+//				new PVector(0.0f, 1.0f, 0.0f), 
+//				new PVector(1.0f, 0.0f, 0.0f)));
 		
-		double semispan = aircraft.getWing().getSemiSpan().doubleValue(SI.METER);
+		// Generate engine CAD objects
+		Map<EngineCADComponentsEnum, String> tpTemplatesMap = new HashMap<>();
+		Map<EngineCADComponentsEnum, String> tfTemplatesMap = new HashMap<>();	
+		tpTemplatesMap.put(EngineCADComponentsEnum.NACELLE, "TP_nacelle_01.step");
+		tpTemplatesMap.put(EngineCADComponentsEnum.BLADE, "TP_blade_02.step");
+		tfTemplatesMap.put(EngineCADComponentsEnum.NACELLE, "TF_complete_01.step");
 		
-		List<OCCShape> enginesShapes = new ArrayList<>();
+		List<Map<EngineCADComponentsEnum, String>> templatesMapList = new ArrayList<>();
+		templatesMapList.add(tpTemplatesMap);
+		templatesMapList.add(tpTemplatesMap);	
 		
-		gp_Trsf translate1 = new gp_Trsf();
-		translate1.SetTranslation(
-				new gp_Pnt(nacelleXRef, nacelleYRef, nacelleZRef), 
-				new gp_Pnt(
-						nacelleXApex + 0.5, 
-						nacelleYApex, 
-						nacelleZApex + 0.25)
-				);
-			
-		OCCShape engineCompoundRight1 = (OCCShape) OCCUtils.theFactory.newShape(
-				TopoDS.ToCompound(
-						new BRepBuilderAPI_Transform(engineCompoundRight.getShape(), translate1, 0).Shape()
-						));	
-		
-		gp_Trsf translate2 = new gp_Trsf();
-		translate2.SetTranslation( 
-				new gp_Pnt(nacelleXRef, nacelleYRef, nacelleZRef),
-				new gp_Pnt(
-						nacelleXRef + 0.7, 
-						nacelleYRef + (semispan - nacelleYRef)/2, 
-						nacelleZRef - 0.10)
-				);
-		
-		OCCShape engineCompoundRight2 = (OCCShape) OCCUtils.theFactory.newShape(
-				TopoDS.ToCompound(
-						new BRepBuilderAPI_Transform(engineCompoundRight1.getShape(), translate2, 0).Shape()
-						));
-		
-		enginesShapes.add(engineCompoundRight1);
-		enginesShapes.add(engineCompoundRight2);
-		
-		enginesShapes.add(OCCUtils.getShapeMirrored(
-				engineCompoundRight1, 
-				new PVector(0.0f, 0.0f, 0.0f), 
-				new PVector(0.0f, 1.0f, 0.0f), 
-				new PVector(1.0f, 0.0f, 0.0f)));
-		
-		enginesShapes.add(OCCUtils.getShapeMirrored(
-				engineCompoundRight2, 
-				new PVector(0.0f, 0.0f, 0.0f), 
-				new PVector(0.0f, 1.0f, 0.0f), 
-				new PVector(1.0f, 0.0f, 0.0f)));
+		List<Amount<Angle>> bladePitchAngleList = new ArrayList<>();
+		bladePitchAngleList.add(Amount.valueOf(35.0, NonSI.DEGREE_ANGLE));
+		bladePitchAngleList.add(Amount.valueOf(35.0, NonSI.DEGREE_ANGLE));
 		
 		Fuselage fuselage = aircraft.getFuselage();
 		LiftingSurface wing = aircraft.getWing();
 		LiftingSurface hTail = aircraft.getHTail();
 		LiftingSurface vTail = aircraft.getVTail();
+		Nacelles nacelles = aircraft.getNacelles();
+		PowerPlant powerPlant = aircraft.getPowerPlant();
 		
 		List<OCCShape> aircraftShapes = new ArrayList<>();
 		
@@ -200,12 +227,17 @@ public class Test36mds {
 		List<OCCShape> fairingShapes = AircraftCADUtils.getFairingShapes(
 				fuselage, wing, 0.60, 0.75, 0.85, 0.05, 0.75, 0.65, 0.75, false, false, true);
 		
-		aircraftShapes.addAll(fuselageShapes);
-		aircraftShapes.addAll(wingShapes);
-		aircraftShapes.addAll(hTailShapes);
-		aircraftShapes.addAll(vTailShapes);
-		aircraftShapes.addAll(fairingShapes);
-	    aircraftShapes.addAll(enginesShapes);
+		List<OCCShape> engineShapes = AircraftCADUtils.getEnginesCAD(MyConfiguration.inputDirectory, 
+				nacelles.getNacellesList(), powerPlant.getEngineList(), 
+				templatesMapList, bladePitchAngleList, 
+				false, false, true);			
+		
+//		aircraftShapes.addAll(fuselageShapes);
+//		aircraftShapes.addAll(wingShapes);
+//		aircraftShapes.addAll(hTailShapes);
+//		aircraftShapes.addAll(vTailShapes);
+//		aircraftShapes.addAll(fairingShapes);
+	    aircraftShapes.addAll(engineShapes);
 		
 		OCCUtils.write("Test36mds", FileExtension.STEP, aircraftShapes);
 

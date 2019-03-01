@@ -362,7 +362,8 @@ public class Test38mds {
 				  "Template_CADEngines" + File.separator + 
 				  "turbofan_templates" + File.separator;
 		
-		OCCUtils.write(outputFolderPath + "TF_complete_01", FileExtension.STEP, engineSolid);
+//		OCCUtils.write(outputFolderPath + "TF_complete_01", FileExtension.STEP, engineSolid);
+		OCCUtils.write("Test38mds", FileExtension.STEP, engineSolid);
 		
 //		// -----------------
 //		// Stretching test

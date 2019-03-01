@@ -106,22 +106,12 @@ public class Test41mds {
 		tfTemplatesMap.put(EngineCADComponentsEnum.NACELLE, "TF_complete_01.step");
 		
 		List<Map<EngineCADComponentsEnum, String>> templatesMapList = new ArrayList<>();
-		templatesMapList.add(tpTemplatesMap);
 		templatesMapList.add(tfTemplatesMap);
-		templatesMapList.add(tfTemplatesMap);
-		templatesMapList.add(tpTemplatesMap);
-		templatesMapList.add(tfTemplatesMap);
-		templatesMapList.add(tfTemplatesMap);
-		templatesMapList.add(tpTemplatesMap);
+		templatesMapList.add(tfTemplatesMap);	
 		
 		List<Amount<Angle>> bladePitchAngleList = new ArrayList<>();
-		bladePitchAngleList.add(Amount.valueOf(35.0, NonSI.DEGREE_ANGLE));
 		bladePitchAngleList.add(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
 		bladePitchAngleList.add(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
-		bladePitchAngleList.add(Amount.valueOf(90.0, NonSI.DEGREE_ANGLE));
-		bladePitchAngleList.add(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
-		bladePitchAngleList.add(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
-		bladePitchAngleList.add(Amount.valueOf(70.0, NonSI.DEGREE_ANGLE));
 		
 		boolean exportWires = false;
 		boolean exportShells = false;
@@ -145,21 +135,21 @@ public class Test41mds {
 		
 		List<OCCShape> fairingShapes = AircraftCADUtils.getFairingShapes(
 				fuselage, wing, 
-				0.50, 0.50, 1.05, 0.10, 
-				0.85, 0.10, 0.85, 
+				0.45, 0.45, 1.02, 0.05, 
+				0.85, 0.10, 0.75, 
 				exportWires, exportShells, exportSolids);
 		
 		// ---------------------------------
 		// Write the results to file
 		// ---------------------------------
-		exportShapes.addAll(fuselageShapes);
-		exportShapes.addAll(wingShapes);
-		exportShapes.addAll(hTailShapes);
-		exportShapes.addAll(vTailShapes);
-		exportShapes.addAll(fairingShapes);
+//		exportShapes.addAll(fuselageShapes);
+//		exportShapes.addAll(wingShapes);
+//		exportShapes.addAll(hTailShapes);
+//		exportShapes.addAll(vTailShapes);
+//		exportShapes.addAll(fairingShapes);
 		exportShapes.addAll(engineShapes);
 			
-		OCCUtils.write("test_wing_matlab", FileExtension.STEP, exportShapes);
+		OCCUtils.write("Test41mds", FileExtension.STEP, exportShapes);
 	}
 	
 //	public static List<OCCShape> getEnginesCAD(List<NacelleCreator> nacelles, List<Engine> engines,

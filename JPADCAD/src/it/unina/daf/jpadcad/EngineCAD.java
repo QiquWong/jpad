@@ -44,20 +44,21 @@ public class EngineCAD {
 	// ---------------
 	
 	// TURBOFAN
-	private double tfTemplateNacelleLength = 0;
-	private double tfTemplateNacelleMaxDiameter = 0;
-	private double tfTemplateInnerOuterCasingCoeff = 0;
+	private double tfTemplateNacelleLength = 0.0;
+	private double tfTemplateNacelleMaxDiameter = 0.0;
+	private double tfTemplateByPassRatio = 0.0;
+	private double tfTemplateCasingRadiusRatio = 0.0;
 	
 	// TURBOPROP
-	private double tpTemplateNacelleLength = 0;
-	private double tpTemplateNacelleMaxDiameter = 0;
+	private double tpTemplateNacelleLength = 0.0;
+	private double tpTemplateNacelleMaxDiameter = 0.0;
 	
-	private double tpTemplateHubDiameter = 0;
-	private double tpTemplateHubCenterZCoord = 0;
-	private double tpTemplateHubLengthRatio = 0;
+	private double tpTemplateHubDiameter = 0.0;
+	private double tpTemplateHubCenterZCoord = 0.0;
+	private double tpTemplateHubLengthRatio = 0.0;
 	
-	private double tpTemplateBladeMaxBaseDiameter = 0;
-	private double tpTemplateBladeLength = 0;
+	private double tpTemplateBladeMaxBaseDiameter = 0.0;
+	private double tpTemplateBladeLength = 0.0;
 	
 	// -----------
 	// Attributes
@@ -66,19 +67,19 @@ public class EngineCAD {
 	
 	private EngineTypeEnum engineType;
 	
-	private double engineXApex = 0;
-	private double engineYApex = 0;
-	private double engineZApex = 0;
+	private double engineXApex = 0.0;
+	private double engineYApex = 0.0;
+	private double engineZApex = 0.0;
 	
-	private double tiltingAngle = 0;
+	private double tiltingAngle = 0.0;
 	
-	private double nacelleLength = 0;
-	private double nacelleMaxDiameter = 0;
+	private double nacelleLength = 0.0;
+	private double nacelleMaxDiameter = 0.0;
 	
 	private int numberOfBlades = 0;
-	private double propellerDiameter = 0;
+	private double propellerDiameter = 0.0;
 	
-	private double byPassRatio = 0;
+	private double byPassRatio = 0.0;
 	
 	// ------------
 	// Constructor
@@ -325,8 +326,11 @@ public class EngineCAD {
 							selectedNacelle.getElementsByTagName("max_diameter").item(0).getAttributes().getNamedItem("unit").getNodeValue()
 							);
 					
-					this.tfTemplateInnerOuterCasingCoeff = Double.parseDouble(selectedNacelle
-							.getElementsByTagName("inn_out_casing_coeff").item(0).getTextContent());
+					this.tfTemplateByPassRatio = Double.parseDouble(selectedNacelle
+							.getElementsByTagName("by_pass_ratio").item(0).getTextContent());
+					
+					this.tfTemplateCasingRadiusRatio = Double.parseDouble(selectedNacelle
+							.getElementsByTagName("casing_radius_ratio").item(0).getTextContent());
 				}
 			}
 
@@ -404,12 +408,20 @@ public class EngineCAD {
 		this.tfTemplateNacelleMaxDiameter = tfTemplateNacelleMaxDiameter;
 	}
 	
-	public double getTurbofanTemplateInnerOuterCasingCoeff() {
-		return this.tfTemplateInnerOuterCasingCoeff;
+	public double getTurbofanTemplateByPassRatio() {
+		return this.tfTemplateByPassRatio;
 	}
 	
-	public void setTurbofanTemplateInnerOuterCasingCoeff(double tfTemplateInnerOuterCasingCoeff) {
-		this.tfTemplateInnerOuterCasingCoeff = tfTemplateInnerOuterCasingCoeff;
+	public void setTurbofanTemplateByPassRatio(double tfTemplateByPassRatio) {
+		this.tfTemplateByPassRatio = tfTemplateByPassRatio;
+	}
+	
+	public double getTurbofanTemplateCasingRadiusRatio() {
+		return this.tfTemplateCasingRadiusRatio;
+	}
+	
+	public void setTurbofanTemplateCasingRadiusRatio(double tfTemplateCasingRadiusRatio) {
+		this.tfTemplateCasingRadiusRatio = tfTemplateCasingRadiusRatio;
 	}
 	
 	public double getTurbopropTemplateNacelleLength() {

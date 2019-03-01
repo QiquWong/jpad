@@ -16,26 +16,11 @@
 	<vertical generate="TRUE" tipType="ROUNDED"></vertical>
 	<canard generate="TRUE" tipType="ROUNDED"></canard>
 	<engines generate="TRUE">
-		<engine templateNacelle="TP_nacelle_01.step" templateBlade="TP_blade_02.step">
-			<propellerBladePitchAngle unit="deg">30.0</propellerBladePitchAngle>
-		</engine>
 		<engine templateNacelle="TF_complete_01.step" templateBlade="">
 			<propellerBladePitchAngle unit="deg">0.0</propellerBladePitchAngle>
 		</engine>
 		<engine templateNacelle="TF_complete_01.step" templateBlade="">
 			<propellerBladePitchAngle unit="deg">0.0</propellerBladePitchAngle>
-		</engine>
-		<engine templateNacelle="TP_nacelle_01.step" templateBlade="TP_blade_02.step">
-			<propellerBladePitchAngle unit="deg">45.0</propellerBladePitchAngle>
-		</engine>
-		<engine templateNacelle="TF_complete_01.step" templateBlade="">
-			<propellerBladePitchAngle unit="deg">0.0</propellerBladePitchAngle>
-		</engine>
-		<engine templateNacelle="TF_complete_01.step" templateBlade="">
-			<propellerBladePitchAngle unit="deg">0.0</propellerBladePitchAngle>
-		</engine>
-		<engine templateNacelle="TP_nacelle_01.step" templateBlade="TP_blade_02.step">
-			<propellerBladePitchAngle unit="deg">60.0</propellerBladePitchAngle>
 		</engine>
 	</engines>
 	<wing_fairing generate="FALSE">
@@ -56,5 +41,5 @@
 		<heightAboveReferenceFactor>0.50</heightAboveReferenceFactor>
 		<filletRadiusFactor>0.75</filletRadiusFactor>
 	</canard_fairing>
-	<export_to_file value="FALSE" format="" exportWireframe="FALSE"></export_to_file>
+	<export_to_file value="FALSE" format="STEP" exportWireframe="FALSE"></export_to_file>
 </jpad_CAD_config>

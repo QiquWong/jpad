@@ -702,7 +702,7 @@ public class CADManager {
 					);
 			
 			_theAircraftShapes.addAll(fuselageShapes);
-			_theAircraftSolidsMap.get(CADComponentEnum.FUSELAGE).addAll(AircraftCADUtils.filterAircraftPartSolids(fuselageShapes));
+			_theAircraftSolidsMap.get(CADComponentEnum.FUSELAGE).addAll(OCCUtils.filterAircraftPartSolids(fuselageShapes));
 		}
 		
 		// WING
@@ -733,7 +733,7 @@ public class CADManager {
 						));
 
 			_theAircraftShapes.addAll(wingShapes);
-			_theAircraftSolidsMap.get(CADComponentEnum.WING).addAll(AircraftCADUtils.filterAircraftPartSolids(wingShapes));
+			_theAircraftSolidsMap.get(CADComponentEnum.WING).addAll(OCCUtils.filterAircraftPartSolids(wingShapes));
 		}
 		
 		// HORIZONTAL
@@ -748,7 +748,7 @@ public class CADManager {
 					);
 
 			_theAircraftShapes.addAll(hTailShapes);
-			_theAircraftSolidsMap.get(CADComponentEnum.HORIZONTAL).addAll(AircraftCADUtils.filterAircraftPartSolids(hTailShapes));
+			_theAircraftSolidsMap.get(CADComponentEnum.HORIZONTAL).addAll(OCCUtils.filterAircraftPartSolids(hTailShapes));
 		}
 		
 		// VERTICAL
@@ -763,7 +763,7 @@ public class CADManager {
 					);
 
 			_theAircraftShapes.addAll(vTailShapes);
-			_theAircraftSolidsMap.get(CADComponentEnum.VERTICAL).addAll(AircraftCADUtils.filterAircraftPartSolids(vTailShapes));
+			_theAircraftSolidsMap.get(CADComponentEnum.VERTICAL).addAll(OCCUtils.filterAircraftPartSolids(vTailShapes));
 		}
 		
 		// CANARD
@@ -778,7 +778,7 @@ public class CADManager {
 					);
 
 			_theAircraftShapes.addAll(canardShapes);
-			_theAircraftSolidsMap.get(CADComponentEnum.CANARD).addAll(AircraftCADUtils.filterAircraftPartSolids(canardShapes));
+			_theAircraftSolidsMap.get(CADComponentEnum.CANARD).addAll(OCCUtils.filterAircraftPartSolids(canardShapes));
 		}
 		
 		// ENGINES
@@ -796,7 +796,7 @@ public class CADManager {
 					);
 			
 			_theAircraftShapes.addAll(enginesShapes);
-			_theAircraftSolidsMap.get(CADComponentEnum.ENGINES).addAll(AircraftCADUtils.filterAircraftPartSolids(enginesShapes));
+			_theAircraftSolidsMap.get(CADComponentEnum.ENGINES).addAll(OCCUtils.filterAircraftPartSolids(enginesShapes));
 		}
 		
 		// WING-FUSELAGE FAIRING 
@@ -818,7 +818,7 @@ public class CADManager {
 					);
 			
 			_theAircraftShapes.addAll(wingFairingShapes);
-			_theAircraftSolidsMap.get(CADComponentEnum.WING_FAIRING).addAll(AircraftCADUtils.filterAircraftPartSolids(wingFairingShapes));
+			_theAircraftSolidsMap.get(CADComponentEnum.WING_FAIRING).addAll(OCCUtils.filterAircraftPartSolids(wingFairingShapes));
 		}
 		
 		// CANARD/FUSELAGE FAIRING
@@ -840,7 +840,7 @@ public class CADManager {
 					);
 			
 			_theAircraftShapes.addAll(canardFairingShapes);
-			_theAircraftSolidsMap.get(CADComponentEnum.CANARD_FAIRING).addAll(AircraftCADUtils.filterAircraftPartSolids(canardFairingShapes));
+			_theAircraftSolidsMap.get(CADComponentEnum.CANARD_FAIRING).addAll(OCCUtils.filterAircraftPartSolids(canardFairingShapes));
 		}
 	}
 	

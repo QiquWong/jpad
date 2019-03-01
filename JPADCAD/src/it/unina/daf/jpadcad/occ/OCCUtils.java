@@ -968,5 +968,16 @@ public final class OCCUtils {
 		return new double[] {cgGpPnt.X(), cgGpPnt.Y(), cgGpPnt.Z()};
 	}
 	
+	public static List<OCCShape> filterAircraftPartSolids(List<OCCShape> shapes) {
+
+		List<OCCShape> solid = new ArrayList<>();
+
+		solid.addAll(shapes.stream()
+				.filter(s -> s instanceof OCCSolid)
+				.collect(Collectors.toList()));
+
+		return solid;
+	}
+	
 }
 
