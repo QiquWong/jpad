@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jpad_config>
+	<!-- 
+		plot=FALSE -> enters the plot tag.
+		plot=FALSE -> plot nothing.
+		
+		- All the variables which have "METHOD" as attirubte, can be calculated with the deifned method 
+		- IF THE MOMENTIUM POLE IS NOT ASSIGNED (wing/HTail/VTail), IT WILL BE ASSUMED AS THE Xac CALCUALTED USING THE METHOD "DEYOUNG_HARPER"
+	-->
+    <analysis>
+        <aerodynamics_and_stability 
+			id="IRON - AERODYNAMICS TAKE-OFF"
+			balance_from_previous_analysis="false"
+			>
+			<balance>
+			<!-- 
+			These values will be read only if the "balance_from_xls_file" is FALSE. 
+			Otherwise the all the CG positions in every condition will be read from the Balance output file.
+			-->
+				<!-- the values of the centre of gravity position are referred to the mean aerodynamic chord of the wing -->
+				<adimensional_center_of_gravity_x_position_list>-0.22</adimensional_center_of_gravity_x_position_list> <!-- in BRF referred to MAC --> 
+				<adimensional_center_of_gravity_z_position_list>0.0</adimensional_center_of_gravity_z_position_list> <!-- in BRF referred to MAC --> 
+				<fuselage_dimensional_center_of_gravity_x_position unit="m">18.64</fuselage_dimensional_center_of_gravity_x_position> <!-- in BRF --> 
+				<fuselage_dimensional_center_of_gravity_z_position unit="m">0.0</fuselage_dimensional_center_of_gravity_z_position> <!-- in BRF --> 
+				<landing_gear_dimensional_center_of_gravity_x_position unit="m">23.62</landing_gear_dimensional_center_of_gravity_x_position> <!-- in BRF --> 
+				<landing_gear_dimensional_center_of_gravity_z_position unit="m">-3.07</landing_gear_dimensional_center_of_gravity_z_position> <!-- in BRF --> 
+				<nacelle_dimensional_center_of_gravity_x_position unit="m">31.97</nacelle_dimensional_center_of_gravity_x_position> <!-- in BRF --> 
+				<nacelle_dimensional_center_of_gravity_z_position unit="m">1.5</nacelle_dimensional_center_of_gravity_z_position> <!-- in BRF --> 
+			</balance>
+			<global_data>
+				<alpha_body_initial unit="deg">-4</alpha_body_initial> <!-- MANDATORY-->
+				<alpha_body_final unit="deg">20</alpha_body_final> <!-- MANDATORY-->
+				<number_of_alpha_body></number_of_alpha_body> <!-- if not set, default value = 20 -->
+				<beta_initial unit="deg">0</beta_initial> <!-- MANDATORY-->
+				<beta_final unit="deg">20</beta_final> <!-- MANDATORY-->
+				<number_of_beta></number_of_beta> <!-- if not set, default value = 20 -->
+				<alpha_wing_array_for_distributions unit="deg">0.0;2.0;10.0</alpha_wing_array_for_distributions> <!-- these distributions are only in CLEAN configuration -->
+				<alpha_horizontal_tail_array_for_distributions unit="deg">0.0;2.0;10.0</alpha_horizontal_tail_array_for_distributions> <!-- these distributions are only in CLEAN configuration -->
+				<beta_vertical_tail_array_for_distributions unit="deg">0.0;2.0;10.0</beta_vertical_tail_array_for_distributions> <!-- these distributions are only in CLEAN configuration -->
+				<alpha_canard_array_for_distributions unit="deg">0.0;2.0;10.0</alpha_canard_array_for_distributions> <!-- these distributions are only in CLEAN configuration -->
+				<number_of_points_semispawise_wing></number_of_points_semispawise_wing> <!-- if not set, default value = 30 -->
+				<number_of_points_semispawise_horizontal_tail></number_of_points_semispawise_horizontal_tail> <!-- if not set, default value = 30 -->
+				<number_of_points_semispawise_vertical_tail></number_of_points_semispawise_vertical_tail> <!-- if not set, default value = 30 -->
+				<number_of_points_semispawise_canard></number_of_points_semispawise_canard> <!-- if not set, default value = 30 -->
+				<delta_elevator_array unit="deg"></delta_elevator_array> <!-- if not set, default values = -25.0, -20.0, -15.0, -10.0, -5.0, 0.0, 5.0 -->
+				<delta_rudder_array unit="deg">5.0, 10.0, 15.0, 20.0, 25.0, 30.0</delta_rudder_array> <!-- if not set, default values = 5.0, 10.0, 15.0, 20.0, 25.0 -->
+				<delta_canard_control_surface_array unit="deg"></delta_canard_control_surface_array> <!-- if not set, default values = 5.0, 10.0, 15.0, 20.0, 25.0 -->
+				<adimensional_wing_momentum_pole></adimensional_wing_momentum_pole> <!-- if not set, default value = 0.25 -->
+				<adimensional_horizontal_tail_momentum_pole></adimensional_horizontal_tail_momentum_pole> <!-- if not set, default value = 0.25 -->
+				<adimensional_vertical_tail_momentum_pole></adimensional_vertical_tail_momentum_pole> <!-- if not set, default value = 0.25 -->
+				<adimensional_canard_momentum_pole></adimensional_canard_momentum_pole> <!-- if not set, default value = 0.25 -->
+				<adimensional_fuselage_momentum_pole></adimensional_fuselage_momentum_pole> <!-- adimensional: referred to fuselage length. If not set, default value = 0.5 -->
+				<!-- the following values can be left blanck. In this case the related quantities will be automatically calculated --> 
+				<wing_dynamic_pressure_ratio></wing_dynamic_pressure_ratio> <!-- if not set, default value = 1.0 -->
+				<horizontal_tail_dynamic_pressure_ratio></horizontal_tail_dynamic_pressure_ratio> <!-- if not set, the value will be calculated -->
+				<vertical_tail_dynamic_pressure_ratio></vertical_tail_dynamic_pressure_ratio> <!-- if not set, the value will be calculated -->
+				<tau_elevator_function assigned="FALSE"> <!-- if 'assigned'=TRUE, the function will be read from the following tags -->
+					<tau>0.4221</tau>
+					<delta_elevator unit="deg"></delta_elevator> <!-- if the tau array contains only 1 value this tag can be left empty -->
+				</tau_elevator_function>
+				<tau_rudder_function assigned="FALSE"> <!-- if 'assigned'=TRUE, the function will be read from the following tags -->
+					<tau>0.0000;0.5359;0.5648;0.5502;0.5261</tau>
+					<delta_rudder unit="deg">0.0;10.0;20.0;25.0;30.0</delta_rudder> <!-- if the tau array contains only 1 value this tag can be left empty -->
+				</tau_rudder_function>	
+				<tau_canard_control_surface_function assigned="FALSE"> <!-- if 'assigned'=TRUE, the function will be read from the following tags -->
+					<tau>0.4</tau>
+					<delta_canard_control_surface unit="deg"></delta_canard_control_surface> <!-- if the tau array contains only 1 value this tag can be left empty -->
+				</tau_canard_control_surface_function>
+				<!---->
+			</global_data>
+			<!-- POSSIBLE ANALYSIS TYPE = "SEMIEMPIRICAL", (in future "AVL", "KK32", ecc..) -->
+			<components>
+				<wing perform="FALSE" type="SEMIEMPIRICAL"/>
+				<horizontal_tail perform="FALSE" type="SEMIEMPIRICAL"/>
+				<vertical_tail perform="FALSE" type="SEMIEMPIRICAL"/>
+				<vertical_tail perform="FALSE" type="SEMIEMPIRICAL"/>
+				<canard perform="FALSE" type="SEMIEMPIRICAL"/>
+				<fuselage perform="FALSE" type="SEMIEMPIRICAL"/>
+				<nacelles perform="FALSE" type="SEMIEMPIRICAL"/>
+			</components>
+			<aircraft>
+				<canard_wing_downwash constant_gradient="TRUE" method=""/> <!-- constant_gradient: if not set, default value = TRUE -->
+				<wing_hTail_downwash constant_gradient="FALSE" method="SLINGERLAND"/> <!-- constant_gradient: if not set, default value = TRUE. 'ROSKAM NON LINEAR GIVES PROBLEM: DISABLED TEMPORARY' --> 
+				<total_lift_curve perform="FALSE" method="FROM_BALANCE_EQUATION">
+					<fuselage_effects include="TRUE"/> <!-- if not set, default value = TRUE -->
+					<calibration>
+						<scale_factor_alpha value="1.0"/> <!-- if not set, default value = 1.0 -->
+						<scale_factor_cL value="1.0"/> <!-- if not set, default value = 1.0 -->
+					</calibration>
+				</total_lift_curve>
+				<total_drag_polar perform="FALSE" method="FROM_BALANCE_EQUATION">
+					<delta_CD0_landing_gears calculate="FALSE" value="0.0" kFactor = "1.0"/> <!-- calculate: if not set, default value = FALSE -->
+					<delta_CD0_excrescences calculate="FALSE" value="0.0" kFactor = "1.0"/> <!-- calculate: if not set, default value = FALSE -->
+					<delta_CD0_cooling calculate="FALSE" value="0.0" kFactor = "1.0"/> <!-- calculate: if not set, default value = FALSE -->
+					<delta_CD0_interferences calculate="FALSE" value="0.0" kFactor = "1.0"/> <!-- calculate: if not set, default value = FALSE -->
+					<calibration>
+						<scale_factor_cL value="1.0"/> <!-- if not set, default value = 1.0-->
+						<scale_factor_cD value="1.0"/> <!-- if not set, default value = 1.0 -->
+					</calibration>
+				</total_drag_polar>
+				<total_moment_curve perform="FALSE" method="FROM_BALANCE_EQUATION">
+					<calibration>
+						<scale_factor_alpha value="1.0"/> <!-- if not set, default value = 1.0 -->
+						<scale_factor_cM value="1.0"/> <!-- if not set, default value = 1.0 -->
+					</calibration>
+				</total_moment_curve>
+				<longitudinal_static_stability perform="FALSE" wing_pendular_stability_effect="TRUE" method="FROM_BALANCE_EQUATION"/> <!-- wing_pendular_stability_effect: if not set, default value = TRUE -->
+				<lateral_static_stability perform="FALSE" method="NAPOLITANO_DATCOM"/> 
+				<directional_static_stability perform="TRUE" method="VEDSC_USAFDATCOM_WING"/>
+				<side_force perform="FALSE" method="NAPOLITANO_DATCOM"/> 
+				<VMU perform="FALSE" method="VEDSC_USAFDATCOM_WING"/> <!-- This analysis is performed only in TAKE-OFF conditions -->
+				<!---->
+				<dynamic_stability perform="FALSE" method=""/> <!-- TODO: IMPLEMENT THIS (work in progress) -->
+				<buffet_barrier perform="FALSE" method="KROO"/> <!-- TODO: IMPLEMENT THIS (work in progress) -->
+				<!---->
+			</aircraft>
+        </aerodynamics_and_stability>
+    </analysis>
+	<!-- choose which set of plot has to be done --> 
+	<plot>
+		<wing perform="TRUE"/>
+		<horizontal_tail perform="TRUE"/>
+		<vertical_tail perform="TRUE"/>
+		<canard perform="FALSE"/>
+		<fuselage perform="TRUE"/>
+		<nacelles perform="TRUE"/>
+		<aircraft perform="TRUE"/>
+	</plot>
+</jpad_config>

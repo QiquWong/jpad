@@ -7,16 +7,16 @@
 		</global_data>
 		<panels>
             <panel id="Vertical tail panel">
-                <span unit="m">5.78</span> 
+                <span unit="m">6.13</span> 
                 <dihedral unit="deg">0.0</dihedral>
-                <sweep_leading_edge unit="deg">45</sweep_leading_edge>
+                <sweep_leading_edge unit="deg">47.6</sweep_leading_edge>
                 <inner_section>
-                    <chord unit="m">5.16</chord>
+                    <chord unit="m">6.68</chord>
                     <airfoil file="naca0012.xml"/>
                     <geometric_twist unit="deg">0.0</geometric_twist>
                 </inner_section>
                 <outer_section>
-                    <chord unit="m">3.3</chord>
+                    <chord unit="m">2.332</chord>
                     <airfoil file="naca0012.xml"/>
                     <geometric_twist unit="deg">0.0</geometric_twist>
                 </outer_section>
@@ -25,11 +25,11 @@
         <symmetric_flaps>
             <symmetric_flap id="Rudder" type="PLAIN">
                 <inner_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.0</inner_station_spanwise_position>
-                <outer_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.9</outer_station_spanwise_position>
-                <inner_chord_ratio>0.35</inner_chord_ratio>
-				<outer_chord_ratio>0.35</outer_chord_ratio>
-                <min_deflection unit="deg">-25.0</min_deflection>
-				<max_deflection unit="deg">25.0</max_deflection>
+                <outer_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.1</outer_station_spanwise_position>
+                <inner_chord_ratio>0.30</inner_chord_ratio>
+				<outer_chord_ratio>0.45</outer_chord_ratio>
+                <min_deflection unit="deg">-30.0</min_deflection>
+				<max_deflection unit="deg">30.0</max_deflection>
             </symmetric_flap>
         </symmetric_flaps>
     </vertical_tail>

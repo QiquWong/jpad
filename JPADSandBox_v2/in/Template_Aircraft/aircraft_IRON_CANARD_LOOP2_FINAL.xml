@@ -23,7 +23,7 @@
             </horizontal_tail>
             <vertical_tail file="vtail_IRON_CANARD_LOOP2_FINAL.xml">
                 <position>
-                    <x unit="m">31.37</x>
+                    <x unit="m">30.35</x>
                     <y unit="m">0.0</y>
                     <z unit="m">1.56</z>
                 </position>

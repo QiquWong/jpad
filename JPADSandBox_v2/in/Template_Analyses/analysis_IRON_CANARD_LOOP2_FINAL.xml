@@ -52,10 +52,10 @@
 	-->
 	<!--
 	<aerodynamic_and_stability
-			plot="FALSE"
-			create_CSV="FALSE"
-			take_off_condition="FALSE"
-			file_take_off_condition=""
+			plot="TRUE"
+			create_CSV="TRUE"
+			take_off_condition="TRUE"
+			file_take_off_condition="analysis_aerodynamics_IRON_LOOP_2.xml"
 			climb_condition="FALSE"
 			file_climb_condition=""
 			cruise_condition="FALSE"
@@ -64,7 +64,6 @@
 			file_landing_condition=""
 	/>
 	-->
-	
 	<!--
 	<dynamic_stability
 			plot="TRUE"
@@ -82,14 +81,14 @@
 			file="analysis_performance_IRON_CANARD_LOOP2_FINAL_no_riblets.xml"
 			plot="TRUE"
 			create_CSV="TRUE"
-			take_off="FALSE"
+			take_off="TRUE"
 			climb="FALSE"
 			cruise="FALSE"
 			descent="FALSE"
 			landing="FALSE"
 			payload_range="FALSE"
-			V_n_diagram="FALSE"
-			noise_trajectories="TRUE"
+			V_n_diagram="TRUE"
+			noise_trajectories="FALSE"
 			mission_profile="FALSE"
 	/>
 	<!--
