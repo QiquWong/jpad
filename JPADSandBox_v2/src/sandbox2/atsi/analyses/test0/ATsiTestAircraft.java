@@ -1,4 +1,4 @@
-package sandbox2.atsi.analyses;
+package sandbox2.atsi.analyses.test0;
 
 import java.io.File;
 import java.io.IOException;

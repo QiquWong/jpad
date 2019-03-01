@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
-<listEntry value="/JPADSandBox_v2/src/sandbox2/atsi/analyses/ATsiTestAircraft.java"/>
+<listEntry value="/JPADSandBox_v2/src/sandbox2/atsi/analyses/test0/ATsiTestAircraft.java"/>
 </listAttribute>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
 <listEntry value="1"/>
@@ -10,7 +10,7 @@
 <mapEntry key="Path" value="${JPAD_ROOT}\libraries\hdf"/>
 </mapAttribute>
 <stringAttribute key="org.eclipse.debug.ui.ATTR_CAPTURE_IN_FILE" value="${JPAD_ROOT}\JPADSandBox_v2\out\ATR72_Atsi.log"/>
-<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="sandbox2.atsi.analyses.ATsiTestAircraft"/>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="sandbox2.atsi.analyses.test0.ATsiTestAircraft"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-i in/Template_Aircraft/aircraft_ATR72_ATsi.xml &#13;&#10;-ia in\Template_Analyses\analysis_ATR72_ATsi.xml &#13;&#10;-ioc in\Template_Analyses\operating_conditions_ATR72.xml &#13;&#10;-da in/Template_Aircraft/lifting_surfaces/airfoils &#13;&#10;-df in/Template_Aircraft/fuselages &#13;&#10;-dls in/Template_Aircraft/lifting_surfaces &#13;&#10;-de in/Template_Aircraft/engines &#13;&#10;-dn in/Template_Aircraft/nacelles &#13;&#10;-dlg in/Template_Aircraft/landing_gears &#13;&#10;-dcc in/Template_Aircraft/cabin_configurations"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="JPADSandBox_v2"/>
 </launchConfiguration>

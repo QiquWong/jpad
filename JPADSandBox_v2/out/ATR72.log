@@ -1,8 +1,8 @@
 -------------------
 Complete Analysis Test
 -------------------
-AIRCRAFT INPUT ===> C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\in\Template_Aircraft\aircraft_ATR72_ATsi.xml
-ANALYSES INPUT ===> C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\in\Template_Analyses\analysis_ATR72_ATsi.xml
+AIRCRAFT INPUT ===> C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\in\Template_Aircraft\aircraft_ATR72.xml
+ANALYSES INPUT ===> C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\in\Template_Analyses\analysis_ATR72.xml
 OPERATING CONDITIONS INPUT ===> C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\in\Template_Analyses\operating_conditions_ATR72.xml
 AIRFOILS ===> C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\in\Template_Aircraft\lifting_surfaces\airfoils
 FUSELAGES ===> C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\in\Template_Aircraft\fuselages
@@ -12,8 +12,8 @@ NACELLES ===> C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\in\Template_A
 LANDING GEARS ===> C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\in\Template_Aircraft\landing_gears
 CABIN CONFIGURATIONS ===> C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\in\Template_Aircraft\cabin_configurations
 --------------
-13 [main] INFO ncsa.hdf.hdf5lib.H5 - HDF5 library: jhdf5
-13 [main] INFO ncsa.hdf.hdf5lib.H5 -  successfully loaded from java.library.path
+12 [main] INFO ncsa.hdf.hdf5lib.H5 - HDF5 library: jhdf5
+12 [main] INFO ncsa.hdf.hdf5lib.H5 -  successfully loaded from java.library.path
 De-serializing file: C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterAerodynamicDatabase.xml ...
 database.databasefunctions.aerodynamics.AerodynamicDatabaseReader de-serialization complete
 De-serializing file: C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterHighLiftDatabase.xml ...
@@ -30,7 +30,7 @@ database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serializati
 	-------------------------------------
 	The Aircraft
 	-------------------------------------
-	Id: 'ATR-72 - ATsi'
+	Id: 'ATR-72'
 	Type: 'TURBOPROP'
 	-------------------------------------
 	Fuselage
@@ -1418,7 +1418,7 @@ database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serializati
 	-------------------------------------
 	Aircraft Analysis Manager
 	-------------------------------------
-	Aircraft in exam: ATR-72 - ATsi
+	Aircraft in exam: ATR-72
 	...............................................................................................................
 	Positive limit load factor: 2.5
 	Negative limit load factor: -1.0
@@ -1739,4 +1739,4 @@ database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serializati
 
 
 
-	 TIME ESTIMATED = 7 seconds
+	 TIME ESTIMATED = 6 seconds

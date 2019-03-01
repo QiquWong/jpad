@@ -362,7 +362,9 @@ public class AircraftPointMassPropagatorTest {
 			Path path = Paths.get(pathToMissionEventsXML);
 			String missionID = path.getFileName().toString().replace("analysis_mission_simulation_", "").replace(".xml", "");
 			String missionOutputDir = JPADStaticWriteUtils.createNewFolder(
-					aircraftFolder + "MISSION_SIM" + File.separator + missionID + File.separator);
+					aircraftFolder + "MISSION_SIM" + File.separator);
+			missionOutputDir = JPADStaticWriteUtils.createNewFolder(
+					missionOutputDir + File.separator + missionID + File.separator);
 			if (propagator.chartsEnabled())
 				System.out.println("\nPlots saved in folder: " + missionOutputDir);
 			
