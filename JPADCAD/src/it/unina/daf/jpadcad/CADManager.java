@@ -145,7 +145,7 @@ public class CADManager {
 		// FUSELAGE CAD OPERATIONS
 		//---------------------------------------------------------------
 		
-		// Initialize FUSELAGE CAD parameters
+		// Initialize FUSELAGE CAD parameters (default values)
 		int numberNoseTrunkSections = 7;
 		XSpacingType spacingTypeNoseTrunk = XSpacingType.COSINUS;
 		int numberTailTrunkSections = 7;
@@ -181,7 +181,7 @@ public class CADManager {
 		// WING CAD OPERATIONS
 		//---------------------------------------------------------------
 		
-		// Initialize WING CAD parameters
+		// Initialize WING CAD parameters (default values)
 		WingTipType wingTipType = WingTipType.CUTOFF;
 		
 		double wingletYOffsetFactor = 0.50;
@@ -221,7 +221,7 @@ public class CADManager {
 		// HORIZONTAL TAIL CAD OPERATIONS
 		//---------------------------------------------------------------
 
-		// Initialize HORIZONTAL TAIL CAD parameters
+		// Initialize HORIZONTAL TAIL CAD parameters (default values)
 		WingTipType hTailTipType = WingTipType.CUTOFF;
 
 		// Read HORIZONTAL TAIL CAD parameters from the XML file
@@ -241,7 +241,7 @@ public class CADManager {
 		// VERTICAL TAIL CAD OPERATIONS
 		//---------------------------------------------------------------
 
-		// Initialize VERTICAL TAIL CAD parameters
+		// Initialize VERTICAL TAIL CAD parameters (default values)
 		WingTipType vTailTipType = WingTipType.CUTOFF;
 
 		// Read VERTICAL TAIL CAD parameters from the XML file
@@ -261,7 +261,7 @@ public class CADManager {
 		// CANARD CAD OPERATIONS
 		//---------------------------------------------------------------
 
-		// Initialize CANARD CAD parameters
+		// Initialize CANARD CAD parameters (default values)
 		WingTipType canardTipType = WingTipType.CUTOFF;
 		
 		// Read vertical tail CAD parameters from the XML file
@@ -310,11 +310,14 @@ public class CADManager {
 						theAircraft.getPowerPlant().getEngineList().get(i).getEngineType().equals(EngineTypeEnum.TURBOPROP)) {
 					
 						if (!propellerBladePitchAngleStringList.get(i).equals(""))
-							propellerBladePitchAngleList.add(Amount.valueOf(Double.valueOf(propellerBladePitchAngleStringList.get(i)), NonSI.DEGREE_ANGLE));
+							propellerBladePitchAngleList.add(
+									Amount.valueOf(Double.valueOf(propellerBladePitchAngleStringList.get(i)), NonSI.DEGREE_ANGLE));
 						else
-							propellerBladePitchAngleList.add(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));								
+							propellerBladePitchAngleList.add(
+									Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));								
 					} else 					
-						propellerBladePitchAngleList.add(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
+						propellerBladePitchAngleList.add(
+								Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
 			
 				}
 				
@@ -338,11 +341,14 @@ public class CADManager {
 							theAircraft.getPowerPlant().getEngineList().get(i).getEngineType().equals(EngineTypeEnum.TURBOPROP)) {
 						
 							if (!propellerBladePitchAngleStringList.get(i).equals(""))
-								propellerBladePitchAngleList.add(Amount.valueOf(Double.valueOf(propellerBladePitchAngleStringList.get(i)), NonSI.DEGREE_ANGLE));
+								propellerBladePitchAngleList.add(
+										Amount.valueOf(Double.valueOf(propellerBladePitchAngleStringList.get(i)), NonSI.DEGREE_ANGLE));
 							else
-								propellerBladePitchAngleList.add(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));								
+								propellerBladePitchAngleList.add(
+										Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));								
 						} else 					
-							propellerBladePitchAngleList.add(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
+							propellerBladePitchAngleList.add(
+									Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
 						
 					} else {
 						
@@ -351,7 +357,8 @@ public class CADManager {
 						engineTemplatesMap.put(EngineCADComponentsEnum.BLADE, "");			
 						engineTemplatesList.add(engineTemplatesMap);
 						
-						propellerBladePitchAngleList.add(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
+						propellerBladePitchAngleList.add(
+								Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
 					}
 				} 
 			}
@@ -365,7 +372,7 @@ public class CADManager {
 		// WING-FUSELAGE FAIRING CAD OPERATIONS
 		//---------------------------------------------------------------
 
-		// Initialize WING FAIRING CAD parameters
+		// Initialize WING FAIRING CAD parameters (default values)
 		double wingFairingFrontLengthFactor = 1.00;
 		double wingFairingBackLengthFactor = 1.00;
 		double wingFairingWidthFactor = 0.75;
@@ -415,13 +422,13 @@ public class CADManager {
 		//---------------------------------------------------------------
 
 		// Initialize CANARD FAIRING CAD parameters
-		double canardFairingFrontLengthFactor = 1.00;
-		double canardFairingBackLengthFactor = 1.00;
-		double canardFairingWidthFactor = 0.55;
-		double canardFairingHeightFactor = 0.15;
+		double canardFairingFrontLengthFactor = 0.75;
+		double canardFairingBackLengthFactor = 0.75;
+		double canardFairingWidthFactor = 0.50;
+		double canardFairingHeightFactor = 0.10;
 		double canardFairingHeightBelowReferenceFactor = 0.70;
-		double canardFairingHeightAboveReferenceFactor = 0.45;
-		double canardFairingFilletRadiusFactor = 0.80;
+		double canardFairingHeightAboveReferenceFactor = 0.50;
+		double canardFairingFilletRadiusFactor = 0.50;
 
 		// Read CANARD FAIRING CAD parameters from the XML file
 		if (generateCanardFairing && (theAircraft.getCanard() != null) && (theAircraft.getFuselage() != null)) { 
@@ -821,7 +828,7 @@ public class CADManager {
 			_theAircraftSolidsMap.get(CADComponentEnum.WING_FAIRING).addAll(OCCUtils.filterAircraftPartSolids(wingFairingShapes));
 		}
 		
-		// CANARD/FUSELAGE FAIRING
+		// CANARD-FUSELAGE FAIRING
 		if (_theCADBuilderInterface.getGenerateCanardFairing()) {
 			
 			List<OCCShape> canardFairingShapes = AircraftCADUtils.getFairingShapes(

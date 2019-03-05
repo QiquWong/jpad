@@ -10,11 +10,19 @@ import org.apache.commons.lang3.StringUtils;
 import org.controlsfx.validation.Severity;
 import org.controlsfx.validation.Validator;
 
+import aircraft.Aircraft;
+import aircraft.components.fuselage.Fuselage;
+import aircraft.components.liftingSurface.LiftingSurface;
 import aircraft.components.nacelles.NacelleCreator;
+import aircraft.components.nacelles.Nacelles;
+import aircraft.components.powerplant.PowerPlant;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.EngineTypeEnum;
+import it.unina.daf.jpadcad.CADManager;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -22,6 +30,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Separator;
@@ -1118,9 +1127,9 @@ public class InputManagerControllerSecondaryActionUtilities {
 		
 	}
 	
-	public void addAircraftEngineImplementation() {
+	public void addAircraftEngineImplementation(int indexOfEngine) {
 		
-		Tab newEngineTab = new Tab("Engine " + (theController.getTabPaneAircraftEngines().getTabs().size()+1));
+		Tab newEngineTab = new Tab("Engine " + (indexOfEngine + 1));
 		Pane contentPane = new Pane();
 		
 		Label engineFileLabel = new Label("File:");
@@ -1147,7 +1156,7 @@ public class InputManagerControllerSecondaryActionUtilities {
 			public void handle(ActionEvent arg0) {
 				
 				try {
-					chooseAircraftEngineFile(theController.getTabPaneAircraftEngines().getTabs().size()-1);
+					chooseAircraftEngineFile(indexOfEngine);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -1271,9 +1280,9 @@ public class InputManagerControllerSecondaryActionUtilities {
 		
 	}
 	
-	public void addAircraftNacelleImplementation() {
+	public void addAircraftNacelleImplementation(int indexOfNacelle) {
 		
-		Tab newNacelleTab = new Tab("Nacelle " + (theController.getTabPaneAircraftNacelles().getTabs().size()+1));
+		Tab newNacelleTab = new Tab("Nacelle " + (indexOfNacelle + 1));
 		Pane contentPane = new Pane();
 		
 		Label nacelleFileLabel = new Label("File:");
@@ -1300,7 +1309,7 @@ public class InputManagerControllerSecondaryActionUtilities {
 			public void handle(ActionEvent arg0) {
 				
 				try {
-					chooseAircraftNacelleFile(theController.getTabPaneAircraftNacelles().getTabs().size()-1);
+					chooseAircraftNacelleFile(indexOfNacelle);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -1401,9 +1410,9 @@ public class InputManagerControllerSecondaryActionUtilities {
 		
 	}
 	
-	public void addNacelleImplementation() {
+	public void addNacelleImplementation(int indexOfNacelle) {
 		
-		Tab newNacelleTab = new Tab("Nacelle " + (theController.getTabPaneNacelles().getTabs().size()+1));
+		Tab newNacelleTab = new Tab("Nacelle " + (indexOfNacelle + 1));
 		Pane contentPane = new Pane();
 		
 		Label nacelleGlobalDataLabel = new Label("GLOBAL DATA:");
@@ -1523,12 +1532,11 @@ public class InputManagerControllerSecondaryActionUtilities {
 		contentPane.getChildren().add(nacelleKInletTextField);
 		
 		Button nacelleKInletInfoButton = new Button("?");
-		nacelleKInletInfoButton.setStyle("-fx-font-size: 8;");
-		nacelleKInletInfoButton.setStyle("-fx-font-weight: bold;");
+		nacelleKInletInfoButton.setFont(Font.font("System", FontWeight.BOLD, 8));
 		nacelleKInletInfoButton.setLayoutX(63);
 		nacelleKInletInfoButton.setLayoutY(245);
-		nacelleKInletInfoButton.setPrefWidth(16);
-		nacelleKInletInfoButton.setPrefHeight(18);
+		nacelleKInletInfoButton.setPrefWidth(0);
+		nacelleKInletInfoButton.setPrefWidth(0);
 		nacelleKInletInfoButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -1551,12 +1559,11 @@ public class InputManagerControllerSecondaryActionUtilities {
 		contentPane.getChildren().add(nacelleKOutletTextField);
 		
 		Button nacelleKOutletInfoButton = new Button("?");
-		nacelleKOutletInfoButton.setStyle("-fx-font-size: 8;");
-		nacelleKOutletInfoButton.setStyle("-fx-font-weight: bold;");
-		nacelleKOutletInfoButton.setLayoutX(71);
+		nacelleKOutletInfoButton.setFont(Font.font("System", FontWeight.BOLD, 8));
+		nacelleKOutletInfoButton.setLayoutX(75);
 		nacelleKOutletInfoButton.setLayoutY(304);
-		nacelleKOutletInfoButton.setPrefWidth(16);
-		nacelleKOutletInfoButton.setPrefHeight(18);
+		nacelleKOutletInfoButton.setPrefWidth(0);
+		nacelleKOutletInfoButton.setPrefHeight(0);
 		nacelleKOutletInfoButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -1579,12 +1586,11 @@ public class InputManagerControllerSecondaryActionUtilities {
 		contentPane.getChildren().add(nacelleKLengthTextField);
 		
 		Button nacelleKLengthInfoButton = new Button("?");
-		nacelleKLengthInfoButton.setStyle("-fx-font-size: 8;");
-		nacelleKLengthInfoButton.setStyle("-fx-font-weight: bold;");
-		nacelleKLengthInfoButton.setLayoutX(75);
+		nacelleKLengthInfoButton.setFont(Font.font("System", FontWeight.BOLD, 8));
+		nacelleKLengthInfoButton.setLayoutX(80);
 		nacelleKLengthInfoButton.setLayoutY(365);
-		nacelleKLengthInfoButton.setPrefWidth(16);
-		nacelleKLengthInfoButton.setPrefHeight(18);
+		nacelleKLengthInfoButton.setPrefWidth(0);
+		nacelleKLengthInfoButton.setPrefHeight(0);
 		nacelleKLengthInfoButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -1607,12 +1613,11 @@ public class InputManagerControllerSecondaryActionUtilities {
 		contentPane.getChildren().add(nacelleKDiameterOutletTextField);
 		
 		Button nacelleKDiameterOutletInfoButton = new Button("?");
-		nacelleKDiameterOutletInfoButton.setStyle("-fx-font-size: 8;");
-		nacelleKDiameterOutletInfoButton.setStyle("-fx-font-weight: bold;");
-		nacelleKDiameterOutletInfoButton.setLayoutX(137);
+		nacelleKDiameterOutletInfoButton.setFont(Font.font("System", FontWeight.BOLD, 8));
+		nacelleKDiameterOutletInfoButton.setLayoutX(143);
 		nacelleKDiameterOutletInfoButton.setLayoutY(432);
-		nacelleKDiameterOutletInfoButton.setPrefWidth(16);
-		nacelleKDiameterOutletInfoButton.setPrefHeight(18);
+		nacelleKDiameterOutletInfoButton.setPrefWidth(0);
+		nacelleKDiameterOutletInfoButton.setPrefHeight(0);
 		nacelleKDiameterOutletInfoButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -1642,11 +1647,11 @@ public class InputManagerControllerSecondaryActionUtilities {
 		
 	}
 	
-	public void addEngineImplementation() {
+	public void addEngineImplementation(int indexOfEngine) {
 		
-		int indexOfEngineTab = theController.getTabPaneEngines().getTabs().size();
+		int indexOfEngineTab = indexOfEngine;
 		
-		Tab newEngineTab = new Tab("Engine" + (theController.getTabPaneEngines().getTabs().size()+1));
+		Tab newEngineTab = new Tab("Engine" + (indexOfEngineTab + 1));
 		BorderPane contentBorderPane = new BorderPane();
 		
 		ToggleGroup enigneToggleGroup = new ToggleGroup();
@@ -1697,15 +1702,15 @@ public class InputManagerControllerSecondaryActionUtilities {
 			
 			int i = theController.getTabPaneCAD3DViewEngines().getTabs().size();
 			while (i < Main.getTheAircraft().getPowerPlant().getEngineList().size()) {
-				addCADEngineImplementation();
+				addCADEngineImplementation(i);
 				i++;
 			}			
 		}
 	}
 	
-	private void addCADEngineImplementation() {
+	public void addCADEngineImplementation(int indexOfEngine) {
 		
-		Tab newCADEngineTab = new Tab("Engine " + (theController.getTabPaneCAD3DViewEngines().getTabs().size() + 1));
+		Tab newCADEngineTab = new Tab("Engine " + (indexOfEngine + 1));
 		Pane contentPane = new Pane();
 		
 		Label nacelleTemplateFileLabel = new Label("Nacelle template file:");
@@ -1732,7 +1737,7 @@ public class InputManagerControllerSecondaryActionUtilities {
 			public void handle(ActionEvent arg0) {
 				
 				try {
-					chooseCADEngineNacelleFile(theController.getTabPaneCAD3DViewEngines().getTabs().size() - 1);
+					chooseCADEngineNacelleFile(indexOfEngine);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -1765,7 +1770,7 @@ public class InputManagerControllerSecondaryActionUtilities {
 			public void handle(ActionEvent arg0) {
 				
 				try {
-					chooseCADEngineBladeFile(theController.getTabPaneCAD3DViewEngines().getTabs().size() - 1);
+					chooseCADEngineBladeFile(indexOfEngine);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -2451,11 +2456,13 @@ public class InputManagerControllerSecondaryActionUtilities {
 		
 		String engineTemplateFolder = "";
 		if (Main.getTheAircraft() != null) {
-			if (Main.getTheAircraft().getPowerPlant().getEngineList().get(indexOfNacelle).getEngineType().equals(EngineTypeEnum.TURBOFAN) ||
-				Main.getTheAircraft().getPowerPlant().getEngineList().get(indexOfNacelle).getEngineType().equals(EngineTypeEnum.TURBOJET))
-				engineTemplateFolder = "turbofan_templates";
-			else
-				engineTemplateFolder = "turboprop_templates";
+			if (indexOfNacelle < Main.getTheAircraft().getPowerPlant().getEngineNumber()) {
+				if (Main.getTheAircraft().getPowerPlant().getEngineList().get(indexOfNacelle).getEngineType().equals(EngineTypeEnum.TURBOFAN) ||
+					Main.getTheAircraft().getPowerPlant().getEngineList().get(indexOfNacelle).getEngineType().equals(EngineTypeEnum.TURBOJET))
+					engineTemplateFolder = "turbofan_templates";
+				else
+					engineTemplateFolder = "turboprop_templates";
+			}
 		} 
 		
 		theController.setCADNacelleFileChooser(new FileChooser());
@@ -2477,6 +2484,12 @@ public class InputManagerControllerSecondaryActionUtilities {
 	
 	public void chooseCADEngineBladeFile(int indexOfBlade) throws IOException {
 		
+		String engineTemplateFolder = "";
+		if (Main.getTheAircraft() != null) {
+			if (indexOfBlade < Main.getTheAircraft().getPowerPlant().getEngineNumber())
+				engineTemplateFolder = "turboprop_templates";
+		}
+		
 		theController.setCADBladeFileChooser(new FileChooser());
 		theController.getCADBladeFileChooser().setTitle("Open file");
 		theController.getCADBladeFileChooser().setInitialDirectory(
@@ -2485,7 +2498,7 @@ public class InputManagerControllerSecondaryActionUtilities {
 						+ File.separator
 						+ "Template_CADEngines"
 						+ File.separator
-						+ "turboprop_templates"
+						+ engineTemplateFolder
 						)
 				);
 		File file = theController.getCADBladeFileChooser().showOpenDialog(null);
@@ -2547,4 +2560,275 @@ public class InputManagerControllerSecondaryActionUtilities {
 		return isCADConfigurationFile;
 	}
 	
+	public void cad3DViewFieldsDisableCheck() {
+		
+		ObjectProperty<Fuselage> fuselage = new SimpleObjectProperty<>();
+		ObjectProperty<LiftingSurface> wing = new SimpleObjectProperty<>();
+		ObjectProperty<LiftingSurface> hTail = new SimpleObjectProperty<>();
+		ObjectProperty<LiftingSurface> vTail = new SimpleObjectProperty<>();
+		ObjectProperty<LiftingSurface> canard = new SimpleObjectProperty<>();
+		ObjectProperty<PowerPlant> powerPlant = new SimpleObjectProperty<>();
+		ObjectProperty<Nacelles> nacelles = new SimpleObjectProperty<>();
+		
+		fuselage.set(Main.getTheAircraft().getFuselage());
+		wing.set(Main.getTheAircraft().getWing());
+		hTail.set(Main.getTheAircraft().getHTail());
+		vTail.set(Main.getTheAircraft().getVTail());
+		canard.set(Main.getTheAircraft().getCanard());
+		powerPlant.set(Main.getTheAircraft().getPowerPlant());
+		nacelles.set(Main.getTheAircraft().getNacelles());
+
+		try {
+			
+			// FUSELAGE FIELDS
+			// ....................................
+			theController.getGenerateFuselageCADCheckBox().disableProperty().bind(Bindings.isNull(fuselage));
+			theController.getFuselageCADNumberNoseSectionsTextField().disableProperty().bind(Bindings.isNull(fuselage));
+			theController.getFuselageCADNoseSpacingChoiceBox().disableProperty().bind(Bindings.isNull(fuselage));
+			theController.getFuselageCADNumberTailSectionsTextField().disableProperty().bind(Bindings.isNull(fuselage));
+			theController.getFuselageCADTailSpacingChoiceBox().disableProperty().bind(Bindings.isNull(fuselage));
+		
+			// WING FIELDS
+			// ....................................
+			theController.getGenerateWingCADCheckBox().disableProperty().bind(Bindings.isNull(wing));
+			theController.getWingCADTipTypeChoiceBox().disableProperty().bind(Bindings.isNull(wing));
+			
+			theController.getWingletCADXOffsetFactorTextField().disableProperty().bind(Bindings.isNull(wing).or(
+					theController.getWingCADTipTypeChoiceBox().getSelectionModel().selectedItemProperty().isNotEqualTo(
+							theController.getWingTipTypesList().get(2)))
+					);
+			theController.getWingletCADYOffsetFactorTextField().disableProperty().bind(Bindings.isNull(wing).or(
+					theController.getWingCADTipTypeChoiceBox().getSelectionModel().selectedItemProperty().isNotEqualTo(
+							theController.getWingTipTypesList().get(2)))
+					);
+			theController.getWingletCADTaperRatioTextField().disableProperty().bind(Bindings.isNull(wing).or(
+					theController.getWingCADTipTypeChoiceBox().getSelectionModel().selectedItemProperty().isNotEqualTo(
+							theController.getWingTipTypesList().get(2)))
+					);
+			
+			// HTAIL FIELDS
+			// ....................................
+			theController.getGenerateHTailCADCheckBox().disableProperty().bind(Bindings.isNull(hTail));
+			theController.getHTailCADTipTypeChoiceBox().disableProperty().bind(Bindings.isNull(hTail));
+			
+			// VTAIL FIELDS
+			// ....................................
+			theController.getGenerateVTailCADCheckBox().disableProperty().bind(Bindings.isNull(vTail));
+			theController.getVTailCADTipTypeChoiceBox().disableProperty().bind(Bindings.isNull(vTail));
+			
+			// CANARD FIELDS
+			// ....................................
+			theController.getGenerateCanardCADCheckBox().disableProperty().bind(Bindings.isNull(canard));
+			theController.getCanardCADTipTypeChoiceBox().disableProperty().bind(Bindings.isNull(canard));
+			
+			// ENGINE FIELDS
+			// ....................................
+			theController.getGenerateEnginesCADCheckBox().disableProperty().bind(Bindings.isNull(powerPlant).or(Bindings.isNull(nacelles)));
+			
+			for (int i = 0; i < theController.getTabPaneCAD3DViewEngines().getTabs().size(); i++) {
+				
+				ObjectProperty<EngineTypeEnum> engineType = new SimpleObjectProperty<>();
+				engineType.set(Main.getTheAircraft().getPowerPlant().getEngineList().get(i).getEngineType());
+				
+				theController.getEnginesCADNacelleTemplateFileTextFieldList().get(i).disableProperty().bind(
+						Bindings.isNull(powerPlant).or(Bindings.isNull(nacelles)));
+				
+				theController.getEnginesCADChooseNacelleTemplateFileButtonList().get(i).disableProperty().bind(
+						Bindings.isNull(powerPlant).or(Bindings.isNull(nacelles)));
+				
+				theController.getEnginesCADBladeTemplateFileTextFieldList().get(i).disableProperty().bind(
+						Bindings.isNull(powerPlant).or(Bindings.isNull(nacelles))
+								.or(Bindings.equal(engineType, EngineTypeEnum.TURBOFAN))
+								.or(Bindings.equal(engineType, EngineTypeEnum.TURBOJET))
+								.or(Bindings.equal(engineType, EngineTypeEnum.RAMJET))
+						);
+
+				theController.getEnginesCADChooseBladeTemplateFileButtonList().get(i).disableProperty().bind(
+						Bindings.isNull(powerPlant).or(Bindings.isNull(nacelles))
+								.or(Bindings.equal(engineType, EngineTypeEnum.TURBOFAN))
+								.or(Bindings.equal(engineType, EngineTypeEnum.TURBOJET))
+								.or(Bindings.equal(engineType, EngineTypeEnum.RAMJET))
+						);
+
+				theController.getEnginesCADBladePitchAngleTextFieldList().get(i).disableProperty().bind(
+						Bindings.isNull(powerPlant).or(Bindings.isNull(nacelles))
+								.or(Bindings.equal(engineType, EngineTypeEnum.TURBOFAN))
+								.or(Bindings.equal(engineType, EngineTypeEnum.TURBOJET))
+								.or(Bindings.equal(engineType, EngineTypeEnum.RAMJET))
+						);
+
+				theController.getEnginesCADBladePitchAngleUnitList().get(i).disableProperty().bind(
+						Bindings.isNull(powerPlant).or(Bindings.isNull(nacelles))
+								.or(Bindings.equal(engineType, EngineTypeEnum.TURBOFAN))
+								.or(Bindings.equal(engineType, EngineTypeEnum.TURBOJET))
+								.or(Bindings.equal(engineType, EngineTypeEnum.RAMJET))
+						);
+			}
+				
+			// WING-FUSELAGE FAIRING FIELDS
+			// ....................................
+			theController.getGenerateWingFairingCADCheckBox().disableProperty().bind(Bindings.isNull(fuselage).or(Bindings.isNull(wing)));
+			theController.getWingFairingCADFrontLengthFactorTextField().disableProperty().bind(Bindings.isNull(fuselage).or(Bindings.isNull(wing)));
+			theController.getWingFairingCADBackLengthFactorTextField().disableProperty().bind(Bindings.isNull(fuselage).or(Bindings.isNull(wing)));
+			theController.getWingFairingCADWidthFactorTextField().disableProperty().bind(Bindings.isNull(fuselage).or(Bindings.isNull(wing)));
+			theController.getWingFairingCADHeightFactorTextField().disableProperty().bind(Bindings.isNull(fuselage).or(Bindings.isNull(wing)));
+			theController.getWingFairingCADHeightBelowReferenceFactorTextField().disableProperty().bind(Bindings.isNull(fuselage).or(Bindings.isNull(wing)));
+			theController.getWingFairingCADHeightAboveReferenceFactorTextField().disableProperty().bind(Bindings.isNull(fuselage).or(Bindings.isNull(wing)));
+			theController.getWingFairingCADFilletRadiusFactorTextField().disableProperty().bind(Bindings.isNull(fuselage).or(Bindings.isNull(wing)));
+			
+			// CANARD-FUSELAGE FAIRING FIELDS
+			// ....................................
+			theController.getGenerateCanardFairingCADCheckBox().disableProperty().bind(Bindings.isNull(fuselage).or(Bindings.isNull(canard)));
+			theController.getCanardFairingCADFrontLengthFactorTextField().disableProperty().bind(Bindings.isNull(fuselage).or(Bindings.isNull(canard)));
+			theController.getCanardFairingCADBackLengthFactorTextField().disableProperty().bind(Bindings.isNull(fuselage).or(Bindings.isNull(canard)));
+			theController.getCanardFairingCADWidthFactorTextField().disableProperty().bind(Bindings.isNull(fuselage).or(Bindings.isNull(canard)));
+			theController.getCanardFairingCADHeightFactorTextField().disableProperty().bind(Bindings.isNull(fuselage).or(Bindings.isNull(canard)));
+			theController.getCanardFairingCADHeightBelowReferenceFactorTextField().disableProperty().bind(Bindings.isNull(fuselage).or(Bindings.isNull(canard)));
+			theController.getCanardFairingCADHeightAboveReferenceFactorTextField().disableProperty().bind(Bindings.isNull(fuselage).or(Bindings.isNull(canard)));
+			theController.getCanardFairingCADFilletRadiusFactorTextField().disableProperty().bind(Bindings.isNull(fuselage).or(Bindings.isNull(canard)));
+			
+		} catch (Exception e) {
+			
+		}
+		
+	}
+	
+	public void cad3DViewFieldsUnbind() {
+		
+		// FUSELAGE FIELDS
+		// ....................................
+		theController.getGenerateFuselageCADCheckBox().disableProperty().unbind();
+		theController.getFuselageCADNumberNoseSectionsTextField().disableProperty().unbind();
+		theController.getFuselageCADNoseSpacingChoiceBox().disableProperty().unbind();
+		theController.getFuselageCADNumberTailSectionsTextField().disableProperty().unbind();
+		theController.getFuselageCADTailSpacingChoiceBox().disableProperty().unbind();
+		
+		// WING FIELDS
+		// ....................................
+		theController.getGenerateWingCADCheckBox().disableProperty().unbind();
+		theController.getWingCADTipTypeChoiceBox().disableProperty().unbind();
+		theController.getWingletCADXOffsetFactorTextField().disableProperty().unbind();
+		theController.getWingletCADYOffsetFactorTextField().disableProperty().unbind();
+		theController.getWingletCADTaperRatioTextField().disableProperty().unbind();
+		
+		// HTAIL FIELDS
+		// ....................................
+		theController.getGenerateHTailCADCheckBox().disableProperty().unbind();
+		theController.getHTailCADTipTypeChoiceBox().disableProperty().unbind();
+		
+		// VTAIL FIELDS
+		// ....................................
+		theController.getGenerateVTailCADCheckBox().disableProperty().unbind();
+		theController.getVTailCADTipTypeChoiceBox().disableProperty().unbind();
+		
+		// CANARD FIELDS
+		// ....................................
+		theController.getGenerateCanardCADCheckBox().disableProperty().unbind();
+		theController.getCanardCADTipTypeChoiceBox().disableProperty().unbind();
+		
+		// ENGINES FIELDS
+		// ....................................
+		theController.getGenerateEnginesCADCheckBox().disableProperty().unbind();
+		theController.getEnginesCADNacelleTemplateFileTextFieldList().forEach(tf -> tf.disableProperty().unbind());
+		theController.getEnginesCADChooseNacelleTemplateFileButtonList().forEach(b -> b.disableProperty().unbind());
+		theController.getEnginesCADBladeTemplateFileTextFieldList().forEach(tf -> tf.disableProperty().unbind());
+		theController.getEnginesCADChooseBladeTemplateFileButtonList().forEach(b -> b.disableProperty().unbind());
+		theController.getEnginesCADBladePitchAngleTextFieldList().forEach(tf -> tf.disableProperty().unbind());
+		theController.getEnginesCADBladePitchAngleUnitList().forEach(cb -> cb.disableProperty().unbind());
+		
+		// WING-FUSELAGE FAIRING FIELDS
+		// ....................................
+		theController.getGenerateWingFairingCADCheckBox().disableProperty().unbind();
+		theController.getWingFairingCADFrontLengthFactorTextField().disableProperty().unbind();
+		theController.getWingFairingCADBackLengthFactorTextField().disableProperty().unbind();
+		theController.getWingFairingCADWidthFactorTextField().disableProperty().unbind();
+		theController.getWingFairingCADHeightFactorTextField().disableProperty().unbind();
+		theController.getWingFairingCADHeightBelowReferenceFactorTextField().disableProperty().unbind();
+		theController.getWingFairingCADHeightAboveReferenceFactorTextField().disableProperty().unbind();
+		theController.getWingFairingCADFilletRadiusFactorTextField().disableProperty().unbind();
+		
+		// CANARD-FUSELAGE FAIRING FIELDS
+		// ....................................
+		theController.getGenerateCanardFairingCADCheckBox().disableProperty().unbind();
+		theController.getCanardFairingCADFrontLengthFactorTextField().disableProperty().unbind();
+		theController.getCanardFairingCADBackLengthFactorTextField().disableProperty().unbind();
+		theController.getCanardFairingCADWidthFactorTextField().disableProperty().unbind();
+		theController.getCanardFairingCADHeightFactorTextField().disableProperty().unbind();
+		theController.getCanardFairingCADHeightBelowReferenceFactorTextField().disableProperty().unbind();
+		theController.getCanardFairingCADHeightAboveReferenceFactorTextField().disableProperty().unbind();
+		theController.getCanardFairingCADFilletRadiusFactorTextField().disableProperty().unbind();
+		
+	}
+	
+	public void disableCAD3DViewFields(boolean value) {
+		
+		// CAD EXPORT FIELDS
+		// ....................................
+		theController.getExportCADWireframeCheckBox().disableProperty().set(value);
+		theController.getFileExtensionCADChoiceBox().disableProperty().set(value);
+		
+		// FUSELAGE FIELDS
+		// ....................................
+		theController.getGenerateFuselageCADCheckBox().disableProperty().set(value);
+		theController.getFuselageCADNumberNoseSectionsTextField().disableProperty().set(value);
+		theController.getFuselageCADNoseSpacingChoiceBox().disableProperty().set(value);
+		theController.getFuselageCADNumberTailSectionsTextField().disableProperty().set(value);
+		theController.getFuselageCADTailSpacingChoiceBox().disableProperty().set(value);
+		
+		// WING FIELDS
+		// ....................................
+		theController.getGenerateWingCADCheckBox().disableProperty().set(value);
+		theController.getWingCADTipTypeChoiceBox().disableProperty().set(value);
+		theController.getWingletCADXOffsetFactorTextField().disableProperty().set(value);
+		theController.getWingletCADYOffsetFactorTextField().disableProperty().set(value);
+		theController.getWingletCADTaperRatioTextField().disableProperty().set(value);
+		
+		// HTAIL FIELDS
+		// ....................................
+		theController.getGenerateHTailCADCheckBox().disableProperty().set(value);
+		theController.getHTailCADTipTypeChoiceBox().disableProperty().set(value);
+		
+		// VTAIL FIELDS
+		// ....................................
+		theController.getGenerateVTailCADCheckBox().disableProperty().set(value);
+		theController.getVTailCADTipTypeChoiceBox().disableProperty().set(value);
+		
+		// CANARD FIELDS
+		// ....................................
+		theController.getGenerateCanardCADCheckBox().disableProperty().set(value);
+		theController.getCanardCADTipTypeChoiceBox().disableProperty().set(value);
+		
+		// ENGINES FIELDS
+		// ....................................
+		theController.getGenerateEnginesCADCheckBox().disableProperty().set(value);
+		theController.getEnginesCADNacelleTemplateFileTextFieldList().forEach(tf -> tf.disableProperty().set(value));
+		theController.getEnginesCADChooseNacelleTemplateFileButtonList().forEach(b -> b.disableProperty().set(value));
+		theController.getEnginesCADBladeTemplateFileTextFieldList().forEach(tf -> tf.disableProperty().set(value));
+		theController.getEnginesCADChooseBladeTemplateFileButtonList().forEach(b -> b.disableProperty().set(value));
+		theController.getEnginesCADBladePitchAngleTextFieldList().forEach(tf -> tf.disableProperty().set(value));
+		theController.getEnginesCADBladePitchAngleUnitList().forEach(cb -> cb.disableProperty().set(value));
+		
+		// WING-FUSELAGE FAIRING FIELDS
+		// ....................................
+		theController.getGenerateWingFairingCADCheckBox().disableProperty().set(value);
+		theController.getWingFairingCADFrontLengthFactorTextField().disableProperty().set(value);
+		theController.getWingFairingCADBackLengthFactorTextField().disableProperty().set(value);
+		theController.getWingFairingCADWidthFactorTextField().disableProperty().set(value);
+		theController.getWingFairingCADHeightFactorTextField().disableProperty().set(value);
+		theController.getWingFairingCADHeightBelowReferenceFactorTextField().disableProperty().set(value);
+		theController.getWingFairingCADHeightAboveReferenceFactorTextField().disableProperty().set(value);
+		theController.getWingFairingCADFilletRadiusFactorTextField().disableProperty().set(value);
+		
+		// CANARD-FUSELAGE FAIRING FIELDS
+		// ....................................
+		theController.getGenerateCanardFairingCADCheckBox().disableProperty().set(value);
+		theController.getCanardFairingCADFrontLengthFactorTextField().disableProperty().set(value);
+		theController.getCanardFairingCADBackLengthFactorTextField().disableProperty().set(value);
+		theController.getCanardFairingCADWidthFactorTextField().disableProperty().set(value);
+		theController.getCanardFairingCADHeightFactorTextField().disableProperty().set(value);
+		theController.getCanardFairingCADHeightBelowReferenceFactorTextField().disableProperty().set(value);
+		theController.getCanardFairingCADHeightAboveReferenceFactorTextField().disableProperty().set(value);
+		theController.getCanardFairingCADFilletRadiusFactorTextField().disableProperty().set(value);
+		
+	}
 }

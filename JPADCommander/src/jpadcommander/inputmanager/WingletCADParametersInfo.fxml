@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="286.0" prefWidth="600.0" style="-fx-background-color: #FF9773;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <top>
+      <Label prefHeight="60.0" prefWidth="280.0" text="Winglet CAD parameters" BorderPane.alignment="CENTER">
+         <font>
+            <Font name="System Bold" size="24.0" />
+         </font>
+      </Label>
+   </top>
+   <center>
+      <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <children>
+            <VBox alignment="TOP_CENTER" prefHeight="182.0" prefWidth="600.0">
+               <children>
+                  <Label prefHeight="21.0" prefWidth="552.0" text="Y offset factor: the factor that multiplied by the winglet height returns the ">
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font>
+                  </Label>
+                  <Label prefHeight="21.0" prefWidth="552.0" text="winglet extension in the wing y direction. It should be set to a value higher">
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font>
+                  </Label>
+                  <Label prefHeight="21.0" prefWidth="555.0" text="than 0.0.">
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font>
+                  </Label>
+                  <Label prefHeight="21.0" prefWidth="550.0" text="X offset factor: the factor that multiplied by the winglet height returns the">
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font>
+                  </Label>
+                  <Label prefHeight="21.0" prefWidth="553.0" text="winglet extension in the x positive direction. It should be set to a value higher">
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="33.0" layoutY="52.0" prefHeight="21.0" prefWidth="555.0" text="than 0.0.">
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font>
+                  </Label>
+                  <Label prefHeight="21.0" prefWidth="552.0" text="Taper ratio: the ratio between the winglet root airfoil chord and the tip one.">
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font>
+                  </Label>
+                  <Label prefHeight="21.0" prefWidth="550.0" text="It should be set to a value between 0.1 and 1.0.">
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font>
+                  </Label>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+   </center>
+   <bottom>
+      <HBox alignment="CENTER" prefHeight="46.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+         <children>
+            <Button id="infoContinueButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" text="OK" textAlignment="CENTER">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
+            </Button>
+         </children>
+      </HBox>
+   </bottom>
+</BorderPane>

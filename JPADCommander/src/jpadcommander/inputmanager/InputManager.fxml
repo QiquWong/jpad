@@ -2686,17 +2686,17 @@
                                                                                     <Font name="System Bold" size="8.0" />
                                                                                  </font>
                                                                               </Button>
-                                                                              <Button fx:id="nacelleKOutletInfoButton1" layoutX="71.0" layoutY="304.0" mnemonicParsing="false" onAction="#showNacelleKOutletInfo" prefHeight="0.0" prefWidth="0.0" text="?">
+                                                                              <Button fx:id="nacelleKOutletInfoButton1" layoutX="75.0" layoutY="304.0" mnemonicParsing="false" onAction="#showNacelleKOutletInfo" prefHeight="0.0" prefWidth="0.0" text="?">
                                                                                  <font>
                                                                                     <Font name="System Bold" size="8.0" />
                                                                                  </font>
                                                                               </Button>
-                                                                              <Button fx:id="nacelleKDiameterOutletInfoButton1" layoutX="137.0" layoutY="432.0" mnemonicParsing="false" onAction="#showNacelleKDiameterOutletInfo" prefHeight="0.0" prefWidth="0.0" text="?">
+                                                                              <Button fx:id="nacelleKDiameterOutletInfoButton1" layoutX="143.0" layoutY="432.0" mnemonicParsing="false" onAction="#showNacelleKDiameterOutletInfo" prefHeight="0.0" prefWidth="0.0" text="?">
                                                                                  <font>
                                                                                     <Font name="System Bold" size="8.0" />
                                                                                  </font>
                                                                               </Button>
-                                                                              <Button fx:id="nacelleKLengthInfoButton1" layoutX="75.0" layoutY="365.0" mnemonicParsing="false" onAction="#showNacelleKLengthInfo" prefHeight="0.0" prefWidth="0.0" text="?">
+                                                                              <Button fx:id="nacelleKLengthInfoButton1" layoutX="80.0" layoutY="365.0" mnemonicParsing="false" onAction="#showNacelleKLengthInfo" prefHeight="0.0" prefWidth="0.0" text="?">
                                                                                  <font>
                                                                                     <Font name="System Bold" size="8.0" />
                                                                                  </font>
@@ -3397,6 +3397,21 @@
                                                                </tabs>
                                                             </TabPane>
                                                             <Separator layoutX="-4.0" layoutY="1598.0" prefHeight="0.0" prefWidth="1345.0" />
+                                                            <Button fx:id="wingletCADParametersInfoButton" layoutX="159.0" layoutY="493.0" mnemonicParsing="false" onAction="#showWingletCADParametersInfo" prefHeight="0.0" prefWidth="0.0" text="?">
+                                                               <font>
+                                                                  <Font name="System Bold" size="8.0" />
+                                                               </font>
+                                                            </Button>
+                                                            <Button fx:id="wingletCADParametersInfoButton1" layoutX="192.0" layoutY="1260.0" mnemonicParsing="false" onAction="#showWingFairingCADParametersInfo" prefHeight="0.0" prefWidth="0.0" text="?">
+                                                               <font>
+                                                                  <Font name="System Bold" size="8.0" />
+                                                               </font>
+                                                            </Button>
+                                                            <Button fx:id="wingletCADParametersInfoButton11" layoutX="213.0" layoutY="1578.0" mnemonicParsing="false" onAction="#showCanardFairingCADParametersInfo" prefHeight="0.0" prefWidth="0.0" text="?">
+                                                               <font>
+                                                                  <Font name="System Bold" size="8.0" />
+                                                               </font>
+                                                            </Button>
                                                          </children>
                                                       </AnchorPane>
                                                    </content>

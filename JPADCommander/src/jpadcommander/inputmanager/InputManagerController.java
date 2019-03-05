@@ -344,6 +344,8 @@ public class InputManagerController {
 	private Button enginesCADChooseNacelleTemplateFileButton1;
 	@FXML
 	private Button enginesCADChooseBladeTemplateFileButton1;
+	@FXML
+	private Button wingletCADParametersInfoButton;
 	
 	//...........................................................................................
 	// BUTTON MAP:
@@ -2921,12 +2923,16 @@ public class InputManagerController {
 		inputManagerControllerSecondaryActionUtilities.cadConfigurationLoadButtonDisableCheck();
 		inputManagerControllerSecondaryActionUtilities.setChooseCADEngineNacelleFileAction();
 		inputManagerControllerSecondaryActionUtilities.setChooseCADEngineBladeFileAction();
+		
 	}
 	
 	@FXML
 	private void addAircraftEngine() throws IOException {
 		
-		inputManagerControllerSecondaryActionUtilities.addAircraftEngineImplementation();
+		int indexOfEngine = tabPaneAircraftEngines.getTabs().size();
+		
+		inputManagerControllerSecondaryActionUtilities.addAircraftEngineImplementation(indexOfEngine);
+		inputManagerControllerSecondaryActionUtilities.addCADEngineImplementation(indexOfEngine);
 	
 		//..................................................................................
 		// NEW ENGINE WARNING
@@ -2947,9 +2953,9 @@ public class InputManagerController {
 			@Override
 			public void handle(ActionEvent arg0) {
 				newEngineWaring.close();
-				inputManagerControllerSecondaryActionUtilities.addEngineImplementation();
-				inputManagerControllerSecondaryActionUtilities.addNacelleImplementation();
-				inputManagerControllerSecondaryActionUtilities.addAircraftNacelleImplementation();
+				inputManagerControllerSecondaryActionUtilities.addEngineImplementation(indexOfEngine);
+				inputManagerControllerSecondaryActionUtilities.addNacelleImplementation(indexOfEngine);
+				inputManagerControllerSecondaryActionUtilities.addAircraftNacelleImplementation(indexOfEngine);
 			}
 			
 		});
@@ -2964,7 +2970,10 @@ public class InputManagerController {
 	@FXML
 	private void addAircraftNacelle() throws IOException {
 		
-		inputManagerControllerSecondaryActionUtilities.addAircraftNacelleImplementation();
+		int indexOfNacelle = tabPaneAircraftNacelles.getTabs().size();
+		
+		inputManagerControllerSecondaryActionUtilities.addAircraftNacelleImplementation(indexOfNacelle);
+		inputManagerControllerSecondaryActionUtilities.addCADEngineImplementation(indexOfNacelle);
 		
 		//..................................................................................
 		// NEW NACELLE WARNING
@@ -2985,9 +2994,9 @@ public class InputManagerController {
 			@Override
 			public void handle(ActionEvent arg0) {
 				newNacelleWaring.close();
-				inputManagerControllerSecondaryActionUtilities.addEngineImplementation();
-				inputManagerControllerSecondaryActionUtilities.addNacelleImplementation();
-				inputManagerControllerSecondaryActionUtilities.addAircraftEngineImplementation();
+				inputManagerControllerSecondaryActionUtilities.addEngineImplementation(indexOfNacelle);
+				inputManagerControllerSecondaryActionUtilities.addNacelleImplementation(indexOfNacelle);
+				inputManagerControllerSecondaryActionUtilities.addAircraftEngineImplementation(indexOfNacelle);
 			}
 			
 		});
@@ -5599,7 +5608,10 @@ public class InputManagerController {
 	@FXML
 	private void addNacelle() throws IOException {
 		
-		inputManagerControllerSecondaryActionUtilities.addNacelleImplementation();
+		int indexOfNacelle = tabPaneNacelles.getTabs().size();
+		
+		inputManagerControllerSecondaryActionUtilities.addNacelleImplementation(indexOfNacelle);
+		inputManagerControllerSecondaryActionUtilities.addCADEngineImplementation(indexOfNacelle);
 		
 		//..................................................................................
 		// NEW NACELLE WARNING
@@ -5620,9 +5632,9 @@ public class InputManagerController {
 			@Override
 			public void handle(ActionEvent arg0) {
 				newNacelleWaring.close();
-				inputManagerControllerSecondaryActionUtilities.addEngineImplementation();
-				inputManagerControllerSecondaryActionUtilities.addAircraftNacelleImplementation();
-				inputManagerControllerSecondaryActionUtilities.addAircraftEngineImplementation();
+				inputManagerControllerSecondaryActionUtilities.addEngineImplementation(indexOfNacelle);
+				inputManagerControllerSecondaryActionUtilities.addAircraftNacelleImplementation(indexOfNacelle);
+				inputManagerControllerSecondaryActionUtilities.addAircraftEngineImplementation(indexOfNacelle);
 			}
 			
 		});
@@ -5637,7 +5649,10 @@ public class InputManagerController {
 	@FXML
 	private void addEngine() throws IOException {
 		
-		inputManagerControllerSecondaryActionUtilities.addEngineImplementation();
+		int indexOfEngine = tabPaneEngines.getTabs().size();
+		
+		inputManagerControllerSecondaryActionUtilities.addEngineImplementation(indexOfEngine);
+		inputManagerControllerSecondaryActionUtilities.addCADEngineImplementation(indexOfEngine);
 		
 		//..................................................................................
 		// NEW ENGINE WARNING
@@ -5658,9 +5673,9 @@ public class InputManagerController {
 			@Override
 			public void handle(ActionEvent arg0) {
 				newEngineWaring.close();
-				inputManagerControllerSecondaryActionUtilities.addNacelleImplementation();
-				inputManagerControllerSecondaryActionUtilities.addAircraftNacelleImplementation();
-				inputManagerControllerSecondaryActionUtilities.addAircraftEngineImplementation();
+				inputManagerControllerSecondaryActionUtilities.addNacelleImplementation(indexOfEngine);
+				inputManagerControllerSecondaryActionUtilities.addAircraftNacelleImplementation(indexOfEngine);
+				inputManagerControllerSecondaryActionUtilities.addAircraftEngineImplementation(indexOfEngine);
 			}
 			
 		});
@@ -6199,10 +6214,15 @@ public class InputManagerController {
 
 		cad3DViewFileChooser = new FileChooser();
 		cad3DViewFileChooser.setTitle("Open CAD Configuration File");
-		cad3DViewFileChooser.setInitialDirectory(new File(Main.getInputDirectoryPath() + File.separator + "Template_CADConfigs"));
+		cad3DViewFileChooser.setInitialDirectory(
+				new File(
+						Main.getInputDirectoryPath() 
+						+ File.separator 
+						+ "Template_CADConfigs"
+						)
+				);
 		File file = cad3DViewFileChooser.showOpenDialog(null);
 		if (file != null) {
-			// get full path and populate the text box
 			cadConfigurationInputFileTextField.setText(file.getAbsolutePath());
 			Main.setCADConfigurationFileAbsolutePath(file.getAbsolutePath());
 			chooseCADConfigurationFileButton.setStyle("");
@@ -6568,6 +6588,104 @@ public class InputManagerController {
 		// TODO
 		
 	};
+	
+	@FXML
+	private void showWingletCADParametersInfo() throws IOException {
+		
+		//..................................................................................
+		// WINGLET CAD PARAMETERS INFOBOX
+		Stage wingletCADParametersInfobox = new Stage();
+		
+		wingletCADParametersInfobox.setTitle("Winglet CAD parameters infobox");
+		wingletCADParametersInfobox.initModality(Modality.WINDOW_MODAL);
+		wingletCADParametersInfobox.initStyle(StageStyle.UNDECORATED);
+		wingletCADParametersInfobox.initOwner(Main.getPrimaryStage());
+
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(Main.class.getResource("inputmanager/WingletCADParametersInfo.fxml"));
+		BorderPane wingletCADParametersBorderPane = loader.load();
+		
+		Button continueButton = (Button) wingletCADParametersBorderPane.lookup("#infoContinueButton");
+		continueButton.setOnAction(new EventHandler<ActionEvent>() {
+			
+			@Override
+			public void handle(ActionEvent arg0) {
+				wingletCADParametersInfobox.close();
+			}
+			
+		});
+		
+		Scene scene = new Scene(wingletCADParametersBorderPane);
+		wingletCADParametersInfobox.setScene(scene);
+		wingletCADParametersInfobox.sizeToScene();
+		wingletCADParametersInfobox.show();
+		
+	}
+	
+	@FXML
+	private void showWingFairingCADParametersInfo() throws IOException {
+		
+		//..................................................................................
+		// WING FAIRING CAD PARAMETERS INFOBOX
+		Stage wingFairingCADParametersInfobox = new Stage();
+		
+		wingFairingCADParametersInfobox.setTitle("Wing fairing CAD parameters infobox");
+		wingFairingCADParametersInfobox.initModality(Modality.WINDOW_MODAL);
+		wingFairingCADParametersInfobox.initStyle(StageStyle.UNDECORATED);
+		wingFairingCADParametersInfobox.initOwner(Main.getPrimaryStage());
+
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(Main.class.getResource("inputmanager/WingFairingCADParametersInfo.fxml"));
+		BorderPane wingFairingCADParametersBorderPane = loader.load();
+		
+		Button continueButton = (Button) wingFairingCADParametersBorderPane.lookup("#infoContinueButton");
+		continueButton.setOnAction(new EventHandler<ActionEvent>() {
+			
+			@Override
+			public void handle(ActionEvent arg0) {
+				wingFairingCADParametersInfobox.close();
+			}
+			
+		});
+		
+		Scene scene = new Scene(wingFairingCADParametersBorderPane);
+		wingFairingCADParametersInfobox.setScene(scene);
+		wingFairingCADParametersInfobox.sizeToScene();
+		wingFairingCADParametersInfobox.show();
+		
+	}
+	
+	@FXML void showCanardFairingCADParametersInfo() throws IOException {
+		
+		//..................................................................................
+		// CANARD FAIRING CAD PARAMETERS INFOBOX
+		Stage canardFairingCADParametersInfobox = new Stage();
+		
+		canardFairingCADParametersInfobox.setTitle("Canard fairing CAD parameters infobox");
+		canardFairingCADParametersInfobox.initModality(Modality.WINDOW_MODAL);
+		canardFairingCADParametersInfobox.initStyle(StageStyle.UNDECORATED);
+		canardFairingCADParametersInfobox.initOwner(Main.getPrimaryStage());
+
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(Main.class.getResource("inputmanager/CanardFairingCADParametersInfo.fxml"));
+		BorderPane canardFairingCADParametersBorderPane = loader.load();
+		
+		Button continueButton = (Button) canardFairingCADParametersBorderPane.lookup("#infoContinueButton");
+		continueButton.setOnAction(new EventHandler<ActionEvent>() {
+			
+			@Override
+			public void handle(ActionEvent arg0) {
+				canardFairingCADParametersInfobox.close();
+			}
+			
+		});
+		
+		Scene scene = new Scene(canardFairingCADParametersBorderPane);
+		canardFairingCADParametersInfobox.setScene(scene);
+		canardFairingCADParametersInfobox.sizeToScene();
+		canardFairingCADParametersInfobox.show();
+	
+	}
 	
 	//...........................................................................................
 	// LAYOUT ADJUST ACTIONS:
@@ -13696,6 +13814,14 @@ public class InputManagerController {
 	
 	public void setWingCADTipTypeChoiceBox(ChoiceBox<String> wingCADTipTypeChoiceBox) {
 		this.wingCADTipTypeChoiceBox = wingCADTipTypeChoiceBox;
+	}
+	
+	public Button getWingletCADParametersInfoButton() {
+		return wingletCADParametersInfoButton;
+	}
+	
+	public void setWingletCADParametersInfoButton(Button wingletCADParametersInfoButton) {
+		this.wingletCADParametersInfoButton = wingletCADParametersInfoButton;
 	}
 
 	public TextField getWingletCADYOffsetFactorTextField() {

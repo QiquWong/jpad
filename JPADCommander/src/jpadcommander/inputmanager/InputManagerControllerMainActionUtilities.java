@@ -165,6 +165,9 @@ public class InputManagerControllerMainActionUtilities {
 			theController.getUpdateCAD3DViewButton().setDisable(true);
 			theController.getSaveCADToFileButton().setDisable(true);
 		}
+		
+		theController.getInputManagerControllerSecondaryActionUtilities().cad3DViewFieldsUnbind();
+		theController.getInputManagerControllerSecondaryActionUtilities().disableCAD3DViewFields(false);
 
 	}
 
@@ -1658,6 +1661,8 @@ public class InputManagerControllerMainActionUtilities {
 			    			theController.getSaveCADToFileButton().setDisable(true);
 			    		}
 			    		
+			    		theController.getInputManagerControllerSecondaryActionUtilities().cad3DViewFieldsDisableCheck();
+			    		
 						return null;
 					}
 					
@@ -1708,6 +1713,8 @@ public class InputManagerControllerMainActionUtilities {
 		}
 		
 		theController.getInputManagerControllerLogUtilities().logCADConfigurationFromFileToInterface();
+		theController.getInputManagerControllerSecondaryActionUtilities().cad3DViewFieldsDisableCheck();
+		
 	}
 	
 	public void updateCAD3DViewImplementation() {
@@ -1879,7 +1886,7 @@ public class InputManagerControllerMainActionUtilities {
 			
 			int bladeAngleUnitIndex = theController.getEnginesCADBladePitchAngleUnitList().get(i).getSelectionModel().getSelectedIndex();	
 			String bladeAngleString = (theController.getEnginesCADBladePitchAngleTextFieldList().get(i).isDisabled()) ?
-					"" : theController.getEnginesCADBladePitchAngleTextFieldList().get(i).getText();
+					"0.0" : theController.getEnginesCADBladePitchAngleTextFieldList().get(i).getText();
 			if (bladeAngleUnitIndex == 0) {
 				propellerBladeAngleList.add(Amount.valueOf(
 						Double.valueOf(bladeAngleString), 
@@ -1901,7 +1908,6 @@ public class InputManagerControllerMainActionUtilities {
 				Main.getTheCADManager().getTheCADBuilderInterface().getExportWireframe() :
 				theController.getExportCADWireframeCheckBox().isSelected();
 		
-		// First update the CADManager with the updated values provided by the user
 		ICADManager cadManagerInterface = new ICADManager.Builder()
 				.setGenerateFuselage(generateFuselage)
 				.setGenerateWing(generateWing)
@@ -1949,7 +1955,6 @@ public class InputManagerControllerMainActionUtilities {
 		
 		Main.setTheCADManager(cadManager);
 		
-		// Then show the updated 3D view
 		theController.getInputManagerControllerGraphicUtilities().createAircraft3DView();
 		
 	}
@@ -3181,6 +3186,8 @@ public class InputManagerControllerMainActionUtilities {
 						} catch (Exception e) {
 							theController.getSaveAircraftButton().setDisable(true);
 						}
+						
+						theController.getInputManagerControllerSecondaryActionUtilities().cad3DViewFieldsDisableCheck();
 			            
 						return null;
 					}
