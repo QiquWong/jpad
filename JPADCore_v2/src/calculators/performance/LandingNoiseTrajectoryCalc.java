@@ -81,7 +81,7 @@ public class LandingNoiseTrajectoryCalc {
 	private Amount<Angle> gammaDescent, alphaGround;
 	private Amount<Force> thrustAtFlareStart, thrustAtDescentStart;
 	private List<Double> timeBreakPoints;
-	private double alphaDotFlare, cL0LND, cLmaxLND, kGround, phi, kCLmax, 
+	private double alphaDotFlare, cL0LND, cLmaxLND, kGround, phi, kCLmax, kApproach, kFlare, kTouchDown, 
 	cruiseThrustCorrectionFactor, fidlThrustCorrectionFactor, gidlThrustCorrectionFactor, 
 	cruiseSfcCorrectionFactor, fidlSfcCorrectionFactor, gidlSfcCorrectionFactor;
 	private Amount<?> cLalphaLND;
@@ -153,6 +153,9 @@ public class LandingNoiseTrajectoryCalc {
 			double cLZeroLND,
 			Amount<?> cLalphaLND,
 			double phi,
+			double kApproach,
+			double kFlare,
+			double kTouchDown,
 			double cruiseThrustCorrectionFactor,
 			double fidlThrustCorrectionFactor,
 			double gidlThrustCorrectionFactor,
@@ -189,6 +192,9 @@ public class LandingNoiseTrajectoryCalc {
 		this.cLalphaLND = cLalphaLND;
 		this.cL0LND = cLZeroLND;
 		this.phi = phi;
+		this.kApproach = kApproach;
+		this.kFlare = kFlare;
+		this.kTouchDown = kTouchDown;
 		this.cruiseThrustCorrectionFactor = cruiseThrustCorrectionFactor;
 		this.fidlThrustCorrectionFactor = fidlThrustCorrectionFactor;
 		this.gidlThrustCorrectionFactor = gidlThrustCorrectionFactor;
@@ -204,10 +210,10 @@ public class LandingNoiseTrajectoryCalc {
 				surface,
 				cLmaxLND
 				);
-		vApproach = vSLanding.times(1.23);
+		vApproach = vSLanding.times(kApproach);
 		vDescent = vApproach.plus(Amount.valueOf(10, NonSI.KNOT).to(SI.METERS_PER_SECOND)); 
-		vFlare = vSLanding.times(1.2);
-		vTouchDown = vSLanding.times(1.15);
+		vFlare = vSLanding.times(kFlare);
+		vTouchDown = vSLanding.times(kTouchDown);
 
 		/*
 		 *  Averaged value of hFlare
@@ -3597,6 +3603,30 @@ public class LandingNoiseTrajectoryCalc {
 
 	public void settErrorRC(Amount<Duration> tErrorRC) {
 		this.tErrorRC = tErrorRC;
+	}
+
+	public double getkApproach() {
+		return kApproach;
+	}
+
+	public void setkApproach(double kApproach) {
+		this.kApproach = kApproach;
+	}
+
+	public double getkFlare() {
+		return kFlare;
+	}
+
+	public void setkFlare(double kFlare) {
+		this.kFlare = kFlare;
+	}
+
+	public double getkTouchDown() {
+		return kTouchDown;
+	}
+
+	public void setkTouchDown(double kTouchDown) {
+		this.kTouchDown = kTouchDown;
 	}
 
 }

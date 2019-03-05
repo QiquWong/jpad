@@ -2999,8 +2999,7 @@ public class TakeOffCalc {
 											)
 									*(0.224809)*(0.454/3600)
 									*thrustList.get(i).doubleValue(SI.NEWTON)
-									)
-							;
+									);
 					else {
 						for (int i=0; i<TakeOffCalc.this.getThePowerPlant().getEngineNumber()-1; i++)
 							fuelFlowList.add(

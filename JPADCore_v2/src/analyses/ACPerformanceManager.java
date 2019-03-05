@@ -2975,12 +2975,12 @@ public class ACPerformanceManager {
 	public void calculate(String resultsFolderPath) {
 
 		final PrintStream originalOut = System.out;
-		PrintStream filterStream = new PrintStream(new OutputStream() {
-		    public void write(int b) {
-		         // write nothing
-		    }
-		});
-//		PrintStream filterStream = System.out;
+//		PrintStream filterStream = new PrintStream(new OutputStream() {
+//		    public void write(int b) {
+//		         // write nothing
+//		    }
+//		});
+		PrintStream filterStream = System.out;
 		
 		System.setOut(filterStream);
 		
@@ -7461,6 +7461,9 @@ public class ACPerformanceManager {
 							_thePerformanceInterface.getCLZeroLanding().get(xcg),
 							_thePerformanceInterface.getCLAlphaLanding().get(xcg),
 							_thePerformanceInterface.getTheOperatingConditions().getThrottleLanding(),
+							_thePerformanceInterface.getKApproach(),
+							_thePerformanceInterface.getKFlare(),
+							_thePerformanceInterface.getKTouchDown(),
 							_thePerformanceInterface.getCruiseCalibrationFactorThrust(),
 							_thePerformanceInterface.getFlightIdleCalibrationFactorThrust(),
 							_thePerformanceInterface.getGroundIdleCalibrationFactorThrust(),
@@ -7932,6 +7935,9 @@ public class ACPerformanceManager {
 							_thePerformanceInterface.getCLZeroLanding().get(xcg),
 							_thePerformanceInterface.getCLAlphaLanding().get(xcg),
 							_thePerformanceInterface.getTheOperatingConditions().getThrottleLanding(),
+							_thePerformanceInterface.getKApproach(),
+							_thePerformanceInterface.getKFlare(),
+							_thePerformanceInterface.getKTouchDown(),
 							_thePerformanceInterface.getCruiseCalibrationFactorThrust(),
 							_thePerformanceInterface.getFlightIdleCalibrationFactorThrust(),
 							_thePerformanceInterface.getGroundIdleCalibrationFactorThrust(),
