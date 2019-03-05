@@ -1486,7 +1486,7 @@ public class ACAerodynamicAndStabilityManagerUtils {
 
 				temporaryLiftCurve = MyArrayUtils.convertDoubleArrayToListDouble(
 						liftingSurfaceAerodynamicManager
-						.getLiftCoefficient3DCurve().get(MethodEnum.SEMIEMPIRICAL)
+						.getLiftCoefficient3DCurve().get(MethodEnum.NASA_BLACKWELL)
 						);
 
 
@@ -2012,6 +2012,11 @@ public class ACAerodynamicAndStabilityManagerUtils {
 		aerodynamicAndStabilityManager.getTotalLiftCoefficient().get(de).stream().forEach(cl ->
 		temporaryCLCoefficient.add(cl * _theAerodynamicBuilderInterface.getTotalDragCalibrationCLScaleFactor()));
 		
+		for (int i=0; i< temporaryCLCoefficient.size()-1; i++) {
+			if(temporaryCLCoefficient.get(i)>temporaryCLCoefficient.get(i+1)) {
+				temporaryCLCoefficient.set(i, temporaryCLCoefficient.get(i+1) - (Math.abs(temporaryCLCoefficient.get(i+1) - temporaryCLCoefficient.get(i))));
+			}
+		}
 		aerodynamicAndStabilityManager.getTotalDragCoefficient().put(
 				de,
 				MyArrayUtils.convertDoubleArrayToListDouble(

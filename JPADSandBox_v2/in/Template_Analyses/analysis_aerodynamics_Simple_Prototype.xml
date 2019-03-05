@@ -29,7 +29,7 @@
 			</balance>
 			<global_data>
 				<alpha_body_initial unit="deg">-4</alpha_body_initial> <!-- MANDATORY-->
-				<alpha_body_final unit="deg">10</alpha_body_final> <!-- MANDATORY-->
+				<alpha_body_final unit="deg">17</alpha_body_final> <!-- MANDATORY-->
 				<number_of_alpha_body></number_of_alpha_body> <!-- if not set, default value = 20 -->
 				<beta_initial unit="deg">0</beta_initial> <!-- MANDATORY-->
 				<beta_final unit="deg">20</beta_final> <!-- MANDATORY-->
