@@ -1739,6 +1739,43 @@ public class DescentCalc {
 			e.printStackTrace();
 		}
 		
+		//............................................................................................
+		// DESCENT RATE
+		MyChartToFileUtils.plotNoLegend(
+				MyArrayUtils.convertListOfAmountTodoubleArray(
+						_rateOfDescentList.stream()
+						.map(rd -> rd.to(SI.METERS_PER_SECOND).times(-1))
+						.collect(Collectors.toList())
+						),
+				MyArrayUtils.convertListOfAmountTodoubleArray(
+						_descentAltitudes.stream()
+						.map(x -> x.to(SI.METER))
+						.collect(Collectors.toList())
+						),
+				0.0, null, 0.0, null,
+				"Rate of Descent", "Altitude",
+				"m/s", "m",
+				descentFolderPath, "Rate_of_Descent_SI",
+				_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
+				);
+		MyChartToFileUtils.plotNoLegend(
+				MyArrayUtils.convertListOfAmountTodoubleArray(
+						_rateOfDescentList.stream()
+						.map(rd -> rd.to(MyUnits.FOOT_PER_MINUTE).times(-1))
+						.collect(Collectors.toList())
+						),
+				MyArrayUtils.convertListOfAmountTodoubleArray(
+						_descentAltitudes.stream()
+						.map(x -> x.to(NonSI.FOOT))
+						.collect(Collectors.toList())
+						),
+				0.0, null, 0.0, null,
+				"Rate of Descent", "Altitude",
+				"ft/min", "ft",
+				descentFolderPath, "Rate_of_Descent_IMPERIAL",
+				_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
+				);
+		
 	}
 
 	//--------------------------------------------------------------------------------------------

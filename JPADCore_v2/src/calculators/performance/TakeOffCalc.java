@@ -60,6 +60,8 @@ public class TakeOffCalc {
 	//-------------------------------------------------------------------------------------
 	// VARIABLE DECLARATION
 
+	private static final double targetSpeedRatioIterativeLoop = 1.13; 
+	
 	private double aspectRatio;
 	private Amount<Area> surface; 
 	private Amount<Length> span;
@@ -474,7 +476,7 @@ public class TakeOffCalc {
 		
 		v2 = Amount.valueOf(10000.0, SI.METERS_PER_SECOND); // initialization to an impossible speed
 		
-		while (Math.abs((v2.doubleValue(SI.METERS_PER_SECOND)/vSTakeOff.doubleValue(SI.METERS_PER_SECOND)) - 1.13) >= 0.001) {
+		while (Math.abs((v2.doubleValue(SI.METERS_PER_SECOND)/vSTakeOff.doubleValue(SI.METERS_PER_SECOND)) - targetSpeedRatioIterativeLoop) >= 0.001) {
 
 			if(i >= 1) {
 				if(newAlphaRed <= 0.0)
@@ -501,8 +503,8 @@ public class TakeOffCalc {
 			theIntegrator = new HighamHall54Integrator(
 					1e-10,
 					1,
-					1e-8,
-					1e-8
+					1e-3,
+					1e-3
 					);
 			ode = new DynamicsEquationsTakeOff();
 
@@ -761,16 +763,16 @@ public class TakeOffCalc {
 			};
 
 			if(isAborted == false) {
-				theIntegrator.addEventHandler(ehCheckVRot, 1.0, 1e-3, 20);
-				theIntegrator.addEventHandler(ehCheckFailure, 1.0, 1e-3, 20);
-				theIntegrator.addEventHandler(ehEndConstantCL, 1.0, 1e-3, 20);
-				theIntegrator.addEventHandler(ehCheckObstacle, 1.0, 1e-3, 20);
+				theIntegrator.addEventHandler(ehCheckVRot, 1e-1, 1e-3, 20);
+				theIntegrator.addEventHandler(ehCheckFailure, 1e-1, 1e-3, 20);
+				theIntegrator.addEventHandler(ehEndConstantCL, 1e-1, 1e-3, 20);
+				theIntegrator.addEventHandler(ehCheckObstacle, 1e-1, 1e-3, 20);
 			}
 			else {
-				theIntegrator.addEventHandler(ehCheckVRot, 1.0, 1e-3, 20);
-				theIntegrator.addEventHandler(ehCheckFailure, 1.0, 1e-3, 20);
-				theIntegrator.addEventHandler(ehCheckBrakes, 1.0, 1e-3, 20);
-				theIntegrator.addEventHandler(ehCheckStop, 1.0, 1e-15, 50);
+				theIntegrator.addEventHandler(ehCheckVRot, 1e-1, 1e-3, 20);
+				theIntegrator.addEventHandler(ehCheckFailure, 1e-1, 1e-3, 20);
+				theIntegrator.addEventHandler(ehCheckBrakes, 1e-1, 1e-3, 20);
+				theIntegrator.addEventHandler(ehCheckStop, 1e-1, 1e-15, 50);
 			}
 
 			// handle detailed info
@@ -1227,7 +1229,7 @@ public class TakeOffCalc {
 			
 			//--------------------------------------------------------------------------------
 			// NEW ALPHA REDUCTION RATE 
-			if(((v2.doubleValue(SI.METERS_PER_SECOND)/vSTakeOff.doubleValue(SI.METERS_PER_SECOND)) - 1.13) >= 0.0)
+			if(((v2.doubleValue(SI.METERS_PER_SECOND)/vSTakeOff.doubleValue(SI.METERS_PER_SECOND)) - targetSpeedRatioIterativeLoop) >= 0.0)
 				newAlphaRed = alphaRed + 0.1;
 			else
 				newAlphaRed = alphaRed - 0.1;

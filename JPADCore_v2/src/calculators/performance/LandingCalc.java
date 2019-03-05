@@ -528,12 +528,12 @@ public class LandingCalc {
 		StepHandler continuousOutputModel = null;
 
 		int i=0;
-		int maxIter = 25;
+		int maxIter = 50;
 		dtFlare = Amount.valueOf(5.0, SI.SECOND); 
 		alphaDotFlare = 1.0; /* deg/s - First guess value */
 		double newAlphaDotFlare = 0.0;
 		Amount<Velocity> targetRateOfDescent = Amount.valueOf(-100, MyUnits.FOOT_PER_MINUTE);
-		Amount<Length> targetAltitude = Amount.valueOf(1.0, SI.METER);
+		Amount<Length> targetAltitude = Amount.valueOf(1e-2, SI.METER);
 
 		rateOfDescentAtFlareEnding = Amount.valueOf(10000.0, SI.METERS_PER_SECOND);  // Initialization at an impossible value
 		altitudeAtFlareEnding = Amount.valueOf(10000.0, SI.METER);  // Initialization at an impossible value
@@ -641,12 +641,12 @@ public class LandingCalc {
 					landingTime = totalTime.to(SI.SECOND).minus(tObstacle.to(SI.SECOND));
 					totalFuelUsed = Amount.valueOf(x[4], SI.KILOGRAM);
 					totalNOxEmissions = emissionNOxPerStep.get(emissionNOxPerStep.size()-1);
-					totalCOEmissions = emissionNOxPerStep.get(emissionCOPerStep.size()-1);
-					totalHCEmissions = emissionNOxPerStep.get(emissionHCPerStep.size()-1);
-					totalSootEmissions = emissionNOxPerStep.get(emissionSootPerStep.size()-1);
-					totalCO2Emissions = emissionNOxPerStep.get(emissionCO2PerStep.size()-1);
-					totalSOxEmissions = emissionNOxPerStep.get(emissionSOxPerStep.size()-1);
-					totalH2OEmissions = emissionNOxPerStep.get(emissionH2OPerStep.size()-1);
+					totalCOEmissions = emissionCOPerStep.get(emissionCOPerStep.size()-1);
+					totalHCEmissions = emissionHCPerStep.get(emissionHCPerStep.size()-1);
+					totalSootEmissions = emissionSootPerStep.get(emissionSootPerStep.size()-1);
+					totalCO2Emissions = emissionCO2PerStep.get(emissionCO2PerStep.size()-1);
+					totalSOxEmissions = emissionSOxPerStep.get(emissionSOxPerStep.size()-1);
+					totalH2OEmissions = emissionH2OPerStep.get(emissionH2OPerStep.size()-1);
 					
 					aircraftStopFlag = true;
 

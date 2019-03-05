@@ -410,8 +410,8 @@ public class TakeOffNoiseTrajectoryCalc {
 			theIntegrator = new HighamHall54Integrator(
 					1e-10,
 					1,
-					1e-6,
-					1e-6
+					1e-3,
+					1e-3
 					);
 			ode = new DynamicsEquationsTakeOffNoiseTrajectory();
 
@@ -946,25 +946,24 @@ public class TakeOffNoiseTrajectoryCalc {
 			};
 
 			if(!cutback) {
-				theIntegrator.addEventHandler(ehCheckVRot, 1.0, 1e-3, 20);
-				theIntegrator.addEventHandler(ehEndConstantCL, 1.0, 1e-3, 20);
-				theIntegrator.addEventHandler(ehCheckObstacle, 1.0, 1e-3, 20);
-				theIntegrator.addEventHandler(ehLandingGearRetractionStart, 1.0, 1e-3, 20);
-				theIntegrator.addEventHandler(ehLandingGearRetractionEnd, 1.0, 1e-3, 20);
-				theIntegrator.addEventHandler(ehCheckXEndSimulation, 1.0, 1e-3, 20);
-				theIntegrator.addEventHandler(ehCheckSidelineCertificationPoint, 1.0, 1e-3, 20);
+				theIntegrator.addEventHandler(ehCheckVRot, 1e-1, 1e-3, 20);
+				theIntegrator.addEventHandler(ehEndConstantCL, 1e-1, 1e-3, 20);
+				theIntegrator.addEventHandler(ehCheckObstacle, 1e-1, 1e-3, 20);
+				theIntegrator.addEventHandler(ehLandingGearRetractionStart, 1e-1, 1e-3, 20);
+				theIntegrator.addEventHandler(ehLandingGearRetractionEnd, 1e-1, 1e-3, 20);
+				theIntegrator.addEventHandler(ehCheckXEndSimulation, 1e-1, 1e-3, 20);
+				theIntegrator.addEventHandler(ehCheckSidelineCertificationPoint, 1e-1, 1e-3, 20);
 			}
 			else {
-				theIntegrator.addEventHandler(ehCheckVRot, 1.0, 1e-3, 20);
-				theIntegrator.addEventHandler(ehEndConstantCL, 1.0, 1e-3, 20);
-				theIntegrator.addEventHandler(ehCheckObstacle, 1.0, 1e-3, 20);
-				theIntegrator.addEventHandler(ehLandingGearRetractionStart, 1.0, 1e-3, 20);
-				theIntegrator.addEventHandler(ehLandingGearRetractionEnd, 1.0, 1e-3, 20);
-				theIntegrator.addEventHandler(ehCheckXEndSimulation, 1.0, 1e-3, 20);
-				theIntegrator.addEventHandler(ehCheckCutbackAltitude, 1.0, 1e-3, 20);
-				theIntegrator.addEventHandler(ehCheckFlyoverCertificationPoint, 1.0, 1e-3, 20);
+				theIntegrator.addEventHandler(ehCheckVRot, 1e-1, 1e-3, 20);
+				theIntegrator.addEventHandler(ehEndConstantCL, 1e-1, 1e-3, 20);
+				theIntegrator.addEventHandler(ehCheckObstacle, 1e-1, 1e-3, 20);
+				theIntegrator.addEventHandler(ehLandingGearRetractionStart, 1e-1, 1e-3, 20);
+				theIntegrator.addEventHandler(ehLandingGearRetractionEnd, 1e-1, 1e-3, 20);
+				theIntegrator.addEventHandler(ehCheckXEndSimulation, 1e-1, 1e-3, 20);
+				theIntegrator.addEventHandler(ehCheckCutbackAltitude, 1e-1, 1e-3, 20);
+				theIntegrator.addEventHandler(ehCheckFlyoverCertificationPoint, 1e-1, 1e-3, 20);
 			}
-
 
 			// handle detailed info
 			StepHandler stepHandler = new StepHandler() {

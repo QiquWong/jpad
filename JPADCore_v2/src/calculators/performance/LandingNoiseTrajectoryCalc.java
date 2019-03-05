@@ -432,12 +432,12 @@ public class LandingNoiseTrajectoryCalc {
 		StepHandler continuousOutputModel = null;
 
 		int i=0;
-		int maxIter = 25;
+		int maxIter = 50;
 		dtFlare = Amount.valueOf(5.0, SI.SECOND); 
 		alphaDotFlare = 1.0; /* deg/s - First guess value */
 		double newAlphaDotFlare = 0.0;
 		Amount<Velocity> targetRateOfDescent = Amount.valueOf(-100, MyUnits.FOOT_PER_MINUTE);
-		Amount<Length> targetAltitude = Amount.valueOf(1.0, SI.METER);
+		Amount<Length> targetAltitude = Amount.valueOf(1e-2, SI.METER);
 
 		rateOfDescentAtFlareEnding = Amount.valueOf(10000.0, SI.METERS_PER_SECOND);  // Initialization at an impossible value
 		altitudeAtFlareEnding = Amount.valueOf(10000.0, SI.METER);  // Initialization at an impossible value

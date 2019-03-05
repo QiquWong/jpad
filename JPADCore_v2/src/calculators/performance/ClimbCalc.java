@@ -2148,9 +2148,7 @@ public class ClimbCalc {
 						);
 				climbAngleAEO.add(
 						MyArrayUtils.convertFromDoubleToPrimitive(
-								MyArrayUtils.scaleArray(
-										MyArrayUtils.convertListOfAmountTodoubleArray(_rcMapAEO.get(i).getClimbAngleList()),
-										57.3)
+								MyArrayUtils.convertListOfAmountTodoubleArray(_rcMapAEO.get(i).getClimbAngleList())
 								)
 						);
 				legend_SI.add("Climb Angle at " + _rcMapAEO.get(i).getAltitude() + " m");
@@ -2231,9 +2229,7 @@ public class ClimbCalc {
 			for (int i=0; i<_rcMapOEI.size(); i++) 
 				climbAngleOEI.add(
 						MyArrayUtils.convertFromDoubleToPrimitive(
-								MyArrayUtils.scaleArray(
-										MyArrayUtils.convertListOfAmountTodoubleArray(_rcMapOEI.get(i).getClimbAngleList()),
-										57.3)
+								MyArrayUtils.convertListOfAmountTodoubleArray(_rcMapOEI.get(i).getClimbAngleList())
 								)
 						);
 
@@ -2380,13 +2376,20 @@ public class ClimbCalc {
 			//.......................................................
 			// AEO
 			List<Double> maxClimbAngleListAEO = new ArrayList<Double>();
+			List<Double> maxClimbGradientListAEO = new ArrayList<Double>();			
 			List<Double> altitudeListAEO_SI = new ArrayList<Double>();
 			List<Double> altitudeListAEO_Imperial = new ArrayList<Double>();
 			
 			for(int i=0; i<_rcMapAEO.size(); i++) {
 				maxClimbAngleListAEO.add(_rcMapAEO.get(_rcMapAEO.size()-1-i).getClimbAngleList()
 						.stream()
-						.mapToDouble(x -> x.doubleValue(SI.RADIAN))
+						.mapToDouble(x -> x.doubleValue(NonSI.DEGREE_ANGLE))
+						.max()
+						.getAsDouble()
+						);
+				maxClimbGradientListAEO.add(_rcMapAEO.get(_rcMapAEO.size()-1-i).getClimbAngleList()
+						.stream()
+						.mapToDouble(x -> x.doubleValue(SI.RADIAN)*100)
 						.max()
 						.getAsDouble()
 						);
@@ -2398,7 +2401,7 @@ public class ClimbCalc {
 					MyArrayUtils.convertToDoublePrimitive(altitudeListAEO_SI),
 					0.0, null, 0.0, null,
 					"Maximum Climb Angle", "Altitude",
-					"rad", "m",
+					"deg", "m",
 					climbFolderPath, "Max_Climb_Angle_envelope_AEO_SI",
 					_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 					);
@@ -2407,21 +2410,46 @@ public class ClimbCalc {
 					MyArrayUtils.convertToDoublePrimitive(altitudeListAEO_Imperial),
 					0.0, null, 0.0, null,
 					"Maximum Climb Angle", "Altitude",
-					"rad", "ft",
+					"deg", "ft",
 					climbFolderPath, "Max_Climb_Angle_envelope_AEO_IMPERIAL",
+					_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
+					);
+			MyChartToFileUtils.plotNoLegend(
+					MyArrayUtils.convertToDoublePrimitive(maxClimbGradientListAEO),
+					MyArrayUtils.convertToDoublePrimitive(altitudeListAEO_SI),
+					0.0, null, 0.0, null,
+					"Maximum Climb Gradient", "Altitude",
+					"%", "m",
+					climbFolderPath, "Max_Climb_Gradient_envelope_AEO_SI",
+					_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
+					);
+			MyChartToFileUtils.plotNoLegend(
+					MyArrayUtils.convertToDoublePrimitive(maxClimbGradientListAEO),
+					MyArrayUtils.convertToDoublePrimitive(altitudeListAEO_Imperial),
+					0.0, null, 0.0, null,
+					"Maximum Climb Gradient", "Altitude",
+					"%", "ft",
+					climbFolderPath, "Max_Climb_Gradient_envelope_AEO_IMPERIAL",
 					_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 					);
 			
 			//.......................................................
 			// OEI
 			List<Double> maxClimbAngleListOEI = new ArrayList<Double>();
+			List<Double> maxClimbGradientListOEI = new ArrayList<Double>();			
 			List<Double> altitudeListOEI_SI = new ArrayList<Double>();
 			List<Double> altitudeListOEI_Imperial = new ArrayList<Double>();
 			
 			for(int i=0; i<_rcMapOEI.size(); i++) {
 				maxClimbAngleListOEI.add(_rcMapOEI.get(_rcMapOEI.size()-1-i).getClimbAngleList()
 						.stream()
-						.mapToDouble(x -> x.doubleValue(SI.RADIAN))
+						.mapToDouble(x -> x.doubleValue(NonSI.DEGREE_ANGLE))
+						.max()
+						.getAsDouble()
+						);
+				maxClimbGradientListOEI.add(_rcMapOEI.get(_rcMapOEI.size()-1-i).getClimbAngleList()
+						.stream()
+						.mapToDouble(x -> x.doubleValue(SI.RADIAN)*100)
 						.max()
 						.getAsDouble()
 						);
@@ -2434,7 +2462,7 @@ public class ClimbCalc {
 					MyArrayUtils.convertToDoublePrimitive(altitudeListOEI_SI),
 					0.0, null, 0.0, null,
 					"Maximum Climb Angle", "Altitude",
-					"rad", "m",
+					"deg", "m",
 					climbFolderPath, "Max_Climb_Angle_envelope_OEI_SI",
 					_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 					);
@@ -2443,8 +2471,26 @@ public class ClimbCalc {
 					MyArrayUtils.convertToDoublePrimitive(altitudeListOEI_Imperial),
 					0.0, null, 0.0, null,
 					"Maximum Climb Angle", "Altitude",
-					"rad", "ft",
+					"deg", "ft",
 					climbFolderPath, "Max_Climb_Angle_envelope_OEI_IMPERIAL",
+					_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
+					);
+			MyChartToFileUtils.plotNoLegend(
+					MyArrayUtils.convertToDoublePrimitive(maxClimbGradientListOEI),
+					MyArrayUtils.convertToDoublePrimitive(altitudeListOEI_SI),
+					0.0, null, 0.0, null,
+					"Maximum Climb Gradient", "Altitude",
+					"%", "m",
+					climbFolderPath, "Max_Climb_Gradient_envelope_OEI_SI",
+					_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
+					);
+			MyChartToFileUtils.plotNoLegend(
+					MyArrayUtils.convertToDoublePrimitive(maxClimbGradientListOEI),
+					MyArrayUtils.convertToDoublePrimitive(altitudeListOEI_Imperial),
+					0.0, null, 0.0, null,
+					"Maximum Climb Gradient", "Altitude",
+					"%", "ft",
+					climbFolderPath, "Max_Climb_Gradient_envelope_OEI_IMPERIAL",
 					_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 					);
 			

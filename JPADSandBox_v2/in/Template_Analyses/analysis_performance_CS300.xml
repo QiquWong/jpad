@@ -7,10 +7,10 @@
 			aerodynamics_from_previous_file="false" 
 			>
 			<weights>
-				<maximum_take_off_mass unit="kg">65183</maximum_take_off_mass>
-				<operating_empty_mass unit="kg">36536</operating_empty_mass>
-				<maximum_fuel_mass unit="kg">17213</maximum_fuel_mass>
-				<maximum_payload unit="kg"></maximum_payload> <!-- default = design_n_pax*121kg + 700kg -->
+				<maximum_take_off_mass unit="kg">68039</maximum_take_off_mass>
+				<operating_empty_mass unit="kg">37081</operating_empty_mass>
+				<maximum_fuel_mass unit="kg">18711</maximum_fuel_mass>
+				<maximum_payload unit="kg">18711</maximum_payload> <!-- default = design_n_pax*121kg + 700kg -->
 				<single_passenger_mass unit="kg">108</single_passenger_mass>
 			</weights>
 			<aerodynamics>
@@ -81,7 +81,7 @@
 				<drag_due_to_engine_failure>0.005</drag_due_to_engine_failure> <!-- drag coefficient to be added due to the failed engine and rudder deflection (default = 0.0) -->
 				<k_alpha_dot></k_alpha_dot> <!-- indicates how fast the rotation maneuver is - faster with decreasing k_alpha_dot - (default 0.04) -->
 				<!-- landing data -->
-				<k_landing_weight>0.9</k_landing_weight> <!-- percentage of the maximum take-off weight to be used for the landing performance - (default = 0.97) -->
+				<k_landing_weight>0.86</k_landing_weight> <!-- percentage of the maximum take-off weight to be used for the landing performance - (default = 0.97) -->
 				<initial_altitude_landing unit="ft"></initial_altitude_landing> <!-- default = 1500ft -->
 				<obstacle_landing unit="ft"></obstacle_landing> <!-- default = 50ft -->
 				<approach_angle unit="deg"></approach_angle> <!-- default = -3deg -->
@@ -96,15 +96,15 @@
 				<k_climb_weight_OEI></k_climb_weight_OEI> <!-- percentage of the maximum take-off weight to be used for the climb performance (OEI) - (default = 0.97) -->
 				<initial_climb_altitude unit="ft">1500</initial_climb_altitude>
 				<final_climb_altitude unit="ft">30000.0</final_climb_altitude>
-				<climb_speed_CAS unit="kn">250</climb_speed_CAS>
+				<climb_speed_CAS unit="kn">270</climb_speed_CAS>
 			</climb>
 			<cruise>
 				<altitudes_array unit="ft">20000;25000;30000</altitudes_array>
 				<k_cruise_weight></k_cruise_weight> <!-- percentage of the maximum take-off weight to be used for the cruise performance - (default = 0.98) -->
 			</cruise>
 			<descent>
-				<rate_of_descent unit="ft/min">1500</rate_of_descent>
-				<descent_speed_CAS unit="kn">260</descent_speed_CAS>
+				<rate_of_descent unit="ft/min">2187</rate_of_descent>
+				<descent_speed_CAS unit="kn">218</descent_speed_CAS>
 				<k_descent_weight></k_descent_weight> <!-- percentage of the maximum take-off weight to be used for the descent performance - (default = 0.9) -->
 				<initial_descent_altitude unit="ft">30000</initial_descent_altitude>
 				<final_descent_altitude unit="ft">1500</final_descent_altitude>
@@ -116,7 +116,7 @@
 				<take_off>
 					<ground_distance_end_simulation unit="m"></ground_distance_end_simulation> <!-- (default = 8000.0 m) -->
 					<cutback_altitude unit="ft"></cutback_altitude> <!-- (default = 300m/984ft) -->
-					<number_of_thrust_settings_cutback></number_of_thrust_settings_cutback> <!-- (default = 3) -->
+					<number_of_thrust_settings_cutback>0</number_of_thrust_settings_cutback> <!-- (default = 3) -->
 					<dt_landing_gear_retraction unit="s"></dt_landing_gear_retraction> <!-- (default = 12s) -->
 					<dt_thrust_cutback unit="s"></dt_thrust_cutback> <!-- (default = 4s) -->
 				</take_off>
@@ -127,9 +127,9 @@
 			</noise_trajectories>
 			<mission_profile_and_payload_range>
 				<!-- if alternate and holding phases have not to be taken into account, leave their tags empty -->
-				<mission_range unit="nmi">1600</mission_range> 
-				<alternate_cruise_range unit="nmi">100</alternate_cruise_range> <!-- (default = 0.0) -->
-				<alternate_cruise_altitude unit="ft">15000</alternate_cruise_altitude> <!-- (default = 15.24 = landing obstacle) -->
+				<mission_range unit="nmi">3200</mission_range> 
+				<alternate_cruise_range unit="nmi">200</alternate_cruise_range> <!-- (default = 0.0) -->
+				<alternate_cruise_altitude unit="ft">20000</alternate_cruise_altitude> <!-- (default = 15.24 = landing obstacle) -->
 				<holding_duration unit="min">30</holding_duration> <!-- (default = 0.0) -->
 				<holding_altitude unit="ft">1500</holding_altitude> <!-- (default = 0.0) -->
 				<fuel_reserve>0.05</fuel_reserve> <!-- (default = 0.0) -->

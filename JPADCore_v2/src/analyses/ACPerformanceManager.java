@@ -2975,12 +2975,12 @@ public class ACPerformanceManager {
 	public void calculate(String resultsFolderPath) {
 
 		final PrintStream originalOut = System.out;
-//		PrintStream filterStream = new PrintStream(new OutputStream() {
-//		    public void write(int b) {
-//		         // write nothing
-//		    }
-//		});
-		PrintStream filterStream = System.out;
+		PrintStream filterStream = new PrintStream(new OutputStream() {
+		    public void write(int b) {
+		         // write nothing
+		    }
+		});
+//		PrintStream filterStream = System.out;
 		
 		System.setOut(filterStream);
 		
@@ -5301,88 +5301,64 @@ public class ACPerformanceManager {
 			// Fuel used:
 			_takeOffFuelMap.put(
 					xcg,
-					Amount.valueOf(
-							_theTakeOffCalculatorMap.get(xcg).getFuelUsed().stream()
-							.mapToDouble(f -> f.doubleValue(SI.KILOGRAM))
-							.sum(),
-							SI.KILOGRAM
+					_theTakeOffCalculatorMap.get(xcg).getFuelUsed().get(
+							_theTakeOffCalculatorMap.get(xcg).getFuelUsed().size()-1
 							)
 					);
 			
 			// Emission NOx:
 			_takeOffNOxEmissionsMap.put(
 					xcg,
-					Amount.valueOf(
-							_theTakeOffCalculatorMap.get(xcg).getEmissionsNOx().stream()
-							.mapToDouble(e -> e.doubleValue(SI.GRAM))
-							.sum(),
-							SI.GRAM
+					_theTakeOffCalculatorMap.get(xcg).getEmissionsNOx().get(
+							_theTakeOffCalculatorMap.get(xcg).getEmissionsNOx().size()-1
 							)
 					);
 			
 			// Emission CO:
 			_takeOffCOEmissionsMap.put(
 					xcg,
-					Amount.valueOf(
-							_theTakeOffCalculatorMap.get(xcg).getEmissionsCO().stream()
-							.mapToDouble(e -> e.doubleValue(SI.GRAM))
-							.sum(),
-							SI.GRAM
+					_theTakeOffCalculatorMap.get(xcg).getEmissionsCO().get(
+							_theTakeOffCalculatorMap.get(xcg).getEmissionsCO().size()-1
 							)
 					);
 			
 			// Emission HC:
 			_takeOffHCEmissionsMap.put(
 					xcg,
-					Amount.valueOf(
-							_theTakeOffCalculatorMap.get(xcg).getEmissionsHC().stream()
-							.mapToDouble(e -> e.doubleValue(SI.GRAM))
-							.sum(),
-							SI.GRAM
+					_theTakeOffCalculatorMap.get(xcg).getEmissionsHC().get(
+							_theTakeOffCalculatorMap.get(xcg).getEmissionsHC().size()-1
 							)
 					);
 			
 			// Emission Soot:
 			_takeOffSootEmissionsMap.put(
 					xcg,
-					Amount.valueOf(
-							_theTakeOffCalculatorMap.get(xcg).getEmissionsSoot().stream()
-							.mapToDouble(e -> e.doubleValue(SI.GRAM))
-							.sum(),
-							SI.GRAM
+					_theTakeOffCalculatorMap.get(xcg).getEmissionsSoot().get(
+							_theTakeOffCalculatorMap.get(xcg).getEmissionsSoot().size()-1
 							)
 					);
 			
 			// Emission CO2:
 			_takeOffCO2EmissionsMap.put(
 					xcg,
-					Amount.valueOf(
-							_theTakeOffCalculatorMap.get(xcg).getEmissionsCO2().stream()
-							.mapToDouble(e -> e.doubleValue(SI.GRAM))
-							.sum(),
-							SI.GRAM
+					_theTakeOffCalculatorMap.get(xcg).getEmissionsCO2().get(
+							_theTakeOffCalculatorMap.get(xcg).getEmissionsCO2().size()-1
 							)
 					);
 			
 			// Emission SOx:
 			_takeOffSOxEmissionsMap.put(
 					xcg,
-					Amount.valueOf(
-							_theTakeOffCalculatorMap.get(xcg).getEmissionsSOx().stream()
-							.mapToDouble(e -> e.doubleValue(SI.GRAM))
-							.sum(),
-							SI.GRAM
+					_theTakeOffCalculatorMap.get(xcg).getEmissionsSOx().get(
+							_theTakeOffCalculatorMap.get(xcg).getEmissionsSOx().size()-1
 							)
 					);
 
 			// Emission H2O:
 			_takeOffH2OEmissionsMap.put(
 					xcg,
-					Amount.valueOf(
-							_theTakeOffCalculatorMap.get(xcg).getEmissionsH2O().stream()
-							.mapToDouble(e -> e.doubleValue(SI.GRAM))
-							.sum(),
-							SI.GRAM
+					_theTakeOffCalculatorMap.get(xcg).getEmissionsH2O().get(
+							_theTakeOffCalculatorMap.get(xcg).getEmissionsH2O().size()-1
 							)
 					);
 			
@@ -6559,7 +6535,7 @@ public class ACPerformanceManager {
 											SI.KILOGRAM
 											),
 									EngineOperatingConditionEnum.CRUISE,
-									specificRange,
+									Arrays.stream(specificRange).map(x -> x != Double.POSITIVE_INFINITY ? x : 0.0).toArray(),
 									machArray,
 									efficiency,
 									sfc
