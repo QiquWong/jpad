@@ -2017,6 +2017,12 @@ public class ACAerodynamicAndStabilityManagerUtils {
 				temporaryCLCoefficient.set(i, temporaryCLCoefficient.get(i+1) - (Math.abs(temporaryCLCoefficient.get(i+1) - temporaryCLCoefficient.get(i))));
 			}
 		}
+		
+		for (int i=1; i< temporaryCLCoefficient.size()-1; i++) {
+			if(temporaryCLCoefficient.get(i+1)<temporaryCLCoefficient.get(i)) {
+				temporaryCLCoefficient.set(i+1, temporaryCLCoefficient.get(i) + (Math.abs(temporaryCLCoefficient.get(i+1) - temporaryCLCoefficient.get(i))));
+			}
+		}
 		aerodynamicAndStabilityManager.getTotalDragCoefficient().put(
 				de,
 				MyArrayUtils.convertDoubleArrayToListDouble(

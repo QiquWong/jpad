@@ -2122,6 +2122,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 		calculateDependentData();
 		calculateComponentsData();
 
+		System.out.println("ciao");
 	}
 
 	private void calculateDependentData() {
@@ -2826,7 +2827,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 						);
 			}
 
-//			plotAllCharts();
+		plotAllCharts();
 
 		}
 

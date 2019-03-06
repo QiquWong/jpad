@@ -10,7 +10,7 @@
     <analysis>
         <aerodynamics_and_stability 
 			id="IRON - AERODYNAMICS CRUISE"
-			balance_from_previous_analysis="true"
+			balance_from_previous_analysis="false"
 			>
 			<balance>
 			<!-- 
@@ -18,18 +18,18 @@
 			Otherwise the all the CG positions in every condition will be read from the Balance output file.
 			-->
 				<!-- the values of the centre of gravity position are referred to the mean aerodynamic chord of the wing -->
-				<adimensional_center_of_gravity_x_position_list></adimensional_center_of_gravity_x_position_list> <!-- in BRF referred to MAC --> 
-				<adimensional_center_of_gravity_z_position_list></adimensional_center_of_gravity_z_position_list> <!-- in BRF referred to MAC --> 
-				<fuselage_dimensional_center_of_gravity_x_position unit="m"></fuselage_dimensional_center_of_gravity_x_position> <!-- in BRF --> 
-				<fuselage_dimensional_center_of_gravity_z_position unit="m"></fuselage_dimensional_center_of_gravity_z_position> <!-- in BRF --> 
-				<landing_gear_dimensional_center_of_gravity_x_position unit="m"></landing_gear_dimensional_center_of_gravity_x_position> <!-- in BRF --> 
-				<landing_gear_dimensional_center_of_gravity_z_position unit="m"></landing_gear_dimensional_center_of_gravity_z_position> <!-- in BRF --> 
-				<nacelle_dimensional_center_of_gravity_x_position unit="m"></nacelle_dimensional_center_of_gravity_x_position> <!-- in BRF --> 
-				<nacelle_dimensional_center_of_gravity_z_position unit="m"></nacelle_dimensional_center_of_gravity_z_position> <!-- in BRF --> 
+				<adimensional_center_of_gravity_x_position_list>0.11</adimensional_center_of_gravity_x_position_list> <!-- in BRF referred to MAC --> 
+				<adimensional_center_of_gravity_z_position_list>-0.28</adimensional_center_of_gravity_z_position_list> <!-- in BRF referred to MAC --> 
+				<fuselage_dimensional_center_of_gravity_x_position unit="m">16.25</fuselage_dimensional_center_of_gravity_x_position> <!-- in BRF --> 
+				<fuselage_dimensional_center_of_gravity_z_position unit="m">0.0</fuselage_dimensional_center_of_gravity_z_position> <!-- in BRF --> 
+				<landing_gear_dimensional_center_of_gravity_x_position unit="m">16.41</landing_gear_dimensional_center_of_gravity_x_position> <!-- in BRF --> 
+				<landing_gear_dimensional_center_of_gravity_z_position unit="m">-2.8</landing_gear_dimensional_center_of_gravity_z_position> <!-- in BRF --> 
+				<nacelle_dimensional_center_of_gravity_x_position unit="m">12.6</nacelle_dimensional_center_of_gravity_x_position> <!-- in BRF --> 
+				<nacelle_dimensional_center_of_gravity_z_position unit="m">-1.59</nacelle_dimensional_center_of_gravity_z_position> <!-- in BRF --> 
 			</balance>
 			<global_data>
 				<alpha_body_initial unit="deg">-4</alpha_body_initial> <!-- MANDATORY-->
-				<alpha_body_final unit="deg">17</alpha_body_final> <!-- MANDATORY-->
+				<alpha_body_final unit="deg">22</alpha_body_final> <!-- MANDATORY-->
 				<number_of_alpha_body></number_of_alpha_body> <!-- if not set, default value = 20 -->
 				<beta_initial unit="deg">0</beta_initial> <!-- MANDATORY-->
 				<beta_final unit="deg">20</beta_final> <!-- MANDATORY-->
