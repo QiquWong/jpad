@@ -106,7 +106,6 @@ public interface IACPerformanceManager {
 	// Noise Trajectories
 	Amount<Length> getTakeOffNoiseTrajectoryXEndSimulation();
 	Amount<Length> getTakeOffNoiseTrajectoryCutbackAltitude();
-	int getTakeOffNoiseTrajectoryNumberOfThrustSettingCutback();
 	Amount<Duration> getTakeOffNoiseTrajectoryLandingGearRetractionTimeInterval();
 	Amount<Duration> getTakeOffNoiseTrajectoryThrustReductionCutbackTimeInterval();
 	Amount<Length> getLandingNoiseTrajectoryInitialAltitude();

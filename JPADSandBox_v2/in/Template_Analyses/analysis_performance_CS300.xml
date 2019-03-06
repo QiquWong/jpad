@@ -7,11 +7,11 @@
 			aerodynamics_from_previous_file="false" 
 			>
 			<weights>
-				<maximum_take_off_mass unit="kg">68039</maximum_take_off_mass>
+				<maximum_take_off_mass unit="kg">67585</maximum_take_off_mass>
 				<operating_empty_mass unit="kg">37081</operating_empty_mass>
-				<maximum_fuel_mass unit="kg">18711</maximum_fuel_mass>
+				<maximum_fuel_mass unit="kg">16884</maximum_fuel_mass>
 				<maximum_payload unit="kg">18711</maximum_payload> <!-- default = design_n_pax*121kg + 700kg -->
-				<single_passenger_mass unit="kg">108</single_passenger_mass>
+				<single_passenger_mass unit="kg">102</single_passenger_mass>
 			</weights>
 			<aerodynamics>
 				<xcg value="0.2" parabolicDragPolar="FALSE"> <!-- if TRUE uses a parabolic drag polar with wave drag correction; otherwise it reads the polar_curves tag -->
@@ -103,7 +103,7 @@
 				<k_cruise_weight></k_cruise_weight> <!-- percentage of the maximum take-off weight to be used for the cruise performance - (default = 0.98) -->
 			</cruise>
 			<descent>
-				<rate_of_descent unit="ft/min">2187</rate_of_descent>
+				<rate_of_descent unit="ft/min">2180</rate_of_descent>
 				<descent_speed_CAS unit="kn">218</descent_speed_CAS>
 				<k_descent_weight></k_descent_weight> <!-- percentage of the maximum take-off weight to be used for the descent performance - (default = 0.9) -->
 				<initial_descent_altitude unit="ft">30000</initial_descent_altitude>
@@ -116,7 +116,6 @@
 				<take_off>
 					<ground_distance_end_simulation unit="m"></ground_distance_end_simulation> <!-- (default = 8000.0 m) -->
 					<cutback_altitude unit="ft"></cutback_altitude> <!-- (default = 300m/984ft) -->
-					<number_of_thrust_settings_cutback>0</number_of_thrust_settings_cutback> <!-- (default = 3) -->
 					<dt_landing_gear_retraction unit="s"></dt_landing_gear_retraction> <!-- (default = 12s) -->
 					<dt_thrust_cutback unit="s"></dt_thrust_cutback> <!-- (default = 4s) -->
 				</take_off>

@@ -503,8 +503,8 @@ public class TakeOffCalc {
 			theIntegrator = new HighamHall54Integrator(
 					1e-10,
 					1,
-					1e-3,
-					1e-3
+					1e-2,
+					1e-2
 					);
 			ode = new DynamicsEquationsTakeOff();
 
@@ -787,430 +787,12 @@ public class TakeOffCalc {
 					double   t = interpolator.getCurrentTime();
 					double[] x = interpolator.getInterpolatedState();
 					double[] xDot = interpolator.getInterpolatedDerivatives();
-					
-					//========================================================================================
-					// PICKING UP ALL VARIABLES AT EVERY STEP (RECOGNIZING IF THE TAKE-OFF IS CONTINUED OR ABORTED)
-					//----------------------------------------------------------------------------------------
-					Amount<Duration> currentTime = Amount.valueOf(t, SI.SECOND);
-					Amount<Length> currentGroundDistance = Amount.valueOf(x[0], SI.METER);
-					Amount<Velocity> currentSpeed = Amount.valueOf(x[1], SI.METERS_PER_SECOND);
-					Amount<Angle> currentGamma = Amount.valueOf(x[2], NonSI.DEGREE_ANGLE);
-					Amount<Length> currentAltitude = Amount.valueOf(x[3], SI.METER);
-					Amount<Force> currentWeight = Amount.valueOf( 
-							(maxTakeOffMass.doubleValue(SI.KILOGRAM) - x[4])*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
-							SI.NEWTON
-							);
-					Amount<Angle> currentAlpha = ((DynamicsEquationsTakeOff)ode).alpha(currentTime);
-					double currentAlphaDot = ((DynamicsEquationsTakeOff)ode).alphaDot(currentTime);
 
-					List<Amount<Force>> totalThrustList = ((DynamicsEquationsTakeOff)ode).thrust(currentSpeed, currentTime, currentGamma, currentAltitude, deltaTemperature);
-					List<Amount<Force>> totalThrustListHorizontal = new ArrayList<>();
-					List<Amount<Force>> totalThrustListVertical = new ArrayList<>();
-					for(int j=0; j<totalThrustList.size(); j++) 
-						totalThrustListHorizontal.add(totalThrustList.get(j).times(Math.cos(thePowerPlant.getEngineList().get(j).getTiltingAngle().doubleValue(SI.RADIAN))));
-					for(int j=0; j<totalThrustList.size(); j++) 
-						totalThrustListVertical.add(totalThrustList.get(j).times(Math.sin(thePowerPlant.getEngineList().get(j).getTiltingAngle().doubleValue(SI.RADIAN))));
+					if(TakeOffCalc.this.timePerStep.isEmpty())
+						handleStepImplementation(t, x, xDot);
 					
-					//========================================================================================
-					// PICKING UP ALL DATA AT EVERY STEP (RECOGNIZING IF THE TAKE-OFF IS CONTINUED OR ABORTED)
-					//----------------------------------------------------------------------------------------
-					// TIME:
-					TakeOffCalc.this.timePerStep.add(currentTime);
-					//----------------------------------------------------------------------------------------
-					// GROUND DISTANCE:
-					TakeOffCalc.this.groundDistancePerStep.add(currentGroundDistance);
-					//----------------------------------------------------------------------------------------
-					// ALTITUDE:
-					TakeOffCalc.this.verticalDistancePerStep.add(currentAltitude);
-					//----------------------------------------------------------------------------------------
-					// THRUST:
-					TakeOffCalc.this.thrustPerStep.add(Amount.valueOf(
-							totalThrustList.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum(),
-							SI.NEWTON)
-							);
-					//--------------------------------------------------------------------------------
-					// FUEL USED (kg):
-					TakeOffCalc.this.fuelUsedPerStep.add(Amount.valueOf(x[4], SI.KILOGRAM));
-					//--------------------------------------------------------------------------------
-					// FUEL FLOW (kg/s):
-					TakeOffCalc.this.fuelFlowPerStep.add(xDot[4]);
-					//----------------------------------------------------------------------------------------
-					// WEIGHT:
-					TakeOffCalc.this.weightPerStep.add(currentWeight);
-					//----------------------------------------------------------------------------------------
-					// SPEED TAS:
-					TakeOffCalc.this.speedTASPerStep.add(currentSpeed);
-					//----------------------------------------------------------------------------------------
-					// SPEED CAS:
-					double sigma = AtmosphereCalc.getDensity(currentAltitude.doubleValue(SI.METER), deltaTemperature.doubleValue(SI.CELSIUS)/1.225);
-					TakeOffCalc.this.speedCASPerStep.add(currentSpeed.times(Math.sqrt(sigma)));
-					//----------------------------------------------------------------------------------------
-					// MACH:
-					double speedOfSound = AtmosphereCalc.getSpeedOfSound(currentAltitude.doubleValue(SI.METER), deltaTemperature.doubleValue(SI.CELSIUS));
-					TakeOffCalc.this.machPerStep.add(currentSpeed.doubleValue(SI.METERS_PER_SECOND) / speedOfSound);
-					//----------------------------------------------------------------------------------------
-					// THRUST HORIZONTAL:
-					TakeOffCalc.this.thrustHorizontalPerStep.add(Amount.valueOf(
-							totalThrustListHorizontal
-							.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
-							*Math.cos(currentAlpha.doubleValue(SI.RADIAN)),
-							SI.NEWTON)
-							);
-					//----------------------------------------------------------------------------------------
-					// THRUST VERTICAL:
-					TakeOffCalc.this.thrustVerticalPerStep.add(Amount.valueOf(
-							totalThrustListVertical
-							.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
-							*Math.sin(currentAlpha.doubleValue(SI.RADIAN)),
-							SI.NEWTON)
-							);
-					//--------------------------------------------------------------------------------
-					// FRICTION:
-					if(isAborted == false) {
-						if(currentTime.doubleValue(SI.SECOND) < tEndRot.doubleValue(SI.SECOND))
-							TakeOffCalc.this.frictionPerStep.add(Amount.valueOf(
-									((DynamicsEquationsTakeOff)ode).mu(currentSpeed)
-									* (currentWeight.doubleValue(SI.NEWTON)
-											- ((DynamicsEquationsTakeOff)ode).lift(
-													currentSpeed,
-													currentAlpha,
-													currentGamma,
-													currentTime,
-													currentAltitude,
-													deltaTemperature,
-													currentWeight
-													).doubleValue(SI.NEWTON)
-											),
-									SI.NEWTON)
-									);
-						else
-							TakeOffCalc.this.frictionPerStep.add(Amount.valueOf(0.0, SI.NEWTON));
-					}
-					else {
-						if(currentTime.doubleValue(SI.SECOND) < tRec.doubleValue(SI.SECOND))
-							TakeOffCalc.this.frictionPerStep.add(Amount.valueOf(
-									((DynamicsEquationsTakeOff)ode).mu(currentSpeed)
-									* (currentWeight.doubleValue(SI.NEWTON)
-											- ((DynamicsEquationsTakeOff)ode).lift(
-													currentSpeed,
-													currentAlpha,
-													currentGamma,
-													currentTime,
-													currentAltitude,
-													deltaTemperature,
-													currentWeight
-													).doubleValue(SI.NEWTON)
-											),
-									SI.NEWTON)
-									);
-						else
-							TakeOffCalc.this.frictionPerStep.add(Amount.valueOf(
-									((DynamicsEquationsTakeOff)ode).muBrake(currentSpeed)
-									* (currentWeight.doubleValue(SI.NEWTON)
-											- ((DynamicsEquationsTakeOff)ode).lift(
-													currentSpeed,
-													currentAlpha,
-													currentGamma,
-													currentTime,
-													currentAltitude,
-													deltaTemperature,
-													currentWeight
-													).doubleValue(SI.NEWTON)
-											),
-									SI.NEWTON)
-									);
-					}
-					//----------------------------------------------------------------------------------------
-					// LIFT:
-					TakeOffCalc.this.liftPerStep.add(
-							((DynamicsEquationsTakeOff)ode).lift(
-									currentSpeed,
-									currentAlpha,
-									currentGamma,
-									currentTime,
-									currentAltitude,
-									deltaTemperature,
-									currentWeight
-									)
-							);
-					//----------------------------------------------------------------------------------------
-					// DRAG:
-					TakeOffCalc.this.dragPerStep.add(
-							((DynamicsEquationsTakeOff)ode).drag(
-									currentSpeed,
-									currentAlpha,
-									currentGamma,
-									currentTime,
-									currentAltitude,
-									deltaTemperature,
-									currentWeight
-									)
-							);
-					//----------------------------------------------------------------------------------------
-					// TOTAL FORCE:
-					if(isAborted == false) {
-						TakeOffCalc.this.totalForcePerStep.add(Amount.valueOf(
-								(totalThrustListHorizontal.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
-										*Math.cos(currentAlpha.doubleValue(SI.RADIAN))
-										)
-								- ((DynamicsEquationsTakeOff)ode).drag(
-										currentSpeed,
-										currentAlpha,
-										currentGamma,
-										currentTime,
-										currentAltitude,
-										deltaTemperature,
-										currentWeight
-										).doubleValue(SI.NEWTON)
-								- (((DynamicsEquationsTakeOff)ode).mu(currentSpeed)
-										* (currentWeight.doubleValue(SI.NEWTON)
-												- ((DynamicsEquationsTakeOff)ode).lift(
-														currentSpeed,
-														currentAlpha,
-														currentGamma,
-														currentTime,
-														currentAltitude,
-														deltaTemperature,
-														currentWeight
-														).doubleValue(SI.NEWTON)
-												)
-										)
-								- (currentWeight.doubleValue(SI.NEWTON))
-										* Math.sin(currentGamma.doubleValue(SI.RADIAN)),
-								SI.NEWTON)
-								);
-					}
-					else {
-						if(t < tRec.doubleValue(SI.SECOND))
-							TakeOffCalc.this.totalForcePerStep.add(Amount.valueOf(
-									(totalThrustListHorizontal.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
-											*Math.cos(currentAlpha.doubleValue(SI.RADIAN))
-											)
-									- ((DynamicsEquationsTakeOff)ode).drag(
-											currentSpeed,
-											currentAlpha,
-											currentGamma,
-											currentTime,
-											currentAltitude,
-											deltaTemperature,
-											currentWeight
-											).doubleValue(SI.NEWTON)
-									- (((DynamicsEquationsTakeOff)ode).mu(currentSpeed)
-											* (currentWeight.doubleValue(SI.NEWTON)
-													- ((DynamicsEquationsTakeOff)ode).lift(
-															currentSpeed,
-															currentAlpha,
-															currentGamma,
-															currentTime,
-															currentAltitude,
-															deltaTemperature,
-															currentWeight
-															).doubleValue(SI.NEWTON)
-													)
-											)
-									- (currentWeight.doubleValue(SI.NEWTON)
-											* Math.sin(currentGamma.doubleValue(SI.RADIAN))
-											),
-									SI.NEWTON)
-									);
-						else
-							TakeOffCalc.this.totalForcePerStep.add(Amount.valueOf(
-									(totalThrustListHorizontal.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
-											*Math.cos(currentAlpha.doubleValue(SI.RADIAN))
-											)
-									- ((DynamicsEquationsTakeOff)ode).drag(
-											currentSpeed,
-											currentAlpha,
-											currentGamma,
-											currentTime,
-											currentAltitude,
-											deltaTemperature,
-											currentWeight
-											).doubleValue(SI.NEWTON)
-									- (((DynamicsEquationsTakeOff)ode).muBrake(currentSpeed)
-											* (currentWeight.doubleValue(SI.NEWTON)
-													- ((DynamicsEquationsTakeOff)ode).lift(
-															currentSpeed,
-															currentAlpha,
-															currentGamma,
-															currentTime,
-															currentAltitude,
-															deltaTemperature,
-															currentWeight
-															).doubleValue(SI.NEWTON)
-													)
-											)
-									- (currentWeight.doubleValue(SI.NEWTON)
-											* Math.sin(currentGamma.doubleValue(SI.RADIAN))
-											),
-									SI.NEWTON)
-									);
-					}
-					//----------------------------------------------------------------------------------------
-					// LOAD FACTOR:
-					TakeOffCalc.this.loadFactorPerStep.add(
-							(  ((DynamicsEquationsTakeOff)ode).lift(currentSpeed, currentAlpha, currentGamma, currentTime, currentAltitude, deltaTemperature, currentWeight).doubleValue(SI.NEWTON)
-									+ (  ((DynamicsEquationsTakeOff)ode).thrust(currentSpeed, currentTime, currentGamma, currentAltitude, deltaTemperature)
-											.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
-											*Math.sin(currentAlpha.doubleValue(SI.RADIAN))
-											)
-									)
-							/ ( currentWeight.doubleValue(SI.NEWTON)*Math.cos(currentGamma.doubleValue(SI.RADIAN))	)
-							);
-					//----------------------------------------------------------------------------------------
-					// RATE OF CLIMB:
-					TakeOffCalc.this.rateOfClimbPerStep.add(Amount.valueOf(
-							xDot[3],
-							SI.METERS_PER_SECOND)
-							);
-					//----------------------------------------------------------------------------------------
-					// ACCELERATION:
-					TakeOffCalc.this.accelerationPerStep.add(
-							Amount.valueOf(xDot[1], SI.METERS_PER_SQUARE_SECOND)
-							);
-					//----------------------------------------------------------------------------------------
-					// ALPHA:
-					TakeOffCalc.this.alphaPerStep.add(currentAlpha);
-					//----------------------------------------------------------------------------------------
-					// GAMMA:
-					TakeOffCalc.this.gammaPerStep.add(currentGamma);
-					//----------------------------------------------------------------------------------------
-					// ALPHA DOT:
-					TakeOffCalc.this.alphaDotPerStep.add(currentAlphaDot);
-					//----------------------------------------------------------------------------------------
-					// GAMMA DOT:
-					TakeOffCalc.this.gammaDotPerStep.add(xDot[2]);
-					//----------------------------------------------------------------------------------------
-					// THETA:
-					TakeOffCalc.this.thetaPerStep.add(Amount.valueOf(
-							currentGamma.doubleValue(NonSI.DEGREE_ANGLE) + currentAlpha.doubleValue(NonSI.DEGREE_ANGLE),
-							NonSI.DEGREE_ANGLE)
-							);
-					//----------------------------------------------------------------------------------------
-					// CL:				
-					TakeOffCalc.this.cLPerStep.add(
-							((DynamicsEquationsTakeOff)ode).cL(
-									currentSpeed, 
-									currentAlpha, 
-									currentGamma,
-									currentTime, 
-									currentWeight,
-									currentAltitude, 
-									deltaTemperature
-									)
-							);
-					//----------------------------------------------------------------------------------------
-					// CD:
-					TakeOffCalc.this.cDPerStep.add(
-							((DynamicsEquationsTakeOff)ode).cD(
-									((DynamicsEquationsTakeOff)ode).cL(
-											currentSpeed,
-											currentAlpha,
-											currentGamma,
-											currentTime,
-											currentWeight,
-											currentAltitude,
-											deltaTemperature
-											),
-									currentAltitude
-									)
-							);
-					//----------------------------------------------------------------------------------------
-					// EMISSIONS NOx:
-					TakeOffCalc.this.emissionsNOxPerStep.add(((DynamicsEquationsTakeOff)ode).emissionNOx(currentSpeed, currentTime, currentGamma, currentAltitude, deltaTemperature, Amount.valueOf(x[4], SI.KILOGRAM)));
-					//----------------------------------------------------------------------------------------
-					// EMISSIONS CO:
-					TakeOffCalc.this.emissionsCOPerStep.add(((DynamicsEquationsTakeOff)ode).emissionCO(currentSpeed, currentTime, currentGamma, currentAltitude, deltaTemperature, Amount.valueOf(x[4], SI.KILOGRAM)));
-					//----------------------------------------------------------------------------------------
-					// EMISSIONS HC:
-					TakeOffCalc.this.emissionsHCPerStep.add(((DynamicsEquationsTakeOff)ode).emissionHC(currentSpeed, currentTime, currentGamma, currentAltitude, deltaTemperature, Amount.valueOf(x[4], SI.KILOGRAM)));
-					//----------------------------------------------------------------------------------------
-					// EMISSIONS Soot:
-					TakeOffCalc.this.emissionsSootPerStep.add(((DynamicsEquationsTakeOff)ode).emissionSoot(currentSpeed, currentTime, currentGamma, currentAltitude, deltaTemperature, Amount.valueOf(x[4], SI.KILOGRAM)));
-					//----------------------------------------------------------------------------------------
-					// EMISSIONS CO2:
-					TakeOffCalc.this.emissionsCO2PerStep.add(((DynamicsEquationsTakeOff)ode).emissionCO2(currentSpeed, currentTime, currentGamma, currentAltitude, deltaTemperature, Amount.valueOf(x[4], SI.KILOGRAM)));
-					//----------------------------------------------------------------------------------------
-					// EMISSIONS SOx:
-					TakeOffCalc.this.emissionsSOxPerStep.add(((DynamicsEquationsTakeOff)ode).emissionSOx(currentSpeed, currentTime, currentGamma, currentAltitude, deltaTemperature, Amount.valueOf(x[4], SI.KILOGRAM)));
-					//----------------------------------------------------------------------------------------
-					// EMISSIONS H2O:
-					TakeOffCalc.this.emissionsH2OPerStep.add(((DynamicsEquationsTakeOff)ode).emissionH2O(currentSpeed, currentTime, currentGamma, currentAltitude, deltaTemperature, Amount.valueOf(x[4], SI.KILOGRAM)));
-					
-					
-					// CHECK TO BE DONE ONLY IF isAborted IS FALSE!!
-					if(isAborted == false) {						
-						// CHECK ON LOAD FACTOR --> END ROTATION WHEN n=1
-						if((t > tRot.doubleValue(SI.SECOND)) && (tEndRot.doubleValue(SI.SECOND) == 10000.0) &&
-								(TakeOffCalc.this.getLoadFactorPerStep().get(TakeOffCalc.this.getLoadFactorPerStep().size()-1) > 1.0) &&
-								(TakeOffCalc.this.getLoadFactorPerStep().get(TakeOffCalc.this.getLoadFactorPerStep().size()-2) < 1.0)) {
-							System.out.println("\n\t\tEND OF ROTATION PHASE");
-							System.out.println(
-									"\n\tx[0] = s = " + x[0] + " m" +
-											"\n\tx[1] = V = " + x[1] + " m/s" + 
-											"\n\tx[2] = gamma = " + x[2] + " °" +
-											"\n\tx[3] = altitude = " + x[3] + " m"+
-											"\n\tx[4] = fuel used = " + x[4] + " kg" +
-											"\n\tt = " + t + " s"
-									);
-							// COLLECTING DATA IN TakeOffResultsMap
-							System.out.println("\n\tCOLLECTING DATA AT THE END OF ROTATION PHASE ...");
-							takeOffResults.collectResults(
-									timePerStep.get(timePerStep.size()-1),
-									speedTASPerStep.get(speedTASPerStep.size()-1),
-									groundDistancePerStep.get(groundDistancePerStep.size()-1),
-									verticalDistancePerStep.get(verticalDistancePerStep.size()-1),
-									alphaPerStep.get(alphaPerStep.size()-1),
-									gammaPerStep.get(gammaPerStep.size()-1),
-									thetaPerStep.get(thetaPerStep.size()-1)
-									);
-							System.out.println("\n---------------------------DONE!-------------------------------");
-
-							tEndRot = Amount.valueOf(t, SI.SECOND);
-							timeBreakPoints.add(t);
-							vLO = Amount.valueOf(x[1], SI.METERS_PER_SECOND);
-						}
-						// CHECK IF THE THRESHOLD CL IS REACHED --> FROM THIS POINT ON THE BAR IS LOCKED
-						if((t > tRot.doubleValue(SI.SECOND)) && 
-								(TakeOffCalc.this.getcLPerStep().get(TakeOffCalc.this.getcLPerStep().size()-1) - (kcLMax*cLmaxTO) >= 0.0) &&
-								((TakeOffCalc.this.getcLPerStep().get(TakeOffCalc.this.getcLPerStep().size()-2) - (kcLMax*cLmaxTO)) < 0.0)) {
-							System.out.println("\n\t\tBEGIN BAR HOLDING");
-							System.out.println(
-									"\n\tCL = " + ((DynamicsEquationsTakeOff)ode).cL(
-											currentSpeed,
-											((DynamicsEquationsTakeOff)ode).alpha(currentTime),
-											currentGamma,
-											currentTime,
-											Amount.valueOf(
-													(maxTakeOffMass.doubleValue(SI.KILOGRAM) - x[4])
-													*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
-													SI.NEWTON
-													),
-											currentAltitude,
-											deltaTemperature
-											) + 
-									"\n\tAlpha Body = " + ((DynamicsEquationsTakeOff)ode).alpha(currentTime) + " °" + 
-									"\n\tt = " + t + " s"
-									);
-							System.out.println("\n---------------------------DONE!-------------------------------");
-
-							tHold = Amount.valueOf(t, SI.SECOND);
-							timeBreakPoints.add(t);
-						}
-						// CHECK ON LOAD FACTOR TO ENSTABLISH WHEN n=1 WHILE DECREASING ALPHA AND CL
-						if((t > tEndHold.doubleValue(SI.SECOND)) && (tClimb.doubleValue(SI.SECOND) == 10000.0) &&
-								(TakeOffCalc.this.getLoadFactorPerStep().get(TakeOffCalc.this.getLoadFactorPerStep().size()-1) < 1) &&
-								(TakeOffCalc.this.getLoadFactorPerStep().get(TakeOffCalc.this.getLoadFactorPerStep().size()-2) > 1)) {
-							System.out.println("\n\t\tLOAD FACTOR = 1 IN CLIMB");
-							System.out.println( 
-									"\n\tt = " + t + " s"
-									);
-							System.out.println("\n---------------------------DONE!-------------------------------");
-
-							tClimb = Amount.valueOf(t, SI.SECOND);
-							timeBreakPoints.add(t);
-						}
-					}
+					if(t > TakeOffCalc.this.timePerStep.get(TakeOffCalc.this.timePerStep.size()-1).doubleValue(SI.SECOND))
+						handleStepImplementation(t, x, xDot);
 				}
 			};
 			theIntegrator.addStepHandler(stepHandler);
@@ -1244,6 +826,432 @@ public class TakeOffCalc {
 		System.out.println("\n---------------------------END!!-------------------------------");
 	}
 
+	private void handleStepImplementation (double t, double[] x, double xDot[]) {
+		//========================================================================================
+		// PICKING UP ALL VARIABLES AT EVERY STEP (RECOGNIZING IF THE TAKE-OFF IS CONTINUED OR ABORTED)
+		//----------------------------------------------------------------------------------------
+		Amount<Duration> currentTime = Amount.valueOf(t, SI.SECOND);
+		Amount<Length> currentGroundDistance = Amount.valueOf(x[0], SI.METER);
+		Amount<Velocity> currentSpeed = Amount.valueOf(x[1], SI.METERS_PER_SECOND);
+		Amount<Angle> currentGamma = Amount.valueOf(x[2], NonSI.DEGREE_ANGLE);
+		Amount<Length> currentAltitude = Amount.valueOf(x[3], SI.METER);
+		Amount<Force> currentWeight = Amount.valueOf( 
+				(maxTakeOffMass.doubleValue(SI.KILOGRAM) - x[4])*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
+				SI.NEWTON
+				);
+		Amount<Angle> currentAlpha = ((DynamicsEquationsTakeOff)ode).alpha(currentTime);
+		double currentAlphaDot = ((DynamicsEquationsTakeOff)ode).alphaDot(currentTime);
+
+		List<Amount<Force>> totalThrustList = ((DynamicsEquationsTakeOff)ode).thrust(currentSpeed, currentTime, currentGamma, currentAltitude, deltaTemperature);
+		List<Amount<Force>> totalThrustListHorizontal = new ArrayList<>();
+		List<Amount<Force>> totalThrustListVertical = new ArrayList<>();
+		for(int j=0; j<totalThrustList.size(); j++) 
+			totalThrustListHorizontal.add(totalThrustList.get(j).times(Math.cos(thePowerPlant.getEngineList().get(j).getTiltingAngle().doubleValue(SI.RADIAN))));
+		for(int j=0; j<totalThrustList.size(); j++) 
+			totalThrustListVertical.add(totalThrustList.get(j).times(Math.sin(thePowerPlant.getEngineList().get(j).getTiltingAngle().doubleValue(SI.RADIAN))));
+
+		//========================================================================================
+		// PICKING UP ALL DATA AT EVERY STEP (RECOGNIZING IF THE TAKE-OFF IS CONTINUED OR ABORTED)
+		//----------------------------------------------------------------------------------------
+		// TIME:
+		TakeOffCalc.this.timePerStep.add(currentTime);
+		//----------------------------------------------------------------------------------------
+		// GROUND DISTANCE:
+		TakeOffCalc.this.groundDistancePerStep.add(currentGroundDistance);
+		//----------------------------------------------------------------------------------------
+		// ALTITUDE:
+		TakeOffCalc.this.verticalDistancePerStep.add(currentAltitude);
+		//----------------------------------------------------------------------------------------
+		// THRUST:
+		TakeOffCalc.this.thrustPerStep.add(Amount.valueOf(
+				totalThrustList.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum(),
+				SI.NEWTON)
+				);
+		//--------------------------------------------------------------------------------
+		// FUEL USED (kg):
+		TakeOffCalc.this.fuelUsedPerStep.add(Amount.valueOf(x[4], SI.KILOGRAM));
+		//--------------------------------------------------------------------------------
+		// FUEL FLOW (kg/s):
+		TakeOffCalc.this.fuelFlowPerStep.add(xDot[4]);
+		//----------------------------------------------------------------------------------------
+		// WEIGHT:
+		TakeOffCalc.this.weightPerStep.add(currentWeight);
+		//----------------------------------------------------------------------------------------
+		// SPEED TAS:
+		TakeOffCalc.this.speedTASPerStep.add(currentSpeed);
+		//----------------------------------------------------------------------------------------
+		// SPEED CAS:
+		double sigma = AtmosphereCalc.getDensity(currentAltitude.doubleValue(SI.METER), deltaTemperature.doubleValue(SI.CELSIUS)/1.225);
+		TakeOffCalc.this.speedCASPerStep.add(currentSpeed.times(Math.sqrt(sigma)));
+		//----------------------------------------------------------------------------------------
+		// MACH:
+		double speedOfSound = AtmosphereCalc.getSpeedOfSound(currentAltitude.doubleValue(SI.METER), deltaTemperature.doubleValue(SI.CELSIUS));
+		TakeOffCalc.this.machPerStep.add(currentSpeed.doubleValue(SI.METERS_PER_SECOND) / speedOfSound);
+		//----------------------------------------------------------------------------------------
+		// THRUST HORIZONTAL:
+		TakeOffCalc.this.thrustHorizontalPerStep.add(Amount.valueOf(
+				totalThrustListHorizontal
+				.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
+				*Math.cos(currentAlpha.doubleValue(SI.RADIAN)),
+				SI.NEWTON)
+				);
+		//----------------------------------------------------------------------------------------
+		// THRUST VERTICAL:
+		TakeOffCalc.this.thrustVerticalPerStep.add(Amount.valueOf(
+				totalThrustListVertical
+				.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
+				*Math.sin(currentAlpha.doubleValue(SI.RADIAN)),
+				SI.NEWTON)
+				);
+		//--------------------------------------------------------------------------------
+		// FRICTION:
+		if(isAborted == false) {
+			if(currentTime.doubleValue(SI.SECOND) < tEndRot.doubleValue(SI.SECOND))
+				TakeOffCalc.this.frictionPerStep.add(Amount.valueOf(
+						((DynamicsEquationsTakeOff)ode).mu(currentSpeed)
+						* (currentWeight.doubleValue(SI.NEWTON)
+								- ((DynamicsEquationsTakeOff)ode).lift(
+										currentSpeed,
+										currentAlpha,
+										currentGamma,
+										currentTime,
+										currentAltitude,
+										deltaTemperature,
+										currentWeight
+										).doubleValue(SI.NEWTON)
+								),
+						SI.NEWTON)
+						);
+			else
+				TakeOffCalc.this.frictionPerStep.add(Amount.valueOf(0.0, SI.NEWTON));
+		}
+		else {
+			if(currentTime.doubleValue(SI.SECOND) < tRec.doubleValue(SI.SECOND))
+				TakeOffCalc.this.frictionPerStep.add(Amount.valueOf(
+						((DynamicsEquationsTakeOff)ode).mu(currentSpeed)
+						* (currentWeight.doubleValue(SI.NEWTON)
+								- ((DynamicsEquationsTakeOff)ode).lift(
+										currentSpeed,
+										currentAlpha,
+										currentGamma,
+										currentTime,
+										currentAltitude,
+										deltaTemperature,
+										currentWeight
+										).doubleValue(SI.NEWTON)
+								),
+						SI.NEWTON)
+						);
+			else
+				TakeOffCalc.this.frictionPerStep.add(Amount.valueOf(
+						((DynamicsEquationsTakeOff)ode).muBrake(currentSpeed)
+						* (currentWeight.doubleValue(SI.NEWTON)
+								- ((DynamicsEquationsTakeOff)ode).lift(
+										currentSpeed,
+										currentAlpha,
+										currentGamma,
+										currentTime,
+										currentAltitude,
+										deltaTemperature,
+										currentWeight
+										).doubleValue(SI.NEWTON)
+								),
+						SI.NEWTON)
+						);
+		}
+		//----------------------------------------------------------------------------------------
+		// LIFT:
+		TakeOffCalc.this.liftPerStep.add(
+				((DynamicsEquationsTakeOff)ode).lift(
+						currentSpeed,
+						currentAlpha,
+						currentGamma,
+						currentTime,
+						currentAltitude,
+						deltaTemperature,
+						currentWeight
+						)
+				);
+		//----------------------------------------------------------------------------------------
+		// DRAG:
+		TakeOffCalc.this.dragPerStep.add(
+				((DynamicsEquationsTakeOff)ode).drag(
+						currentSpeed,
+						currentAlpha,
+						currentGamma,
+						currentTime,
+						currentAltitude,
+						deltaTemperature,
+						currentWeight
+						)
+				);
+		//----------------------------------------------------------------------------------------
+		// TOTAL FORCE:
+		if(isAborted == false) {
+			TakeOffCalc.this.totalForcePerStep.add(Amount.valueOf(
+					(totalThrustListHorizontal.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
+							*Math.cos(currentAlpha.doubleValue(SI.RADIAN))
+							)
+					- ((DynamicsEquationsTakeOff)ode).drag(
+							currentSpeed,
+							currentAlpha,
+							currentGamma,
+							currentTime,
+							currentAltitude,
+							deltaTemperature,
+							currentWeight
+							).doubleValue(SI.NEWTON)
+					- (((DynamicsEquationsTakeOff)ode).mu(currentSpeed)
+							* (currentWeight.doubleValue(SI.NEWTON)
+									- ((DynamicsEquationsTakeOff)ode).lift(
+											currentSpeed,
+											currentAlpha,
+											currentGamma,
+											currentTime,
+											currentAltitude,
+											deltaTemperature,
+											currentWeight
+											).doubleValue(SI.NEWTON)
+									)
+							)
+					- (currentWeight.doubleValue(SI.NEWTON))
+					* Math.sin(currentGamma.doubleValue(SI.RADIAN)),
+					SI.NEWTON)
+					);
+		}
+		else {
+			if(t < tRec.doubleValue(SI.SECOND))
+				TakeOffCalc.this.totalForcePerStep.add(Amount.valueOf(
+						(totalThrustListHorizontal.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
+								*Math.cos(currentAlpha.doubleValue(SI.RADIAN))
+								)
+						- ((DynamicsEquationsTakeOff)ode).drag(
+								currentSpeed,
+								currentAlpha,
+								currentGamma,
+								currentTime,
+								currentAltitude,
+								deltaTemperature,
+								currentWeight
+								).doubleValue(SI.NEWTON)
+						- (((DynamicsEquationsTakeOff)ode).mu(currentSpeed)
+								* (currentWeight.doubleValue(SI.NEWTON)
+										- ((DynamicsEquationsTakeOff)ode).lift(
+												currentSpeed,
+												currentAlpha,
+												currentGamma,
+												currentTime,
+												currentAltitude,
+												deltaTemperature,
+												currentWeight
+												).doubleValue(SI.NEWTON)
+										)
+								)
+						- (currentWeight.doubleValue(SI.NEWTON)
+								* Math.sin(currentGamma.doubleValue(SI.RADIAN))
+								),
+						SI.NEWTON)
+						);
+			else
+				TakeOffCalc.this.totalForcePerStep.add(Amount.valueOf(
+						(totalThrustListHorizontal.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
+								*Math.cos(currentAlpha.doubleValue(SI.RADIAN))
+								)
+						- ((DynamicsEquationsTakeOff)ode).drag(
+								currentSpeed,
+								currentAlpha,
+								currentGamma,
+								currentTime,
+								currentAltitude,
+								deltaTemperature,
+								currentWeight
+								).doubleValue(SI.NEWTON)
+						- (((DynamicsEquationsTakeOff)ode).muBrake(currentSpeed)
+								* (currentWeight.doubleValue(SI.NEWTON)
+										- ((DynamicsEquationsTakeOff)ode).lift(
+												currentSpeed,
+												currentAlpha,
+												currentGamma,
+												currentTime,
+												currentAltitude,
+												deltaTemperature,
+												currentWeight
+												).doubleValue(SI.NEWTON)
+										)
+								)
+						- (currentWeight.doubleValue(SI.NEWTON)
+								* Math.sin(currentGamma.doubleValue(SI.RADIAN))
+								),
+						SI.NEWTON)
+						);
+		}
+		//----------------------------------------------------------------------------------------
+		// LOAD FACTOR:
+		TakeOffCalc.this.loadFactorPerStep.add(
+				(  ((DynamicsEquationsTakeOff)ode).lift(currentSpeed, currentAlpha, currentGamma, currentTime, currentAltitude, deltaTemperature, currentWeight).doubleValue(SI.NEWTON)
+						+ (  ((DynamicsEquationsTakeOff)ode).thrust(currentSpeed, currentTime, currentGamma, currentAltitude, deltaTemperature)
+								.stream().mapToDouble(thr -> thr.doubleValue(SI.NEWTON)).sum()
+								*Math.sin(currentAlpha.doubleValue(SI.RADIAN))
+								)
+						)
+				/ ( currentWeight.doubleValue(SI.NEWTON)*Math.cos(currentGamma.doubleValue(SI.RADIAN))	)
+				);
+		//----------------------------------------------------------------------------------------
+		// RATE OF CLIMB:
+		TakeOffCalc.this.rateOfClimbPerStep.add(Amount.valueOf(
+				xDot[3],
+				SI.METERS_PER_SECOND)
+				);
+		//----------------------------------------------------------------------------------------
+		// ACCELERATION:
+		TakeOffCalc.this.accelerationPerStep.add(
+				Amount.valueOf(xDot[1], SI.METERS_PER_SQUARE_SECOND)
+				);
+		//----------------------------------------------------------------------------------------
+		// ALPHA:
+		TakeOffCalc.this.alphaPerStep.add(currentAlpha);
+		//----------------------------------------------------------------------------------------
+		// GAMMA:
+		TakeOffCalc.this.gammaPerStep.add(currentGamma);
+		//----------------------------------------------------------------------------------------
+		// ALPHA DOT:
+		TakeOffCalc.this.alphaDotPerStep.add(currentAlphaDot);
+		//----------------------------------------------------------------------------------------
+		// GAMMA DOT:
+		TakeOffCalc.this.gammaDotPerStep.add(xDot[2]);
+		//----------------------------------------------------------------------------------------
+		// THETA:
+		TakeOffCalc.this.thetaPerStep.add(Amount.valueOf(
+				currentGamma.doubleValue(NonSI.DEGREE_ANGLE) + currentAlpha.doubleValue(NonSI.DEGREE_ANGLE),
+				NonSI.DEGREE_ANGLE)
+				);
+		//----------------------------------------------------------------------------------------
+		// CL:				
+		TakeOffCalc.this.cLPerStep.add(
+				((DynamicsEquationsTakeOff)ode).cL(
+						currentSpeed, 
+						currentAlpha, 
+						currentGamma,
+						currentTime, 
+						currentWeight,
+						currentAltitude, 
+						deltaTemperature
+						)
+				);
+		//----------------------------------------------------------------------------------------
+		// CD:
+		TakeOffCalc.this.cDPerStep.add(
+				((DynamicsEquationsTakeOff)ode).cD(
+						((DynamicsEquationsTakeOff)ode).cL(
+								currentSpeed,
+								currentAlpha,
+								currentGamma,
+								currentTime,
+								currentWeight,
+								currentAltitude,
+								deltaTemperature
+								),
+						currentAltitude
+						)
+				);
+		//----------------------------------------------------------------------------------------
+		// EMISSIONS NOx:
+		TakeOffCalc.this.emissionsNOxPerStep.add(((DynamicsEquationsTakeOff)ode).emissionNOx(currentSpeed, currentTime, currentGamma, currentAltitude, deltaTemperature, Amount.valueOf(x[4], SI.KILOGRAM)));
+		//----------------------------------------------------------------------------------------
+		// EMISSIONS CO:
+		TakeOffCalc.this.emissionsCOPerStep.add(((DynamicsEquationsTakeOff)ode).emissionCO(currentSpeed, currentTime, currentGamma, currentAltitude, deltaTemperature, Amount.valueOf(x[4], SI.KILOGRAM)));
+		//----------------------------------------------------------------------------------------
+		// EMISSIONS HC:
+		TakeOffCalc.this.emissionsHCPerStep.add(((DynamicsEquationsTakeOff)ode).emissionHC(currentSpeed, currentTime, currentGamma, currentAltitude, deltaTemperature, Amount.valueOf(x[4], SI.KILOGRAM)));
+		//----------------------------------------------------------------------------------------
+		// EMISSIONS Soot:
+		TakeOffCalc.this.emissionsSootPerStep.add(((DynamicsEquationsTakeOff)ode).emissionSoot(currentSpeed, currentTime, currentGamma, currentAltitude, deltaTemperature, Amount.valueOf(x[4], SI.KILOGRAM)));
+		//----------------------------------------------------------------------------------------
+		// EMISSIONS CO2:
+		TakeOffCalc.this.emissionsCO2PerStep.add(((DynamicsEquationsTakeOff)ode).emissionCO2(currentSpeed, currentTime, currentGamma, currentAltitude, deltaTemperature, Amount.valueOf(x[4], SI.KILOGRAM)));
+		//----------------------------------------------------------------------------------------
+		// EMISSIONS SOx:
+		TakeOffCalc.this.emissionsSOxPerStep.add(((DynamicsEquationsTakeOff)ode).emissionSOx(currentSpeed, currentTime, currentGamma, currentAltitude, deltaTemperature, Amount.valueOf(x[4], SI.KILOGRAM)));
+		//----------------------------------------------------------------------------------------
+		// EMISSIONS H2O:
+		TakeOffCalc.this.emissionsH2OPerStep.add(((DynamicsEquationsTakeOff)ode).emissionH2O(currentSpeed, currentTime, currentGamma, currentAltitude, deltaTemperature, Amount.valueOf(x[4], SI.KILOGRAM)));
+
+
+		// CHECK TO BE DONE ONLY IF isAborted IS FALSE!!
+		if(isAborted == false) {						
+			// CHECK ON LOAD FACTOR --> END ROTATION WHEN n=1
+			if((t > tRot.doubleValue(SI.SECOND)) && (tEndRot.doubleValue(SI.SECOND) == 10000.0) &&
+					(TakeOffCalc.this.getLoadFactorPerStep().get(TakeOffCalc.this.getLoadFactorPerStep().size()-1) > 1.0) &&
+					(TakeOffCalc.this.getLoadFactorPerStep().get(TakeOffCalc.this.getLoadFactorPerStep().size()-2) < 1.0)) {
+				System.out.println("\n\t\tEND OF ROTATION PHASE");
+				System.out.println(
+						"\n\tx[0] = s = " + x[0] + " m" +
+								"\n\tx[1] = V = " + x[1] + " m/s" + 
+								"\n\tx[2] = gamma = " + x[2] + " °" +
+								"\n\tx[3] = altitude = " + x[3] + " m"+
+								"\n\tx[4] = fuel used = " + x[4] + " kg" +
+								"\n\tt = " + t + " s"
+						);
+				// COLLECTING DATA IN TakeOffResultsMap
+				System.out.println("\n\tCOLLECTING DATA AT THE END OF ROTATION PHASE ...");
+				takeOffResults.collectResults(
+						timePerStep.get(timePerStep.size()-1),
+						speedTASPerStep.get(speedTASPerStep.size()-1),
+						groundDistancePerStep.get(groundDistancePerStep.size()-1),
+						verticalDistancePerStep.get(verticalDistancePerStep.size()-1),
+						alphaPerStep.get(alphaPerStep.size()-1),
+						gammaPerStep.get(gammaPerStep.size()-1),
+						thetaPerStep.get(thetaPerStep.size()-1)
+						);
+				System.out.println("\n---------------------------DONE!-------------------------------");
+
+				tEndRot = Amount.valueOf(t, SI.SECOND);
+				timeBreakPoints.add(t);
+				vLO = Amount.valueOf(x[1], SI.METERS_PER_SECOND);
+			}
+			// CHECK IF THE THRESHOLD CL IS REACHED --> FROM THIS POINT ON THE BAR IS LOCKED
+			if((t > tRot.doubleValue(SI.SECOND)) && 
+					(TakeOffCalc.this.getcLPerStep().get(TakeOffCalc.this.getcLPerStep().size()-1) - (kcLMax*cLmaxTO) >= 0.0) &&
+					((TakeOffCalc.this.getcLPerStep().get(TakeOffCalc.this.getcLPerStep().size()-2) - (kcLMax*cLmaxTO)) < 0.0)) {
+				System.out.println("\n\t\tBEGIN BAR HOLDING");
+				System.out.println(
+						"\n\tCL = " + ((DynamicsEquationsTakeOff)ode).cL(
+								currentSpeed,
+								((DynamicsEquationsTakeOff)ode).alpha(currentTime),
+								currentGamma,
+								currentTime,
+								Amount.valueOf(
+										(maxTakeOffMass.doubleValue(SI.KILOGRAM) - x[4])
+										*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
+										SI.NEWTON
+										),
+								currentAltitude,
+								deltaTemperature
+								) + 
+						"\n\tAlpha Body = " + ((DynamicsEquationsTakeOff)ode).alpha(currentTime) + " °" + 
+						"\n\tt = " + t + " s"
+						);
+				System.out.println("\n---------------------------DONE!-------------------------------");
+
+				tHold = Amount.valueOf(t, SI.SECOND);
+				timeBreakPoints.add(t);
+			}
+			// CHECK ON LOAD FACTOR TO ENSTABLISH WHEN n=1 WHILE DECREASING ALPHA AND CL
+			if((t > tEndHold.doubleValue(SI.SECOND)) && (tClimb.doubleValue(SI.SECOND) == 10000.0) &&
+					(TakeOffCalc.this.getLoadFactorPerStep().get(TakeOffCalc.this.getLoadFactorPerStep().size()-1) < 1) &&
+					(TakeOffCalc.this.getLoadFactorPerStep().get(TakeOffCalc.this.getLoadFactorPerStep().size()-2) > 1)) {
+				System.out.println("\n\t\tLOAD FACTOR = 1 IN CLIMB");
+				System.out.println( 
+						"\n\tt = " + t + " s"
+						);
+				System.out.println("\n---------------------------DONE!-------------------------------");
+
+				tClimb = Amount.valueOf(t, SI.SECOND);
+				timeBreakPoints.add(t);
+			}
+		}
+	}
+	
 	/**************************************************************************************
 	 * This method is used to evaluate the balanced take-off field length. It calculates the
 	 * total take-off distance and the aborted take-off distance in case of engine failure at
@@ -4042,9 +4050,9 @@ public class TakeOffCalc {
 						NonSI.DEGREE_ANGLE
 						);
 
-			if(alpha.doubleValue(NonSI.DEGREE_ANGLE) >= fuselageUpsweepAngle.doubleValue(NonSI.DEGREE_ANGLE)) {
-				isTailStrike = true;
-			}
+			if(time.doubleValue(SI.SECOND) <= tEndRot.doubleValue(SI.SECOND))
+				if(alpha.doubleValue(NonSI.DEGREE_ANGLE) >= fuselageUpsweepAngle.doubleValue(NonSI.DEGREE_ANGLE)) 
+					isTailStrike = true;
 			
 			return alpha;
 		}

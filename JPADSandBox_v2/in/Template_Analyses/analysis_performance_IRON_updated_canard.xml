@@ -197,7 +197,6 @@
 				<take_off>
 					<ground_distance_end_simulation unit="m"></ground_distance_end_simulation> <!-- (default = 8000.0 m) -->
 					<cutback_altitude unit="ft"></cutback_altitude> <!-- (default = 300m/984ft) -->
-					<number_of_thrust_settings_cutback></number_of_thrust_settings_cutback> <!-- (default = 3) -->
 					<dt_landing_gear_retraction unit="s"></dt_landing_gear_retraction> <!-- (default = 12s) -->
 					<dt_thrust_cutback unit="s"></dt_thrust_cutback> <!-- (default = 4s) -->
 				</take_off>

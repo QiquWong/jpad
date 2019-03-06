@@ -2015,7 +2015,6 @@ public class ACPerformanceManager {
 		// READING NOISE TRAJECTORIES DATA ...
 		Amount<Length> takeOffNoiseTrajectoryXEndSimulation = Amount.valueOf(8000.0, SI.METER);
 		Amount<Length> takeOffNoiseTrajectoryCutbackAltitude = Amount.valueOf(984.0, NonSI.FOOT);
-		int takeOffNoiseTrajectoryNumberOfThrustSettingCutback = 3;
 		Amount<Duration> takeOffNoiseTrajectoryLandingGearRetractionTimeInterval = Amount.valueOf(12.0, SI.SECOND);
 		Amount<Duration> takeOffNoiseTrajectoryThrustReductionCutbackTimeInterval = Amount.valueOf(4.0, SI.SECOND);
 		Amount<Length> landingNoiseTrajectoryInitialAltitude = Amount.valueOf(4000.0, NonSI.FOOT);
@@ -2030,11 +2029,6 @@ public class ACPerformanceManager {
 		String takeOffNoiseTrajectoryCutbackAltitudeProperty = reader.getXMLPropertyByPath("//performance/noise_trajectories/take_off/cutback_altitude");
 		if(takeOffNoiseTrajectoryCutbackAltitudeProperty != null)
 			takeOffNoiseTrajectoryCutbackAltitude = reader.getXMLAmountLengthByPath("//performance/noise_trajectories/take_off/cutback_altitude");
-		//...............................................................
-		// TAKE-OFF NUMBER OF THRUST SETTINGS CUTBACK
-		String takeOffNoiseTrajectoryNumberOfThrustSettingCutbackProperty = reader.getXMLPropertyByPath("//performance/noise_trajectories/take_off/number_of_thrust_settings_cutback");
-		if(takeOffNoiseTrajectoryNumberOfThrustSettingCutbackProperty != null)
-			takeOffNoiseTrajectoryNumberOfThrustSettingCutback = Integer.valueOf(takeOffNoiseTrajectoryNumberOfThrustSettingCutbackProperty);
 		//...............................................................
 		// TAKE-OFF LANDING GEAR RETRACTION TIME INTERVAL
 		String takeOffNoiseTrajectoryLandingGearRetractionTimeIntervalProperty = reader.getXMLPropertyByPath("//performance/noise_trajectories/take_off/dt_landing_gear_retraction");
@@ -2890,7 +2884,6 @@ public class ACPerformanceManager {
 				.setCLmaxInverted(cLmaxInverted)
 				.setTakeOffNoiseTrajectoryXEndSimulation(takeOffNoiseTrajectoryXEndSimulation)
 				.setTakeOffNoiseTrajectoryCutbackAltitude(takeOffNoiseTrajectoryCutbackAltitude)
-				.setTakeOffNoiseTrajectoryNumberOfThrustSettingCutback(takeOffNoiseTrajectoryNumberOfThrustSettingCutback)
 				.setTakeOffNoiseTrajectoryLandingGearRetractionTimeInterval(takeOffNoiseTrajectoryLandingGearRetractionTimeInterval)
 				.setTakeOffNoiseTrajectoryThrustReductionCutbackTimeInterval(takeOffNoiseTrajectoryThrustReductionCutbackTimeInterval)
 				.setLandingNoiseTrajectoryInitialAltitude(landingNoiseTrajectoryInitialAltitude)
@@ -7789,14 +7782,13 @@ public class ACPerformanceManager {
 			System.out.println("\t\t\t\tTake-off noise trajectory simulation - 100% MAX-TO :: START");
 			System.setOut(filterStream);
 			_theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).calculateNoiseTakeOffTrajectory(false, null, true, _vMCMap.get(xcg));
-			System.setOut(originalOut);
-			System.out.println("\t\t\t\tTake-off noise trajectory simulation - 100% MAX-TO :: START");
-			System.setOut(filterStream);
-			
 			if(_theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).isRotationSpeedWarningFlag() == true)
 				System.err.println("WARNING: (SIMULATION - TAKE-OFF NOISE TRAJECTORY - 100% MAX-TO) THE CHOSEN VRot IS LESS THAN 1.05*VMC. THIS LATTER WILL BE USED ...");
 			if(_theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).isTailStrike() == true)
 				System.err.println("WARNING: (SIMULATION - TAKE-OFF NOISE TRAJECTORY - 100% MAX-TO) TAIL STRIKE !! ");
+			System.setOut(originalOut);
+			System.out.println("\t\t\t\tTake-off noise trajectory simulation - 100% MAX-TO :: COMPLETE");
+			System.setOut(filterStream);
 			
 			//-----------------------------------------------------------------------------------------------
 			// TAKE-OFF NOISE TRAJECTORY (CUTBACK)
@@ -7804,44 +7796,13 @@ public class ACPerformanceManager {
 			System.out.println("\t\t\t\tTake-off noise trajectory simulation - Lowest Cutback :: START");
 			System.setOut(filterStream);
 			_theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).calculateNoiseTakeOffTrajectory(true, null, true, _vMCMap.get(xcg));
-			System.setOut(originalOut);
-			System.out.println("\t\t\t\tTake-off noise trajectory simulation - Lowest Cutback :: COMPLETE");
-			System.setOut(filterStream);
-			
 			if(_theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).isRotationSpeedWarningFlag() == true)
 				System.err.println("WARNING: (SIMULATION - TAKE-OFF NOISE TRAJECTORY - LOWEST CUTBACK) THE CHOSEN VRot IS LESS THAN 1.05*VMC. THIS LATTER WILL BE USED ...");
 			if(_theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).isTailStrike() == true)
 				System.err.println("WARNING: (SIMULATION - TAKE-OFF NOISE TRAJECTORY - LOWEST CUTBACK) TAIL STRIKE !! ");
-			
-			double lowestPhiCutback = _theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).getPhiCutback();
-			if(_thePerformanceInterface.getTakeOffNoiseTrajectoryNumberOfThrustSettingCutback() != 0) {
-				
-				double[] phiArray = MyArrayUtils.linspace( (lowestPhiCutback + 0.1), 0.9, _thePerformanceInterface.getTakeOffNoiseTrajectoryNumberOfThrustSettingCutback());
-
-				//-----------------------------------------------------------------------------------------------
-				// TAKE-OFF NOISE TRAJECTORY (INTERMEDIATE CUTBACKS)
-				Arrays.stream(phiArray).forEach(
-						throttle -> {
-							System.setOut(originalOut);
-							System.out.println("\t\t\t\tTake-off noise trajectory simulation - " + (throttle*100) + "% MAX-TO :: START");
-							System.setOut(filterStream);
-							_theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).calculateNoiseTakeOffTrajectory(
-								true,
-								throttle, 
-								true,
-								_vMCMap.get(xcg)
-								);
-							System.setOut(originalOut);
-							System.out.println("\t\t\t\tTake-off noise trajectory simulation - " + (throttle*100) + "% MAX-TO :: COMPLETE");
-							System.setOut(filterStream);
-							
-							if(_theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).isRotationSpeedWarningFlag() == true)
-								System.err.println("WARNING: (SIMULATION - TAKE-OFF NOISE TRAJECTORY - " + (throttle*100) + "% MAX-TO) THE CHOSEN VRot IS LESS THAN 1.05*VMC. THIS LATTER WILL BE USED ...");
-							if(_theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).isTailStrike() == true)
-								System.err.println("WARNING: (SIMULATION - TAKE-OFF NOISE TRAJECTORY - " + (throttle*100) + "% MAX-TO) TAIL STRIKE !! ");
-						});
-				
-			}
+			System.setOut(originalOut);
+			System.out.println("\t\t\t\tTake-off noise trajectory simulation - Lowest Cutback :: COMPLETE");
+			System.setOut(filterStream);
 			
 			//-----------------------------------------------------------------------------------------------
 			// PLOT
