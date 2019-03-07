@@ -57,7 +57,7 @@
             <Cl_alpha_linear_trait unit="1/rad">6.28</Cl_alpha_linear_trait>                
             <Cl_at_alpha_zero>0.5</Cl_at_alpha_zero>                                         
             <Cl_end_linear_trait>1.1</Cl_end_linear_trait>                                
-            <Cl_max>1.65</Cl_max>                                                               
+            <Cl_max>2.2</Cl_max>                                                               
             <!-- the following data are used to generate the airfoil aerodynamic curves if the "external_cd_curve" flag is "FALSE"; 
 				 otherwise the "airfoil_curves" tag will be read and the data below can be left empty -->			
 			<Cd_min>0.0060</Cd_min>

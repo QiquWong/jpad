@@ -379,6 +379,8 @@ public class LiftingSurface {
 					airFoilPathTip = airfoilsDir + File.separator + airfoilFileNameTip;
 					equivalentWingAirfoilTip = Airfoil.importFromXML(airFoilPathTip);
 				}
+				
+				
 
 				//.................................................................
 				// creating the equivalent wing
@@ -540,7 +542,18 @@ public class LiftingSurface {
 					.addAllSpoilers(spoilers)
 					.build()
 					);
-			
+		
+			int i=0;
+			for(i=0 ; i<liftingSurfaceCreator.getTheLiftingSurfaceInterface().getPanels().size(); i++) {
+			liftingSurfaceCreator.getTheLiftingSurfaceInterface().getPanels().get(i).getAirfoilRoot().setClMax(
+					liftingSurfaceCreator.getTheLiftingSurfaceInterface().getPanels().get(i).getAirfoilRoot().getClMax() * Math.pow( Math.cos(
+							liftingSurfaceCreator.getTheLiftingSurfaceInterface().getEquivalentWing().getPanels().get(0).getSweepLeadingEdge().doubleValue(SI.RADIAN)), 2)
+							);
+			}
+			liftingSurfaceCreator.getTheLiftingSurfaceInterface().getPanels().get(i-1).getAirfoilTip().setClMax(
+					liftingSurfaceCreator.getTheLiftingSurfaceInterface().getPanels().get(i-1).getAirfoilTip().getClMax() * Math.pow( Math.cos(
+							liftingSurfaceCreator.getTheLiftingSurfaceInterface().getEquivalentWing().getPanels().get(0).getSweepLeadingEdge().doubleValue(SI.RADIAN)), 2)
+							);
 		}
 		else if(type.equals(ComponentEnum.HORIZONTAL_TAIL)) { 
 
