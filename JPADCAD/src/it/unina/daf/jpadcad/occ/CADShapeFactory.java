@@ -221,6 +221,16 @@ public abstract class CADShapeFactory {
 	public abstract CADShell newShellFromAdjacentShells(List<CADShell> cadShells);
 	
 	/**
+	 * Create a solid from adjacent shapes (faces and shells)
+	 * @param cadShapes adjacent shapes
+	 * @return the created CADSolid
+	 */
+	public abstract CADSolid newSolidFromAdjacentShapes(CADShape ... cadShapes);
+	public abstract CADSolid newSolidFromAdjacentShapes(double sewTol, CADShape ... cadShapes);
+	public abstract CADSolid newSolidFromAdjacentShapes(List<CADShape> cadShapes);
+	public abstract CADSolid newSolidFromAdjacentShapes(double sewTol, List<CADShape> cadShapes);
+	
+	/**
 	 * Create a solid from adjacent faces
 	 * @param cadFaces adjacent faces
 	 * @return the created CADSolid

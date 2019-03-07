@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -26,9 +27,7 @@ import aircraft.components.liftingSurface.LiftingSurface;
 import aircraft.components.liftingSurface.airfoils.Airfoil;
 import aircraft.components.nacelles.NacelleCreator;
 import aircraft.components.powerplant.Engine;
-import configuration.MyConfiguration;
 import configuration.enumerations.ComponentEnum;
-import configuration.enumerations.FoldersEnum;
 import it.unina.daf.jpadcad.EngineCAD;
 import it.unina.daf.jpadcad.FairingDataCollection;
 import it.unina.daf.jpadcad.enums.EngineCADComponentsEnum;
@@ -108,33 +107,42 @@ public class AircraftCADUtils {
 			double tailCapSectionFactor1, double tailCapSectionFactor2, int numberTailCapSections,
 			boolean exportSupportShapes, boolean exportShells, boolean exportSolids) {
 		
-		// ----------------------------------------------------------
+		// -------------------------------
+		// Initializing the time counter
+		System.out.println("\t======================================================================================\n" + 
+						   "\t========================= [AircraftCADUtils::getFuselageCAD] =========================\n" + 
+						   "\t======================================================================================");
+		
+		long startTime = System.nanoTime();
+		
+		// ------------------------------------------
 		// Check whether continuing with the method
-		// ----------------------------------------------------------
 		if (fuselage == null) {
-			System.out.println("========== [AircraftCADUtils::getFuselageCAD] The fuselage object passed to the "
-					+ "getFuselageCAD method is null! Exiting the method ...");
+			System.err.println("\n\tThe fuselage object passed to the method is null! Exiting the method ...");
 			return null;
 		}
 		
 		if (!exportSupportShapes && !exportShells && !exportSolids) {
-			System.out.println("========== [AircraftCADUtils::getFuselageCAD] No shapes to export! Exiting the method ...");
+			System.err.println("\n\tNo shapes to export! Exiting the method ...");
 			return null;
+		} else {
+			System.out.println("\n\tShapes selected to be exported:\n" + 
+							   "\t\t- Shells: " + exportShells + "\n" + 
+							   "\t\t- Solids: " + exportSolids + "\n" +
+							   "\t\t- Supporting shapes: " + exportSupportShapes);
 		}
-		
-		System.out.println("========== [AircraftCADUtils::getFuselageCAD]");
-		
-		// ----------------------------------------------------------
+			
+		// -------------------
 		// Check the factory
-		// ----------------------------------------------------------
 		if (OCCUtils.theFactory == null) {
-			System.out.println("========== [AircraftCADUtils::getFuselageCAD] Initialize CAD shape factory");
+			System.out.println("\n\tShape factory is null. Initializing the CAD shape factory ...");
 			OCCUtils.initCADShapeFactory();
 		}
 		
-		// ----------------------------------------------------------
+		// ------------------------------------
 		// Initialize patches and shape lists
-		// ----------------------------------------------------------
+		System.out.println("\tInitializing fuselage patches and shape lists ...");
+		
 		OCCShape noseCapPatch = null,
 				 noseTrunkPatch = null,
 				 cylinderPatch = null,
@@ -146,9 +154,8 @@ public class AircraftCADUtils {
 		List<OCCShape> shellShapes = new ArrayList<>();
 		List<OCCShape> solidShapes = new ArrayList<>();
 		
-		// ----------------------------------------------------------
-		// FUSELAGE CAD CREATION
-		// ----------------------------------------------------------	
+		// --------------------------------------
+		// Fixing the FUSELAGE apex coordinates
 		Amount<Length> xApex = fuselage.getXApexConstructionAxes();
 		Amount<Length> yApex = fuselage.getYApexConstructionAxes();
 		Amount<Length> zApex = fuselage.getZApexConstructionAxes();
@@ -159,16 +166,19 @@ public class AircraftCADUtils {
 				(float) zApex.doubleValue(SI.METER)
 				);
 		
-		// ----------------------------------------------------------
+		// ----------------------------------
 		// NOSE CAP AND NOSE TRUNK CREATION
-		// ----------------------------------------------------------		
+		System.out.println("\n\t--------------------------------------------------------------------------------------\n" + 
+						   "\tCreating shapes for the nose cap and the nose trunk ...\n\n" +  
+						   "\t\tNose cap sections spacing: " + XSpacingType.HALFCOSINUS2.name() + "\n" + 
+						   "\t\tNose cap section factor #1: " + noseCapSectionFactor1 + "\n" + 
+						   "\t\tNose cap section factor #2: " + noseCapSectionFactor2 + "\n" +
+						   "\t\tNumber of nose cap sections: " + numberNoseCapSections);
+		
 		Amount<Length> noseLength = fuselage.getNoseLength();
 		Double xbarNoseCap = fuselage.getNoseCapOffsetPercent(); // normalized with respect to the nose length
 			
 		double zNoseTip = fuselage.getZOutlineXZLowerAtX(0.0);
-		
-		System.out.println("========== [AircraftCADUtils::getFuselageCAD] Nose Cap creation");
-		System.out.println("getting selected nose cap sections ...");
 		
 		List<Double> xbarsNoseCapPatch = Arrays.asList(
 				MyArrayUtils.halfCosine2SpaceDouble(
@@ -195,6 +205,8 @@ public class AircraftCADUtils {
 									).add(deltaApex),
 							sectionsNoseCapPatch
 							);
+			
+			System.out.println("\n\t\tNose cap patch succesfully generated? " + (noseCapPatch != null));
 		}
 		
 		if (exportSupportShapes) {
@@ -204,11 +216,13 @@ public class AircraftCADUtils {
 				.map(pts -> OCCUtils.theFactory.newCurve3DP(pts, false))
 				.forEach(crv -> supportShapesNoseCap.add((OCCShape) crv.edge()));
 			
-			supportShapes.addAll(supportShapesNoseCap);
+			System.out.println("\t\tNose cap supporting shapes successfully added to export shapes? " + 
+					supportShapes.addAll(supportShapesNoseCap));
 		}
 		
-		System.out.println("========== [AircraftCADUtils::getFuselageCAD] Nose Trunk creation");
-		System.out.println("getting selected nose trunk sections ...");
+		System.out.println("\n\t\t\t\t-----\n\n" + 
+						   "\t\tNose trunk sections spacing: " + spacingTypeNoseTrunk.name() + "\n" + 
+						   "\t\tNumber of nose trunk sections: " + numberNoseTrunkSections);
 		
 		List<Double> xbarsNoseTrunkPatch = Arrays.asList(
 				spacingTypeNoseTrunk.calculateSpacing(
@@ -228,6 +242,8 @@ public class AircraftCADUtils {
 		
 		if (exportShells || exportSolids) {
 			noseTrunkPatch = OCCUtils.makePatchThruSectionsP(sectionsNoseTrunkPatch);
+			
+			System.out.println("\n\t\tNose trunk patch successfully generated? " + (noseTrunkPatch != null));
 		}
 		
 		if (exportSupportShapes) {
@@ -237,17 +253,19 @@ public class AircraftCADUtils {
 				.map(pts -> OCCUtils.theFactory.newCurve3DP(pts, false))
 				.forEach(crv -> supportShapesNoseTrunk.add((OCCShape) crv.edge()));
 		
-			supportShapes.addAll(supportShapesNoseTrunk);
+			System.out.println("\t\tNose trunk supporting shapes successfully added to export shapes? " + 
+					supportShapes.addAll(supportShapesNoseTrunk));
 		}
 		
-		// ----------------------------------------------------------
+		// -------------------
 		// CYLINDER CREATION
-		// ----------------------------------------------------------
+		System.out.println("\n\t--------------------------------------------------------------------------------------\n" + 
+						   "\tCreating shapes for the cylinder trunk ...\n\n" + 
+						   "\t\tCylinder trunk sections spacing: " + XSpacingType.UNIFORM + "\n" + 
+						   "\t\tNumber of cylinder trunk sections? 3");
+		
 		Amount<Length> cylinderLength = fuselage.getCylinderLength();
-		
-		System.out.println("========== [AircraftCADUtils::getFuselageCAD] Cylinder creation");
-		System.out.println("generating cylinder sections ...");
-		
+				
 		List<Double> xsCylinderPatch = new ArrayList<>();
 		xsCylinderPatch.add(noseLength.doubleValue(SI.METER));
 		xsCylinderPatch.add(noseLength.plus(cylinderLength.times(0.5)).doubleValue(SI.METER));
@@ -263,6 +281,8 @@ public class AircraftCADUtils {
 		
 		if (exportShells || exportSolids) {
 			cylinderPatch = OCCUtils.makePatchThruSectionsP(sectionsCylinderPatch);
+			
+			System.out.println("\n\t\tCylinder trunk patch successfully generated? " + (cylinderPatch != null));
 		}
 		
 		if (exportSupportShapes) {
@@ -272,20 +292,22 @@ public class AircraftCADUtils {
 				.map(pts -> OCCUtils.theFactory.newCurve3DP(pts, false))
 				.forEach(crv -> supportShapesCylinder.add((OCCShape) crv.edge()));
 			
-			supportShapes.addAll(supportShapesCylinder);
+			System.out.println("\t\tCylinder trunk supporting shapes successfully added to export shapes? " 
+					+ supportShapes.addAll(supportShapesCylinder));
 		}
 			
-		// ----------------------------------------------------------
+		// ----------------------------------
 		// TAIL TRUNK AND TAIL CAP CREATION
-		// ----------------------------------------------------------
+		System.out.println("\n\t--------------------------------------------------------------------------------------\n" + 
+						   "\tCreating shapes for the tail trunk and the tail cap ...\n\n" + 
+						   "\t\tTail trunk sections spacing: " + spacingTypeTailTrunk.name() + "\n" + 
+						   "\t\tNumber of tail trunk sections: " + numberTailTrunkSections);
+		
 		Amount<Length> tailLength = fuselage.getTailLength();
 		Amount<Length> fuselageLength = fuselage.getFuselageLength();
 		Double xbarTailCap = fuselage.getTailCapOffsetPercent();
 		
 		double zTailTip = fuselage.getZOutlineXZLowerAtX(fuselageLength.doubleValue(SI.METER));
-		
-		System.out.println("========== [AircraftCADUtils::getFuselageCAD] Tail trunk creation");
-		System.out.println("getting selected tail trunk sections ...");
 		
 		List<Double> xbarsTailTrunkPatch = Arrays.asList(
 				spacingTypeTailTrunk.calculateSpacing(
@@ -307,6 +329,8 @@ public class AircraftCADUtils {
 		
 		if (exportShells || exportSolids) {
 			tailTrunkPatch = OCCUtils.makePatchThruSectionsP(sectionsTailTrunkPatch);
+			
+			System.out.println("\n\t\tTail trunk patch successfully generated? " + (tailTrunkPatch != null));
 		}
 		
 		if (exportSupportShapes) {
@@ -316,8 +340,15 @@ public class AircraftCADUtils {
 				.map(pts -> OCCUtils.theFactory.newCurve3DP(pts, false))
 				.forEach(crv -> supportShapesTailTrunk.add((OCCShape) crv.edge()));
 		
-			supportShapes.addAll(supportShapesTailTrunk);
+			System.out.println("\t\tTail trunk supporting shapes successfully added to export shapes? " 
+					+ supportShapes.addAll(supportShapesTailTrunk));
 		}
+		
+		System.out.println("\n\t\t\t-----\n\n" + 
+		                   "\t\tTail cap sections spacing: " + XSpacingType.HALFCOSINUS1.name() + "\n" + 
+						   "\t\tTail cap section factor #1: " + tailCapSectionFactor1 + "\n" + 
+						   "\t\tTail cap section factor #2: " + tailCapSectionFactor2 + "\n" +
+						   "\t\tNumber of tail cap sections: " + numberTailCapSections);
 		
 		List<Double> xbarsTailCapPatch = Arrays.asList(
 				MyArrayUtils.halfCosine1SpaceDouble(
@@ -345,6 +376,8 @@ public class AircraftCADUtils {
 									0.0f, 
 									(float) zTailTip
 							).add(deltaApex));
+			
+			System.out.println("\n\t\tTail cap patch successfully generated? " + (tailCapPatch != null));
 		}
 		
 		if (exportSupportShapes) {
@@ -354,18 +387,18 @@ public class AircraftCADUtils {
 				.map(pts -> OCCUtils.theFactory.newCurve3DP(pts, false))
 				.forEach(crv -> supportShapesTailCap.add((OCCShape) crv.edge()));
 			
-			supportShapes.addAll(supportShapesTailCap);
+			System.out.println("\t\tTail cap supporting shapes successfully added to export shapes? " 
+					+ supportShapes.addAll(supportShapesTailCap));
 		}
 		
-		// ----------------------------------------------------------
+		// -------------------------------------------
 		// Generate outline curves whether necessary
-		// ----------------------------------------------------------
 		if (exportSupportShapes) {
-			System.out.println("========== [AircraftCADUtils::getFuselageCAD] Outline curves creation");
+			System.out.println("\n\t--------------------------------------------------------------------------------------\n" + 
+			                   "\tAdding outline curves to the supporting shapes to be exported ...");
 			
-			// --------------------------
+			// -------------------------
 			// Nose cap outline curves
-			// --------------------------
 			double[] noseCapTip = new double[] {deltaApex.x, deltaApex.y, zNoseTip + deltaApex.z};
 			
 			List<double[]> noseCapOutlineUpperPts = new ArrayList<>();
@@ -403,7 +436,6 @@ public class AircraftCADUtils {
 			
 			// ---------------------------
 			// Nose trunk outline curves
-			// ---------------------------
 			List<double[]> noseTrunkOutlineUpperPts = new ArrayList<>();
 			sectionsNoseTrunkPatch.forEach(pts -> 
 					noseTrunkOutlineUpperPts.add(new double[] {
@@ -434,9 +466,8 @@ public class AircraftCADUtils {
 			supportShapes.add((OCCShape) OCCUtils.theFactory.newCurve3D(noseTrunkOutlineLowerPts, false).edge());
 			supportShapes.add((OCCShape) OCCUtils.theFactory.newCurve3D(noseTrunkOutlineSidePts, false).edge());
 			
-			// ---------------------------
+			// -------------------------
 			// Cylinder outline curves
-			// ---------------------------
 			List<double[]> cylinderOutlineUpperPts = new ArrayList<>();
 			sectionsCylinderPatch.forEach(pts -> 
 					cylinderOutlineUpperPts.add(new double[] {
@@ -467,7 +498,6 @@ public class AircraftCADUtils {
 			
 			// ---------------------------
 			// Tail trunk outline curves
-			// ---------------------------
 			List<double[]> tailTrunkOutlineUpperPts = new ArrayList<>();
 			sectionsTailTrunkPatch.forEach(pts -> 
 					tailTrunkOutlineUpperPts.add(new double[] {
@@ -498,9 +528,8 @@ public class AircraftCADUtils {
 			supportShapes.add((OCCShape) OCCUtils.theFactory.newCurve3D(tailTrunkOutlineLowerPts, false).edge());
 			supportShapes.add((OCCShape) OCCUtils.theFactory.newCurve3D(tailTrunkOutlineSidePts, false).edge());
 			
-			// ---------------------------
+			// -------------------------
 			// Tail cap outline curves
-			// ---------------------------
 			double[] tailCapTip = new double[] {
 					fuselageLength.doubleValue(SI.METER) + deltaApex.x, 
 					deltaApex.y, 
@@ -540,66 +569,8 @@ public class AircraftCADUtils {
 			supportShapes.add((OCCShape) OCCUtils.theFactory.newCurve3D(tailCapOutlineLowerPts, false).edge());
 			supportShapes.add((OCCShape) OCCUtils.theFactory.newCurve3D(tailCapOutlineSidePts, false).edge());
 			
-		}
-		
-		if (exportShells || exportSolids) {		
-			// ----------------------------------------------------------
-			// Sew together all the faces generated till now
-			// ----------------------------------------------------------
-			System.out.println("========== [AircraftCADUtils::getFuselageCAD] Sewing fuselage right faces together");
-			
-			List<CADFace> fuselageRightFaces = new ArrayList<>();
-			fuselageRightFaces.add((CADFace) OCCUtils.theFactory.newShape(noseCapPatch.getShape()));
-			fuselageRightFaces.add((CADFace) OCCUtils.theFactory.newShape(noseTrunkPatch.getShape()));
-			fuselageRightFaces.add((CADFace) OCCUtils.theFactory.newShape(cylinderPatch.getShape()));
-			fuselageRightFaces.add((CADFace) OCCUtils.theFactory.newShape(tailTrunkPatch.getShape()));
-			fuselageRightFaces.add((CADFace) OCCUtils.theFactory.newShape(tailCapPatch.getShape()));
-			
-			OCCShape fuselageRightShell = (OCCShape) OCCUtils.theFactory.newShellFromAdjacentFaces(fuselageRightFaces);
-			
-			// --------------------------------------------------------------------------
-			// Mirroring the right shell with respect to the symmetry plane
-			// --------------------------------------------------------------------------
-			System.out.println("========== [AircraftCADUtils::getFuselageCAD] Mirroring the fuselage right shell "
-					+ "with respect to the symmetry plane");
-			
-			OCCShape fuselageLeftShell = OCCUtils.getShapeMirrored(
-					fuselageRightShell, 
-					deltaApex, 
-					new PVector(0.0f, 1.0f, 0.0f), 
-					new PVector(1.0f, 0.0f, 0.0f)
-					);
-			
-			if (exportSolids) {
-				// -----------------------------------------------------------------------
-				// Sew together the right and left shell and generate the solid
-				// -----------------------------------------------------------------------
-				System.out.println("========== [AircraftCADUtils::getFuselageCAD] Sewing the right and left shell "
-						+ "in order to obtain the solid of the fuselage");
-				
-				// TODO: check this method
-				OCCSolid fuselageSolid = (OCCSolid) OCCUtils.theFactory.newSolidFromAdjacentShells(
-						OCCUtils.theFactory.newShellFromAdjacentShells(
-								(CADShell) fuselageRightShell, 
-								(CADShell) fuselageLeftShell
-								));
-				
-				solidShapes.add(fuselageSolid);
-			} 
-			
-			if (exportShells) {
-				// -----------------------------------------
-				// Return just the left and right shell
-				// -----------------------------------------
-				shellShapes.add(fuselageLeftShell);
-				shellShapes.add(fuselageRightShell);
-			}
-		} 
-		
-		// -------------------------------------------
-		// Mirroring support shapes whether necessary
-		// -------------------------------------------
-		if (exportSupportShapes) {
+			// --------------------------
+			// Mirroring support shapes
 			List<OCCShape> mirrSupportShapes = new ArrayList<>();
 			supportShapes.forEach(s -> mirrSupportShapes.add(OCCUtils.getShapeMirrored(s, 
 					deltaApex, 
@@ -610,10 +581,83 @@ public class AircraftCADUtils {
 			supportShapes.addAll(mirrSupportShapes);
 		}
 		
+		if (exportShells || exportSolids) {				
+			// -----------------------------------------------
+			// Sew together all the faces generated till now
+			System.out.println("\n\t--------------------------------------------------------------------------------------\n" + 
+			                   "\tSewing fuselage patches together ...\n\n" + 
+							   "\t\tCalling CADShapeFactory.newShellFromAdjacentFaces method ...");
+			
+			List<CADFace> fuselageRightFaces = new ArrayList<>();
+			fuselageRightFaces.add((CADFace) OCCUtils.theFactory.newShape(noseCapPatch.getShape()));
+			fuselageRightFaces.add((CADFace) OCCUtils.theFactory.newShape(noseTrunkPatch.getShape()));
+			fuselageRightFaces.add((CADFace) OCCUtils.theFactory.newShape(cylinderPatch.getShape()));
+			fuselageRightFaces.add((CADFace) OCCUtils.theFactory.newShape(tailTrunkPatch.getShape()));
+			fuselageRightFaces.add((CADFace) OCCUtils.theFactory.newShape(tailCapPatch.getShape()));
+			
+			OCCShape fuselageRightShell = (OCCShape) OCCUtils.theFactory.newShellFromAdjacentFaces(fuselageRightFaces);
+			
+			System.out.println("\t\tFuselage right shell successfully generated? " + (fuselageRightShell != null));
+			
+			// --------------------------------------------------------------
+			// Mirroring the right shell with respect to the symmetry plane
+			System.out.println("\n\t--------------------------------------------------------------------------------------\n" + 
+			                   "\tMirroring the right shell with respect to the symmetry plane ...\n\n" + 
+							   "\t\tCalling OCCUtils.getShapeMirrored method ...");
+			
+			OCCShape fuselageLeftShell = OCCUtils.getShapeMirrored(
+					fuselageRightShell, 
+					deltaApex, 
+					new PVector(0.0f, 1.0f, 0.0f), 
+					new PVector(1.0f, 0.0f, 0.0f)
+					);
+			
+			System.out.println("\t\tFuselage right shell successfully mirrored? "
+					+ (fuselageLeftShell != null));
+			
+			if (exportSolids) {				
+				// --------------------------------------------------------------
+				// Sew together the right and left shell and generate the solid
+				System.out.println("\n\t--------------------------------------------------------------------------------------\n" + 
+				                   "\tSewing right and left shell together, in order to obtain the solid of the fuselage ...\n\n" + 
+								   "\t\tCalling CADShapeFactory.newSolidFromAdjacentShells method ...");
+				
+				OCCSolid fuselageSolid = (OCCSolid) OCCUtils.theFactory.newSolidFromAdjacentShells(
+						(CADShell) fuselageRightShell, 
+						(CADShell) fuselageLeftShell
+						);
+				
+				System.out.println("\t\tFuselage solid successfully generated? " + (fuselageSolid != null) + "\n" + 
+								   "\t\tFuselage solid added to the export shapes? " + solidShapes.add(fuselageSolid));
+			} 
+			
+			if (exportShells) {				
+				// --------------------------------------
+				// Return just the left and right shell
+				System.out.println("\n\t--------------------------------------------------------------------------------------\n" + 
+								   "\tAdding the left and right shell of the fuselage to the exported shapes ...\n\n" + 
+								   "\t\tFuselage left shell added to the export shapes? " + shellShapes.add(fuselageLeftShell) + "\n" + 
+								   "\t\tFuselage right shell added to the export shapes? " + shellShapes.add(fuselageRightShell));
+			}
+		} 
+		
 		requestedShapes.addAll(supportShapes);
 		requestedShapes.addAll(shellShapes);
 		requestedShapes.addAll(solidShapes);
 		
+		// ------------------------
+		// Calculate elapsed time
+		long endTime = System.nanoTime();
+		long elapsedTime = TimeUnit.NANOSECONDS.toMillis(endTime - startTime);
+		
+		OCCCompound fuselageCompound = (OCCCompound) OCCUtils.theFactory.newCompound(
+				requestedShapes.stream().map(s -> (CADShape) s).collect(Collectors.toList()));
+		
+		System.out.println("\n\t--------------------------------------------------------------------------------------\n" + 
+		                   "\n\t\t\t[Fuselage CAD creation completed!]\n\n" + 
+						   "\tTotal elapsed time: " + elapsedTime + " milliseconds\n" + 
+						   OCCUtils.reportOnShape(fuselageCompound.getShape(), "Fuselage shapes compound"));
+				
 		return requestedShapes;
 				 
 	}
@@ -940,11 +984,11 @@ public class AircraftCADUtils {
 				double sewTol = (wingTip.equals(WingTipType.ROUNDED)) ? 1.0e-03 : 1.0e-06;
 				
 				// TODO: check this method
-				OCCSolid liftingSurfaceSolid = (OCCSolid) OCCUtils.theFactory.newSolidFromAdjacentShells(
-						OCCUtils.theFactory.newShellFromAdjacentShapes(sewTol,
-								(CADShape) rightShell,
-								(CADShape) leftShell
-								));
+				OCCSolid liftingSurfaceSolid = (OCCSolid) OCCUtils.theFactory.newSolidFromAdjacentShapes(
+						sewTol,
+						(CADShape) rightShell,
+						(CADShape) leftShell
+						);
 				
 				solidShapes.add(liftingSurfaceSolid);
 			} 
@@ -2926,10 +2970,9 @@ public class AircraftCADUtils {
 		
 		if (exportSolids) {
 			OCCSolid fairingSolid = (OCCSolid) OCCUtils.theFactory.newSolidFromAdjacentShells(
-					OCCUtils.theFactory.newShellFromAdjacentShells(
-							(CADShell) fairingShapes._2().get(0), 
-							(CADShell) fairingShapes._2().get(1)
-							));
+					(CADShell) fairingShapes._2().get(0), 
+					(CADShell) fairingShapes._2().get(1)
+					);
 			
 			solidShapes.add(fairingSolid);	
 		}
@@ -3101,10 +3144,9 @@ public class AircraftCADUtils {
 		
 		if (exportSolids) {
 			OCCSolid fairingSolid = (OCCSolid) OCCUtils.theFactory.newSolidFromAdjacentShells(
-					OCCUtils.theFactory.newShellFromAdjacentShells(
-							(CADShell) fairingShapes._2().get(0), 
-							(CADShell) fairingShapes._2().get(1)
-							));
+					(CADShell) fairingShapes._2().get(0), 
+					(CADShell) fairingShapes._2().get(1)
+					);
 			
 			solidShapes.add(fairingSolid);	
 		}
@@ -3292,10 +3334,9 @@ public class AircraftCADUtils {
 		
 		if (exportSolids) {
 			OCCSolid fairingSolid = (OCCSolid) OCCUtils.theFactory.newSolidFromAdjacentShells(
-					OCCUtils.theFactory.newShellFromAdjacentShells(
-							(CADShell) fairingShapes._2().get(0), 
-							(CADShell) fairingShapes._2().get(1)
-							));
+					(CADShell) fairingShapes._2().get(0), 
+					(CADShell) fairingShapes._2().get(1)
+					);
 			
 			solidShapes.add(fairingSolid);	
 		}
@@ -3467,10 +3508,9 @@ public class AircraftCADUtils {
 		
 		if (exportSolids) {
 			OCCSolid fairingSolid = (OCCSolid) OCCUtils.theFactory.newSolidFromAdjacentShells(
-					OCCUtils.theFactory.newShellFromAdjacentShells(
-							(CADShell) fairingShapes._2().get(0), 
-							(CADShell) fairingShapes._2().get(1)
-							));
+					(CADShell) fairingShapes._2().get(0), 
+					(CADShell) fairingShapes._2().get(1)
+					);
 			
 			solidShapes.add(fairingSolid);	
 		}

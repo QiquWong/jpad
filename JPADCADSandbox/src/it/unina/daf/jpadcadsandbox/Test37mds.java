@@ -364,15 +364,14 @@ public class Test37mds {
 		// -------------------
 		OCCShape nacelleIntakeFace = (OCCFace) OCCUtils.makeFilledFace(nacelleIntakeWire.edges(), new ArrayList<>());
 		
-		OCCShape nacelleShellNoDuct = (OCCShape) OCCUtils.theFactory.newShellFromAdjacentShapes(1.0e-05,
+		OCCShape nacelleSolidNoDuct = (OCCShape) OCCUtils.theFactory.newSolidFromAdjacentShapes(
+				1.0e-05,
 				(CADShape) translatedNacelle,
 				(CADShape) hubShell,
 				(CADShape) capShell,
 				(CADShape) outletShell,
 				(CADShape) nacelleIntakeFace
 				);
-		
-		OCCShape nacelleSolidNoDuct = (OCCShape) OCCUtils.theFactory.newSolidFromAdjacentShells((CADShell) nacelleShellNoDuct);
 		
 		// -------------------------
 		// Generate the inner duct
