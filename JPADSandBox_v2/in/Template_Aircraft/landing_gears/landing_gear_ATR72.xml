@@ -8,8 +8,8 @@
          <number_of_rear_wheels>4</number_of_rear_wheels>
       </global_data>
       <frontal_wheels_data>
-         <wheel_height unit="m">0.4500</wheel_height>
-         <wheel_width unit="m">0.1900</wheel_width>
+         <wheel_height unit="m">0.8636</wheel_height>
+         <wheel_width unit="m">0.2540</wheel_width>
       </frontal_wheels_data>
       <rear_wheels_data>
          <wheel_height unit="m">0.8636</wheel_height>

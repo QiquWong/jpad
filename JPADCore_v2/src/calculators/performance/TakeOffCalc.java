@@ -109,6 +109,7 @@ public class TakeOffCalc {
 	gidlCalibrationFactorEmissionIndexSOx, gidlCalibrationFactorEmissionIndexH2O;
 	private Amount<Velocity> vFailure;
 	private boolean isAborted;
+	private boolean isMaxIterationNumber;
 	private boolean isTailStrike;
 	private double cLalphaFlap;
 	private boolean rotationSpeedWarningFlag;
@@ -441,6 +442,7 @@ public class TakeOffCalc {
 		vFailure = null;
 		isAborted = false;
 		isTailStrike = false;
+		isMaxIterationNumber = false;
 		
 		takeOffResults.initialize();
 	}
@@ -486,8 +488,7 @@ public class TakeOffCalc {
 			}
 			
 			if(i > 100) {
-				System.err.println("WARNING: (SIMULATION - TAKE-OFF) MAXIMUM NUMBER OF ITERATION REACHED. THE LAST VALUE OF V2 WILL BE CONSIDERED. "
-						+ "(V2 = " + v2.to(SI.METERS_PER_SECOND) + "; V2/VsTO = " + v2.to(SI.METERS_PER_SECOND).divide(vSTakeOff.to(SI.METERS_PER_SECOND)));
+				isMaxIterationNumber = true;
 				break;
 			}
 			
@@ -503,8 +504,8 @@ public class TakeOffCalc {
 			theIntegrator = new HighamHall54Integrator(
 					1e-10,
 					1,
-					1e-2,
-					1e-2
+					1e-3,
+					1e-3
 					);
 			ode = new DynamicsEquationsTakeOff();
 
@@ -1278,6 +1279,9 @@ public class TakeOffCalc {
 		// iterative take-off distance calculation for both conditions
 		for(int i=0; i<failureSpeedArray.length; i++) {
 			calculateTakeOffDistanceODE(Amount.valueOf(failureSpeedArray[i], SI.METERS_PER_SECOND), false, true, vMC);
+			if(isMaxIterationNumber)
+				System.err.println("WARNING: (SIMULATION n. " + (i+1) + " - TAKE-OFF (BFL)) MAXIMUM NUMBER OF ITERATION REACHED. THE LAST VALUE OF V2 WILL BE CONSIDERED. "
+						+ "(V2 = " + v2.to(SI.METERS_PER_SECOND) + "; V2/VsTO = " + v2.to(SI.METERS_PER_SECOND).divide(vSTakeOff.to(SI.METERS_PER_SECOND)));
 			if(!getTakeOffResults().getGroundDistance().isEmpty())
 				continuedTakeOffArray[i] = getTakeOffResults().getGroundDistance().get(getTakeOffResults().getGroundDistance().size()-1).doubleValue(SI.METER);
 			else {
@@ -5291,6 +5295,14 @@ public class TakeOffCalc {
 
 	public void setWeightPerStep(List<Amount<Force>> weightPerStep) {
 		this.weightPerStep = weightPerStep;
+	}
+
+	public boolean isMaxIterationNumber() {
+		return isMaxIterationNumber;
+	}
+
+	public void setMaxIterationNumber(boolean isMaxIterationNumber) {
+		this.isMaxIterationNumber = isMaxIterationNumber;
 	}
 
 }

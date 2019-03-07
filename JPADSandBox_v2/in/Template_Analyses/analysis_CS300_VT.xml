@@ -66,17 +66,17 @@
 		-->
 		<performance 
 			file="analysis_performance_CS300.xml"
-			plot="FALSE"
-			create_CSV="FALSE"
-			take_off="TRUE"
-			climb="TRUE"
-			cruise="TRUE"
+			plot="TRUE"
+			create_CSV="TRUE"
+			take_off="FALSE"
+			climb="FALSE"
+			cruise="FALSE"
 			descent="TRUE"
-			landing="TRUE"
-			payload_range="TRUE"
-			V_n_diagram="TRUE"
-			noise_trajectories="TRUE"
-			mission_profile="TRUE"
+			landing="FALSE"
+			payload_range="FALSE"
+			V_n_diagram="FALSE"
+			noise_trajectories="FALSE"
+			mission_profile="FALSE"
 		/>
 		<!--
 		<costs 

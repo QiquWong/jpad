@@ -528,7 +528,7 @@ public class LandingCalc {
 		StepHandler continuousOutputModel = null;
 
 		int i=0;
-		int maxIter = 100;
+		int maxIter = 200;
 		dtFlare = Amount.valueOf(3.0, SI.SECOND); 
 		alphaDotFlare = 1.0; /* deg/s - First guess value */
 		double newAlphaDotFlare = 0.0;
@@ -1140,7 +1140,7 @@ public class LandingCalc {
 			if(positiveRCFlag == false) {
 				if(Math.abs(rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE)) > Math.abs(targetRateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE)))
 					if(Math.abs(rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE) - targetRateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE)) < 250.0)
-						newAlphaDotFlare = alphaDotFlare + 0.05;
+						newAlphaDotFlare = alphaDotFlare + 0.01;
 					else
 						newAlphaDotFlare = alphaDotFlare + 0.5;
 			}
