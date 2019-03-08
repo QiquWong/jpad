@@ -1,5 +1,7 @@
 package calculators.performance;
 
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -395,9 +397,21 @@ public class PayloadRangeCalc {
 	 */
 	public void createPayloadRange(Amount<Velocity> vMC) {
 		
+		final PrintStream originalOut = System.out;
+		PrintStream filterStream = new PrintStream(new OutputStream() {
+		    public void write(int b) {
+		         // write nothing
+		    }
+		});
+		
+		System.setOut(filterStream);
+		
 		rangeArray = new ArrayList<>();
 		
 		// RANGE AT MAX PAYLOAD
+		System.setOut(originalOut);
+		System.out.println("\t\t\t\t\tHarmonic Range :: START");
+		System.setOut(filterStream);
 		rangeAtMaxPayload = calcRangeAtGivenPayload(
 				maximumTakeOffMass.to(SI.KILOGRAM),
 				maxPayload.to(SI.KILOGRAM),
@@ -408,8 +422,14 @@ public class PayloadRangeCalc {
 		requiredMassAtMaxPayload = maximumTakeOffMass.to(SI.KILOGRAM)
 				.minus(operatingEmptyMass.to(SI.KILOGRAM))
 				.minus(maxPayload.to(SI.KILOGRAM));
+		System.setOut(originalOut);
+		System.out.println("\t\t\t\t\tHarmonic Range :: COMPLETE");
+		System.setOut(filterStream);
 		
 		// RANGE AT DESIGN PAYLOAD
+		System.setOut(originalOut);
+		System.out.println("\t\t\t\t\tDesign Range :: START");
+		System.setOut(filterStream);
 		rangeAtDesignPayload = calcRangeAtGivenPayload(
 				maximumTakeOffMass.to(SI.KILOGRAM),
 				singlePassengerMass.to(SI.KILOGRAM).times(theAircraft.getCabinConfiguration().getDesignPassengerNumber()),
@@ -424,8 +444,14 @@ public class PayloadRangeCalc {
 						.times(theAircraft.getCabinConfiguration().getDesignPassengerNumber()
 								)
 						);
+		System.setOut(originalOut);
+		System.out.println("\t\t\t\t\tDesign Range :: COMPLETE");
+		System.setOut(filterStream);
 		
 		// RANGE AT MAX FUEL
+		System.setOut(originalOut);
+		System.out.println("\t\t\t\t\tMax Fuel :: START");
+		System.setOut(filterStream);
 		rangeAtMaxFuel = calcRangeAtGivenPayload(
 				maximumTakeOffMass.to(SI.KILOGRAM),
 				maximumTakeOffMass.to(SI.KILOGRAM)
@@ -445,8 +471,14 @@ public class PayloadRangeCalc {
 				.divide(singlePassengerMass.to(SI.KILOGRAM))
 				.getEstimatedValue()
 				);
+		System.setOut(originalOut);
+		System.out.println("\t\t\t\t\tMax Fuel :: COMPLETE");
+		System.setOut(filterStream);
 		
 		// RANGE AT ZERO PAYLOAD
+		System.setOut(originalOut);
+		System.out.println("\t\t\t\t\tZero Payload :: START");
+		System.setOut(filterStream);
 		if(rangeAtMaxPayload.doubleValue(NonSI.NAUTICAL_MILE)!= 0.0) {
 			if(rangeAtMaxPayload.doubleValue(NonSI.NAUTICAL_MILE)!= 0.0) {
 				if(rangeAtMaxPayload.doubleValue(NonSI.NAUTICAL_MILE)!= 0.0) {
@@ -469,6 +501,9 @@ public class PayloadRangeCalc {
 			rangeAtZeroPayload = Amount.valueOf(0.0, NonSI.NAUTICAL_MILE);
 		}
 		takeOffMassZeroPayload = operatingEmptyMass.plus(maxFuelMass);
+		System.setOut(originalOut);
+		System.out.println("\t\t\t\t\tZero Payload :: COMPLETE");
+		System.setOut(filterStream);
 		
 		// POINT 1
 		rangeArray.add(Amount.valueOf(0.0, NonSI.NAUTICAL_MILE));
@@ -525,7 +560,6 @@ public class PayloadRangeCalc {
 		takeOffMassArray.add(payloadAtMaxFuel.to(SI.KILOGRAM).plus(maxFuelMass.to(SI.KILOGRAM)));
 		// POINT 5
 		takeOffMassArray.add(maxFuelMass.to(SI.KILOGRAM));
-
 		
 	}
 	
@@ -886,7 +920,9 @@ public class PayloadRangeCalc {
 								cruiseMissionMachNumber.get(0),
 								theOperatingConditions.getDeltaTemperatureCruise(), 
 								theOperatingConditions.getThrottleCruise(), 
-								cruiseCalibrationFactorThrust
+								cruiseCalibrationFactorThrust,
+								theAircraft.getPowerPlant().getEngineList().get(iEng).getEngineType(),
+								theAircraft.getPowerPlant().getEngineList().get(iEng).getEtaPropeller()
 								)
 						);
 			}
@@ -1099,7 +1135,9 @@ public class PayloadRangeCalc {
 									cruiseMissionMachNumber.get(j),
 									theOperatingConditions.getDeltaTemperatureCruise(), 
 									theOperatingConditions.getThrottleCruise(), 
-									cruiseCalibrationFactorThrust
+									cruiseCalibrationFactorThrust,
+									theAircraft.getPowerPlant().getEngineList().get(iEng).getEngineType(),
+									theAircraft.getPowerPlant().getEngineList().get(iEng).getEtaPropeller()
 									)
 							);
 				}
@@ -1469,7 +1507,9 @@ public class PayloadRangeCalc {
 									alternateCruiseMachNumberList.get(0),
 									theOperatingConditions.getDeltaTemperatureCruise(), 
 									theOperatingConditions.getThrottleCruise(), 
-									cruiseCalibrationFactorThrust
+									cruiseCalibrationFactorThrust,
+									theAircraft.getPowerPlant().getEngineList().get(iEng).getEngineType(),
+									theAircraft.getPowerPlant().getEngineList().get(iEng).getEtaPropeller()
 									)
 							);
 				}
@@ -1718,7 +1758,9 @@ public class PayloadRangeCalc {
 										alternateCruiseMachNumberList.get(j),
 										theOperatingConditions.getDeltaTemperatureCruise(), 
 										theOperatingConditions.getThrottleCruise(), 
-										cruiseCalibrationFactorThrust
+										cruiseCalibrationFactorThrust,
+										theAircraft.getPowerPlant().getEngineList().get(iEng).getEngineType(),
+										theAircraft.getPowerPlant().getEngineList().get(iEng).getEtaPropeller()
 										)
 								);
 					}
@@ -2037,7 +2079,9 @@ public class PayloadRangeCalc {
 									holdingMachNumberList.get(0),
 									theOperatingConditions.getDeltaTemperatureClimb(), 
 									theOperatingConditions.getThrottleCruise(), 
-									cruiseCalibrationFactorThrust
+									cruiseCalibrationFactorThrust,
+									theAircraft.getPowerPlant().getEngineList().get(iEng).getEngineType(),
+									theAircraft.getPowerPlant().getEngineList().get(iEng).getEtaPropeller()
 									)
 							);
 				}
@@ -2268,7 +2312,9 @@ public class PayloadRangeCalc {
 										holdingMachNumberList.get(j),
 										theOperatingConditions.getDeltaTemperatureClimb(), 
 										theOperatingConditions.getThrottleCruise(), 
-										cruiseCalibrationFactorThrust
+										cruiseCalibrationFactorThrust,
+										theAircraft.getPowerPlant().getEngineList().get(iEng).getEngineType(),
+										theAircraft.getPowerPlant().getEngineList().get(iEng).getEtaPropeller()
 										)
 								);
 					}
@@ -2343,6 +2389,7 @@ public class PayloadRangeCalc {
 							polarCDLanding, 
 							theAircraft.getWing().getAspectRatio(), 
 							theAircraft.getWing().getSurfacePlanform(),
+							theAircraft.getFuselage().getHeightFromGround(),
 							freeRollDuration,
 							mu, 
 							muBrake,

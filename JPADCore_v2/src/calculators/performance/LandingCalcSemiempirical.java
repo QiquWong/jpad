@@ -899,7 +899,9 @@ public class LandingCalcSemiempirical {
 									),
 							LandingCalcSemiempirical.this.getTheConditions().getDeltaTemperatureLanding(), 
 							theConditions.getThrottleLanding(),
-							LandingCalcSemiempirical.this.getThrustCorrectionFactor()
+							LandingCalcSemiempirical.this.getThrustCorrectionFactor(),
+							LandingCalcSemiempirical.this.getAircraft().getPowerPlant().getEngineList().get(i).getEngineType(),
+							LandingCalcSemiempirical.this.getAircraft().getPowerPlant().getEngineList().get(i).getEtaPropeller()
 							)
 					);
 

@@ -450,6 +450,7 @@ public class NoiseTrajectoryCalcTest extends Application {
 						polarCDLanding, 
 						theAircraft.getWing().getAspectRatio(),
 						theAircraft.getWing().getSurfacePlanform(),
+						theAircraft.getFuselage().getHeightFromGround(),
 						dtFreeRoll, 
 						mu, 
 						muBrake,

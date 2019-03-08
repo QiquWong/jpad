@@ -15,6 +15,7 @@ import org.jscience.physics.amount.Amount;
 import aircraft.components.powerplant.PowerPlant;
 import calculators.performance.customdata.ThrustMap;
 import configuration.enumerations.EngineOperatingConditionEnum;
+import configuration.enumerations.EngineTypeEnum;
 import database.databasefunctions.engine.EngineDatabaseReader;
 import standaloneutils.atmosphere.SpeedCalc;
 
@@ -97,7 +98,7 @@ public class ThrustCalc {
 			EngineDatabaseReader engineDatabaseReader,
 			EngineOperatingConditionEnum flightCondition,
 			Amount<Length> altitude, double mach, Amount<Temperature> deltaTemperature, double phi,
-			double thrustCorrectionFactor
+			double thrustCorrectionFactor, EngineTypeEnum type, double etaPropeller
 			) {
 		
 		double thrustRatio = engineDatabaseReader.getThrustRatio(
@@ -109,10 +110,23 @@ public class ThrustCalc {
 				thrustCorrectionFactor
 				); 
 		
-		return Amount.valueOf(
-				thrustRatio*t0.doubleValue(SI.NEWTON)*phi,
-				SI.NEWTON
-				);
+		Amount<Force> thrust = Amount.valueOf(0.0, SI.NEWTON);
+		if(type == EngineTypeEnum.TURBOPROP || type == EngineTypeEnum.PISTON) {
+			if(Double.valueOf(etaPropeller) != null) {
+				thrust = Amount.valueOf(
+						thrustRatio*t0.doubleValue(SI.NEWTON)*phi*etaPropeller,
+						SI.NEWTON
+						);
+			}
+		}
+		else if(type == EngineTypeEnum.TURBOFAN || type == EngineTypeEnum.TURBOJET) {
+			thrust = Amount.valueOf(
+					thrustRatio*t0.doubleValue(SI.NEWTON)*phi,
+					SI.NEWTON
+					);
+		}
+		
+		return thrust;
 	}
 	
 	public static List<Amount<Force>> calculateThrustVsSpeed(
@@ -141,7 +155,9 @@ public class ThrustCalc {
 								mach,
 								deltaTemperature,
 								phi,
-								thrustCorrectionFactor
+								thrustCorrectionFactor,
+								thePowerPlant.getEngineList().get(ieng).getEngineType(), 
+								thePowerPlant.getEngineList().get(ieng).getEtaPropeller()
 								)
 						);
 			thrust.add(

@@ -327,7 +327,9 @@ public class DescentCalc {
 							_machList.get(0), 
 							_theOperatingConditions.getDeltaTemperatureCruise(), 
 							_theOperatingConditions.getThrottleCruise(),
-							_cruiseThrustCorrectionFactor
+							_cruiseThrustCorrectionFactor,
+							_theAircraft.getPowerPlant().getEngineList().get(ieng).getEngineType(),
+							_theAircraft.getPowerPlant().getEngineList().get(ieng).getEtaPropeller()
 							)
 					);
 
@@ -340,7 +342,9 @@ public class DescentCalc {
 							_machList.get(0), 
 							_theOperatingConditions.getDeltaTemperatureCruise(), 
 							_theOperatingConditions.getThrottleCruise(),
-							_fidlThrustCorrectionFactor
+							_fidlThrustCorrectionFactor,
+							_theAircraft.getPowerPlant().getEngineList().get(ieng).getEngineType(),
+							_theAircraft.getPowerPlant().getEngineList().get(ieng).getEtaPropeller()
 							)
 					);
 			sfcCruiseList.add(
@@ -901,7 +905,9 @@ public class DescentCalc {
 								_machList.get(i), 
 								_theOperatingConditions.getDeltaTemperatureCruise(), 
 								_theOperatingConditions.getThrottleCruise(),
-								_cruiseThrustCorrectionFactor
+								_cruiseThrustCorrectionFactor,
+								_theAircraft.getPowerPlant().getEngineList().get(ieng).getEngineType(),
+								_theAircraft.getPowerPlant().getEngineList().get(ieng).getEtaPropeller()
 								)
 						);
 
@@ -914,7 +920,9 @@ public class DescentCalc {
 								_machList.get(i), 
 								_theOperatingConditions.getDeltaTemperatureCruise(), 
 								_theOperatingConditions.getThrottleCruise(),
-								_fidlThrustCorrectionFactor
+								_fidlThrustCorrectionFactor,
+								_theAircraft.getPowerPlant().getEngineList().get(ieng).getEngineType(),
+								_theAircraft.getPowerPlant().getEngineList().get(ieng).getEtaPropeller()
 								)
 						);
 				sfcCruiseList.add(
@@ -1456,7 +1464,7 @@ public class DescentCalc {
 										),
 								_speedListTAS.get(i),
 								_theAircraft.getWing().getSurfacePlanform(),
-								_initialDescentAltitude, 
+								_descentAltitudes.get(i), 
 								_theOperatingConditions.getDeltaTemperatureCruise()
 								)
 						);

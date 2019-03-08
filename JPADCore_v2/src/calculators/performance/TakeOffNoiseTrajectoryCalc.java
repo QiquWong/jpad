@@ -399,7 +399,7 @@ public class TakeOffNoiseTrajectoryCalc {
 					break;
 			}
 
-			if(i > 100) {
+			if(i > 50) {
 				System.err.println("WARNING: (SIMULATION - NOISE TRAJECTORY TAKE-OFF) MAXIMUM NUMBER OF ITERATION REACHED. THE LAST VALUE OF V2 WILL BE CONSIDERED. "
 						+ "(V2 = " + v2.to(SI.METERS_PER_SECOND) + "; V2/VsTO = " + v2.to(SI.METERS_PER_SECOND).divide(vSTakeOff.to(SI.METERS_PER_SECOND)));
 				break;
@@ -875,7 +875,9 @@ public class TakeOffNoiseTrajectoryCalc {
 													),
 											Amount.valueOf(10, SI.CELSIUS), // ISA+10°C
 											TakeOffNoiseTrajectoryCalc.this.getPhi(),
-											TakeOffNoiseTrajectoryCalc.this.getThrustCorrectionFactor()
+											TakeOffNoiseTrajectoryCalc.this.getThrustCorrectionFactor(),
+											thePowerPlant.getEngineList().get(i).getEngineType(),
+											thePowerPlant.getEngineList().get(i).getEtaPropeller()
 											).doubleValue(SI.NEWTON),
 									SI.NEWTON
 									);
@@ -1014,12 +1016,12 @@ public class TakeOffNoiseTrajectoryCalc {
 					> (1.13 
 							+ Amount.valueOf(20, NonSI.KNOT).doubleValue(SI.METERS_PER_SECOND)/vSTakeOff.doubleValue(SI.METERS_PER_SECOND)
 							))
-				newAlphaRed = alphaRed + 0.2;
+				newAlphaRed = alphaRed + 0.25;
 			else if (vClimb.doubleValue(SI.METERS_PER_SECOND)/vSTakeOff.doubleValue(SI.METERS_PER_SECOND) 
 					< (1.13 
 							+ Amount.valueOf(10, NonSI.KNOT).doubleValue(SI.METERS_PER_SECOND)/vSTakeOff.doubleValue(SI.METERS_PER_SECOND)
 							))
-				newAlphaRed = alphaRed - 0.2;
+				newAlphaRed = alphaRed - 0.25;
 
 			theIntegrator.clearEventHandlers();
 			theIntegrator.clearStepHandlers();
@@ -1077,13 +1079,13 @@ public class TakeOffNoiseTrajectoryCalc {
 				);
 		Amount<Angle> alpha = ((DynamicsEquationsTakeOffNoiseTrajectory)ode).alpha(time, speed, altitude, deltaTemperature, gamma, weight);
 
-		System.out.println("\n\tTime = " + time);
-		System.out.println("\tDistance = " + groundDistance);
-		System.out.println("\tSpeed = " + speed);
-		System.out.println("\tAcceleration = " + xDot[2]);
-		System.out.println("\tGamma = " + gamma);
-		System.out.println("\tAlpha = " + alpha);
-		System.out.println("\tAltitude = " + altitude);
+//		System.out.println("\n\tTime = " + time);
+//		System.out.println("\tDistance = " + groundDistance);
+//		System.out.println("\tSpeed = " + speed);
+//		System.out.println("\tAcceleration = " + xDot[2]);
+//		System.out.println("\tGamma = " + gamma);
+//		System.out.println("\tAlpha = " + alpha);
+//		System.out.println("\tAltitude = " + altitude);
 		
 		List<Amount<Force>> totalThrustList = ((DynamicsEquationsTakeOffNoiseTrajectory)ode).thrust(speed, time, gamma, altitude, deltaTemperature);
 		List<Amount<Force>> totalThrustListHorizontal = new ArrayList<>();
@@ -2710,7 +2712,9 @@ public class TakeOffNoiseTrajectoryCalc {
 											),
 									deltaTemperature, 
 									TakeOffNoiseTrajectoryCalc.this.getPhi(),
-									TakeOffNoiseTrajectoryCalc.this.getThrustCorrectionFactor()
+									TakeOffNoiseTrajectoryCalc.this.getThrustCorrectionFactor(),
+									thePowerPlant.getEngineList().get(i).getEngineType(),
+									thePowerPlant.getEngineList().get(i).getEtaPropeller()
 									)
 							);
 			else if(time.doubleValue(SI.SECOND) > tCutback.doubleValue(SI.SECOND) && time.doubleValue(SI.SECOND) <= tCutback.doubleValue(SI.SECOND)+dtThrustCutback.doubleValue(SI.SECOND) ) 
@@ -2732,7 +2736,9 @@ public class TakeOffNoiseTrajectoryCalc {
 											),
 									deltaTemperature, 
 									TakeOffNoiseTrajectoryCalc.this.getPhi(),
-									TakeOffNoiseTrajectoryCalc.this.getThrustCorrectionFactor()
+									TakeOffNoiseTrajectoryCalc.this.getThrustCorrectionFactor(),
+									thePowerPlant.getEngineList().get(i).getEngineType(),
+									thePowerPlant.getEngineList().get(i).getEtaPropeller()
 									).times(deltaThrustCutbackSlope.value(time.doubleValue(SI.SECOND)))
 							);
 			else if(time.doubleValue(SI.SECOND) > tCutback.doubleValue(SI.SECOND)+dtThrustCutback.doubleValue(SI.SECOND)) 
@@ -2754,7 +2760,9 @@ public class TakeOffNoiseTrajectoryCalc {
 											),
 									deltaTemperature, 
 									TakeOffNoiseTrajectoryCalc.this.getPhi(),
-									TakeOffNoiseTrajectoryCalc.this.getThrustCorrectionFactor()
+									TakeOffNoiseTrajectoryCalc.this.getThrustCorrectionFactor(),
+									thePowerPlant.getEngineList().get(i).getEngineType(),
+									thePowerPlant.getEngineList().get(i).getEtaPropeller()
 									).times(phiCutback)
 							);
 

@@ -65,7 +65,7 @@ public class LandingNoiseTrajectoryCalc {
 	// VARIABLE DECLARATION
 	private double aspectRatio;
 	private Amount<Area> surface; 
-	private Amount<Length> span;
+	private Amount<Length> span, fuselageHeightFromGround;
 	private PowerPlant thePowerPlant;
 	private double[] polarCLLanding;
 	private double[] polarCDLanding;
@@ -144,6 +144,7 @@ public class LandingNoiseTrajectoryCalc {
 			double[] polarCDLanding,
 			double aspectRatio,
 			Amount<Area> surface,
+			Amount<Length> fuselageHeightFromGround,
 			Amount<Duration> dtFreeRoll,
 			MyInterpolatingFunction mu,
 			MyInterpolatingFunction muBrake,
@@ -174,6 +175,7 @@ public class LandingNoiseTrajectoryCalc {
 				Math.sqrt(aspectRatio*surface.doubleValue(SI.SQUARE_METRE)),
 				SI.METER
 				);
+		this.fuselageHeightFromGround = fuselageHeightFromGround;
 		this.thePowerPlant = thePowerPlant;
 		this.polarCLLanding = polarCLLanding;
 		this.polarCDLanding = polarCDLanding;
@@ -437,7 +439,7 @@ public class LandingNoiseTrajectoryCalc {
 		alphaDotFlare = 1.0; /* deg/s - First guess value */
 		double newAlphaDotFlare = 0.0;
 		Amount<Velocity> targetRateOfDescent = Amount.valueOf(-100, MyUnits.FOOT_PER_MINUTE);
-		Amount<Length> targetAltitude = Amount.valueOf(1e-2, SI.METER);
+		Amount<Length> targetAltitude = fuselageHeightFromGround;
 
 		rateOfDescentAtFlareEnding = Amount.valueOf(10000.0, SI.METERS_PER_SECOND);  // Initialization at an impossible value
 		altitudeAtFlareEnding = Amount.valueOf(10000.0, SI.METER);  // Initialization at an impossible value
@@ -745,7 +747,9 @@ public class LandingNoiseTrajectoryCalc {
 												),
 										deltaTemperature, 
 										LandingNoiseTrajectoryCalc.this.getPhi(),
-										LandingNoiseTrajectoryCalc.this.getGidlThrustCorrectionFactor()
+										LandingNoiseTrajectoryCalc.this.getGidlThrustCorrectionFactor(),
+										thePowerPlant.getEngineList().get(i).getEngineType(),
+										thePowerPlant.getEngineList().get(i).getEtaPropeller()
 										)
 								);
 					Amount<Force> thrustAtTouchDown = Amount.valueOf( 
@@ -2402,7 +2406,9 @@ public class LandingNoiseTrajectoryCalc {
 											),
 									deltaTemperature, 
 									LandingNoiseTrajectoryCalc.this.getPhi(),
-									LandingNoiseTrajectoryCalc.this.getFidlThrustCorrectionFactor()
+									LandingNoiseTrajectoryCalc.this.getFidlThrustCorrectionFactor(),
+									thePowerPlant.getEngineList().get(i).getEngineType(),
+									thePowerPlant.getEngineList().get(i).getEtaPropeller()
 									)
 							);
 
@@ -2438,7 +2444,9 @@ public class LandingNoiseTrajectoryCalc {
 											),
 									deltaTemperature, 
 									LandingNoiseTrajectoryCalc.this.getPhi(),
-									LandingNoiseTrajectoryCalc.this.getGidlThrustCorrectionFactor()
+									LandingNoiseTrajectoryCalc.this.getGidlThrustCorrectionFactor(),
+									thePowerPlant.getEngineList().get(i).getEngineType(),
+									thePowerPlant.getEngineList().get(i).getEtaPropeller()
 									)
 							);
 
@@ -2480,7 +2488,9 @@ public class LandingNoiseTrajectoryCalc {
 											), 
 									deltaTemperature, 
 									1.0, /* Throttle setting cruise */
-									LandingNoiseTrajectoryCalc.this.getCruiseThrustCorrectionFactor()
+									LandingNoiseTrajectoryCalc.this.getCruiseThrustCorrectionFactor(),
+									thePowerPlant.getEngineList().get(ieng).getEngineType(),
+									thePowerPlant.getEngineList().get(ieng).getEtaPropeller()
 									)
 							);
 
@@ -2501,7 +2511,9 @@ public class LandingNoiseTrajectoryCalc {
 											), 
 									deltaTemperature, 
 									1.0, /* Throttle setting cruise */
-									LandingNoiseTrajectoryCalc.this.getFidlThrustCorrectionFactor()
+									LandingNoiseTrajectoryCalc.this.getFidlThrustCorrectionFactor(),
+									thePowerPlant.getEngineList().get(ieng).getEngineType(),
+									thePowerPlant.getEngineList().get(ieng).getEtaPropeller()
 									)
 							);
 				}
@@ -3655,6 +3667,14 @@ public class LandingNoiseTrajectoryCalc {
 
 	public void setkTouchDown(double kTouchDown) {
 		this.kTouchDown = kTouchDown;
+	}
+
+	public Amount<Length> getFuselageHeightFromGround() {
+		return fuselageHeightFromGround;
+	}
+
+	public void setFuselageHeightFromGround(Amount<Length> fuselageHeightFromGround) {
+		this.fuselageHeightFromGround = fuselageHeightFromGround;
 	}
 
 }

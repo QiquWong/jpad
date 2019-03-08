@@ -1400,7 +1400,7 @@ public class TakeOffCalc {
 				);
 		cDFunction.interpolateLinear(
 				MyArrayUtils.convertListOfAmountTodoubleArray(this.timePerStep), 
-				MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(this.cLPerStep))
+				MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(this.cDPerStep))
 				);
 		loadFactorFunction.interpolateLinear(
 				MyArrayUtils.convertListOfAmountTodoubleArray(this.timePerStep), 
@@ -2296,6 +2296,35 @@ public class TakeOffCalc {
 				takeOffFolderPath, "CL_vs_GroundDistance_IMPERIAL", createCSV);
 		
 		//.................................................................................
+		// CD v.s. Time
+		MyChartToFileUtils.plotNoLegend(
+				MyArrayUtils.convertListOfAmountTodoubleArray(time),
+				MyArrayUtils.convertToDoublePrimitive(cD),
+				0.0, null, 0.0, null,
+				"Time", "CD", "s", "",
+				takeOffFolderPath, "CD_evolution", createCSV);
+
+		//.................................................................................
+		// CD v.s. Ground distance
+		MyChartToFileUtils.plotNoLegend(
+				MyArrayUtils.convertListOfAmountTodoubleArray(groundDistance),
+				MyArrayUtils.convertToDoublePrimitive(cD),
+				0.0, null, 0.0, null,
+				"Ground distance", "CD", "m", "",
+				takeOffFolderPath, "CD_vs_GroundDistance_SI", createCSV);
+
+		MyChartToFileUtils.plotNoLegend(
+				MyArrayUtils.convertListOfAmountTodoubleArray(
+						groundDistance.stream()
+						.map(x -> x.to(NonSI.FOOT))
+						.collect(Collectors.toList())
+						),
+				MyArrayUtils.convertToDoublePrimitive(cD),
+				0.0, null, 0.0, null,
+				"Ground distance", "CD", "ft", "",
+				takeOffFolderPath, "CD_vs_GroundDistance_IMPERIAL", createCSV);
+		
+		//.................................................................................
 		// Horizontal Forces v.s. Time
 		double[][] xMatrix1SI = new double[5][totalForce.size()];
 		for(int i=0; i<xMatrix1SI.length; i++)
@@ -2859,7 +2888,9 @@ public class TakeOffCalc {
 											),
 									deltaTemperature, 
 									TakeOffCalc.this.getPhi(),
-									TakeOffCalc.this.getTakeOffThrustCorrectionFactor()
+									TakeOffCalc.this.getTakeOffThrustCorrectionFactor(),
+									thePowerPlant.getEngineList().get(i).getEngineType(),
+									thePowerPlant.getEngineList().get(i).getEtaPropeller()
 									)
 							);
 			else {
@@ -2884,7 +2915,9 @@ public class TakeOffCalc {
 													),
 											deltaTemperature, 
 											TakeOffCalc.this.getPhi(),
-											TakeOffCalc.this.getTakeOffThrustCorrectionFactor()
+											TakeOffCalc.this.getTakeOffThrustCorrectionFactor(),
+											thePowerPlant.getEngineList().get(i).getEngineType(),
+											thePowerPlant.getEngineList().get(i).getEtaPropeller()
 											)
 									);
 					else {
@@ -2906,7 +2939,9 @@ public class TakeOffCalc {
 													),
 											deltaTemperature, 
 											TakeOffCalc.this.getPhi(),
-											TakeOffCalc.this.getAprThrustCorrectionFactor()
+											TakeOffCalc.this.getAprThrustCorrectionFactor(),
+											thePowerPlant.getEngineList().get(i).getEngineType(),
+											thePowerPlant.getEngineList().get(i).getEtaPropeller()
 											)
 									);
 					}
@@ -2931,7 +2966,9 @@ public class TakeOffCalc {
 													),
 											deltaTemperature, 
 											TakeOffCalc.this.getPhi(),
-											TakeOffCalc.this.getTakeOffThrustCorrectionFactor()
+											TakeOffCalc.this.getTakeOffThrustCorrectionFactor(),
+											thePowerPlant.getEngineList().get(i).getEngineType(),
+											thePowerPlant.getEngineList().get(i).getEtaPropeller()
 											)
 									);
 					else
@@ -2953,7 +2990,9 @@ public class TakeOffCalc {
 													),
 											deltaTemperature, 
 											TakeOffCalc.this.getPhi(),
-											TakeOffCalc.this.getGidlThrustCorrectionFactor()
+											TakeOffCalc.this.getGidlThrustCorrectionFactor(),
+											thePowerPlant.getEngineList().get(i).getEngineType(),
+											thePowerPlant.getEngineList().get(i).getEtaPropeller()
 											)
 									);
 				}

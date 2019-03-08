@@ -161,7 +161,9 @@ public class RateOfClimbCalc {
 							SpeedCalc.calculateMach(altitude, deltaTemperature, speed), 
 							deltaTemperature, 
 							phi,
-							thrustCorrectionFactor
+							thrustCorrectionFactor,
+							thePowerPlant.getEngineList().get(i).getEngineType(),
+							thePowerPlant.getEngineList().get(i).getEtaPropeller()
 							).doubleValue(SI.NEWTON),
 					SI.NEWTON
 					);

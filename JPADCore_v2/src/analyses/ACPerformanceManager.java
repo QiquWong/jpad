@@ -3351,7 +3351,6 @@ public class ACPerformanceManager {
 				// PAYLOAD-RANGE CALCULATION
 				System.setOut(originalOut);
 				System.out.println("\t\t\t\tPayload-Range points calculation :: START");
-				System.setOut(filterStream);
 				calcPayloadRange.fromMissionProfile(_thePerformanceInterface.getXcgPositionList().get(i));
 				System.setOut(originalOut);
 				System.out.println("\t\t\t\tPayload-Range points calculation :: COMPLETE");
@@ -7420,7 +7419,8 @@ public class ACPerformanceManager {
 							_thePerformanceInterface.getPolarCLLanding().get(xcg),
 							_thePerformanceInterface.getPolarCDLanding().get(xcg), 
 							_thePerformanceInterface.getTheAircraft().getWing().getAspectRatio(),
-							_thePerformanceInterface.getTheAircraft().getWing().getSurfacePlanform(), 
+							_thePerformanceInterface.getTheAircraft().getWing().getSurfacePlanform(),
+							_thePerformanceInterface.getTheAircraft().getFuselage().getHeightFromGround(),
 							_thePerformanceInterface.getFreeRollDuration(),
 							_thePerformanceInterface.getMuFunction(),
 							_thePerformanceInterface.getMuBrakeFunction(), 
@@ -7526,6 +7526,14 @@ public class ACPerformanceManager {
 
 		public void fromMissionProfile(Double xcg) {
 
+			final PrintStream originalOut = System.out;
+			PrintStream filterStream = new PrintStream(new OutputStream() {
+			    public void write(int b) {
+			         // write nothing
+			    }
+			});
+			System.setOut(filterStream);
+			
 			if (_vMCMap.get(xcg) == null) {
 				CalcTakeOff calcTakeOff = new CalcTakeOff();
 				calcTakeOff.calculateVMC(xcg);
@@ -7601,7 +7609,9 @@ public class ACPerformanceManager {
 			
 			//------------------------------------------------------------
 			// CRUISE MACH AND ALTITUDE
+			System.setOut(originalOut);
 			_thePayloadRangeCalculatorMap.get(xcg).createPayloadRange(_vMCMap.get(xcg).to(SI.METERS_PER_SECOND));
+			System.setOut(filterStream);
 			
 			_rangeAtMaxPayloadMap.put(xcg, _thePayloadRangeCalculatorMap.get(xcg).getRangeAtMaxPayload());
 			_rangeAtDesignPayloadMap.put(xcg, _thePayloadRangeCalculatorMap.get(xcg).getRangeAtDesignPayload());
@@ -7863,6 +7873,7 @@ public class ACPerformanceManager {
 							_thePerformanceInterface.getPolarCDLanding().get(xcg),
 							_thePerformanceInterface.getTheAircraft().getWing().getAspectRatio(), 
 							_thePerformanceInterface.getTheAircraft().getWing().getSurfacePlanform(),
+							_thePerformanceInterface.getTheAircraft().getFuselage().getHeightFromGround(),
 							_thePerformanceInterface.getFreeRollDuration(),
 							_thePerformanceInterface.getMuFunction(), 
 							_thePerformanceInterface.getMuBrakeFunction(),

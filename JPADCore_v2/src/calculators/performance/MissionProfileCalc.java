@@ -1568,7 +1568,9 @@ public class MissionProfileCalc {
 									cruiseMissionMachNumber.get(0),
 									theOperatingConditions.getDeltaTemperatureCruise(), 
 									theOperatingConditions.getThrottleCruise(), 
-									cruiseCalibrationFactorThrust
+									cruiseCalibrationFactorThrust,
+									theAircraft.getPowerPlant().getEngineList().get(iEng).getEngineType(),
+									theAircraft.getPowerPlant().getEngineList().get(iEng).getEtaPropeller()
 									)
 							);
 				}
@@ -1944,7 +1946,9 @@ public class MissionProfileCalc {
 										cruiseMissionMachNumber.get(j),
 										theOperatingConditions.getDeltaTemperatureCruise(), 
 										theOperatingConditions.getThrottleCruise(), 
-										cruiseCalibrationFactorThrust
+										cruiseCalibrationFactorThrust,
+										theAircraft.getPowerPlant().getEngineList().get(iEng).getEngineType(),
+										theAircraft.getPowerPlant().getEngineList().get(iEng).getEtaPropeller()
 										)
 								);
 					}
@@ -2466,7 +2470,9 @@ public class MissionProfileCalc {
 										alternateCruiseMachNumberList.get(0),
 										theOperatingConditions.getDeltaTemperatureCruise(), 
 										theOperatingConditions.getThrottleCruise(), 
-										cruiseCalibrationFactorThrust
+										cruiseCalibrationFactorThrust,
+										theAircraft.getPowerPlant().getEngineList().get(iEng).getEngineType(),
+										theAircraft.getPowerPlant().getEngineList().get(iEng).getEtaPropeller()
 										)
 								);
 					}
@@ -2879,7 +2885,9 @@ public class MissionProfileCalc {
 											alternateCruiseMachNumberList.get(j),
 											theOperatingConditions.getDeltaTemperatureCruise(), 
 											theOperatingConditions.getThrottleCruise(), 
-											cruiseCalibrationFactorThrust
+											cruiseCalibrationFactorThrust,
+											theAircraft.getPowerPlant().getEngineList().get(iEng).getEngineType(),
+											theAircraft.getPowerPlant().getEngineList().get(iEng).getEtaPropeller()
 											)
 									);
 						}
@@ -3298,7 +3306,9 @@ public class MissionProfileCalc {
 										holdingMachNumberList.get(0),
 										theOperatingConditions.getDeltaTemperatureClimb(), 
 										theOperatingConditions.getThrottleCruise(), 
-										cruiseCalibrationFactorThrust
+										cruiseCalibrationFactorThrust,
+										theAircraft.getPowerPlant().getEngineList().get(iEng).getEngineType(),
+										theAircraft.getPowerPlant().getEngineList().get(iEng).getEtaPropeller()
 										)
 								);
 					}
@@ -3693,7 +3703,9 @@ public class MissionProfileCalc {
 											holdingMachNumberList.get(j),
 											theOperatingConditions.getDeltaTemperatureClimb(), 
 											theOperatingConditions.getThrottleCruise(), 
-											cruiseCalibrationFactorThrust
+											cruiseCalibrationFactorThrust,
+											theAircraft.getPowerPlant().getEngineList().get(iEng).getEngineType(),
+											theAircraft.getPowerPlant().getEngineList().get(iEng).getEtaPropeller()
 											)
 									);
 						}
@@ -3817,6 +3829,7 @@ public class MissionProfileCalc {
 								polarCDLanding, 
 								theAircraft.getWing().getAspectRatio(), 
 								theAircraft.getWing().getSurfacePlanform(),
+								theAircraft.getFuselage().getHeightFromGround(),
 								freeRollDuration,
 								mu, 
 								muBrake,
@@ -4418,15 +4431,15 @@ public class MissionProfileCalc {
 		
 		//.................................................................................................
 		// SFC
-		this.sfcMissionMap.put(MissionPhasesEnum.TAKE_OFF, sfcTakeOff.stream().map(sfc -> sfc.isNaN() ? 0.0 : sfc).collect(Collectors.toList())); /* lb/lb*hr */
-		this.sfcMissionMap.put(MissionPhasesEnum.CLIMB, sfcClimb.stream().map(sfc -> sfc.isNaN() ? 0.0 : sfc).collect(Collectors.toList())); /* lb/lb*hr */
-		this.sfcMissionMap.put(MissionPhasesEnum.CRUISE, sfcCruise.stream().map(sfc -> sfc.isNaN() ? 0.0 : sfc).collect(Collectors.toList())); /* lb/lb*hr */
-		this.sfcMissionMap.put(MissionPhasesEnum.FIRST_DESCENT, sfcFirstDescent.stream().map(sfc -> sfc.isNaN() ? 0.0 : sfc).collect(Collectors.toList())); /* lb/lb*hr */
-		this.sfcMissionMap.put(MissionPhasesEnum.SECOND_CLIMB, sfcSecondClimb.stream().map(sfc -> sfc.isNaN() ? 0.0 : sfc).collect(Collectors.toList())); /* lb/lb*hr */
-		this.sfcMissionMap.put(MissionPhasesEnum.ALTERNATE_CRUISE, sfcAlternateCruise.stream().map(sfc -> sfc.isNaN() ? 0.0 : sfc).collect(Collectors.toList())); /* lb/lb*hr */
-		this.sfcMissionMap.put(MissionPhasesEnum.SECOND_DESCENT, sfcSecondDescent.stream().map(sfc -> sfc.isNaN() ? 0.0 : sfc).collect(Collectors.toList())); /* lb/lb*hr */
-		this.sfcMissionMap.put(MissionPhasesEnum.HOLDING, sfcHolding.stream().map(sfc -> sfc.isNaN() ? 0.0 : sfc).collect(Collectors.toList())); /* lb/lb*hr */
-		this.sfcMissionMap.put(MissionPhasesEnum.APPROACH_AND_LANDING, sfcLanding.stream().map(sfc -> sfc.isNaN() ? 0.0 : sfc).collect(Collectors.toList())); /* lb/lb*hr */
+		this.sfcMissionMap.put(MissionPhasesEnum.TAKE_OFF, sfcTakeOff.stream().map(sfc -> sfc.isNaN() ? 0.0 : sfc).map(sfc -> sfc.isInfinite() ? 0.0 : sfc).collect(Collectors.toList())); /* lb/lb*hr */
+		this.sfcMissionMap.put(MissionPhasesEnum.CLIMB, sfcClimb.stream().map(sfc -> sfc.isNaN() ? 0.0 : sfc).map(sfc -> sfc.isInfinite() ? 0.0 : sfc).collect(Collectors.toList())); /* lb/lb*hr */
+		this.sfcMissionMap.put(MissionPhasesEnum.CRUISE, sfcCruise.stream().map(sfc -> sfc.isNaN() ? 0.0 : sfc).map(sfc -> sfc.isInfinite() ? 0.0 : sfc).collect(Collectors.toList())); /* lb/lb*hr */
+		this.sfcMissionMap.put(MissionPhasesEnum.FIRST_DESCENT, sfcFirstDescent.stream().map(sfc -> sfc.isNaN() ? 0.0 : sfc).map(sfc -> sfc.isInfinite() ? 0.0 : sfc).collect(Collectors.toList())); /* lb/lb*hr */
+		this.sfcMissionMap.put(MissionPhasesEnum.SECOND_CLIMB, sfcSecondClimb.stream().map(sfc -> sfc.isNaN() ? 0.0 : sfc).map(sfc -> sfc.isInfinite() ? 0.0 : sfc).collect(Collectors.toList())); /* lb/lb*hr */
+		this.sfcMissionMap.put(MissionPhasesEnum.ALTERNATE_CRUISE, sfcAlternateCruise.stream().map(sfc -> sfc.isNaN() ? 0.0 : sfc).map(sfc -> sfc.isInfinite() ? 0.0 : sfc).collect(Collectors.toList())); /* lb/lb*hr */
+		this.sfcMissionMap.put(MissionPhasesEnum.SECOND_DESCENT, sfcSecondDescent.stream().map(sfc -> sfc.isNaN() ? 0.0 : sfc).map(sfc -> sfc.isInfinite() ? 0.0 : sfc).collect(Collectors.toList())); /* lb/lb*hr */
+		this.sfcMissionMap.put(MissionPhasesEnum.HOLDING, sfcHolding.stream().map(sfc -> sfc.isNaN() ? 0.0 : sfc).map(sfc -> sfc.isInfinite() ? 0.0 : sfc).collect(Collectors.toList())); /* lb/lb*hr */
+		this.sfcMissionMap.put(MissionPhasesEnum.APPROACH_AND_LANDING, sfcLanding.stream().map(sfc -> sfc.isNaN() ? 0.0 : sfc).map(sfc -> sfc.isInfinite() ? 0.0 : sfc).collect(Collectors.toList())); /* lb/lb*hr */
 		
 		//.................................................................................................
 		// FUEL FLOW

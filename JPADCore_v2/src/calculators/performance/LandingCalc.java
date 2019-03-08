@@ -64,7 +64,7 @@ public class LandingCalc {
 	// VARIABLE DECLARATION
 	private double aspectRatio;
 	private Amount<Area> surface; 
-	private Amount<Length> span;
+	private Amount<Length> span, fuselageHeightFromGround;
 	private PowerPlant thePowerPlant;
 	private double[] polarCLLanding;
 	private double[] polarCDLanding;
@@ -148,6 +148,7 @@ public class LandingCalc {
 			double[] polarCDLanding,
 			double aspectRatio,
 			Amount<Area> surface,
+			Amount<Length> fuselageHeightFromGround,
 			Amount<Duration> dtFreeRoll,
 			MyInterpolatingFunction mu,
 			MyInterpolatingFunction muBrake,
@@ -199,6 +200,7 @@ public class LandingCalc {
 				Math.sqrt(aspectRatio*surface.doubleValue(SI.SQUARE_METRE)),
 				SI.METER
 				);
+		this.fuselageHeightFromGround = fuselageHeightFromGround;
 		this.thePowerPlant = thePowerPlant;
 		this.polarCLLanding = polarCLLanding;
 		this.polarCDLanding = polarCDLanding;
@@ -419,6 +421,7 @@ public class LandingCalc {
 						NonSI.DEGREE_ANGLE
 						)
 				);
+		
 		thrustAtDescentStart = Amount.valueOf( 
 				gammaDescent.doubleValue(SI.RADIAN)*(maxLandingMass.doubleValue(SI.KILOGRAM)*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND)) 
 				+ ((DynamicsEquationsLanding)ode).drag(
@@ -529,11 +532,11 @@ public class LandingCalc {
 
 		int i=0;
 		int maxIter = 200;
-		dtFlare = Amount.valueOf(3.0, SI.SECOND); 
+		dtFlare = Amount.valueOf(3.0, SI.SECOND); /* used to evaluate thrust flare function */
 		alphaDotFlare = 1.0; /* deg/s - First guess value */
 		double newAlphaDotFlare = 0.0;
 		Amount<Velocity> targetRateOfDescent = Amount.valueOf(-100, MyUnits.FOOT_PER_MINUTE);
-		Amount<Length> targetAltitude = Amount.valueOf(1.6, SI.METER);
+		Amount<Length> targetAltitude = fuselageHeightFromGround;
 
 		rateOfDescentAtFlareEnding = Amount.valueOf(10000.0, SI.METERS_PER_SECOND);  // Initialization at an impossible value
 		altitudeAtFlareEnding = Amount.valueOf(10000.0, SI.METER);  // Initialization at an impossible value
@@ -629,7 +632,7 @@ public class LandingCalc {
 							"\n\tx[0] = s = " + x[0] + " m" +
 									"\n\tx[1] = V = " + x[1] + " m/s" + 
 									"\n\tx[2] = gamma = " + 0.0 + " °" +
-									"\n\tx[3] = altitude = " + 0.0 + " m" +
+									"\n\tx[3] = altitude = " + x[3] + " m" +
 									"\n\tx[4] = fuel used = " + x[4] + " kg"
 							);
 
@@ -732,6 +735,8 @@ public class LandingCalc {
 									"\n\tx[3] = altitude = " + x[3] + " m" +
 									"\n\tx[4] = fuel used = " + x[4] + " kg"
 							);
+					tFlareAltitude = Amount.valueOf(t, SI.SECOND);
+					timeBreakPoints.add(t);
 
 					Amount<Duration> time = Amount.valueOf(t, SI.SECOND);
 					Amount<Velocity> speed = Amount.valueOf(x[1], SI.METERS_PER_SECOND);
@@ -742,9 +747,6 @@ public class LandingCalc {
 							SI.NEWTON
 							);
 					Amount<Angle> alpha = ((DynamicsEquationsLanding)ode).alpha(time, speed, altitude, deltaTemperature, gamma, weight);
-
-					tFlareAltitude = Amount.valueOf(t, SI.SECOND);
-					timeBreakPoints.add(t);
 					
 					if (sDescent == null)
 						sDescent = Amount.valueOf(0.0, SI.METER);
@@ -783,7 +785,9 @@ public class LandingCalc {
 												),
 										deltaTemperature, 
 										LandingCalc.this.getPhi(),
-										LandingCalc.this.getGidlThrustCorrectionFactor()
+										LandingCalc.this.getGidlThrustCorrectionFactor(),
+										thePowerPlant.getEngineList().get(i).getEngineType(),
+										thePowerPlant.getEngineList().get(i).getEtaPropeller()
 										)
 								);
 					Amount<Force> thrustAtTouchDown = Amount.valueOf( 
@@ -1139,8 +1143,8 @@ public class LandingCalc {
 			
 			if(positiveRCFlag == false) {
 				if(Math.abs(rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE)) > Math.abs(targetRateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE)))
-					if(Math.abs(rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE) - targetRateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE)) < 250.0)
-						newAlphaDotFlare = alphaDotFlare + 0.01;
+					if(Math.abs(rateOfDescentAtFlareEnding.doubleValue(MyUnits.FOOT_PER_MINUTE) - targetRateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE)) < 200.0)
+						newAlphaDotFlare = alphaDotFlare + 0.05;
 					else
 						newAlphaDotFlare = alphaDotFlare + 0.5;
 			}
@@ -2696,6 +2700,10 @@ public class LandingCalc {
 			for(int i=0; i<thrustList.size(); i++) 
 				thrustListVertical.add(thrustList.get(i).times(Math.sin(thePowerPlant.getEngineList().get(i).getTiltingAngle().doubleValue(SI.RADIAN))));
 			
+			if(time.doubleValue(SI.SECOND) >= tTouchDown.doubleValue(SI.SECOND)) {
+				gamma = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+			}
+			
 			if( t < tTouchDown.doubleValue(SI.SECOND)) {
 				xDot[0] = speed.doubleValue(SI.METERS_PER_SECOND);
 				xDot[1] = (g0/weight.doubleValue(SI.NEWTON))*(
@@ -2774,7 +2782,9 @@ public class LandingCalc {
 											),
 									deltaTemperature, 
 									LandingCalc.this.getPhi(),
-									LandingCalc.this.getFidlThrustCorrectionFactor()
+									LandingCalc.this.getFidlThrustCorrectionFactor(),
+									thePowerPlant.getEngineList().get(i).getEngineType(),
+									thePowerPlant.getEngineList().get(i).getEtaPropeller()
 									)
 							);
 				
@@ -2810,7 +2820,9 @@ public class LandingCalc {
 											),
 									deltaTemperature, 
 									LandingCalc.this.getPhi(),
-									LandingCalc.this.getGidlThrustCorrectionFactor()
+									LandingCalc.this.getGidlThrustCorrectionFactor(),
+									thePowerPlant.getEngineList().get(i).getEngineType(),
+									thePowerPlant.getEngineList().get(i).getEtaPropeller()
 									)
 							);
 
@@ -2852,7 +2864,9 @@ public class LandingCalc {
 											), 
 									deltaTemperature, 
 									1.0, /* Throttle setting cruise */
-									LandingCalc.this.getCruiseThrustCorrectionFactor()
+									LandingCalc.this.getCruiseThrustCorrectionFactor(),
+									thePowerPlant.getEngineList().get(ieng).getEngineType(),
+									thePowerPlant.getEngineList().get(ieng).getEtaPropeller()
 									)
 							);
 
@@ -2873,7 +2887,9 @@ public class LandingCalc {
 											), 
 									deltaTemperature, 
 									1.0, /* Throttle setting cruise */
-									LandingCalc.this.getFidlThrustCorrectionFactor()
+									LandingCalc.this.getFidlThrustCorrectionFactor(),
+									thePowerPlant.getEngineList().get(ieng).getEngineType(),
+									thePowerPlant.getEngineList().get(ieng).getEtaPropeller()
 									)
 							);
 				}
@@ -3018,7 +3034,9 @@ public class LandingCalc {
 											), 
 									deltaTemperature, 
 									1.0, /* Throttle setting cruise */
-									LandingCalc.this.getCruiseThrustCorrectionFactor()
+									LandingCalc.this.getCruiseThrustCorrectionFactor(),
+									thePowerPlant.getEngineList().get(ieng).getEngineType(),
+									thePowerPlant.getEngineList().get(ieng).getEtaPropeller()
 									)
 							);
 
@@ -3039,7 +3057,9 @@ public class LandingCalc {
 											), 
 									deltaTemperature, 
 									1.0, /* Throttle setting cruise */
-									LandingCalc.this.getFidlThrustCorrectionFactor()
+									LandingCalc.this.getFidlThrustCorrectionFactor(),
+									thePowerPlant.getEngineList().get(ieng).getEngineType(),
+									thePowerPlant.getEngineList().get(ieng).getEtaPropeller()
 									)
 							);
 					cruiseEmissionIndexNOxList.add(
@@ -3165,7 +3185,9 @@ public class LandingCalc {
 											), 
 									deltaTemperature, 
 									1.0, /* Throttle setting cruise */
-									LandingCalc.this.getCruiseThrustCorrectionFactor()
+									LandingCalc.this.getCruiseThrustCorrectionFactor(),
+									thePowerPlant.getEngineList().get(ieng).getEngineType(),
+									thePowerPlant.getEngineList().get(ieng).getEtaPropeller()
 									)
 							);
 
@@ -3186,7 +3208,9 @@ public class LandingCalc {
 											), 
 									deltaTemperature, 
 									1.0, /* Throttle setting cruise */
-									LandingCalc.this.getFidlThrustCorrectionFactor()
+									LandingCalc.this.getFidlThrustCorrectionFactor(),
+									thePowerPlant.getEngineList().get(ieng).getEngineType(),
+									thePowerPlant.getEngineList().get(ieng).getEtaPropeller()
 									)
 							);
 					cruiseEmissionIndexCOList.add(
@@ -3311,7 +3335,9 @@ public class LandingCalc {
 											), 
 									deltaTemperature, 
 									1.0, /* Throttle setting cruise */
-									LandingCalc.this.getCruiseThrustCorrectionFactor()
+									LandingCalc.this.getCruiseThrustCorrectionFactor(),
+									thePowerPlant.getEngineList().get(ieng).getEngineType(),
+									thePowerPlant.getEngineList().get(ieng).getEtaPropeller()
 									)
 							);
 
@@ -3332,7 +3358,9 @@ public class LandingCalc {
 											), 
 									deltaTemperature, 
 									1.0, /* Throttle setting cruise */
-									LandingCalc.this.getFidlThrustCorrectionFactor()
+									LandingCalc.this.getFidlThrustCorrectionFactor(),
+									thePowerPlant.getEngineList().get(ieng).getEngineType(),
+									thePowerPlant.getEngineList().get(ieng).getEtaPropeller()
 									)
 							);
 					cruiseEmissionIndexHCList.add(
@@ -3458,7 +3486,9 @@ public class LandingCalc {
 											), 
 									deltaTemperature, 
 									1.0, /* Throttle setting cruise */
-									LandingCalc.this.getCruiseThrustCorrectionFactor()
+									LandingCalc.this.getCruiseThrustCorrectionFactor(),
+									thePowerPlant.getEngineList().get(ieng).getEngineType(),
+									thePowerPlant.getEngineList().get(ieng).getEtaPropeller()
 									)
 							);
 
@@ -3479,7 +3509,9 @@ public class LandingCalc {
 											), 
 									deltaTemperature, 
 									1.0, /* Throttle setting cruise */
-									LandingCalc.this.getFidlThrustCorrectionFactor()
+									LandingCalc.this.getFidlThrustCorrectionFactor(),
+									thePowerPlant.getEngineList().get(ieng).getEngineType(),
+									thePowerPlant.getEngineList().get(ieng).getEtaPropeller()
 									)
 							);
 					cruiseEmissionIndexSootList.add(
@@ -3605,7 +3637,9 @@ public class LandingCalc {
 											), 
 									deltaTemperature, 
 									1.0, /* Throttle setting cruise */
-									LandingCalc.this.getCruiseThrustCorrectionFactor()
+									LandingCalc.this.getCruiseThrustCorrectionFactor(),
+									thePowerPlant.getEngineList().get(ieng).getEngineType(),
+									thePowerPlant.getEngineList().get(ieng).getEtaPropeller()
 									)
 							);
 
@@ -3626,7 +3660,9 @@ public class LandingCalc {
 											), 
 									deltaTemperature, 
 									1.0, /* Throttle setting cruise */
-									LandingCalc.this.getFidlThrustCorrectionFactor()
+									LandingCalc.this.getFidlThrustCorrectionFactor(),
+									thePowerPlant.getEngineList().get(ieng).getEngineType(),
+									thePowerPlant.getEngineList().get(ieng).getEtaPropeller()
 									)
 							);
 					cruiseEmissionIndexCO2List.add(
@@ -3752,7 +3788,9 @@ public class LandingCalc {
 											), 
 									deltaTemperature, 
 									1.0, /* Throttle setting cruise */
-									LandingCalc.this.getCruiseThrustCorrectionFactor()
+									LandingCalc.this.getCruiseThrustCorrectionFactor(),
+									thePowerPlant.getEngineList().get(ieng).getEngineType(),
+									thePowerPlant.getEngineList().get(ieng).getEtaPropeller()
 									)
 							);
 
@@ -3773,7 +3811,9 @@ public class LandingCalc {
 											), 
 									deltaTemperature, 
 									1.0, /* Throttle setting cruise */
-									LandingCalc.this.getFidlThrustCorrectionFactor()
+									LandingCalc.this.getFidlThrustCorrectionFactor(),
+									thePowerPlant.getEngineList().get(ieng).getEngineType(),
+									thePowerPlant.getEngineList().get(ieng).getEtaPropeller()
 									)
 							);
 					cruiseEmissionIndexSOxList.add(
@@ -3899,7 +3939,9 @@ public class LandingCalc {
 											), 
 									deltaTemperature, 
 									1.0, /* Throttle setting cruise */
-									LandingCalc.this.getCruiseThrustCorrectionFactor()
+									LandingCalc.this.getCruiseThrustCorrectionFactor(),
+									thePowerPlant.getEngineList().get(ieng).getEngineType(),
+									thePowerPlant.getEngineList().get(ieng).getEtaPropeller()
 									)
 							);
 
@@ -3920,7 +3962,9 @@ public class LandingCalc {
 											), 
 									deltaTemperature, 
 									1.0, /* Throttle setting cruise */
-									LandingCalc.this.getFidlThrustCorrectionFactor()
+									LandingCalc.this.getFidlThrustCorrectionFactor(),
+									thePowerPlant.getEngineList().get(ieng).getEngineType(),
+									thePowerPlant.getEngineList().get(ieng).getEtaPropeller()
 									)
 							);
 					cruiseEmissionIndexH2OList.add(
@@ -4095,7 +4139,7 @@ public class LandingCalc {
 
 			Amount<Angle> alpha = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
 			
-			int maxIterAlpha = 100; /* max alpha excursion +-1° */
+			int maxIterAlpha = 200; /* max alpha excursion +-2° */
 			if(time.doubleValue(SI.SECOND) <= tFlareAltitude.doubleValue(SI.SECOND)) {
 
 				int j=0;
@@ -4143,7 +4187,7 @@ public class LandingCalc {
 						);
 				
 			}
-			else if( time.doubleValue(SI.SECOND) > tTouchDown.doubleValue(SI.SECOND))
+			else if( time.doubleValue(SI.SECOND) >= tTouchDown.doubleValue(SI.SECOND))
 				alpha = LandingCalc.this.getAlphaGround().to(NonSI.DEGREE_ANGLE);
 
 			return alpha;
@@ -5263,6 +5307,14 @@ public class LandingCalc {
 
 	public void setkTouchDown(double kTouchDown) {
 		this.kTouchDown = kTouchDown;
+	}
+
+	public Amount<Length> getFuselageHeightFromGround() {
+		return fuselageHeightFromGround;
+	}
+
+	public void setFuselageHeightFromGround(Amount<Length> fuselageHeightFromGround) {
+		this.fuselageHeightFromGround = fuselageHeightFromGround;
 	}
 
 }
