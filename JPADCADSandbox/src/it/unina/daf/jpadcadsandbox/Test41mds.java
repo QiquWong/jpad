@@ -89,7 +89,8 @@ public class Test41mds {
 		Fuselage fuselage = aircraft.getFuselage();
 		LiftingSurface wing = aircraft.getWing();
 		LiftingSurface hTail = aircraft.getHTail();
-		LiftingSurface vTail = aircraft.getVTail();	
+		LiftingSurface vTail = aircraft.getVTail();
+		LiftingSurface canard = aircraft.getCanard();
 		List<NacelleCreator> nacelles = aircraft.getNacelles().getNacellesList();
 		List<Engine> engines = aircraft.getPowerPlant().getEngineList();
 		
@@ -121,27 +122,31 @@ public class Test41mds {
 				fuselage, 7, 7, exportWires, exportShells, exportSolids);
 
 		List<OCCShape> wingShapes = AircraftCADUtils.getLiftingSurfaceCAD(
-				wing, WingTipType.CUTOFF, exportWires, exportShells, exportSolids);
+				wing, WingTipType.WINGLET, exportWires, exportShells, exportSolids);
 
 		List<OCCShape> hTailShapes = AircraftCADUtils.getLiftingSurfaceCAD(
-				hTail, WingTipType.CUTOFF, exportWires, exportShells, exportSolids);
+				hTail, WingTipType.ROUNDED, exportWires, exportShells, exportSolids);
 
 		List<OCCShape> vTailShapes = AircraftCADUtils.getLiftingSurfaceCAD(
-				vTail, WingTipType.CUTOFF, exportWires, exportShells, exportSolids);
+				vTail, WingTipType.ROUNDED, exportWires, exportShells, exportSolids);
+		
+//		List<OCCShape> canardShapes = AircraftCADUtils.getLiftingSurfaceCAD(
+//				canard, WingTipType.ROUNDED, exportWires, exportShells, exportSolids);
 
-		List<OCCShape> fairingShapes = AircraftCADUtils.getFairingShapes(
+		List<OCCShape> wingFairingShapes = AircraftCADUtils.getFairingShapes(
 				fuselage, wing, 
-				0.50, 0.50, 1.01, 0.05, 
-				0.85, 0.10, 0.85, 
+				0.60, 0.75, 0.85, 0.05, 
+				0.75, 0.65, 0.75, 
 				exportWires, exportShells, exportSolids);
+				
+//		List<OCCShape> canardFairingShapes = AircraftCADUtils.getFairingShapes(
+//				fuselage, canard, 
+//				0.85, 0.85, 0.55, 0.20, 
+//				0.15, 0.95, 0.50, 
+//				exportWires, exportShells, exportSolids);
 
-		List<OCCShape> engineShapes = AircraftCADUtils.getEnginesCAD(inputDirectory,
-				nacelles, engines, templatesMapList, bladePitchAngleList, exportWires, exportShells, exportSolids);
-		
-		// ---------------------
-		// Print CAD reports
-		// ---------------------
-		
+//		List<OCCShape> engineShapes = AircraftCADUtils.getEnginesCAD(inputDirectory,
+//				nacelles, engines, templatesMapList, bladePitchAngleList, exportWires, exportShells, exportSolids);
 		
 		// ---------------------------------
 		// Write the results to file
@@ -150,8 +155,10 @@ public class Test41mds {
 		exportShapes.addAll(wingShapes);
 		exportShapes.addAll(hTailShapes);
 		exportShapes.addAll(vTailShapes);
-		exportShapes.addAll(fairingShapes);
-		exportShapes.addAll(engineShapes);
+//		exportShapes.addAll(canardShapes);
+		exportShapes.addAll(wingFairingShapes);
+//		exportShapes.addAll(canardFairingShapes);
+//		exportShapes.addAll(engineShapes);
 			
 		OCCUtils.write("Test41mds", FileExtension.STEP, exportShapes);
 	}

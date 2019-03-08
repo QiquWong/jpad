@@ -870,8 +870,10 @@ public final class OCCUtils {
 	
 	public static OCCShell applyFilletOnShell(OCCShell shell, int[] edgeIndexes, double radius) {
 		
+		OCCShell filletShell = null;
+
 		BRepFilletAPI_MakeFillet filletMaker = new BRepFilletAPI_MakeFillet(shell.getShape());
-		
+
 		List<CADEdge> shellEdges = new ArrayList<>();
 		OCCExplorer exp = new OCCExplorer();
 		exp.init(shell, CADShapeTypes.EDGE);
@@ -879,17 +881,19 @@ public final class OCCUtils {
 			shellEdges.add((CADEdge) exp.current());
 			exp.next();
 		}
-		
+
 		Arrays.stream(edgeIndexes).forEach(i -> filletMaker.Add(radius, ((OCCEdge) shellEdges.get(i)).getShape()));
-		
+
 		List<TopoDS_Shell> filletShells = new ArrayList<>();
 		TopExp_Explorer filletShellExplorer = new TopExp_Explorer(filletMaker.Shape(), TopAbs_ShapeEnum.TopAbs_SHELL);
 		while(filletShellExplorer.More() > 0) {
 			filletShells.add(TopoDS.ToShell(filletShellExplorer.Current()));
 			filletShellExplorer.Next();
 		}
-		
-		return (OCCShell) OCCUtils.theFactory.newShape(filletShells.get(0));
+
+		filletShell = (OCCShell) OCCUtils.theFactory.newShape(filletShells.get(0));
+
+		return filletShell;
 	}
 	
 	public static List<CADWire> revolveWireAroundGuideCurve(
