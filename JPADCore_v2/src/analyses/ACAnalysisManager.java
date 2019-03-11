@@ -2185,7 +2185,7 @@ public class ACAnalysisManager {
 
 	}
 	
-	public void calculateAerodynamicAndStability(Aircraft aircraft, String resultsFolderPath) {
+	public void calculateAerodynamicAndStability(Aircraft aircraft, String resultsFolderPath) throws IOException {
 
 		if(_theAnalysisManagerInterface.getTaskListAerodynamicAndStability().contains(ConditionEnum.TAKE_OFF)) 
 			aircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.TAKE_OFF).calculate(resultsFolderPath);
