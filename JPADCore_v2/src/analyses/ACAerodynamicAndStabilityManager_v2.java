@@ -2811,7 +2811,38 @@ public class ACAerodynamicAndStabilityManager_v2 {
 		List<Integer> boldRowIndex = new ArrayList<>();
 		int currentBoldIndex = 1;
 
-		dataListstallCondition.add(new Object[] {"Alpha Wing","Alpha body","CL wing","CD wing","CM wing", "", "alpha h tail","CL htail ref to Sh", "CL htail ref to Sw", "CD htail ref to Sh", "CD htail ref to Sw", "CM htail ref to Sh" , "", "CL fuselage", "CD fuselage" });
+		dataListstallCondition.add(new Object[] {"Alpha Wing","Alpha body","CL wing","CD wing",
+				"CM wing", "", "alpha h tail","CL htail ref to Sh", "CL htail ref to Sw", 
+				"CD htail ref to Sh", "CD htail ref to Sw", "CM htail ref to Sh" , "", 
+				"CL fuselage", "CD fuselage", 
+				"CM fuselage",
+				"", 
+				"CZ wing",
+				"CX wing",
+				"CMcg wing",
+				"", 
+				"CZ htail",
+				"CX htail",
+				"CMcg htail",
+				"", 
+				"CZ body",
+				"CX body",
+				"CMcg body",
+				"",
+				"",
+				"CMcg wing-body untrimmed",
+				"CMcg wing-body-htail untrimmed",
+				"CL wing-body untrimmed",
+				"CL htail trimmed",
+				"delta CL htail trimmed",
+				"CD htail trimmed ref to Sh",
+				"CD htail trimmed ref to Sw",
+				"delta CD htail trimmed",
+				"delta equilibratore",
+				"CL total trimmed",
+				"CD total trimmed",
+				"CM total trimmed",
+				});
 
 		
 		
@@ -2823,8 +2854,8 @@ public class ACAerodynamicAndStabilityManager_v2 {
 			"",
 			_current3DWingMomentCurve.get(i),
 			"",
-			_alphaHTailList.get(i),
-			_current3DHorizontalTailLiftCurve.get(i),
+			_alphaHTailList.get(i).doubleValue(NonSI.DEGREE_ANGLE),
+			_current3DHorizontalTailLiftCurve.get(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE)).get(i),
 			_current3DHorizontalTailLiftCurve.get(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE)).get(i)
 			*_theAerodynamicBuilderInterface.getHTailDynamicPressureRatio()
 			*_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getTheLiftingSurface().getSurfacePlanform().doubleValue(SI.SQUARE_METRE)/
@@ -2834,10 +2865,60 @@ public class ACAerodynamicAndStabilityManager_v2 {
 			_current3DHorizontalTailMomentCurve.get(i),
 			"",
 			0.0,
-			_fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).getCD0Total().get(i),
+			_fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE)
+			.getPolar3DCurve()
+			.get(_theAerodynamicBuilderInterface.getComponentTaskList()
+					.get(ComponentEnum.FUSELAGE)
+					.get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_FUSELAGE))[i],
+			_fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE)
+			.getMoment3DCurve()
+			.get(_theAerodynamicBuilderInterface.getComponentTaskList()
+					.get(ComponentEnum.FUSELAGE)
+					.get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_FUSELAGE))[i],
+			"",
+			_current3DWingLiftCurve.get(i)*Math.cos(_alphaWingList.get(i).doubleValue(SI.RADIAN)),
+			_current3DWingLiftCurve.get(i)*Math.sin(_alphaWingList.get(i).doubleValue(SI.RADIAN)),
+			_totalMomentCoefficientBreakDown.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(0)).get(ComponentEnum.WING).get(i),
+			"",
+			_current3DHorizontalTailLiftCurve.get(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE)).get(i)*Math.cos(_alphaHTailList.get(i).doubleValue(SI.RADIAN)),
+			_current3DHorizontalTailLiftCurve.get(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE)).get(i)*Math.sin(_alphaHTailList.get(i).doubleValue(SI.RADIAN)),
+			_totalMomentCoefficientBreakDown.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(0)).get(ComponentEnum.HORIZONTAL_TAIL).get(i),
+			"",
+			_fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE)
+			.getPolar3DCurve()
+			.get(_theAerodynamicBuilderInterface.getComponentTaskList()
+					.get(ComponentEnum.FUSELAGE)
+					.get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_FUSELAGE))[i]*Math.sin(_alphaBodyList.get(i).doubleValue(SI.RADIAN)),
+			_fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE)
+			.getPolar3DCurve()
+			.get(_theAerodynamicBuilderInterface.getComponentTaskList()
+					.get(ComponentEnum.FUSELAGE)
+					.get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_FUSELAGE))[i]*Math.cos(_alphaBodyList.get(i).doubleValue(SI.RADIAN)),
+			_totalMomentCoefficientBreakDown.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(0)).get(ComponentEnum.FUSELAGE).get(i),
+			"",
+			"",
+			_totalMomentCoefficientBreakDown.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(0)).get(ComponentEnum.WING).get(i) +
+			_totalMomentCoefficientBreakDown.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(0)).get(ComponentEnum.FUSELAGE).get(i),
+			_totalMomentCoefficientBreakDown.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(0)).get(ComponentEnum.WING).get(i) +
+			_totalMomentCoefficientBreakDown.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(0)).get(ComponentEnum.HORIZONTAL_TAIL).get(i) + 
+			_totalMomentCoefficientBreakDown.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(0)).get(ComponentEnum.FUSELAGE).get(i),
+			_current3DWingLiftCurve.get(i) + (_current3DHorizontalTailLiftCurve.get(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE)).get(i)
+			*_theAerodynamicBuilderInterface.getHTailDynamicPressureRatio()
+			*_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getTheLiftingSurface().getSurfacePlanform().doubleValue(SI.SQUARE_METRE)/
+			_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getTheLiftingSurface().getSurfacePlanform().doubleValue(SI.SQUARE_METRE)),
+			_horizontalTailEquilibriumLiftCoefficient.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(0)).get(i),
+			_horizontalTailEquilibriumLiftCoefficient.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(0)).get(i)-_current3DHorizontalTailLiftCurve.get(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE)).get(i),
+			0.0,
+			0.0,
+			"",
+			_deltaEEquilibrium.get( _theAerodynamicBuilderInterface.getXCGAircraft().get(0)).get(i).doubleValue(NonSI.DEGREE_ANGLE),
+			_totalEquilibriumLiftCoefficient.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(0)).get(i),
+			_totalEquilibriumDragCoefficient.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(0)).get(i),
+			_totalEquilibriumEfficiencyMap.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(0)).get(i)		
 					});
 		}
 
+		
 //			dataListstallCondition.add(new Object[] {
 //					"Critical Mach Number",
 //					"",

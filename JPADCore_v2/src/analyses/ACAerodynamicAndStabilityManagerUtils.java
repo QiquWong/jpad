@@ -2047,8 +2047,6 @@ public class ACAerodynamicAndStabilityManagerUtils {
 				ACAerodynamicAndStabilityManager_v2 aerodynamicAndStabilityManager
 				){
 			
-			/* FIXME : ADD CANARD CONTRIBUTION */
-			
 			IACAerodynamicAndStabilityManager_v2 _theAerodynamicBuilderInterface = aerodynamicAndStabilityManager.getTheAerodynamicBuilderInterface();
 			FuselageAerodynamicsManager fuselageAerodynamicManagers = aerodynamicAndStabilityManager.getFuselageAerodynamicManagers().get(ComponentEnum.FUSELAGE);
 			NacelleAerodynamicsManager nacelleAerodynamicManagers = aerodynamicAndStabilityManager.getNacelleAerodynamicManagers().get(ComponentEnum.NACELLE);
