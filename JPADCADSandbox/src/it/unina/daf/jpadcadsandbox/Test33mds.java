@@ -45,8 +45,8 @@ public class Test33mds {
 		// Modification 
 		LiftingSurface modCanard = AircraftUtils.importAircraft(args).getCanard();
 		
-		double modAR = 5.0;	
-		double modSpan = modCanard.getEquivalentWing().getPanels().get(0).getSpan().times(2).doubleValue(SI.METRE)*1.00;
+		double modAR = 4.5;	
+		double modSpan = modCanard.getEquivalentWing().getPanels().get(0).getSpan().times(2).doubleValue(SI.METRE)*1.20;
 		double modSurface = modCanard.getEquivalentWing().getPanels().get(0).getSurfacePlanform().times(2).doubleValue(SI.SQUARE_METRE);
 		double modRootChord = modCanard.getEquivalentWing().getPanels().get(0).getChordRoot().doubleValue(SI.METER);
 		double modTaper = modCanard.getEquivalentWing().getPanels().get(0).getTaperRatio();
@@ -55,23 +55,21 @@ public class Test33mds {
 		Amount<Angle> modTipTwist = modCanard.getEquivalentWing().getPanels().get(0).getTwistGeometricAtTip();
 		Amount<Angle> modRigging = modCanard.getRiggingAngle().plus(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
 		
-		modCanard.adjustDimensions(
-				modAR, 
-				modSurface, 
-				modRootChord, 
-				modSweepLE, 
-				modDihedralLE, 
-				modTipTwist, 
-				WingAdjustCriteriaEnum.AR_AREA_ROOTCHORD
-				);	
-		
-//		modCanard.calculateGeometry(ComponentEnum.CANARD, true);
-
-		modCanard.setAirfoilList(canard.getAirfoilList());	
-		modCanard.setXApexConstructionAxes(canard.getXApexConstructionAxes());
-		modCanard.setYApexConstructionAxes(canard.getYApexConstructionAxes());
-		modCanard.setZApexConstructionAxes(canard.getZApexConstructionAxes());
-		modCanard.setRiggingAngle(modRigging);	
+//		modCanard.adjustDimensions(
+//				modAR, 
+//				modSurface, 
+//				modRootChord, 
+//				modSweepLE, 
+//				modDihedralLE, 
+//				modTipTwist, 
+//				WingAdjustCriteriaEnum.AR_AREA_ROOTCHORD
+//				);	
+//		
+//		modCanard.setAirfoilList(canard.getAirfoilList());	
+//		modCanard.setXApexConstructionAxes(canard.getXApexConstructionAxes());
+//		modCanard.setYApexConstructionAxes(canard.getYApexConstructionAxes());
+//		modCanard.setZApexConstructionAxes(canard.getZApexConstructionAxes());
+//		modCanard.setRiggingAngle(modRigging);	
 		
 		canard.setXApexConstructionAxes(canard.getXApexConstructionAxes().minus(Amount.valueOf(5, SI.METER)));
 		
@@ -107,12 +105,10 @@ public class Test33mds {
 		
 		// Export to file
 		List<OCCShape> allShapes = new ArrayList<>();
-//		allShapes.addAll(canardShapes);
+		allShapes.addAll(canardShapes);
 		allShapes.addAll(modcanardShapes);
 		
-		OCCUtils.write("IRON_canard", FileExtension.STEP, allShapes);
-//		OCCUtils.write("IRON_canard", FileExtension.IGES, allShapes);
-				
+		OCCUtils.write("IRON_canard", FileExtension.STEP, allShapes);				
 	}
 
 }

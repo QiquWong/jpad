@@ -56,6 +56,7 @@ import it.unina.daf.jpadcad.occ.OCCVertex;
 import it.unina.daf.jpadcad.occ.OCCWire;
 import javaslang.Tuple2;
 import javaslang.Tuple3;
+import opencascade.Interface_Static;
 import processing.core.PVector;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyMathUtils;
@@ -139,7 +140,7 @@ public class AircraftCADUtils {
 			System.out.println("\tShape factory is null. Initializing the CAD shape factory ...");
 			OCCUtils.initCADShapeFactory();
 		}
-		
+				
 		// ------------------------------------
 		// Initialize patches and shape lists
 		System.out.println("\tInitializing fuselage patches and shape lists ...");
@@ -725,7 +726,7 @@ public class AircraftCADUtils {
 			System.out.println("\tShape factory is null. Initializing the CAD shape factory ...");
 			OCCUtils.initCADShapeFactory();
 		}
-		
+				
 		// ------------------------------------
 		// Initialize patches and shape lists
 		System.out.println("\tInitializing lifting surface patches and shape lists ...");
@@ -1184,7 +1185,7 @@ public class AircraftCADUtils {
 		// ----------------------------------------------------------
 		if (OCCUtils.theFactory == null)
 			OCCUtils.initCADShapeFactory();
-		
+				
 		// ----------------------------------------------------------
 		// Initialize shape lists
 		// ----------------------------------------------------------
@@ -1288,6 +1289,12 @@ public class AircraftCADUtils {
 		
 		System.out.println("========== [AircraftCADUtils::getEnginesCAD]");
 		
+		// -----------------------------
+		// Initialize the factory
+		// -----------------------------
+		if (OCCUtils.theFactory == null)
+			OCCUtils.initCADShapeFactory();
+				
 		// ----------------------------------------------------------
 		// Generate engine CAD shapes
 		// ----------------------------------------------------------	

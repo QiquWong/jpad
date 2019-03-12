@@ -106,8 +106,8 @@ public class Test41mds {
 		tfTemplatesMap.put(EngineCADComponentsEnum.NACELLE, "TF_complete_01.step");
 		
 		List<Map<EngineCADComponentsEnum, String>> templatesMapList = new ArrayList<>();
-		templatesMapList.add(tfTemplatesMap);
-		templatesMapList.add(tfTemplatesMap);	
+		templatesMapList.add(tpTemplatesMap);
+		templatesMapList.add(tpTemplatesMap);	
 		
 		List<Amount<Angle>> bladePitchAngleList = new ArrayList<>();
 		bladePitchAngleList.add(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
@@ -118,11 +118,13 @@ public class Test41mds {
 		boolean exportSolids = true;
 		
 		// Generate CAD components and measure elapsed times	
+		long startTime = System.nanoTime();
+		
 		List<OCCShape> fuselageShapes = AircraftCADUtils.getFuselageCAD(
 				fuselage, 7, 7, exportWires, exportShells, exportSolids);
 
 		List<OCCShape> wingShapes = AircraftCADUtils.getLiftingSurfaceCAD(
-				wing, WingTipType.WINGLET, exportWires, exportShells, exportSolids);
+				wing, WingTipType.ROUNDED, exportWires, exportShells, exportSolids);
 
 		List<OCCShape> hTailShapes = AircraftCADUtils.getLiftingSurfaceCAD(
 				hTail, WingTipType.ROUNDED, exportWires, exportShells, exportSolids);
@@ -130,8 +132,8 @@ public class Test41mds {
 		List<OCCShape> vTailShapes = AircraftCADUtils.getLiftingSurfaceCAD(
 				vTail, WingTipType.ROUNDED, exportWires, exportShells, exportSolids);
 		
-//		List<OCCShape> canardShapes = AircraftCADUtils.getLiftingSurfaceCAD(
-//				canard, WingTipType.ROUNDED, exportWires, exportShells, exportSolids);
+		List<OCCShape> canardShapes = AircraftCADUtils.getLiftingSurfaceCAD(
+				canard, WingTipType.ROUNDED, exportWires, exportShells, exportSolids);
 
 		List<OCCShape> wingFairingShapes = AircraftCADUtils.getFairingShapes(
 				fuselage, wing, 
@@ -139,14 +141,17 @@ public class Test41mds {
 				0.75, 0.65, 0.75, 
 				exportWires, exportShells, exportSolids);
 				
-//		List<OCCShape> canardFairingShapes = AircraftCADUtils.getFairingShapes(
-//				fuselage, canard, 
-//				0.85, 0.85, 0.55, 0.20, 
-//				0.15, 0.95, 0.50, 
-//				exportWires, exportShells, exportSolids);
+		List<OCCShape> canardFairingShapes = AircraftCADUtils.getFairingShapes(
+				fuselage, canard, 
+				0.85, 0.85, 0.55, 0.20, 
+				0.15, 0.95, 0.50, 
+				exportWires, exportShells, exportSolids);
 
-//		List<OCCShape> engineShapes = AircraftCADUtils.getEnginesCAD(inputDirectory,
-//				nacelles, engines, templatesMapList, bladePitchAngleList, exportWires, exportShells, exportSolids);
+		List<OCCShape> engineShapes = AircraftCADUtils.getEnginesCAD(inputDirectory,
+				nacelles, engines, templatesMapList, bladePitchAngleList, exportWires, exportShells, exportSolids);
+		
+		long endTime = System.nanoTime();
+		System.out.println("\tTotal elapsed time: " + TimeUnit.NANOSECONDS.toMillis(endTime - startTime));
 		
 		// ---------------------------------
 		// Write the results to file
@@ -155,12 +160,17 @@ public class Test41mds {
 		exportShapes.addAll(wingShapes);
 		exportShapes.addAll(hTailShapes);
 		exportShapes.addAll(vTailShapes);
-//		exportShapes.addAll(canardShapes);
+		exportShapes.addAll(canardShapes);
 		exportShapes.addAll(wingFairingShapes);
-//		exportShapes.addAll(canardFairingShapes);
-//		exportShapes.addAll(engineShapes);
+		exportShapes.addAll(canardFairingShapes);
+		exportShapes.addAll(engineShapes);
+		
+		OCCCompound compound = (OCCCompound) OCCUtils.theFactory.newCompound(
+				exportShapes.stream().map(s -> (CADShape) s).collect(Collectors.toList()));
+		
+		System.out.println(OCCUtils.reportOnShape(compound.getShape(), "Final result"));
 			
-		OCCUtils.write("Test41mds", FileExtension.STEP, exportShapes);
+		OCCUtils.write("Test_IRON", FileExtension.STEP, exportShapes);
 	}
 
 }

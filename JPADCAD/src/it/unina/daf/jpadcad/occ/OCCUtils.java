@@ -161,7 +161,8 @@ public final class OCCUtils {
 		case STEP:
 			shapes.forEach(s -> builder.Add(compound, s.getShape()));
 			STEPControl_Writer stepWriter = new STEPControl_Writer();
-			Interface_Static.SetCVal("write.step.unit", "M");
+			Interface_Static.SetCVal("xstep.cascade.unit", "M");
+//			Interface_Static.SetCVal("write.step.unit", "M");
 			stepWriter.Transfer(compound, STEPControl_StepModelType.STEPControl_AsIs);
 			stepWriter.Write(fileNameComplete);	
 			
