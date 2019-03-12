@@ -14,7 +14,7 @@
          <overall_pressure_ratio>15.0000</overall_pressure_ratio>
          <static_power unit="hp">2750</static_power>
          <number_of_propeller_blades>6</number_of_propeller_blades>
-         <eta_propeller>0.8500</eta_propeller>
+         <eta_propeller>1.0</eta_propeller>
       </specifications>
    </engine>
 </jpad_config>

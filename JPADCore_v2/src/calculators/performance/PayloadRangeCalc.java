@@ -2622,7 +2622,6 @@ public class PayloadRangeCalc {
 		MyConfiguration.customizeAmountOutput();
 
 		StringBuilder sb = new StringBuilder()
-				.append("\t-------------------------------------\n")
 				.append("\t\tRANGE AT MAX PAYLOAD\n")
 				.append("\t\t.....................................\n")
 				.append("\t\t\tRange = " + getRangeAtMaxPayload() + "\n")
@@ -2654,8 +2653,6 @@ public class PayloadRangeCalc {
 				.append("\t\t\tPayload mass = " + 0.0 + " kg \n")
 				.append("\t\t\tPassengers number = " + 0.0 + "\n")
 				.append("\t\t\tFuel mass required= " + getMaxFuelMass() + "\n");
-		
-		sb.append("\t-------------------------------------\n");
 		
 		return sb.toString();
 	}

@@ -399,7 +399,7 @@ public class TakeOffNoiseTrajectoryCalc {
 					break;
 			}
 
-			if(i > 50) {
+			if(i > 25) {
 				System.err.println("WARNING: (SIMULATION - NOISE TRAJECTORY TAKE-OFF) MAXIMUM NUMBER OF ITERATION REACHED. THE LAST VALUE OF V2 WILL BE CONSIDERED. "
 						+ "(V2 = " + v2.to(SI.METERS_PER_SECOND) + "; V2/VsTO = " + v2.to(SI.METERS_PER_SECOND).divide(vSTakeOff.to(SI.METERS_PER_SECOND)));
 				break;

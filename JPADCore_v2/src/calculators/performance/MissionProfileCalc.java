@@ -5933,7 +5933,6 @@ public class MissionProfileCalc {
 		DecimalFormat numberFormat = new DecimalFormat("0.00");
 		
 		StringBuilder sb = new StringBuilder()
-				.append("\t-------------------------------------\n")
 				.append("\t\tMission distance = " + missionRange.to(NonSI.NAUTICAL_MILE) + "\n")
 				.append("\t\tTotal mission distance (plus alternate) = " + totalRange.to(NonSI.NAUTICAL_MILE) + "\n")
 				.append("\t\tBlock time = " + blockTime + "\n")
@@ -6441,9 +6440,6 @@ public class MissionProfileCalc {
 			+ "\t" + numberFormat.format(fuelEnergyMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(MyUnits.KILOWATT_HOUR))
 			+ "\t" + numberFormat.format(alternativeSourceEnergyMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(MyUnits.KILOWATT_HOUR))
 			+ "\n");
-		
-		sb.append("\t-------------------------------------\n")
-		;
 
 		return sb.toString();
 
