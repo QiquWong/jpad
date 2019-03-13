@@ -75,7 +75,7 @@
 				<dt_hold unit="s"></dt_hold> <!-- the duration of the constant CL phase (default = 0.5s) -->
 				<alpha_ground unit="°"></alpha_ground> <!-- angle of attack in BRF along the runway (default = 0°)-->
 				<obstacle_take_off unit="ft"></obstacle_take_off> <!-- default = 35 ft -->
-				<k_rotation></k_rotation> <!-- V_rotation/V_stall in take-off (default = 1.05) -->
+				<k_rotation>1.07</k_rotation> <!-- V_rotation/V_stall in take-off (default = 1.05) -->
 				<alpha_dot_rotation></alpha_dot_rotation> <!-- rotation angular velocity (must be in deg/s) (default = 3.0) -->
 				<k_cLmax_take_off>0.85</k_cLmax_take_off> <!-- percentage of the CLmax,TO not to be surpassed during the rotation  (default = 0.9)-->
 				<drag_due_to_engine_failure>0.005</drag_due_to_engine_failure> <!-- drag coefficient to be added due to the failed engine and rudder deflection (default = 0.0) -->

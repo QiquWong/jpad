@@ -1,301 +1,32 @@
 -------------------
 Complete Analysis Test
 -------------------
-AIRCRAFT INPUT ===> C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\aircraft_CS300.xml
-ANALYSES INPUT ===> C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Analyses\analysis_CS300.xml
-OPERATING CONDITIONS INPUT ===> C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Analyses\operating_conditions_CS300.xml
-AIRFOILS ===> C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\lifting_surfaces\airfoils
-FUSELAGES ===> C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\fuselages
-LIFTING SURFACES ===> C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\lifting_surfaces
-ENGINES ===> C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\engines
-NACELLES ===> C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\nacelles
-LANDING GEARS ===> C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\landing_gears
-CABIN CONFIGURATIONS ===> C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\cabin_configurations
+AIRCRAFT INPUT ===> D:\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\aircraft_CS300.xml
+ANALYSES INPUT ===> D:\JPAD\jpad\JPADSandBox_v2\in\Template_Analyses\analysis_CS300_VT.xml
+OPERATING CONDITIONS INPUT ===> D:\JPAD\jpad\JPADSandBox_v2\in\Template_Analyses\operating_conditions_CS300.xml
+AIRFOILS ===> D:\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\lifting_surfaces\airfoils
+FUSELAGES ===> D:\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\fuselages
+LIFTING SURFACES ===> D:\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\lifting_surfaces
+ENGINES ===> D:\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\engines
+NACELLES ===> D:\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\nacelles
+LANDING GEARS ===> D:\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\landing_gears
+CABIN CONFIGURATIONS ===> D:\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\cabin_configurations
 --------------
 10 [main] INFO ncsa.hdf.hdf5lib.H5 - HDF5 library: jhdf5
 10 [main] INFO ncsa.hdf.hdf5lib.H5 -  successfully loaded from java.library.path
-De-serializing file: C:\Users\oem\JPAD\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterAerodynamicDatabase.xml ...
+De-serializing file: D:\JPAD\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterAerodynamicDatabase.xml ...
 database.databasefunctions.aerodynamics.AerodynamicDatabaseReader de-serialization complete
-De-serializing file: C:\Users\oem\JPAD\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterHighLiftDatabase.xml ...
+De-serializing file: D:\JPAD\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterHighLiftDatabase.xml ...
 database.databasefunctions.aerodynamics.HighLiftDatabaseReader de-serialization complete
-De-serializing file: C:\Users\oem\JPAD\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterFusDesDatabase.xml ...
+De-serializing file: D:\JPAD\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterFusDesDatabase.xml ...
 database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader de-serialization complete
-De-serializing file: C:\Users\oem\JPAD\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterVeDSCDatabase.xml ...
+De-serializing file: D:\JPAD\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterVeDSCDatabase.xml ...
 database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serialization complete
 
 
 	Creating the Aircraft ... 
 
 
-File C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\aircraft_CS300.xml found.
-Parsing ...
-File C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\aircraft_CS300.xml parsed.
-Reading aircraft data from file ...
-File C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\fuselages\fuselage_CS300.xml found.
-Parsing ...
-File C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\fuselages\fuselage_CS300.xml parsed.
-Reading fuselage data ...
-Spoilers found: 0
-File C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\cabin_configurations\cabin_configuration_CS300.xml found.
-Parsing ...
-File C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\cabin_configurations\cabin_configuration_CS300.xml parsed.
-Reading configuration data ...
-File C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\lifting_surfaces\wing_CS300.xml found.
-Parsing ...
-File C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\lifting_surfaces\wing_CS300.xml parsed.
-Reading lifting surface data ...
-Panels found: 2
-[0]
-Panel id: CS300 - Inner panel
-Reading lifting surface panel data from XML doc ...
-File C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\lifting_surfaces\airfoils\ROOT_CS300.xml found.
-Parsing ...
-File C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\lifting_surfaces\airfoils\ROOT_CS300.xml parsed.
-Reading airfoil data ...
-File C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\lifting_surfaces\airfoils\ROOT_CS300.xml found.
-Parsing ...
-File C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\lifting_surfaces\airfoils\ROOT_CS300.xml parsed.
-Reading airfoil data ...
-[1]
-Panel id: CS300 - Outer panel
-Panel linked_to: **CS300 - Inner panel**
-Reading LINKED lifting surface panel data from XML doc ...
-File C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\lifting_surfaces\airfoils\TIP_CS300.xml found.
-Parsing ...
-File C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\lifting_surfaces\airfoils\TIP_CS300.xml parsed.
-Reading airfoil data ...
-Symmetric flaps found: 2
-[0]
-Flap id: Inner flap
-Reading symmetric flap data from XML doc ...
-[1]
-Flap id: Outer flap
-Reading symmetric flap data from XML doc ...
-Slats found: 4
-[0]
-Slat id: 1
-Reading slat data from XML doc ...
-[1]
-Slat id: 2
-Reading slat data from XML doc ...
-[2]
-Slat id: 3
-Reading slat data from XML doc ...
-[3]
-Slat id: 4
-Reading slat data from XML doc ...
-Asymmetric flaps found: 1
-[0]
-Slat id: 1
-Reading asymmetric flap data from XML doc ...
-Spoilers found: 0
-[LiftingSurfaceCreator] Calculating derived geometry parameters of lifting surface ...
-[LiftingSurfaceCreator] Lifting surface span ...
-[LiftingSurfaceCreator] calculate variables at breakpoints ...
-y Break-Points ->
-[0.0 m, 6.02214700012143 m, 17.469203281343983 m]
-xLE Break-Points ->
-[0.0 m, 3.4768881916196044 m, 10.085849217012239 m]
-zLE Break-Points ->
-[0.0 m, 0.5798668027473548 m, 1.6820929567299299 m]
-Chords Break-Points ->
-[6.74 m, 3.2599999999999998 m, 1.2999999999999998 m]
-Twists Break-Points ->
-[0.0 deg, 0.0 deg, -5.0 deg]
-[LiftingSurfaceCreator] Map _panels to spanwise discretized Ys ...
-[LiftingSurfaceCreator] Map _panels to spanwise discretized chords ...
-[LiftingSurfaceCreator] Map _panels to spanwise discretized Xle, Yle, twist ...
-[LiftingSurfaceCreator] Map Ys to spanwise discretized variables ...
-File C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\lifting_surfaces\htail_CS300.xml found.
-Parsing ...
-File C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\lifting_surfaces\htail_CS300.xml parsed.
-Reading lifting surface data ...
-Panels found: 1
-[0]
-Panel id: Horizontal tail panel
-Reading lifting surface panel data from XML doc ...
-File C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\lifting_surfaces\airfoils\naca0012.xml found.
-Parsing ...
-File C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\lifting_surfaces\airfoils\naca0012.xml parsed.
-Reading airfoil data ...
-File C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\lifting_surfaces\airfoils\naca0012.xml found.
-Parsing ...
-File C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\lifting_surfaces\airfoils\naca0012.xml parsed.
-Reading airfoil data ...
-Symmetric flaps found: 1
-[0]
-Flap id: Elevator
-Reading symmetric flap data from XML doc ...
-[LiftingSurfaceCreator] Calculating derived geometry parameters of lifting surface ...
-[LiftingSurfaceCreator] Lifting surface span ...
-[LiftingSurfaceCreator] calculate variables at breakpoints ...
-y Break-Points ->
-[0.0 m, 5.9723771902030718 m]
-xLE Break-Points ->
-[0.0 m, 3.7319554642002419 m]
-zLE Break-Points ->
-[0.0 m, 0.57507451512134367 m]
-Chords Break-Points ->
-[3.3599999999999994 m, 1.31 m]
-Twists Break-Points ->
-[0.0 deg, 0.0 deg]
-[LiftingSurfaceCreator] Map _panels to spanwise discretized Ys ...
-[LiftingSurfaceCreator] Map _panels to spanwise discretized chords ...
-[LiftingSurfaceCreator] Map _panels to spanwise discretized Xle, Yle, twist ...
-[LiftingSurfaceCreator] Map Ys to spanwise discretized variables ...
-[LiftingSurfaceCreator] Calculating derived geometry parameters of lifting surface ...
-[LiftingSurfaceCreator] Lifting surface span ...
-[LiftingSurfaceCreator] calculate variables at breakpoints ...
-y Break-Points ->
-[0.0 m, 5.9723771902030718 m]
-xLE Break-Points ->
-[0.0 m, 3.7319554642002419 m]
-zLE Break-Points ->
-[0.0 m, 0.57507451512134367 m]
-Chords Break-Points ->
-[3.3599999999999994 m, 1.31 m]
-Twists Break-Points ->
-[0.0 deg, 0.0 deg]
-[LiftingSurfaceCreator] Map _panels to spanwise discretized Ys ...
-[LiftingSurfaceCreator] Map _panels to spanwise discretized chords ...
-[LiftingSurfaceCreator] Map _panels to spanwise discretized Xle, Yle, twist ...
-[LiftingSurfaceCreator] Map Ys to spanwise discretized variables ...
-File C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\lifting_surfaces\vtail_CS300.xml found.
-Parsing ...
-File C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\lifting_surfaces\vtail_CS300.xml parsed.
-Reading lifting surface data ...
-Panels found: 1
-[0]
-Panel id: Vertical tail panel
-Reading lifting surface panel data from XML doc ...
-File C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\lifting_surfaces\airfoils\naca0012.xml found.
-Parsing ...
-File C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\lifting_surfaces\airfoils\naca0012.xml parsed.
-Reading airfoil data ...
-File C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\lifting_surfaces\airfoils\naca0012.xml found.
-Parsing ...
-File C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\lifting_surfaces\airfoils\naca0012.xml parsed.
-Reading airfoil data ...
-Symmetric flaps found: 1
-[0]
-Flap id: Rudder
-Reading symmetric flap data from XML doc ...
-[LiftingSurfaceCreator] Calculating derived geometry parameters of lifting surface ...
-[LiftingSurfaceCreator] Lifting surface span ...
-[LiftingSurfaceCreator] calculate variables at breakpoints ...
-y Break-Points ->
-[0.0 m, 6.1399999999999988 m]
-xLE Break-Points ->
-[0.0 m, 6.139999999999995 m]
-zLE Break-Points ->
-[0.0 m, 0.0 m]
-Chords Break-Points ->
-[5.529999999999999 m, 1.8999999999999999 m]
-Twists Break-Points ->
-[0.0 deg, 0.0 deg]
-[LiftingSurfaceCreator] Map _panels to spanwise discretized Ys ...
-[LiftingSurfaceCreator] Map _panels to spanwise discretized chords ...
-[LiftingSurfaceCreator] Map _panels to spanwise discretized Xle, Yle, twist ...
-[LiftingSurfaceCreator] Map Ys to spanwise discretized variables ...
-[LiftingSurfaceCreator] Calculating derived geometry parameters of lifting surface ...
-[LiftingSurfaceCreator] Lifting surface span ...
-[LiftingSurfaceCreator] calculate variables at breakpoints ...
-y Break-Points ->
-[0.0 m, 6.1399999999999988 m]
-xLE Break-Points ->
-[0.0 m, 6.139999999999995 m]
-zLE Break-Points ->
-[0.0 m, 0.0 m]
-Chords Break-Points ->
-[5.529999999999999 m, 1.8999999999999999 m]
-Twists Break-Points ->
-[0.0 deg, 0.0 deg]
-[LiftingSurfaceCreator] Map _panels to spanwise discretized Ys ...
-[LiftingSurfaceCreator] Map _panels to spanwise discretized chords ...
-[LiftingSurfaceCreator] Map _panels to spanwise discretized Xle, Yle, twist ...
-[LiftingSurfaceCreator] Map Ys to spanwise discretized variables ...
-Engines found: 2
-[0]
-Engine file: engine_CS300.xml
-File C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\engines\engine_CS300.xml found.
-Parsing ...
-File C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\engines\engine_CS300.xml parsed.
-Reading systems data ...
-[1]
-Engine file: engine_CS300.xml
-File C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\engines\engine_CS300.xml found.
-Parsing ...
-File C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\engines\engine_CS300.xml parsed.
-Reading systems data ...
-De-serializing file: C:\Users\oem\JPAD\jpad\JPADSandBox_v2\data\serializedDatabase\EngineDatabaseTF_HBPR.xml ...
-database.databasefunctions.engine.EngineDatabaseManager de-serialization complete
-De-serializing file: C:\Users\oem\JPAD\jpad\JPADSandBox_v2\data\serializedDatabase\EngineDatabaseTF_HBPR.xml ...
-database.databasefunctions.engine.EngineDatabaseManager de-serialization complete
-Nacelles found: 2
-[0]
-Nacelle file: nacelle_CS300.xml
-File C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\nacelles\nacelle_CS300.xml found.
-Parsing ...
-File C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\nacelles\nacelle_CS300.xml parsed.
-Reading systems data ...
-File C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\engines\engine_CS300.xml found.
-Parsing ...
-File C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\engines\engine_CS300.xml parsed.
-Reading systems data ...
-[Nacelle] Nacelle length bigger than engine length 
-	 CHECK PASSED --> proceding ...
-[Nacelle] calculating outlines ...
-[1]
-Nacelle file: nacelle_CS300.xml
-File C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\nacelles\nacelle_CS300.xml found.
-Parsing ...
-File C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\nacelles\nacelle_CS300.xml parsed.
-Reading systems data ...
-File C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\engines\engine_CS300.xml found.
-Parsing ...
-File C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\engines\engine_CS300.xml parsed.
-Reading systems data ...
-[Nacelle] Nacelle length bigger than engine length 
-	 CHECK PASSED --> proceding ...
-[Nacelle] calculating outlines ...
-File C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\landing_gears\landing_gear_CS300.xml found.
-Parsing ...
-File C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\landing_gears\landing_gear_CS300.xml parsed.
-Reading landing gears data ...
-[LiftingSurfaceCreator] Calculating derived geometry parameters of lifting surface ...
-[LiftingSurfaceCreator] Lifting surface span ...
-[LiftingSurfaceCreator] calculate variables at breakpoints ...
-y Break-Points ->
-[0.0 m, 4.645898992331055 m, 16.092955273553606 m]
-xLE Break-Points ->
-[0.0 m, 2.6823110338501448 m, 9.291272059242778 m]
-zLE Break-Points ->
-[0.0 m, 0.4473491919934609 m, 1.5495753459760362 m]
-Chords Break-Points ->
-[5.944711697171467 m, 3.2599999999999998 m, 1.2999999999999998 m]
-Twists Break-Points ->
-[0.0 deg, 0.0 deg, -5.0 deg]
-[LiftingSurfaceCreator] Map _panels to spanwise discretized Ys ...
-[LiftingSurfaceCreator] Map _panels to spanwise discretized chords ...
-[LiftingSurfaceCreator] Map _panels to spanwise discretized Xle, Yle, twist ...
-[LiftingSurfaceCreator] Map Ys to spanwise discretized variables ...
-[LiftingSurfaceCreator] Calculating derived geometry parameters of lifting surface ...
-[LiftingSurfaceCreator] Lifting surface span ...
-[LiftingSurfaceCreator] calculate variables at breakpoints ...
-y Break-Points ->
-[0.0 m, 4.645898992331055 m, 16.092955273553606 m]
-xLE Break-Points ->
-[0.0 m, 2.6823110338501448 m, 9.291272059242778 m]
-zLE Break-Points ->
-[0.0 m, 0.4473491919934609 m, 1.5495753459760362 m]
-Chords Break-Points ->
-[5.944711697171467 m, 3.2599999999999998 m, 1.2999999999999998 m]
-Twists Break-Points ->
-[0.0 deg, 0.0 deg, -5.0 deg]
-[LiftingSurfaceCreator] Map _panels to spanwise discretized Ys ...
-[LiftingSurfaceCreator] Map _panels to spanwise discretized chords ...
-[LiftingSurfaceCreator] Map _panels to spanwise discretized Xle, Yle, twist ...
-[LiftingSurfaceCreator] Map Ys to spanwise discretized variables ...
 	-------------------------------------
 	The Aircraft
 	-------------------------------------
@@ -1617,10 +1348,6 @@ Twists Break-Points ->
 	Defining the operating conditions ... 
 
 
-File C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Analyses\operating_conditions_CS300.xml found.
-Parsing ...
-File C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Analyses\operating_conditions_CS300.xml parsed.
-Reading operating conditions data ...
 	-------------------------------------
 	Operating Conditions
 	-------------------------------------
@@ -1721,19 +1448,116 @@ Reading operating conditions data ...
 	Running requested analyses ... 
 
 
-File C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Analyses\analysis_CS300.xml found.
-Parsing ...
-File C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Analyses\analysis_CS300.xml parsed.
-		Weights Analysis :: START
-			Class II mass breakdown :: START
-			Class II mass breakdown :: COMPLETE
-			Class II mass breakdown plot :: START
-			Class II mass breakdown plot :: COMPLETE
-		Balance Analysis :: START
-			Center of gravity positions and inertias estimation :: START
-			Center of gravity positions and inertias estimation :: COMPLETE
-			Balance analysis plot :: START
-			Balance analysis plot :: COMPLETE
-		Aerodynamic and Stability Analysis (CLIMB) :: START
-		Aerodynamic and Stability Analysis :: COMPLETE
+		Performance Analysis :: START
+			Take-Off Analysis :: START
+				VMC calculation :: START
+				VMC calculation :: COMPLETE
+				VMC plot :: START
+				VMC plot :: COMPLETE
+				Take-Off simulation :: START
+				Take-Off simulation :: COMPLETE
+				Take-Off simulation plot :: START
+				Take-Off simulation plot :: COMPLETE
+				Balanced Field Length calculation :: START
+WARNING: (SIMULATION n. 1 - TAKE-OFF (BFL)) MAXIMUM NUMBER OF ITERATION REACHED. THE LAST VALUE OF V2 WILL BE CONSIDERED. (V2 = 71.60546396528863 m/s; V2/VsTO = 1.1237681763872884 
+WARNING: (SIMULATION n. 2 - TAKE-OFF (BFL)) MAXIMUM NUMBER OF ITERATION REACHED. THE LAST VALUE OF V2 WILL BE CONSIDERED. (V2 = 71.7035866511604 m/s; V2/VsTO = 1.125308102890911 
+WARNING: (SIMULATION n. 3 - TAKE-OFF (BFL)) MAXIMUM NUMBER OF ITERATION REACHED. THE LAST VALUE OF V2 WILL BE CONSIDERED. (V2 = 71.57128346614047 m/s; V2/VsTO = 1.1232317514405228 
+WARNING: (SIMULATION n. 4 - TAKE-OFF (BFL)) MAXIMUM NUMBER OF ITERATION REACHED. THE LAST VALUE OF V2 WILL BE CONSIDERED. (V2 = 71.59034463449549 m/s; V2/VsTO = 1.1235308952937417 
+				Balanced Field Length calculation :: COMPLETE
+				Balanced Field Length plot :: START
+				Balanced Field Length plot :: COMPLETE
+			Take-Off Analysis :: COMPLETE
 
+
+	Done!! 
+
+
+
+
+	Printing results ... 
+
+
+	-------------------------------------
+	Aircraft Analysis Manager
+	-------------------------------------
+	Aircraft in exam: CS300
+	...............................................................................................................
+	Positive limit load factor: 2.5
+	Negative limit load factor: -1.0
+	...............................................................................................................
+	n Ultimate 3.75
+	V dive (TAS): 295.64889966609269 m/s
+	V dive (EAS): 482.98739308034783 m/s
+	V dive: 295.64889966609269 m/s
+	Mach dive at zero altitude: 1.4194239664982158
+	V max cruise (TAS): 236.51911973287417 m/s
+	V max cruise (EAS): 386.3899144642783 m/s
+	V optimum cruise: 236.51911973287417 m/s
+	Max dynamic pressure: 142882.05339816213 Pa
+	...............................................................................................................
+
+
+	-------------------------------------
+	Performance Analysis
+	-------------------------------------
+
+	-------------------------------------
+	XCG = 0.2
+	-------------------------------------
+	TAKE-OFF
+	-------------------------------------
+		Ground roll distance = 993.7163846639289 m
+		Rotation distance = 282.14545254229256 m
+		Airborne distance = 151.46833787262005 m
+		AEO take-off distance = 1427.3301750788414 m
+		FAR-25 take-off field length = 1641.4297013406674 m
+		Balanced field length = 1822.627904700134 m
+		.....................................
+		Ground roll distance = 3260.2243591336255 ft
+		Rotation distance = 925.6740568972852 ft
+		Airborne distance = 496.94336572381917 ft
+		AEO take-off distance = 4682.8417817547288 ft
+		FAR-25 take-off field length = 5385.268049017937 ft
+		Balanced field length = 5979.750343504376 ft
+		.....................................
+		Stall speed take-off (VsTO)= 63.719070774443196 m/s
+		Decision speed (V1) = 63.08762052352435 m/s
+		Rotation speed (V_Rot) = 68.17940572865421 m/s
+		Miminum control speed (VMC) = 59.750535586008674 m/s
+		Lift-off speed (V_LO) = 74.32650167783808 m/s
+		Take-off safety speed (V2) = 77.446628483219939 m/s
+		.....................................
+		Stall speed take-off (VsTO)= 123.85996478833452 kn
+		Decision speed (V1) = 122.63252369583567 kn
+		Rotation speed (V_Rot) = 132.5301623235179 kn
+		Miminum control speed (VMC) = 116.14574951923933 kn
+		Lift-off speed (V_LO) = 144.47916092884293 kn
+		Take-off safety speed (V2) = 150.54420223520077 kn
+		.....................................
+		V1/VsTO = 0.99009009009007498 
+		V_Rot/VsTO = 1.0699999999999996 
+		VMC/VsTO = 0.9377182507497228 
+		V_LO/VsTO = 1.166471839191499 
+		V2/VsTO = 1.2154387617699323 
+		.....................................
+		Take-off duration = 34.11109999999999 s
+		.....................................
+		Take-off fuel used = 50.59007032135696 kg
+		.....................................
+		Take-off NOx emissions = 1177.4215313358027 g
+		Take-off CO emissions = 0.0 g
+		Take-off HC emissions = 0.0 g
+		Take-off Soot emissions = 0.0 g
+		Take-off CO2 emissions = 172135.1851118718 g
+		Take-off SOx emissions = 0.0 g
+		Take-off H2O emissions = 63237.587901696199 g
+	-------------------------------------
+
+
+
+	Done!! 
+
+
+
+
+	 TIME ESTIMATED = 28 seconds

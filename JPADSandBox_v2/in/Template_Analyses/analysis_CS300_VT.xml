@@ -68,7 +68,7 @@
 			file="analysis_performance_CS300.xml"
 			plot="TRUE"
 			create_CSV="TRUE"
-			take_off="FALSE"
+			take_off="TRUE"
 			climb="FALSE"
 			cruise="FALSE"
 			descent="FALSE"
@@ -76,7 +76,7 @@
 			payload_range="FALSE"
 			V_n_diagram="FALSE"
 			noise_trajectories="FALSE"
-			mission_profile="TRUE"
+			mission_profile="FALSE"
 		/>
 		<!--
 		<costs 

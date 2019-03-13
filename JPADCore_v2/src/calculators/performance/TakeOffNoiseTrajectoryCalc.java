@@ -993,7 +993,7 @@ public class TakeOffNoiseTrajectoryCalc {
 			// Use this handler for post-processing
 
 			System.out.println("=================================================");
-			System.out.println("Integration #" + (i+1) + "\n\n");
+			System.out.println("Integration " + (i+1) + " - AlphaRed = " + alphaRed + "°/s\n\n");
 			continuousOutputModel = new ContinuousOutputModel();
 			theIntegrator.addStepHandler(continuousOutputModel);
 

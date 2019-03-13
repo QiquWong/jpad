@@ -504,6 +504,7 @@ public class MissionProfileCalc {
 	private List<Amount<Length>> altitudeLanding;
 	private List<Amount<Duration>> timeLanding;
 	private List<Amount<Mass>> fuelUsedLanding;
+	private Amount<Mass> initialLandingMassFinalIteration; 
 	private List<Amount<Mass>> aircraftMassLanding;
 	private List<Amount<Mass>> emissionNOxLanding;
 	private List<Amount<Mass>> emissionCOLanding;
@@ -1170,7 +1171,7 @@ public class MissionProfileCalc {
 					polarCDTakeOff,
 					theOperatingConditions.getAltitudeTakeOff(),
 					theOperatingConditions.getDeltaTemperatureTakeOff(),
-					maximumTakeOffMass,
+					initialMissionMass,
 					dtHold,
 					kCLmaxTakeOff,
 					kRotation,
@@ -3803,7 +3804,7 @@ public class MissionProfileCalc {
 
 					//--------------------------------------------------------------------
 					// LANDING 
-					Amount<Mass> intialMassLanding = Amount.valueOf(
+					initialLandingMassFinalIteration = Amount.valueOf(
 							initialMissionMass.doubleValue(SI.KILOGRAM)
 							- theTakeOffCalculator.getFuelUsed().get(theTakeOffCalculator.getFuelUsed().size()-1).doubleValue(SI.KILOGRAM)
 							- theClimbCalculator.getFuelUsedClimb().get(theClimbCalculator.getFuelUsedClimb().size()-1).doubleValue(SI.KILOGRAM)
@@ -3823,7 +3824,7 @@ public class MissionProfileCalc {
 								theOperatingConditions.getAltitudeLanding(), 
 								theOperatingConditions.getDeltaTemperatureLanding(), 
 								approachAngle, 
-								intialMassLanding,
+								initialLandingMassFinalIteration,
 								theAircraft.getPowerPlant(),
 								polarCLLanding,
 								polarCDLanding, 
@@ -3878,10 +3879,14 @@ public class MissionProfileCalc {
 						altitudeLanding.addAll(theLandingCalculator.getVerticalDistanceList());
 						timeLanding.addAll(theLandingCalculator.getTimeList());
 						fuelUsedLanding.addAll(theLandingCalculator.getFuelUsedList());
+						
+						Amount<Force> firstIterationLandingWeight = theLandingCalculator.getWeightList().get(i);
 						aircraftMassLanding.addAll(
 								theLandingCalculator.getWeightList().stream()
 								.map(w -> Amount.valueOf(
-										w.doubleValue(SI.NEWTON)/AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
+										w.doubleValue(SI.NEWTON)
+										/(AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND)
+												* firstIterationLandingWeight.doubleValue(SI.NEWTON)),
 										SI.KILOGRAM)
 										)
 								.collect(Collectors.toList())
@@ -3981,7 +3986,6 @@ public class MissionProfileCalc {
 						);
 				if(Math.abs(missionRange.doubleValue(NonSI.NAUTICAL_MILE) - totalMissionRange.doubleValue(NonSI.NAUTICAL_MILE)) < 1.0)
 					break;
-				
 				//.....................................................................
 				// NEW ITERATION CRUISE LENGTH
 				currentCruiseRange = Amount.valueOf( 
@@ -4223,7 +4227,11 @@ public class MissionProfileCalc {
 		this.massMap.put(MissionPhasesEnum.ALTERNATE_CRUISE, aircraftMassAlternateCruise.stream().map(e -> e.to(SI.KILOGRAM)).collect(Collectors.toList()));
 		this.massMap.put(MissionPhasesEnum.SECOND_DESCENT, aircraftMassSecondDescent.stream().map(e -> e.to(SI.KILOGRAM)).collect(Collectors.toList()));
 		this.massMap.put(MissionPhasesEnum.HOLDING, aircraftMassHolding.stream().map(e -> e.to(SI.KILOGRAM)).collect(Collectors.toList()));
-		this.massMap.put(MissionPhasesEnum.APPROACH_AND_LANDING, aircraftMassLanding.stream().map(e -> e.to(SI.KILOGRAM)).collect(Collectors.toList()));
+		this.massMap.put(MissionPhasesEnum.APPROACH_AND_LANDING, aircraftMassLanding.stream().map(e -> e
+				.times(initialLandingMassFinalIteration.times(AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND)).doubleValue(SI.KILOGRAM))
+				.to(SI.KILOGRAM))
+				.collect(Collectors.toList())
+				);
 		
 		//.................................................................................................
 		// EMISSION NOx
@@ -7598,6 +7606,14 @@ public class MissionProfileCalc {
 
 	public void setElectricThrustMissionMap(Map<MissionPhasesEnum, List<Amount<Force>>> electricThrustMissionMap) {
 		this.electricThrustMissionMap = electricThrustMissionMap;
+	}
+
+	public Amount<Mass> getInitialLandingMassFinalIteration() {
+		return initialLandingMassFinalIteration;
+	}
+
+	public void setInitialLandingMassFinalIteration(Amount<Mass> initialLandingMassFinalIteration) {
+		this.initialLandingMassFinalIteration = initialLandingMassFinalIteration;
 	}
 	
 }

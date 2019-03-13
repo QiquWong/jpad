@@ -2977,7 +2977,7 @@ public class ACPerformanceManager {
 				// write nothing
 			}
 		});
-		//		PrintStream filterStream = System.out;
+//		PrintStream filterStream = System.out;
 
 		System.setOut(filterStream);
 
@@ -3686,13 +3686,13 @@ public class ACPerformanceManager {
 				if(_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getPlotPerformance() == true) {
 					if(missionProfileErrorFlag == false) {
 						try {
-						System.setOut(originalOut);
-						System.out.println("\t\t\t\tMission profile plot :: START");
-						System.setOut(filterStream);
-						calcMissionProfile.plotProfiles(missionProfilesFolderPath, _thePerformanceInterface.getXcgPositionList().get(i));
-						System.setOut(originalOut);
-						System.out.println("\t\t\t\tMission profile plot :: COMPLETE");
-						System.setOut(filterStream);
+							System.setOut(originalOut);
+							System.out.println("\t\t\t\tMission profile plot :: START");
+							System.setOut(filterStream);
+							calcMissionProfile.plotProfiles(missionProfilesFolderPath, _thePerformanceInterface.getXcgPositionList().get(i));
+							System.setOut(originalOut);
+							System.out.println("\t\t\t\tMission profile plot :: COMPLETE");
+							System.setOut(filterStream);
 						}
 						catch (Exception e) {
 							System.err.println("ERROR: (PERFORMANCE - MISSION PROFILE) PLOT WILL BE SKIPPED ...");
@@ -5489,7 +5489,7 @@ public class ACPerformanceManager {
 			
 			//------------------------------------------------------------
 			// SIMULATION
-			_theTakeOffCalculatorMap.get(xcg).calculateTakeOffDistanceODE(null, false, false, vMC);
+			_theTakeOffCalculatorMap.get(xcg).calculateTakeOffDistanceODE(null, false, true, vMC);
 			
 			if(_theTakeOffCalculatorMap.get(xcg).isRotationSpeedWarningFlag() == true)
 				System.err.println("WARNING: (SIMULATION - TAKE-OFF) THE CHOSEN VRot IS LESS THAN 1.05*VMC. THIS LATTER WILL BE USED ...");
@@ -5617,11 +5617,13 @@ public class ACPerformanceManager {
 			
 			_v1Map.put(
 					xcg, 
-					_theTakeOffCalculatorMap.get(xcg).getV1().to(NonSI.KNOT)
+					_theTakeOffCalculatorMap.get(xcg).getV1() == null ? 
+							Amount.valueOf(0.0, NonSI.KNOT) : _theTakeOffCalculatorMap.get(xcg).getV1().to(NonSI.KNOT) 
 					);
 			_balancedFieldLengthMap.put(
 					xcg,
-					_theTakeOffCalculatorMap.get(xcg).getBalancedFieldLength().to(NonSI.FOOT)
+					_theTakeOffCalculatorMap.get(xcg).getBalancedFieldLength() == null ?
+							Amount.valueOf(0.0, NonSI.FOOT) : _theTakeOffCalculatorMap.get(xcg).getBalancedFieldLength().to(NonSI.FOOT)
 					);
 			
 		}
