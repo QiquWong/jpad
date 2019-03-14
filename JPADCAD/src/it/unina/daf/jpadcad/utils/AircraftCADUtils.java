@@ -2285,7 +2285,7 @@ public class AircraftCADUtils {
 		return retShapes;
 	}
 	
-	private static List<double[]> generateCamberAtY(double yStation, LiftingSurface liftingSurface) {
+	public static List<double[]> generateCamberAtY(double yStation, LiftingSurface liftingSurface) {
 
 		// -----------------------
 		// Determine the airfoil 
