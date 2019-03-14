@@ -17,20 +17,20 @@
 				<xcg value="0.35" parabolicDragPolar="TRUE"> <!-- if TRUE uses a parabolic drag polar with wave drag correction; otherwise it reads the polar_curves tag -->
 					<cLmax_clean_configuration>1.5</cLmax_clean_configuration>
 					<cL_alpha_clean_configuration unit="1/deg">0.09</cL_alpha_clean_configuration>
-					<cLmax_take_off_configuration>2.05</cLmax_take_off_configuration>
+					<cLmax_take_off_configuration>2.18</cLmax_take_off_configuration>
 					<cL_alpha_take_off unit="1/deg">0.0905</cL_alpha_take_off>
 					<cL0_take_off_configuration>0.801</cL0_take_off_configuration>
-					<cLmax_landing_configuration>2.68</cLmax_landing_configuration>
+					<cLmax_landing_configuration>2.69</cLmax_landing_configuration>
 					<cL_alpha_landing unit="1/deg">0.0925</cL_alpha_landing>
 					<cL0_landing_configuration>1.2577</cL0_landing_configuration>
-					<delta_CD0_flap_take_off>0.0100</delta_CD0_flap_take_off>
-					<delta_CD0_flap_landing>0.0673</delta_CD0_flap_landing>
-					<delta_CD0_landing_gears>0.015</delta_CD0_landing_gears>
+					<delta_CD0_flap_take_off>0.0073</delta_CD0_flap_take_off>
+					<delta_CD0_flap_landing>0.0300</delta_CD0_flap_landing>
+					<delta_CD0_landing_gears>0.0150</delta_CD0_landing_gears>
 					<!-- the following data are used only if parabolicDragPolar flag is set to TRUE. In any other case, they can be left blank -->
 					<cD0>0.0306</cD0>
 					<oswald_cruise>0.83</oswald_cruise> 
 					<oswald_climb>0.83</oswald_climb>
-					<oswald_take_off>0.81</oswald_take_off>
+					<oswald_take_off>0.80</oswald_take_off>
 					<oswald_landing>0.80</oswald_landing>
 					<!---->
 					<polar_curves>

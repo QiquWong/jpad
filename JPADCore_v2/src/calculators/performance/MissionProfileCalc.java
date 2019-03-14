@@ -1217,7 +1217,7 @@ public class MissionProfileCalc {
 					groundIdleCalibrationFactorEmissionIndexH2O
 					);
 
-			theTakeOffCalculator.calculateTakeOffDistanceODE(null, false, false, vMC);
+			theTakeOffCalculator.calculateTakeOffDistanceODE(null, false, false, vMC, false);
 			
 			rangeTakeOff.addAll(theTakeOffCalculator.getGroundDistance());			
 			altitudeTakeOff.addAll(theTakeOffCalculator.getVerticalDistance());

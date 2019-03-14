@@ -13,7 +13,7 @@ LANDING GEARS ===> D:\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\landing_gear
 CABIN CONFIGURATIONS ===> D:\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\cabin_configurations
 --------------
 10 [main] INFO ncsa.hdf.hdf5lib.H5 - HDF5 library: jhdf5
-10 [main] INFO ncsa.hdf.hdf5lib.H5 -  successfully loaded from java.library.path
+11 [main] INFO ncsa.hdf.hdf5lib.H5 -  successfully loaded from java.library.path
 De-serializing file: D:\JPAD\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterAerodynamicDatabase.xml ...
 database.databasefunctions.aerodynamics.AerodynamicDatabaseReader de-serialization complete
 De-serializing file: D:\JPAD\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterHighLiftDatabase.xml ...
@@ -1454,18 +1454,14 @@ database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serializati
 				VMC calculation :: COMPLETE
 				VMC plot :: START
 				VMC plot :: COMPLETE
+				Balanced Field Length calculation :: START
+				Balanced Field Length calculation :: COMPLETE
+				Balanced Field Length plot :: START
+				Balanced Field Length plot :: COMPLETE
 				Take-Off simulation :: START
 				Take-Off simulation :: COMPLETE
 				Take-Off simulation plot :: START
 				Take-Off simulation plot :: COMPLETE
-				Balanced Field Length calculation :: START
-WARNING: (SIMULATION n. 1 - TAKE-OFF (BFL)) MAXIMUM NUMBER OF ITERATION REACHED. THE LAST VALUE OF V2 WILL BE CONSIDERED. (V2 = 71.60546396528863 m/s; V2/VsTO = 1.1237681763872884 
-WARNING: (SIMULATION n. 2 - TAKE-OFF (BFL)) MAXIMUM NUMBER OF ITERATION REACHED. THE LAST VALUE OF V2 WILL BE CONSIDERED. (V2 = 71.7035866511604 m/s; V2/VsTO = 1.125308102890911 
-WARNING: (SIMULATION n. 3 - TAKE-OFF (BFL)) MAXIMUM NUMBER OF ITERATION REACHED. THE LAST VALUE OF V2 WILL BE CONSIDERED. (V2 = 71.57128346614047 m/s; V2/VsTO = 1.1232317514405228 
-WARNING: (SIMULATION n. 4 - TAKE-OFF (BFL)) MAXIMUM NUMBER OF ITERATION REACHED. THE LAST VALUE OF V2 WILL BE CONSIDERED. (V2 = 71.59034463449549 m/s; V2/VsTO = 1.1235308952937417 
-				Balanced Field Length calculation :: COMPLETE
-				Balanced Field Length plot :: START
-				Balanced Field Length plot :: COMPLETE
 			Take-Off Analysis :: COMPLETE
 
 
@@ -1507,50 +1503,50 @@ WARNING: (SIMULATION n. 4 - TAKE-OFF (BFL)) MAXIMUM NUMBER OF ITERATION REACHED.
 	TAKE-OFF
 	-------------------------------------
 		Ground roll distance = 993.7163846639289 m
-		Rotation distance = 282.14545254229256 m
-		Airborne distance = 151.46833787262005 m
-		AEO take-off distance = 1427.3301750788414 m
-		FAR-25 take-off field length = 1641.4297013406674 m
-		Balanced field length = 1822.627904700134 m
+		Rotation distance = 282.1452529462797 m
+		Airborne distance = 151.46515118137688 m
+		AEO take-off distance = 1427.3267887915854 m
+		FAR-25 take-off field length = 1641.4258071103227 m
+		Balanced field length = 1853.2236402716744 m
 		.....................................
 		Ground roll distance = 3260.2243591336255 ft
-		Rotation distance = 925.6740568972852 ft
-		Airborne distance = 496.94336572381917 ft
-		AEO take-off distance = 4682.8417817547288 ft
-		FAR-25 take-off field length = 5385.268049017937 ft
-		Balanced field length = 5979.750343504376 ft
+		Rotation distance = 925.6734020547234 ft
+		Airborne distance = 496.93291070005546 ft
+		AEO take-off distance = 4682.830671888403 ft
+		FAR-25 take-off field length = 5385.255272671663 ft
+		Balanced field length = 6080.1300533847589 ft
 		.....................................
 		Stall speed take-off (VsTO)= 63.719070774443196 m/s
-		Decision speed (V1) = 63.08762052352435 m/s
-		Rotation speed (V_Rot) = 68.17940572865421 m/s
+		Decision speed (V1) = 63.5085873574696 m/s
+		Rotation speed (V_Rot) = 68.3549361418386 m/s
 		Miminum control speed (VMC) = 59.750535586008674 m/s
-		Lift-off speed (V_LO) = 74.32650167783808 m/s
-		Take-off safety speed (V2) = 77.446628483219939 m/s
+		Lift-off speed (V_LO) = 74.32625976845899 m/s
+		Take-off safety speed (V2) = 77.53034686818486 m/s
 		.....................................
 		Stall speed take-off (VsTO)= 123.85996478833452 kn
-		Decision speed (V1) = 122.63252369583567 kn
-		Rotation speed (V_Rot) = 132.5301623235179 kn
+		Decision speed (V1) = 123.45081775750032 kn
+		Rotation speed (V_Rot) = 132.87136615044224 kn
 		Miminum control speed (VMC) = 116.14574951923933 kn
-		Lift-off speed (V_LO) = 144.47916092884293 kn
-		Take-off safety speed (V2) = 150.54420223520077 kn
+		Lift-off speed (V_LO) = 144.47869069462874 kn
+		Take-off safety speed (V2) = 150.70693775673084 kn
 		.....................................
-		V1/VsTO = 0.99009009009007498 
-		V_Rot/VsTO = 1.0699999999999996 
+		V1/VsTO = 0.99669669669668126 
+		V_Rot/VsTO = 1.0727547547547536 
 		VMC/VsTO = 0.9377182507497228 
-		V_LO/VsTO = 1.166471839191499 
-		V2/VsTO = 1.2154387617699323 
+		V_LO/VsTO = 1.1664680426926466 
+		V2/VsTO = 1.2167526287794068 
 		.....................................
 		Take-off duration = 34.11109999999999 s
 		.....................................
-		Take-off fuel used = 50.59007032135696 kg
+		Take-off fuel used = 50.73686959720092 kg
 		.....................................
-		Take-off NOx emissions = 1177.4215313358027 g
+		Take-off NOx emissions = 1180.8149251931632 g
 		Take-off CO emissions = 0.0 g
 		Take-off HC emissions = 0.0 g
 		Take-off Soot emissions = 0.0 g
-		Take-off CO2 emissions = 172135.1851118718 g
+		Take-off CO2 emissions = 172623.83873822342 g
 		Take-off SOx emissions = 0.0 g
-		Take-off H2O emissions = 63237.587901696199 g
+		Take-off H2O emissions = 63421.08699650115 g
 	-------------------------------------
 
 
@@ -1560,4 +1556,4 @@ WARNING: (SIMULATION n. 4 - TAKE-OFF (BFL)) MAXIMUM NUMBER OF ITERATION REACHED.
 
 
 
-	 TIME ESTIMATED = 28 seconds
+	 TIME ESTIMATED = 15 seconds

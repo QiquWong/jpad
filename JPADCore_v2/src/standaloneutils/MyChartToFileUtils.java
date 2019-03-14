@@ -337,7 +337,7 @@ public class MyChartToFileUtils {
 		if (xMax == null) { 
 			for(int i=0; i<xArrays.length; i++)
 				xMaxArray.add(MyArrayUtils.getMax(xArrays[i]));
-			xMax = Double.valueOf(MyArrayUtils.getMin(xMaxArray)).equals(null) ? xMaxArray.get(0) : MyArrayUtils.getMin(xMaxArray);
+			xMax = Double.valueOf(MyArrayUtils.getMax(xMaxArray)).equals(null) ? xMaxArray.get(0) : MyArrayUtils.getMax(xMaxArray);
 		}
 		if (yMin == null) {
 			for(int i=0; i<yArrays.length; i++)
@@ -347,7 +347,7 @@ public class MyChartToFileUtils {
 		if (yMax == null) {
 			for(int i=0; i<yArrays.length; i++)
 				yMaxArray.add(MyArrayUtils.getMax(yArrays[i]));
-			yMax = Double.valueOf(MyArrayUtils.getMin(yMaxArray)).equals(null) ? yMaxArray.get(0) : MyArrayUtils.getMin(yMaxArray);
+			yMax = Double.valueOf(MyArrayUtils.getMax(yMaxArray)).equals(null) ? yMaxArray.get(0) : MyArrayUtils.getMax(yMaxArray);
 		}
 		
 		if(xMin.equals(xMax)) {
@@ -456,7 +456,7 @@ public class MyChartToFileUtils {
 		if (xMax == null) {
 			for(int i=0; i<xArrays.length; i++)
 				xMaxArray.add(MyArrayUtils.getMax(xArrays[i]));
-			xMax = Double.valueOf(MyArrayUtils.getMin(xMaxArray)).equals(null) ? xMaxArray.get(0) : MyArrayUtils.getMin(xMaxArray);
+			xMax = Double.valueOf(MyArrayUtils.getMax(xMaxArray)).equals(null) ? xMaxArray.get(0) : MyArrayUtils.getMax(xMaxArray);
 		}
 		if (yMin == null) {
 			for(int i=0; i<yArrays.length; i++)
@@ -466,7 +466,7 @@ public class MyChartToFileUtils {
 		if (yMax == null) {
 			for(int i=0; i<yArrays.length; i++)
 				yMaxArray.add(MyArrayUtils.getMax(yArrays[i]));
-			yMax = Double.valueOf(MyArrayUtils.getMin(yMaxArray)).equals(null) ? yMaxArray.get(0) : MyArrayUtils.getMin(yMaxArray);
+			yMax = Double.valueOf(MyArrayUtils.getMax(yMaxArray)).equals(null) ? yMaxArray.get(0) : MyArrayUtils.getMax(yMaxArray);
 		}
 		
 		if(xMin.equals(xMax)) {
@@ -554,7 +554,7 @@ public class MyChartToFileUtils {
 		if (xMax == null) { 
 			for(int i=0; i<xArrays.size(); i++)
 				xMaxArray.add(MyArrayUtils.getMax(xArrays.get(i)));
-			xMax = Double.valueOf(MyArrayUtils.getMin(xMaxArray)).equals(null) ? xMaxArray.get(0) : MyArrayUtils.getMin(xMaxArray);
+			xMax = Double.valueOf(MyArrayUtils.getMax(xMaxArray)).equals(null) ? xMaxArray.get(0) : MyArrayUtils.getMax(xMaxArray);
 		}
 		if (yMin == null) {
 			for(int i=0; i<yArrays.size(); i++)
@@ -564,7 +564,7 @@ public class MyChartToFileUtils {
 		if (yMax == null) {
 			for(int i=0; i<yArrays.size(); i++)
 				yMaxArray.add(MyArrayUtils.getMax(yArrays.get(i)));
-			yMax = Double.valueOf(MyArrayUtils.getMin(yMaxArray)).equals(null) ? yMaxArray.get(0) : MyArrayUtils.getMin(yMaxArray);
+			yMax = Double.valueOf(MyArrayUtils.getMax(yMaxArray)).equals(null) ? yMaxArray.get(0) : MyArrayUtils.getMax(yMaxArray);
 		}
 		
 		if(xMin.equals(xMax)) {
@@ -709,7 +709,7 @@ public class MyChartToFileUtils {
 		if (xMax == null) { 
 			for(int i=0; i<xArrays.length; i++)
 				xMaxArray.add(MyArrayUtils.getMax(xArrays[i]));
-			xMax = Double.valueOf(MyArrayUtils.getMin(xMaxArray)).equals(null) ? xMaxArray.get(0) : MyArrayUtils.getMin(xMaxArray);
+			xMax = Double.valueOf(MyArrayUtils.getMax(xMaxArray)).equals(null) ? xMaxArray.get(0) : MyArrayUtils.getMax(xMaxArray);
 		}
 		if (yMin == null) {
 			for(int i=0; i<yArrays.length; i++)
@@ -719,7 +719,7 @@ public class MyChartToFileUtils {
 		if (yMax == null) {
 			for(int i=0; i<yArrays.length; i++)
 				yMaxArray.add(MyArrayUtils.getMax(yArrays[i]));
-			yMax = Double.valueOf(MyArrayUtils.getMin(yMaxArray)).equals(null) ? yMaxArray.get(0) : MyArrayUtils.getMin(yMaxArray);
+			yMax = Double.valueOf(MyArrayUtils.getMax(yMaxArray)).equals(null) ? yMaxArray.get(0) : MyArrayUtils.getMax(yMaxArray);
 		}
 		
 		if(xMin.equals(xMax)) {
@@ -799,7 +799,7 @@ public class MyChartToFileUtils {
 		if (xMax == null) { 
 			for(int i=0; i<xArrays.length; i++)
 				xMaxArray.add(MyArrayUtils.getMax(xArrays[i]));
-			xMax = Double.valueOf(MyArrayUtils.getMin(xMaxArray)).equals(null) ? xMaxArray.get(0) : MyArrayUtils.getMin(xMaxArray);
+			xMax = Double.valueOf(MyArrayUtils.getMax(xMaxArray)).equals(null) ? xMaxArray.get(0) : MyArrayUtils.getMax(xMaxArray);
 		}
 		if (yMin == null) {
 			for(int i=0; i<yArrays.length; i++)
@@ -809,7 +809,7 @@ public class MyChartToFileUtils {
 		if (yMax == null) {
 			for(int i=0; i<yArrays.length; i++)
 				yMaxArray.add(MyArrayUtils.getMax(yArrays[i]));
-			yMax = Double.valueOf(MyArrayUtils.getMin(yMaxArray)).equals(null) ? yMaxArray.get(0) : MyArrayUtils.getMin(yMaxArray);
+			yMax = Double.valueOf(MyArrayUtils.getMax(yMaxArray)).equals(null) ? yMaxArray.get(0) : MyArrayUtils.getMax(yMaxArray);
 		}
 		
 		if(xMin.equals(xMax)) {
@@ -977,7 +977,7 @@ public class MyChartToFileUtils {
 		if (xMax == null) { 
 			for(int i=0; i<xArrays.length; i++)
 				xMaxArray.add(MyArrayUtils.getMax(xArrays[i]));
-			xMax = Double.valueOf(MyArrayUtils.getMin(xMaxArray)).equals(null) ? xMaxArray.get(0) : MyArrayUtils.getMin(xMaxArray);
+			xMax = Double.valueOf(MyArrayUtils.getMax(xMaxArray)).equals(null) ? xMaxArray.get(0) : MyArrayUtils.getMax(xMaxArray);
 		}
 		if (yMin == null) {
 			for(int i=0; i<yArrays.length; i++)
@@ -987,7 +987,7 @@ public class MyChartToFileUtils {
 		if (yMax == null) {
 			for(int i=0; i<yArrays.length; i++)
 				yMaxArray.add(MyArrayUtils.getMax(yArrays[i]));
-			yMax = Double.valueOf(MyArrayUtils.getMin(yMaxArray)).equals(null) ? yMaxArray.get(0) : MyArrayUtils.getMin(yMaxArray);
+			yMax = Double.valueOf(MyArrayUtils.getMax(yMaxArray)).equals(null) ? yMaxArray.get(0) : MyArrayUtils.getMax(yMaxArray);
 		}
 		
 		if(xMin.equals(xMax)) {
@@ -1159,7 +1159,7 @@ public class MyChartToFileUtils {
 		if (xMax == null) { 
 			for(int i=0; i<xList.size(); i++)
 				xMaxArray.add(MyArrayUtils.getMax(xList.get(i)));
-			xMax = Double.valueOf(MyArrayUtils.getMin(xMaxArray)).equals(null) ? xMaxArray.get(0) : MyArrayUtils.getMin(xMaxArray);
+			xMax = Double.valueOf(MyArrayUtils.getMax(xMaxArray)).equals(null) ? xMaxArray.get(0) : MyArrayUtils.getMax(xMaxArray);
 		}
 		if (yMin == null) {
 			for(int i=0; i<yList.size(); i++)
@@ -1169,7 +1169,7 @@ public class MyChartToFileUtils {
 		if (yMax == null) {
 			for(int i=0; i<yList.size(); i++)
 				yMaxArray.add(MyArrayUtils.getMax(yList.get(i)));
-			yMax = Double.valueOf(MyArrayUtils.getMin(yMaxArray)).equals(null) ? yMaxArray.get(0) : MyArrayUtils.getMin(yMaxArray);
+			yMax = Double.valueOf(MyArrayUtils.getMax(yMaxArray)).equals(null) ? yMaxArray.get(0) : MyArrayUtils.getMax(yMaxArray);
 		}
 		
 		if(xMin.equals(xMax)) {
@@ -1334,7 +1334,7 @@ public class MyChartToFileUtils {
 		if (xMax == null) { 
 			for(int i=0; i<xList.size(); i++)
 				xMaxArray.add(MyArrayUtils.getMax(xList.get(i)));
-			xMax = Double.valueOf(MyArrayUtils.getMin(xMaxArray)).equals(null) ? xMaxArray.get(0) : MyArrayUtils.getMin(xMaxArray);
+			xMax = Double.valueOf(MyArrayUtils.getMax(xMaxArray)).equals(null) ? xMaxArray.get(0) : MyArrayUtils.getMax(xMaxArray);
 		}
 		if (yMin == null) {
 			for(int i=0; i<yList.size(); i++)
@@ -1344,7 +1344,7 @@ public class MyChartToFileUtils {
 		if (yMax == null) {
 			for(int i=0; i<yList.size(); i++)
 				yMaxArray.add(MyArrayUtils.getMax(yList.get(i)));
-			yMax = Double.valueOf(MyArrayUtils.getMin(yMaxArray)).equals(null) ? yMaxArray.get(0) : MyArrayUtils.getMin(yMaxArray);
+			yMax = Double.valueOf(MyArrayUtils.getMax(yMaxArray)).equals(null) ? yMaxArray.get(0) : MyArrayUtils.getMax(yMaxArray);
 		}
 				
 		if(xMin.equals(xMax)) {

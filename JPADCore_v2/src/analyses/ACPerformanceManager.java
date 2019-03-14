@@ -3047,52 +3047,14 @@ public class ACPerformanceManager {
 				}
 
 				//-----------------------------------------------------------------------------------------------
-				// TAKE-OFF SIMULATION 
-				System.setOut(originalOut);
-				System.out.println("\t\t\t\tTake-Off simulation :: START");
-				System.setOut(filterStream);
-				try {
-					calcTakeOff.performTakeOffSimulation(
-							_thePerformanceInterface.getMaximumTakeOffMass(), 
-							_thePerformanceInterface.getTheOperatingConditions().getAltitudeTakeOff().to(SI.METER),
-							_thePerformanceInterface.getXcgPositionList().get(i),
-							_vMCMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).to(SI.METERS_PER_SECOND)
-							);
-				}
-				catch (Exception e) {
-					takeOffSimulationErrorFlag = true;
-					System.err.println("ERROR: (PERFORMANCE - TAKE-OFF SIMULATION) CALCULATION WILL BE SKIPPED ...");
-				}
-				System.setOut(originalOut);
-				System.out.println("\t\t\t\tTake-Off simulation :: COMPLETE");
-				System.setOut(filterStream);
-
-				//-----------------------------------------------------------------------------------------------
-				// TAKE-OFF SIMULATION PLOT
-				if(_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getPlotPerformance() == true) {
-					if(takeOffSimulationErrorFlag == false) {
-						try {
-							System.setOut(originalOut);
-							System.out.println("\t\t\t\tTake-Off simulation plot :: START");
-							System.setOut(filterStream);
-							calcTakeOff.plotTakeOffPerformance(takeOffFolderPath, _thePerformanceInterface.getXcgPositionList().get(i));
-							System.setOut(originalOut);
-							System.out.println("\t\t\t\tTake-Off simulation plot :: COMPLETE");
-							System.setOut(filterStream);
-						}
-						catch (Exception e) {
-							System.err.println("ERROR: (PERFORMANCE - TAKE-OFF SIMULATION) PLOT WILL BE SKIPPED ...");
-						}
-					}
-				}
-
-				//-----------------------------------------------------------------------------------------------
 				// BALANCED FIELD LENGTH CALCULATION
 				System.setOut(originalOut);
 				System.out.println("\t\t\t\tBalanced Field Length calculation :: START");
 				System.setOut(filterStream);
 				try {
 					calcTakeOff.calculateBalancedFieldLength(
+							_thePerformanceInterface.getMaximumTakeOffMass(), 
+							_thePerformanceInterface.getTheOperatingConditions().getAltitudeTakeOff().to(SI.METER),
 							_thePerformanceInterface.getXcgPositionList().get(i),
 							_vMCMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).to(SI.METERS_PER_SECOND)
 							);
@@ -3120,6 +3082,44 @@ public class ACPerformanceManager {
 						}
 						catch (Exception e) {
 							System.err.println("ERROR: (PERFORMANCE - BALANCED FIELD LENGTH) PLOT WILL BE SKIPPED ...");
+						}
+					}
+				}
+				
+				//-----------------------------------------------------------------------------------------------
+				// TAKE-OFF SIMULATION 
+				System.setOut(originalOut);
+				System.out.println("\t\t\t\tTake-Off simulation :: START");
+				System.setOut(filterStream);
+				try {
+					calcTakeOff.performTakeOffSimulation(
+							_thePerformanceInterface.getXcgPositionList().get(i),
+							_vMCMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).to(SI.METERS_PER_SECOND)
+							);
+				}
+				catch (Exception e) {
+					takeOffSimulationErrorFlag = true;
+					System.err.println("ERROR: (PERFORMANCE - TAKE-OFF SIMULATION) CALCULATION WILL BE SKIPPED ...");
+				}
+				System.setOut(originalOut);
+				System.out.println("\t\t\t\tTake-Off simulation :: COMPLETE");
+				System.setOut(filterStream);
+
+				//-----------------------------------------------------------------------------------------------
+				// TAKE-OFF SIMULATION PLOT
+				if(_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getPlotPerformance() == true) {
+					if(takeOffSimulationErrorFlag == false) {
+						try {
+							System.setOut(originalOut);
+							System.out.println("\t\t\t\tTake-Off simulation plot :: START");
+							System.setOut(filterStream);
+							calcTakeOff.plotTakeOffPerformance(takeOffFolderPath, _thePerformanceInterface.getXcgPositionList().get(i));
+							System.setOut(originalOut);
+							System.out.println("\t\t\t\tTake-Off simulation plot :: COMPLETE");
+							System.setOut(filterStream);
+						}
+						catch (Exception e) {
+							System.err.println("ERROR: (PERFORMANCE - TAKE-OFF SIMULATION) PLOT WILL BE SKIPPED ...");
 						}
 					}
 				}
@@ -5408,88 +5408,13 @@ public class ACPerformanceManager {
 	public class CalcTakeOff {
 		
 		public void performTakeOffSimulation(
-				Amount<Mass> takeOffMass,
-				Amount<Length> altitude,
 				double xcg,
 				Amount<Velocity> vMC
 				) {
 			
-			Amount<Length> wingToGroundDistance = 
-					_thePerformanceInterface.getTheAircraft().getFuselage().getHeightFromGround()
-					.plus(_thePerformanceInterface.getTheAircraft().getFuselage().getSectionCylinderHeight().divide(2))
-					.plus(_thePerformanceInterface.getTheAircraft().getWing().getZApexConstructionAxes()
-							.plus(_thePerformanceInterface.getTheAircraft().getWing().getSemiSpan()
-									.times(Math.sin(
-											_thePerformanceInterface.getTheAircraft().getWing()	
-												
-											.getDihedralMean()
-											.doubleValue(SI.RADIAN)
-											)
-											)
-									)
-							);
-			
-			_theTakeOffCalculatorMap.put(
-					xcg, 
-					new TakeOffCalc(
-							_thePerformanceInterface.getTheAircraft().getWing().getAspectRatio(),
-							_thePerformanceInterface.getTheAircraft().getWing().getSurfacePlanform(), 
-							_thePerformanceInterface.getTheAircraft().getFuselage().getUpsweepAngle(),
-							_thePerformanceInterface.getTheAircraft().getPowerPlant(),
-							_thePerformanceInterface.getPolarCLTakeOff().get(xcg),
-							_thePerformanceInterface.getPolarCDTakeOff().get(xcg),
-							altitude.to(SI.METER),
-							_thePerformanceInterface.getTheOperatingConditions().getDeltaTemperatureTakeOff(), 
-							takeOffMass.to(SI.KILOGRAM),
-							_thePerformanceInterface.getDtHold(),
-							_thePerformanceInterface.getKCLmaxTakeOff(),
-							_thePerformanceInterface.getKRotation(),
-							_thePerformanceInterface.getAlphaDotRotation(),
-							_thePerformanceInterface.getDragDueToEngineFailure(),
-							_thePerformanceInterface.getTheOperatingConditions().getThrottleTakeOff(), 
-							_thePerformanceInterface.getKAlphaDot(),
-							_thePerformanceInterface.getMuFunction(),
-							_thePerformanceInterface.getMuBrakeFunction(),
-							_thePerformanceInterface.getObstacleTakeOff(),
-							wingToGroundDistance,
-							_thePerformanceInterface.getWindSpeed(),
-							_thePerformanceInterface.getAlphaGround(),
-							_thePerformanceInterface.getCLmaxTakeOff().get(xcg),
-							_thePerformanceInterface.getCLZeroTakeOff().get(xcg),
-							_thePerformanceInterface.getCLAlphaTakeOff().get(xcg).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue(),
-							_thePerformanceInterface.getTakeOffCalibrationFactorThrust(),
-							_thePerformanceInterface.getAprCalibrationFactorThrust(),
-							_thePerformanceInterface.getGroundIdleCalibrationFactorThrust(),
-							_thePerformanceInterface.getTakeOffCalibrationFactorSFC(),
-							_thePerformanceInterface.getAprCalibrationFactorSFC(),
-							_thePerformanceInterface.getGroundIdleCalibrationFactorSFC(),
-							_thePerformanceInterface.getTakeOffCalibrationFactorEmissionIndexNOx(),
-							_thePerformanceInterface.getTakeOffCalibrationFactorEmissionIndexCO(),
-							_thePerformanceInterface.getTakeOffCalibrationFactorEmissionIndexHC(),
-							_thePerformanceInterface.getTakeOffCalibrationFactorEmissionIndexSoot(),
-							_thePerformanceInterface.getTakeOffCalibrationFactorEmissionIndexCO2(),
-							_thePerformanceInterface.getTakeOffCalibrationFactorEmissionIndexSOx(),
-							_thePerformanceInterface.getTakeOffCalibrationFactorEmissionIndexH2O(),
-							_thePerformanceInterface.getAprCalibrationFactorEmissionIndexNOx(),
-							_thePerformanceInterface.getAprCalibrationFactorEmissionIndexCO(),
-							_thePerformanceInterface.getAprCalibrationFactorEmissionIndexHC(),
-							_thePerformanceInterface.getAprCalibrationFactorEmissionIndexSoot(),
-							_thePerformanceInterface.getAprCalibrationFactorEmissionIndexCO2(),
-							_thePerformanceInterface.getAprCalibrationFactorEmissionIndexSOx(),
-							_thePerformanceInterface.getAprCalibrationFactorEmissionIndexH2O(),
-							_thePerformanceInterface.getGroundIdleCalibrationFactorEmissionIndexNOx(),
-							_thePerformanceInterface.getGroundIdleCalibrationFactorEmissionIndexCO(),
-							_thePerformanceInterface.getGroundIdleCalibrationFactorEmissionIndexHC(),
-							_thePerformanceInterface.getGroundIdleCalibrationFactorEmissionIndexSoot(),
-							_thePerformanceInterface.getGroundIdleCalibrationFactorEmissionIndexCO2(),
-							_thePerformanceInterface.getGroundIdleCalibrationFactorEmissionIndexSOx(),
-							_thePerformanceInterface.getGroundIdleCalibrationFactorEmissionIndexH2O()
-							)
-					);
-			
 			//------------------------------------------------------------
 			// SIMULATION
-			_theTakeOffCalculatorMap.get(xcg).calculateTakeOffDistanceODE(null, false, true, vMC);
+			_theTakeOffCalculatorMap.get(xcg).calculateTakeOffDistanceODE(null, false, true, vMC, true);
 			
 			if(_theTakeOffCalculatorMap.get(xcg).isRotationSpeedWarningFlag() == true)
 				System.err.println("WARNING: (SIMULATION - TAKE-OFF) THE CHOSEN VRot IS LESS THAN 1.05*VMC. THIS LATTER WILL BE USED ...");
@@ -5611,7 +5536,85 @@ public class ACPerformanceManager {
 			
 		}
 		
-		public void calculateBalancedFieldLength(Double xcg, Amount<Velocity> vMC) {
+		public void calculateBalancedFieldLength(
+				Amount<Mass> takeOffMass,
+				Amount<Length> altitude,
+				Double xcg, 
+				Amount<Velocity> vMC
+				) {
+			
+			Amount<Length> wingToGroundDistance = 
+					_thePerformanceInterface.getTheAircraft().getFuselage().getHeightFromGround()
+					.plus(_thePerformanceInterface.getTheAircraft().getFuselage().getSectionCylinderHeight().divide(2))
+					.plus(_thePerformanceInterface.getTheAircraft().getWing().getZApexConstructionAxes()
+							.plus(_thePerformanceInterface.getTheAircraft().getWing().getSemiSpan()
+									.times(Math.sin(
+											_thePerformanceInterface.getTheAircraft().getWing()	
+												
+											.getDihedralMean()
+											.doubleValue(SI.RADIAN)
+											)
+											)
+									)
+							);
+			
+			_theTakeOffCalculatorMap.put(
+					xcg, 
+					new TakeOffCalc(
+							_thePerformanceInterface.getTheAircraft().getWing().getAspectRatio(),
+							_thePerformanceInterface.getTheAircraft().getWing().getSurfacePlanform(), 
+							_thePerformanceInterface.getTheAircraft().getFuselage().getUpsweepAngle(),
+							_thePerformanceInterface.getTheAircraft().getPowerPlant(),
+							_thePerformanceInterface.getPolarCLTakeOff().get(xcg),
+							_thePerformanceInterface.getPolarCDTakeOff().get(xcg),
+							altitude.to(SI.METER),
+							_thePerformanceInterface.getTheOperatingConditions().getDeltaTemperatureTakeOff(), 
+							takeOffMass.to(SI.KILOGRAM),
+							_thePerformanceInterface.getDtHold(),
+							_thePerformanceInterface.getKCLmaxTakeOff(),
+							_thePerformanceInterface.getKRotation(),
+							_thePerformanceInterface.getAlphaDotRotation(),
+							_thePerformanceInterface.getDragDueToEngineFailure(),
+							_thePerformanceInterface.getTheOperatingConditions().getThrottleTakeOff(), 
+							_thePerformanceInterface.getKAlphaDot(),
+							_thePerformanceInterface.getMuFunction(),
+							_thePerformanceInterface.getMuBrakeFunction(),
+							_thePerformanceInterface.getObstacleTakeOff(),
+							wingToGroundDistance,
+							_thePerformanceInterface.getWindSpeed(),
+							_thePerformanceInterface.getAlphaGround(),
+							_thePerformanceInterface.getCLmaxTakeOff().get(xcg),
+							_thePerformanceInterface.getCLZeroTakeOff().get(xcg),
+							_thePerformanceInterface.getCLAlphaTakeOff().get(xcg).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue(),
+							_thePerformanceInterface.getTakeOffCalibrationFactorThrust(),
+							_thePerformanceInterface.getAprCalibrationFactorThrust(),
+							_thePerformanceInterface.getGroundIdleCalibrationFactorThrust(),
+							_thePerformanceInterface.getTakeOffCalibrationFactorSFC(),
+							_thePerformanceInterface.getAprCalibrationFactorSFC(),
+							_thePerformanceInterface.getGroundIdleCalibrationFactorSFC(),
+							_thePerformanceInterface.getTakeOffCalibrationFactorEmissionIndexNOx(),
+							_thePerformanceInterface.getTakeOffCalibrationFactorEmissionIndexCO(),
+							_thePerformanceInterface.getTakeOffCalibrationFactorEmissionIndexHC(),
+							_thePerformanceInterface.getTakeOffCalibrationFactorEmissionIndexSoot(),
+							_thePerformanceInterface.getTakeOffCalibrationFactorEmissionIndexCO2(),
+							_thePerformanceInterface.getTakeOffCalibrationFactorEmissionIndexSOx(),
+							_thePerformanceInterface.getTakeOffCalibrationFactorEmissionIndexH2O(),
+							_thePerformanceInterface.getAprCalibrationFactorEmissionIndexNOx(),
+							_thePerformanceInterface.getAprCalibrationFactorEmissionIndexCO(),
+							_thePerformanceInterface.getAprCalibrationFactorEmissionIndexHC(),
+							_thePerformanceInterface.getAprCalibrationFactorEmissionIndexSoot(),
+							_thePerformanceInterface.getAprCalibrationFactorEmissionIndexCO2(),
+							_thePerformanceInterface.getAprCalibrationFactorEmissionIndexSOx(),
+							_thePerformanceInterface.getAprCalibrationFactorEmissionIndexH2O(),
+							_thePerformanceInterface.getGroundIdleCalibrationFactorEmissionIndexNOx(),
+							_thePerformanceInterface.getGroundIdleCalibrationFactorEmissionIndexCO(),
+							_thePerformanceInterface.getGroundIdleCalibrationFactorEmissionIndexHC(),
+							_thePerformanceInterface.getGroundIdleCalibrationFactorEmissionIndexSoot(),
+							_thePerformanceInterface.getGroundIdleCalibrationFactorEmissionIndexCO2(),
+							_thePerformanceInterface.getGroundIdleCalibrationFactorEmissionIndexSOx(),
+							_thePerformanceInterface.getGroundIdleCalibrationFactorEmissionIndexH2O()
+							)
+					);
 			
 			_theTakeOffCalculatorMap.get(xcg).calculateBalancedFieldLength(vMC);
 			

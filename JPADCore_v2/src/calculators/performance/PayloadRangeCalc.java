@@ -685,7 +685,7 @@ public class PayloadRangeCalc {
 					1.0 // gidl H2O correction factor (not needed)
 					);
 
-			theTakeOffCalculator.calculateTakeOffDistanceODE(null, false, false, vMC);
+			theTakeOffCalculator.calculateTakeOffDistanceODE(null, false, false, vMC, false);
 			
 			rangeTakeOff.addAll(theTakeOffCalculator.getGroundDistance());			
 			fuelUsedTakeOff.addAll(theTakeOffCalculator.getFuelUsed());

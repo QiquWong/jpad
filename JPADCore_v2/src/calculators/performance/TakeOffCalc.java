@@ -60,7 +60,7 @@ public class TakeOffCalc {
 	//-------------------------------------------------------------------------------------
 	// VARIABLE DECLARATION
 
-	private static final double targetSpeedRatioIterativeLoop = 1.13; 
+	private static final double targetV2Min = 1.13; 
 	
 	private double aspectRatio;
 	private Amount<Area> surface; 
@@ -107,7 +107,7 @@ public class TakeOffCalc {
 	aprCalibrationFactorEmissionIndexH2O, gidlCalibrationFactorEmissionIndexNOx, gidlCalibrationFactorEmissionIndexCO,	
 	gidlCalibrationFactorEmissionIndexHC, gidlCalibrationFactorEmissionIndexSoot, gidlCalibrationFactorEmissionIndexCO2, 
 	gidlCalibrationFactorEmissionIndexSOx, gidlCalibrationFactorEmissionIndexH2O;
-	private Amount<Velocity> vFailure;
+	private Amount<Velocity> vFailure, vRotBFL;
 	private boolean isAborted;
 	private boolean isMaxIterationNumber;
 	private boolean isTailStrike;
@@ -137,7 +137,7 @@ public class TakeOffCalc {
 	
 	// integration index
 	private double[] failureSpeedArray, continuedTakeOffArray, abortedTakeOffArray,
-	failureSpeedArrayFitted, continuedTakeOffArrayFitted, abortedTakeOffArrayFitted;
+	failureSpeedArrayFitted, continuedTakeOffArrayFitted, abortedTakeOffArrayFitted, vRotBFLFitted;
 
 	private FirstOrderIntegrator theIntegrator;
 	private FirstOrderDifferentialEquations ode;
@@ -456,36 +456,52 @@ public class TakeOffCalc {
 	 * 
 	 * @author Vittorio Trifari
 	 */
-	public void calculateTakeOffDistanceODE(Amount<Velocity> vFailure, boolean isAborted, boolean iterativeLoopOverV2, Amount<Velocity> vMC) {
+	public void calculateTakeOffDistanceODE(Amount<Velocity> vFailure, boolean isAborted, boolean iterativeLoopOverV2, Amount<Velocity> vMC, boolean isvRotBFLCheck) {
 
 		System.out.println("---------------------------------------------------");
 		System.out.println("CalcTakeOff :: ODE integration\n\n");
 
-		if(vMC != null) {
-			if(1.05*vMC.doubleValue(SI.METERS_PER_SECOND) > (kRot*vSTakeOff.doubleValue(SI.METERS_PER_SECOND))
-					) {
-				rotationSpeedWarningFlag = true;
-				vRot = vMC.to(SI.METERS_PER_SECOND).times(1.05);
+		if(isvRotBFLCheck) {
+			vRot = Amount.valueOf(
+					MyArrayUtils.getMax(
+							new double[] {
+									vRotBFL.doubleValue(SI.METERS_PER_SECOND),
+									vSTakeOff.times(kRot).doubleValue(SI.METERS_PER_SECOND)
+							}),
+					SI.METERS_PER_SECOND);
+		}
+		else {
+			if(vMC != null) {
+				if(1.05*vMC.doubleValue(SI.METERS_PER_SECOND) > (kRot*vSTakeOff.doubleValue(SI.METERS_PER_SECOND))
+						) {
+					rotationSpeedWarningFlag = true;
+					vRot = vMC.to(SI.METERS_PER_SECOND).times(1.05);
+				}
+				else
+					vRot = vSTakeOff.to(SI.METERS_PER_SECOND).times(kRot);
 			}
 			else
 				vRot = vSTakeOff.to(SI.METERS_PER_SECOND).times(kRot);
 		}
-		else
-			vRot = vSTakeOff.to(SI.METERS_PER_SECOND).times(kRot);
 		
 		int i=0;
-		double newAlphaRed = 0.0;
-		alphaRed = 0.0;
+		Amount<Velocity> newVRot = Amount.valueOf(0.0, SI.METERS_PER_SECOND);
+		alphaRed = 0.0; /* SHOULD BE ASSIGNED AS INPUT ? */
 		
-		v2 = Amount.valueOf(10000.0, SI.METERS_PER_SECOND); // initialization to an impossible speed
+		v2 = Amount.valueOf(0.0, SI.METERS_PER_SECOND); // initialization to an impossible speed
 		
-		while (Math.abs((v2.doubleValue(SI.METERS_PER_SECOND)/vSTakeOff.doubleValue(SI.METERS_PER_SECOND)) - targetSpeedRatioIterativeLoop) >= 1e-3) {
+		while ((v2.doubleValue(SI.METERS_PER_SECOND)/vSTakeOff.doubleValue(SI.METERS_PER_SECOND)) <= targetV2Min) {
 
 			if(i >= 1) {
-				if(newAlphaRed <= 0.0)
-					alphaRed = newAlphaRed;
-				else
-					break;
+				if(vMC != null) {
+					if(1.05*vMC.doubleValue(SI.METERS_PER_SECOND) > (newVRot.doubleValue(SI.METERS_PER_SECOND))
+							) {
+						rotationSpeedWarningFlag = true;
+						vRot = vMC.to(SI.METERS_PER_SECOND).times(1.05);
+					}
+					else
+						vRot = newVRot;
+				}
 			}
 			
 			if(i > 500) {
@@ -804,41 +820,47 @@ public class TakeOffCalc {
 			
 			double[] xAt0 = new double[] {0.0, 0.0, 0.0, 0.0, 0.0}; // initial state
 			System.out.println("=================================================");
-			System.out.println("Integration " + (i+1) + " - AlphaRed = " + alphaRed + "°/s\n\n");
+			System.out.println("Integration " + (i+1) 
+					+ " - VRot/VsTO = " + vRot.doubleValue(SI.METERS_PER_SECOND)/vSTakeOff.doubleValue(SI.METERS_PER_SECOND) 
+					+ "\n\n"
+					);
 			theIntegrator.integrate(ode, 0.0, xAt0, 1000, xAt0); // now xAt0 contains final state
 
 			theIntegrator.clearEventHandlers();
 			theIntegrator.clearStepHandlers();
 
 			if((vFailure != null) 
-					&& (Math.abs((v2.doubleValue(SI.METERS_PER_SECOND)/vSTakeOff.doubleValue(SI.METERS_PER_SECOND)) - targetSpeedRatioIterativeLoop) >= 1e-3))
+					&& (v2.doubleValue(SI.METERS_PER_SECOND)/vSTakeOff.doubleValue(SI.METERS_PER_SECOND) <= targetV2Min))
 				v2CheckOEI = true;
+			else
+				v2CheckOEI = false;
 			
 			if( (isAborted == true || iterativeLoopOverV2 == false) )
 				break;
 			
 			//--------------------------------------------------------------------------------
-			// NEW ALPHA REDUCTION RATE 
-			if(((v2.doubleValue(SI.METERS_PER_SECOND)/vSTakeOff.doubleValue(SI.METERS_PER_SECOND)) - targetSpeedRatioIterativeLoop) >= 0.0) {
-				if((Math.abs((v2.doubleValue(SI.METERS_PER_SECOND)/vSTakeOff.doubleValue(SI.METERS_PER_SECOND)) - targetSpeedRatioIterativeLoop) < 1e-2))
-					newAlphaRed = alphaRed + 0.001;
-				else if((Math.abs((v2.doubleValue(SI.METERS_PER_SECOND)/vSTakeOff.doubleValue(SI.METERS_PER_SECOND)) - targetSpeedRatioIterativeLoop) < 1e-1))
-					newAlphaRed = alphaRed + 0.01;
+			// NEW V_ROT 
+			if((v2.doubleValue(SI.METERS_PER_SECOND)/vSTakeOff.doubleValue(SI.METERS_PER_SECOND)) <= targetV2Min) {
+				if(Math.abs((v2.doubleValue(SI.METERS_PER_SECOND)/vSTakeOff.doubleValue(SI.METERS_PER_SECOND)) - targetV2Min) < 3e-2)
+					newVRot = Amount.valueOf( 
+							vSTakeOff.doubleValue(SI.METERS_PER_SECOND)
+							* ((vRot.doubleValue(SI.METERS_PER_SECOND)/ vSTakeOff.doubleValue(SI.METERS_PER_SECOND))
+									+ 0.001),
+							SI.METERS_PER_SECOND
+							);
 				else
-					newAlphaRed = alphaRed + 0.1;
+					newVRot = Amount.valueOf( 
+							vSTakeOff.doubleValue(SI.METERS_PER_SECOND)
+							* ((vRot.doubleValue(SI.METERS_PER_SECOND)/ vSTakeOff.doubleValue(SI.METERS_PER_SECOND))
+									+ 0.01),
+							SI.METERS_PER_SECOND
+							);
 			}
-			else {
-				if((Math.abs((v2.doubleValue(SI.METERS_PER_SECOND)/vSTakeOff.doubleValue(SI.METERS_PER_SECOND)) - targetSpeedRatioIterativeLoop) < 1e-2))
-					newAlphaRed = alphaRed - 0.001;
-				else if((Math.abs((v2.doubleValue(SI.METERS_PER_SECOND)/vSTakeOff.doubleValue(SI.METERS_PER_SECOND)) - targetSpeedRatioIterativeLoop) < 1e-1))
-					newAlphaRed = alphaRed - 0.01;
-				else
-					newAlphaRed = alphaRed - 0.1;
-			}
+			
 			i++;
 		}
 		
-		if(vFailure == null)
+//		if(vFailure == null || isAborted == true)
 			manageOutputData(0.1, continuousOutputModel);
 		
 		
@@ -858,7 +880,7 @@ public class TakeOffCalc {
 				(maxTakeOffMass.doubleValue(SI.KILOGRAM) - x[4])*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
 				SI.NEWTON
 				);
-		Amount<Angle> currentAlpha = ((DynamicsEquationsTakeOff)ode).alpha(currentTime, currentSpeed, currentAltitude, deltaTemperature, currentGamma, currentWeight);
+		Amount<Angle> currentAlpha = ((DynamicsEquationsTakeOff)ode).alpha(currentTime);
 		double currentAlphaDot = ((DynamicsEquationsTakeOff)ode).alphaDot(currentTime);
 
 		List<Amount<Force>> totalThrustList = ((DynamicsEquationsTakeOff)ode).thrust(currentSpeed, currentTime, currentGamma, currentAltitude, deltaTemperature);
@@ -1236,7 +1258,7 @@ public class TakeOffCalc {
 				System.out.println(
 						"\n\tCL = " + ((DynamicsEquationsTakeOff)ode).cL(
 								currentSpeed,
-								((DynamicsEquationsTakeOff)ode).alpha(currentTime, currentSpeed, currentAltitude, deltaTemperature, currentGamma, currentWeight),
+								((DynamicsEquationsTakeOff)ode).alpha(currentTime),
 								currentGamma,
 								currentTime,
 								Amount.valueOf(
@@ -1247,7 +1269,7 @@ public class TakeOffCalc {
 								currentAltitude,
 								deltaTemperature
 								) + 
-						"\n\tAlpha Body = " + ((DynamicsEquationsTakeOff)ode).alpha(currentTime, currentSpeed, currentAltitude, deltaTemperature, currentGamma, currentWeight) + " °" + 
+						"\n\tAlpha Body = " + ((DynamicsEquationsTakeOff)ode).alpha(currentTime) + " °" + 
 						"\n\tt = " + t + " s"
 						);
 				System.out.println("\n---------------------------DONE!-------------------------------");
@@ -1257,8 +1279,8 @@ public class TakeOffCalc {
 			}
 			// CHECK ON LOAD FACTOR TO ENSTABLISH WHEN n=1 WHILE DECREASING ALPHA AND CL
 			if((t > tEndHold.doubleValue(SI.SECOND)) && (tClimb.doubleValue(SI.SECOND) == 10000.0) &&
-					(TakeOffCalc.this.getLoadFactorPerStep().get(TakeOffCalc.this.getLoadFactorPerStep().size()-1) < 1) &&
-					(TakeOffCalc.this.getLoadFactorPerStep().get(TakeOffCalc.this.getLoadFactorPerStep().size()-2) > 1)) {
+					(TakeOffCalc.this.getLoadFactorPerStep().get(TakeOffCalc.this.getLoadFactorPerStep().size()-1) < 1.0) &&
+					(TakeOffCalc.this.getLoadFactorPerStep().get(TakeOffCalc.this.getLoadFactorPerStep().size()-2) > 1.0)) {
 				System.out.println("\n\t\tLOAD FACTOR = 1 IN CLIMB");
 				System.out.println( 
 						"\n\tt = " + t + " s"
@@ -1266,7 +1288,7 @@ public class TakeOffCalc {
 				System.out.println("\n---------------------------DONE!-------------------------------");
 
 				tClimb = Amount.valueOf(t, SI.SECOND);
-				timeBreakPoints.add(t);
+//				timeBreakPoints.add(t);
 			}
 		}
 	}
@@ -1287,25 +1309,29 @@ public class TakeOffCalc {
 		// failure speed array
 		failureSpeedArray = MyArrayUtils.linspace(
 				vSTakeOff.times(0.5).doubleValue(SI.METERS_PER_SECOND),
-				vSTakeOff.times(1.1).doubleValue(SI.METERS_PER_SECOND),
+				vSTakeOff.times(1.2).doubleValue(SI.METERS_PER_SECOND),
 				5);
 		// continued take-off array
 		continuedTakeOffArray = new double[failureSpeedArray.length]; 
 		// aborted take-off array
 		abortedTakeOffArray = new double[failureSpeedArray.length];
-
+		
+		// List of vRot for each simulated condition
+		List<Amount<Velocity>> vRotListBFL = new ArrayList<>();
+		
 		// iterative take-off distance calculation for both conditions
 		for(int i=0; i<failureSpeedArray.length; i++) {
-			calculateTakeOffDistanceODE(Amount.valueOf(failureSpeedArray[i], SI.METERS_PER_SECOND), false, false, vMC);
+			calculateTakeOffDistanceODE(Amount.valueOf(failureSpeedArray[i], SI.METERS_PER_SECOND), false, true, vMC, false);
+			vRotListBFL.add(vRot);
 			if(v2CheckOEI) {
 				System.err.println("WARNING: (SIMULATION n. " + (i+1) + " - TAKE-OFF (BFL)) TARGET SPEED RATIO AT OBSTACLE"
-						+ "(V2/VsTO = " + targetSpeedRatioIterativeLoop + ") NOT REACHED! "
+						+ "(V2/VsTO = " + targetV2Min + ") NOT REACHED! "
 						+ "\n(V2 = " + v2.to(SI.METERS_PER_SECOND) + "; V2/VsTO = " + v2.to(SI.METERS_PER_SECOND).divide(vSTakeOff.to(SI.METERS_PER_SECOND)));
 			}
 			if(!getTakeOffResults().getGroundDistance().isEmpty())
 				continuedTakeOffArray[i] = getTakeOffResults().getGroundDistance().get(getTakeOffResults().getGroundDistance().size()-1).doubleValue(SI.METER);
 			
-			calculateTakeOffDistanceODE(Amount.valueOf(failureSpeedArray[i], SI.METERS_PER_SECOND), true, false, vMC);
+			calculateTakeOffDistanceODE(Amount.valueOf(failureSpeedArray[i], SI.METERS_PER_SECOND), true, false, vMC, false);
 				if(!getTakeOffResults().getGroundDistance().isEmpty() 
 						&& getTakeOffResults().getGroundDistance().get(getTakeOffResults().getGroundDistance().size()-1).doubleValue(SI.METER) >= 0.0)
 					abortedTakeOffArray[i] = getTakeOffResults().getGroundDistance().get(getTakeOffResults().getGroundDistance().size()-1).doubleValue(SI.METER);
@@ -1317,25 +1343,30 @@ public class TakeOffCalc {
 
 		MyInterpolatingFunction continuedTakeOffFunction = new MyInterpolatingFunction();
 		MyInterpolatingFunction abortedTakeOffFunction = new MyInterpolatingFunction();
+		MyInterpolatingFunction vRotFunction = new MyInterpolatingFunction();
 		
 		continuedTakeOffFunction.interpolateLinear(
 				Arrays.stream(failureSpeedArray).filter(x -> x != 0.0).toArray(), 
 				Arrays.stream(continuedTakeOffArray).filter(x -> x != 0.0).toArray()
 				);
 		abortedTakeOffFunction.interpolateLinear(failureSpeedArray, abortedTakeOffArray);
+		vRotFunction.interpolateLinear(
+				failureSpeedArray, 
+				vRotListBFL.stream().mapToDouble(v -> v.doubleValue(SI.METERS_PER_SECOND)).toArray()
+				);
 		
 		failureSpeedArrayFitted = MyArrayUtils.linspace(
 				vSTakeOff.times(0.5).doubleValue(SI.METERS_PER_SECOND),
-				vSTakeOff.times(1.1).doubleValue(SI.METERS_PER_SECOND),
+				vSTakeOff.times(1.2).doubleValue(SI.METERS_PER_SECOND),
 				1000);
 		continuedTakeOffArrayFitted = new double[failureSpeedArrayFitted.length];
 		abortedTakeOffArrayFitted = new double[failureSpeedArrayFitted.length];
+		vRotBFLFitted = new double[failureSpeedArrayFitted.length];
 		
 		for(int i=0; i<failureSpeedArrayFitted.length; i++) {
-			
 			continuedTakeOffArrayFitted[i] = continuedTakeOffFunction.value(failureSpeedArrayFitted[i]);
 			abortedTakeOffArrayFitted[i] = abortedTakeOffFunction.value(failureSpeedArrayFitted[i]);
-			
+			vRotBFLFitted[i] = vRotFunction.value(failureSpeedArrayFitted[i]);			
 		}
 		
 		// arrays intersection
@@ -1349,7 +1380,8 @@ public class TakeOffCalc {
 				if(intersection[i] != 0.0) {
 					balancedFieldLength = Amount.valueOf(intersection[i], SI.METER);
 					v1 = Amount.valueOf(failureSpeedArrayFitted[i], SI.METERS_PER_SECOND);
-					if(v1.doubleValue(SI.METRES_PER_SECOND) > vRot.doubleValue(SI.METERS_PER_SECOND))
+					vRotBFL = Amount.valueOf(vRotBFLFitted[i], SI.METERS_PER_SECOND);
+					if(v1.doubleValue(SI.METRES_PER_SECOND) > vRotBFL.doubleValue(SI.METERS_PER_SECOND))
 						System.err.println("WARNING: (BALANCED FIELD LENGTH - TAKE-OFF) V1 IS BIGGER THAN VRot!");
 				}
 		}
@@ -2752,13 +2784,13 @@ public class TakeOffCalc {
 
 		System.out.println("\n-------WRITING BALANCED TAKE-OFF DISTANCE CHART TO FILE--------");
 
-		for(int i=0; i<failureSpeedArrayFitted.length; i++)
+		for(int i=0; i<failureSpeedArrayFitted.length; i++) {
 			failureSpeedArrayFitted[i] = failureSpeedArrayFitted[i]/vSTakeOff.doubleValue(SI.METERS_PER_SECOND);
+			vRotBFLFitted[i] = vRotBFLFitted[i]/vSTakeOff.doubleValue(SI.METERS_PER_SECOND);
+		}
 
-		double[][] xArray = new double[][]
-				{failureSpeedArrayFitted, failureSpeedArrayFitted};
-		double[][] yArraySI = new double[][]
-				{continuedTakeOffArrayFitted, abortedTakeOffArrayFitted};
+		double[][] xArray = new double[][] {failureSpeedArrayFitted, failureSpeedArrayFitted};
+		double[][] yArraySI = new double[][] {continuedTakeOffArrayFitted, abortedTakeOffArrayFitted};
 
 		MyChartToFileUtils.plot(
 				xArray, yArraySI,
@@ -2766,7 +2798,7 @@ public class TakeOffCalc {
 				"Vfailure/VsTO", "Distance", "", "m",
 				new String[] {"OEI Take-Off", "Aborted Take-Off"},
 				takeOffFolderPath, "BalancedTakeOffLength_SI", createCSV);
-		
+
 		double[][] yArrayIMPERIAL = new double[][]	{
 			Arrays.stream(continuedTakeOffArrayFitted)
 			.map(x -> x*3.28084)
@@ -2774,7 +2806,7 @@ public class TakeOffCalc {
 			Arrays.stream(abortedTakeOffArrayFitted)
 			.map(x -> x*3.28084)
 			.toArray()
-			};
+		};
 
 		MyChartToFileUtils.plot(
 				xArray, yArrayIMPERIAL,
@@ -2782,6 +2814,16 @@ public class TakeOffCalc {
 				"Vfailure/VsTO", "Distance", "", "ft",
 				new String[] {"OEI Take-Off", "Aborted Take-Off"},
 				takeOffFolderPath, "BalancedTakeOffLength_IMPERIAL", createCSV);
+
+		xArray = new double[][] {failureSpeedArrayFitted};
+		double[][] yArray = new double[][] {vRotBFLFitted};
+
+		MyChartToFileUtils.plot(
+				xArray, yArray,
+				null, null, null, null,
+				"Vfailure/VsTO", "VRot/VsTO", "", "",
+				new String[] {"V1/VsTO = " + v1.doubleValue(SI.METERS_PER_SECOND)/vSTakeOff.doubleValue(SI.METERS_PER_SECOND)},
+				takeOffFolderPath, "BalancedTakeOffLength_VRot", createCSV);
 
 		System.out.println("\n---------------------------DONE!-------------------------------");
 	}
@@ -2795,7 +2837,7 @@ public class TakeOffCalc {
 	public class DynamicsEquationsTakeOff implements FirstOrderDifferentialEquations {
 
 		double g0 = AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND);
-		
+
 		public DynamicsEquationsTakeOff() {
 
 		}
@@ -2817,7 +2859,7 @@ public class TakeOffCalc {
 					(maxTakeOffMass.doubleValue(SI.KILOGRAM) - x[4])*g0,
 					SI.NEWTON
 					);
-			Amount<Angle> alpha = alpha(time, speed, altitude, deltaTemperature, gamma, weight);
+			Amount<Angle> alpha = alpha(time);
 			List<Amount<Force>> thrustList = thrust(speed, time, gamma, altitude, deltaTemperature);
 			List<Amount<Force>> thrustListHorizontal = new ArrayList<>();
 			List<Amount<Force>> thrustListVertical = new ArrayList<>();
@@ -4096,7 +4138,7 @@ public class TakeOffCalc {
 			return alphaDot;
 		}
 
-		public Amount<Angle> alpha(Amount<Duration> time, Amount<Velocity> speed, Amount<Length> altitude, Amount<Temperature> deltaTemperature, Amount<Angle> gamma, Amount<Force> weight) {
+		public Amount<Angle> alpha(Amount<Duration> time) {
 
 			Amount<Angle> alpha = TakeOffCalc.this.getAlphaGround();
 
@@ -5368,6 +5410,22 @@ public class TakeOffCalc {
 
 	public void setV2CheckOEI(boolean v2CheckOEI) {
 		this.v2CheckOEI = v2CheckOEI;
+	}
+
+	public Amount<Velocity> getvRotBFL() {
+		return vRotBFL;
+	}
+
+	public void setvRotBFL(Amount<Velocity> vRotBFL) {
+		this.vRotBFL = vRotBFL;
+	}
+
+	public double[] getvRotBFLFitted() {
+		return vRotBFLFitted;
+	}
+
+	public void setvRotBFLFitted(double[] vRotBFLFitted) {
+		this.vRotBFLFitted = vRotBFLFitted;
 	}
 
 }
