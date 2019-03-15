@@ -2,12 +2,14 @@ package it.unina.daf.jpadcadsandbox;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.measure.unit.SI;
 
 import org.apache.log4j.net.SyslogAppender;
+import org.jscience.physics.amount.Amount;
 
 import aircraft.Aircraft;
 import aircraft.components.liftingSurface.LiftingSurface;
@@ -15,21 +17,53 @@ import aircraft.components.nacelles.NacelleCreator;
 import aircraft.components.nacelles.Nacelles;
 import aircraft.components.powerplant.Engine;
 import aircraft.components.powerplant.PowerPlant;
+import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.EngineMountingPositionEnum;
 import it.unina.daf.jpadcad.enums.FileExtension;
 import it.unina.daf.jpadcad.enums.WingTipType;
 import it.unina.daf.jpadcad.occ.CADEdge;
+import it.unina.daf.jpadcad.occ.CADFace;
 import it.unina.daf.jpadcad.occ.CADGeomCurve3D;
+import it.unina.daf.jpadcad.occ.CADShape;
+import it.unina.daf.jpadcad.occ.CADShapeTypes;
 import it.unina.daf.jpadcad.occ.CADWire;
+import it.unina.daf.jpadcad.occ.OCCExplorer;
 import it.unina.daf.jpadcad.occ.OCCGeomCurve3D;
 import it.unina.daf.jpadcad.occ.OCCShape;
+import it.unina.daf.jpadcad.occ.OCCShell;
 import it.unina.daf.jpadcad.occ.OCCUtils;
 import it.unina.daf.jpadcad.occ.OCCWire;
+import it.unina.daf.jpadcad.occfx.OCCFXMeshExtractor;
 import it.unina.daf.jpadcad.utils.AircraftCADUtils;
 import it.unina.daf.jpadcad.utils.AircraftUtils;
+import it.unina.daf.jpadcadsandbox.Test23mds.Cam;
+import javafx.application.Application;
+import javafx.event.EventHandler;
+import javafx.geometry.Bounds;
+import javafx.scene.DepthTest;
+import javafx.scene.Group;
+import javafx.scene.PerspectiveCamera;
+import javafx.scene.Scene;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.PhongMaterial;
+import javafx.scene.paint.RadialGradient;
+import javafx.scene.paint.Stop;
+import javafx.scene.shape.DrawMode;
+import javafx.scene.shape.MeshView;
+import javafx.scene.shape.TriangleMesh;
+import javafx.scene.transform.Rotate;
+import javafx.scene.transform.Scale;
+import javafx.scene.transform.Translate;
+import javafx.stage.Stage;
 import opencascade.BRepAlgoAPI_Section;
 import opencascade.BRepBuilderAPI_MakeEdge;
 import opencascade.BRepBuilderAPI_Transform;
+import opencascade.BRepFilletAPI_MakeFillet2d;
+import opencascade.BRepOffsetAPI_MakeOffsetShape;
+import opencascade.BRepOffset_Mode;
+import opencascade.GeomAbs_JoinType;
 import opencascade.TopoDS;
 import opencascade.gp_Ax1;
 import opencascade.gp_Ax2;
@@ -42,26 +76,50 @@ import opencascade.gp_Vec;
 import processing.core.PVector;
 import standaloneutils.MyArrayUtils;
 
-public class Test43mds {
+public class Test43mds extends Application {
+	
+	public static List<List<TriangleMesh>> mesh;
+	
+	// mouse positions
+	double mousePosX;
+	double mousePosY;
+	double mouseOldX;
+	double mouseOldY;
+	double mouseDeltaX;
+	double mouseDeltaY;
+
+	// allocating new camera
+	final Cam camOffset = new Cam();
+	final Cam cam = new Cam();
 
 	public static void main(String[] args) {
 
-		System.out.println("----- Nacelle creation -----");
+		System.out.println("----- TURBOFAN engine creation -----");
 		
-		// ----------------------
-		// Initialize
-		// ----------------------
+		// -----------------------------------
+		// Initialize lists and shape factory
+		// -----------------------------------
 		if (OCCUtils.theFactory == null)
 			OCCUtils.initCADShapeFactory();
 		
 		List<OCCShape> exportShapes = new ArrayList<>();	
 		
+		// ------------------------
+		// Collect components
+		// ------------------------
 		Aircraft aircraft = AircraftUtils.importAircraft(args);
 		Nacelles nacelles = aircraft.getNacelles();
 		PowerPlant powerPlant = aircraft.getPowerPlant();
 		NacelleCreator nacelle = nacelles.getNacellesList().get(0);
 		Engine engine = powerPlant.getEngineList().get(0);
-				
+		
+		nacelle.setXApexConstructionAxes(nacelle.getXApexConstructionAxes().plus(Amount.valueOf(0.0, SI.METER)));
+		engine.setXApexConstructionAxes(engine.getXApexConstructionAxes().plus(Amount.valueOf(0.0, SI.METER)));
+		nacelle.setZApexConstructionAxes(nacelle.getZApexConstructionAxes().minus(Amount.valueOf(0.0, SI.METER)));
+		engine.setZApexConstructionAxes(engine.getZApexConstructionAxes().minus(Amount.valueOf(0.0, SI.METER)));
+		
+		
+			
 		// --------------------------
 		// Collect geometric data
 		// --------------------------
@@ -288,10 +346,10 @@ public class Test43mds {
 		
 		// ---------------------
 		// Generate the PYLON
-		// ---------------------
+		// ---------------------		
 		LiftingSurface mountingLS = null;
-		double pylonWidthEngineMaxRadiusPercent = 0.25;
-		double pylonWidth = pylonWidthEngineMaxRadiusPercent*maxRadius;
+		OCCShape pylonSolid = null;
+		List<OCCShape> liftingSurfaceShapes = new ArrayList<>();
 		
 		switch (engine.getMountingPosition()) {
 
@@ -310,65 +368,175 @@ public class Test43mds {
 			break;
 		}
 		
-//		exportShapes.addAll(
-//				AircraftCADUtils.getLiftingSurfaceCAD(mountingLS, WingTipType.ROUNDED, false, false, true)
-//				);
+		List<double[]> airfoilCamberLinePts = AircraftCADUtils.generateCamberAtY(yApex, mountingLS);
+		
+		if (ptB[2] > airfoilCamberLinePts.get(airfoilCamberLinePts.size() - 1)[2]) {
+			 
+			System.out.println("Pylon shapes builder algorithm interrupted ...\n" + 
+							   "Pylon shapes have not been added to the engine ones!");
+		} else {
 			
-		// ----------------------------
-		// Generate the PYLON mid wire
-		// ----------------------------
+			double pylonWidthEngineMaxRadiusPercent = 0.25;
+			double pylonWidth = pylonWidthEngineMaxRadiusPercent*maxRadius;
 		
-		// Assign a z offset to the outlet low wire
-		double byPassOutletZOffset = byPassOutletOffset;
+			// ----------------------------
+			// Generate the PYLON mid wire
+			// ----------------------------
+			
+			// Assign a z offset to the outlet low wire
+			double byPassOutletZOffset = byPassOutletOffset;
 
-		CADWire byPassLowOutletWire = OCCUtils.theFactory.newWireFromAdjacentEdges(edge6, edge7);
-		double[] byPassLowOutletWireRefVtx = byPassLowOutletWire.vertices().get(0).pnt();
-		CADWire byPassLowOutletWireMid = (CADWire) OCCUtils.getShapeTranslated(
-				(OCCShape) byPassLowOutletWire, 
-				byPassLowOutletWireRefVtx, 
-				new double[] {
-						byPassLowOutletWireRefVtx[0],
-						byPassLowOutletWireRefVtx[1],
-						byPassLowOutletWireRefVtx[2] - byPassOutletZOffset
-				});
-		
-		// Generate the mid airfoil camber line
-		List<double[]> midAirfoilCamberLinePts = AircraftCADUtils.generateCamberAtY(yApex, mountingLS);
-		CADEdge midAirfoilCamberLine = OCCUtils.theFactory.newCurve3D(midAirfoilCamberLinePts, false).edge();
-		
-		// Generate remaining points
-		double[] camberLineFirstPt = midAirfoilCamberLinePts.get(0);
-		double[] coreOutletUppPt = byPassLowOutletWireMid.vertices().get(byPassLowOutletWireMid.vertices().size() - 1).pnt();
-		
-		double[] pt1 = (ptB[0] > (xApex + xPercentFanInlet*lengthCore) && ptB[0] < (xApex + xPercentFanOutlet*lengthCore)) ?
-				ptB : new double[] {
-						xApex + (xPercentFanOutlet*lengthCore - xPercentFanInlet*lengthCore)/2, 
-						yApex, 
-						zApex + maxRadius*0.95};
-		
-		double[] pt2 = midAirfoilCamberLinePts.get(midAirfoilCamberLinePts.size());
-		
-		double[] pt3 = (camberLineFirstPt[0] > coreOutletUppPt[0]) ? 
-				camberLineFirstPt : new double[] {
-						camberLineFirstPt[0] + 0.25*(coreOutletUppPt[0] - camberLineFirstPt[0])/2, 
-						camberLineFirstPt[1],
-						camberLineFirstPt[2]};
-		
-		double[] pt4 = (camberLineFirstPt[0] > coreOutletUppPt[0]) ? 
-				new double[] {
-						coreOutletUppPt[0] + 0.25*(camberLineFirstPt[0] - coreOutletUppPt[0]),
-						coreOutletUppPt[1],
-						coreOutletUppPt[2]
-						} : new double[] {
-								coreOutletUppPt[0] + 0.25*(coreOutletUppPt[0] - camberLineFirstPt[0]), 
-								coreOutletUppPt[1], 
-								coreOutletUppPt[2]};
-		
-		double[] pt5 = coreOutletUppPt;			
+			CADWire byPassLowOutletWire = OCCUtils.theFactory.newWireFromAdjacentEdges(edge6, edge7);
+			double[] byPassLowOutletWireRefVtx = byPassLowOutletWire.vertices().get(0).pnt();
+			CADWire byPassLowOutletWireMid = (CADWire) OCCUtils.getShapeTranslated(
+					(OCCShape) byPassLowOutletWire, 
+					byPassLowOutletWireRefVtx, 
+					new double[] {
+							byPassLowOutletWireRefVtx[0],
+							byPassLowOutletWireRefVtx[1],
+							byPassLowOutletWireRefVtx[2] - byPassOutletZOffset
+					});		
+			
+			// Generate remaining points
+			OCCGeomCurve3D airfoilCamberLine = (OCCGeomCurve3D) OCCUtils.theFactory.newCurve3D(airfoilCamberLinePts, false);
+			airfoilCamberLine.discretize(30);
+			List<double[]> upperCurvePylonMidWirePts = airfoilCamberLine.getDiscretizedCurve().getDoublePoints().stream()
+					.skip(2).limit(26).collect(Collectors.toList());
+			
+			double[] camberLineFirstPt = upperCurvePylonMidWirePts.get(0);
+			double[] camberLineLastPt = upperCurvePylonMidWirePts.get(upperCurvePylonMidWirePts.size() - 1);
+			double[] coreOutletUppPt = byPassLowOutletWireMid.vertices().get(byPassLowOutletWireMid.vertices().size() - 1).pnt();
+			
+			double[] pt1 = upperCurvePylonMidWirePts.get(upperCurvePylonMidWirePts.size() - 1);
+			
+			double[] pt2 = (ptB[0] > (xApex + xPercentFanInlet*lengthCore) && ptB[0] < (xApex + xPercentFanOutlet*lengthCore)) ?
+					ptB : 
+					new double[] {
+							xApex + (xPercentFanOutlet*lengthCore - xPercentFanInlet*lengthCore)/2, 
+							yApex, 
+							zApex + maxRadius*0.95
+							};
+			
+			double[] pt3 = new double[] {pt2[0], yApex, byPassLowOutletWireMid.vertices().get(0).pnt()[2]};
+			
+			double[] pt4 = byPassLowOutletWireMid.vertices().get(0).pnt();
+			
+			double[] pt5 = coreOutletUppPt;		
+			
+			double[] pt6 = new double[] {
+					coreOutletUppPt[0] + 0.20*Math.abs((camberLineFirstPt[0] - camberLineLastPt[0])),
+					coreOutletUppPt[1],
+					coreOutletUppPt[2]
+			};	
+			
+			double[] pt7 = camberLineFirstPt;
+			
+			// Assign tangent vectors
+			PVector pv1 = new PVector((float) pt1[0], (float) pt1[1], (float) pt1[2]);
+			PVector pv2 = new PVector((float) pt2[0], (float) pt2[1], (float) pt2[2]);
+			PVector pv8 = (pv1.x > pv2.x) ? 
+					new PVector(pv2.x, pv1.y, pv1.z) :
+					new PVector(pv1.x, pv2.y, pv2.z);
+			PVector pv9 = (pv1.x > pv2.x) ?
+					PVector.lerp(pv8, pv1, 0.25f) :
+					PVector.lerp(pv8, pv2, 0.25f);
 					
-		double[] pt6 = byPassLowOutletWireMid.vertices().get(0).pnt();
+			PVector pvTng1 = (pv1.x > pv2.x) ?
+					new PVector(-1.0f, 0.0f, 0.0f) :
+					PVector.sub(pv9, pv1).normalize();
+					
+			PVector pvTng2 = (pv1.x > pv2.x) ? 
+					PVector.sub(pv2, pv9).normalize() :
+					PVector.sub(pv9, pv1).normalize();
+					
+			double[] tng1 = new double[] {pvTng1.x, pvTng1.y, pvTng1.z};
+			double[] tng2 = new double[] {pvTng2.x, pvTng2.y, pvTng2.z};
+			
+			// Generate edges
+			List<double[]> ptsCrvA = new ArrayList<>();
+			List<double[]> ptsCrvB = new ArrayList<>();
+			List<double[]> ptsCrvC = new ArrayList<>();
+			List<double[]> ptsCrvF = new ArrayList<>();
+			List<double[]> ptsCrvG = new ArrayList<>();
+			
+			ptsCrvA.add(pt1); 	ptsCrvA.add(pt2);
+			ptsCrvB.add(pt2);	ptsCrvB.add(pt3);
+			ptsCrvC.add(pt3);	ptsCrvC.add(pt4);
+			ptsCrvF.add(pt5);	ptsCrvF.add(pt6);
+			ptsCrvG.add(pt6);	ptsCrvG.add(pt7);
+			
+			CADEdge edgeA = OCCUtils.theFactory.newCurve3D(ptsCrvA, false, tng1, tng2, false).edge();
+			CADEdge edgeB = OCCUtils.theFactory.newCurve3D(ptsCrvB, false).edge();
+			CADEdge edgeC = OCCUtils.theFactory.newCurve3D(ptsCrvC, false).edge();
+			CADEdge edgeD = byPassLowOutletWireMid.edges().get(0);
+			CADEdge edgeE = byPassLowOutletWireMid.edges().get(1);
+			CADEdge edgeF = OCCUtils.theFactory.newCurve3D(ptsCrvF, false).edge();
+			CADEdge edgeG = OCCUtils.theFactory.newCurve3D(ptsCrvG, false).edge();
+			CADEdge edgeH = OCCUtils.theFactory.newCurve3D(upperCurvePylonMidWirePts, false).edge();
+			
+			// Generate the wire
+			CADWire pylonMidWire = OCCUtils.theFactory.newWireFromAdjacentEdges(
+					edgeA, edgeB, edgeC, edgeD, edgeE, edgeF, edgeG, edgeH);
+						
+			// ---------------------------------
+			// Generate offset surface
+			// ---------------------------------
+			CADWire pylonRightWire = (CADWire) OCCUtils.getShapeTranslated((OCCShape) pylonMidWire, 
+					pylonMidWire.vertices().get(0).pnt(), 
+					new double[] {
+							pylonMidWire.vertices().get(0).pnt()[0],
+							pylonMidWire.vertices().get(0).pnt()[1] + pylonWidth/2,
+							pylonMidWire.vertices().get(0).pnt()[2]
+							}
+					);
+			
+			// -------------------------------
+			// Generate the PYLON right shell
+			// -------------------------------
+			OCCShape pylonRightShell = (OCCShape) OCCUtils.theFactory.newShellFromAdjacentShapes(
+					OCCUtils.makePatchThruSections(pylonMidWire, pylonRightWire),
+					OCCUtils.theFactory.newFacePlanar(pylonRightWire)
+					);
+						
+			OCCShape filletedRightShell = OCCUtils.applyFilletOnShell(
+					(OCCShell) pylonRightShell, 
+					new int[] {2, 6, 10, 14, 18, 22, 26, 30}, 
+					0.75*pylonWidth/2
+					);
+			
+			// -----------------------------------------------------------
+			// Mirror the right shell and generate the solid of the PYLON
+			// -----------------------------------------------------------
+			OCCShape filletedLeftShell = OCCUtils.getShapeMirrored(
+					filletedRightShell, 
+					new PVector((float) xApex, (float) yApex, (float) zApex), 
+					new PVector(0.0f, 1.0f, 0.0f), 
+					new PVector(1.0f, 0.0f, 0.0f)
+					);
+			
+			pylonSolid = (OCCShape) OCCUtils.theFactory.newSolidFromAdjacentShapes(
+					filletedRightShell, filletedLeftShell);
+			
+			liftingSurfaceShapes = AircraftCADUtils.getLiftingSurfaceCAD(
+					mountingLS, WingTipType.ROUNDED, false, false, true
+					);
+		}
 		
-		double[] pt7 = new double[] {pt1[0], yApex, byPassLowOutletWireMid.vertices().get(0).pnt()[2]};
+//		CADFace pylonMidFace = OCCUtils.theFactory.newFacePlanar(pylonMidWire);
+//		
+//		BRepOffsetAPI_MakeOffsetShape offsetMaker = new BRepOffsetAPI_MakeOffsetShape(
+//				((OCCShape) pylonMidFace).getShape(),
+//				pylonWidth/2,
+//				1.0e-06,
+//				BRepOffset_Mode.BRepOffset_Skin,
+//				0,
+//				0,
+//				GeomAbs_JoinType.GeomAbs_Arc
+//				);
+//		
+//		CADShape offsetShape = OCCUtils.theFactory.newShape(offsetMaker.Shape());
+		
+//		CADEdge edgeA = OCCUtils.theFactory.new
 		
 		// Generate mid wire edges
 //		CADEdge edgeA = OCCUtils.theFactory.newCurve3D(pt1, pt2)
@@ -405,21 +573,45 @@ public class Test43mds {
 		
 		// ---------------------
 		// Export shapes
-		// ---------------------
-		exportShapes.add((OCCShape) engineWire);
-		exportShapes.addAll(sectionResults);
+		// ---------------------		
+//		exportShapes.addAll(rightShellEdges.stream().map(s -> (OCCShape) s).collect(Collectors.toList()));
+//		exportShapes.add(filletedLeftShell);
+//		exportShapes.add(filletedRightShell);
+//		exportShapes.add((OCCShape) engineWire);		
+//		exportShapes.add((OCCShape) pylonMidWire);
+//		exportShapes.add((OCCShape) pylonRightWire);
+//		exportShapes.add(pylonRightShell);
+//		exportShapes.add((OCCShape) pylonMidFace);
+//		exportShapes.add((OCCShape) offsetShape);
 //		exportShapes.add((OCCShape) OCCUtils.theFactory.newCurve3D(lsCamberMidSection, false).edge());
-//		exportShapes.add(engineSolid);
+		
+		exportShapes.add(engineSolid);
+		exportShapes.add(pylonSolid);
+		exportShapes.addAll(liftingSurfaceShapes);
 		
 		OCCUtils.write("turbofan_test_01", FileExtension.STEP, exportShapes);
+		
+		// Extract the meshes
+		List<List<TriangleMesh>> triangleMeshes = exportShapes.stream()
+				.map(s -> (new OCCFXMeshExtractor(s.getShape())).getFaces().stream()
+						.map(f -> {
+							OCCFXMeshExtractor.FaceData faceData = new OCCFXMeshExtractor.FaceData(f, true);
+							faceData.load();
+							return faceData.getTriangleMesh();
+						})
+						.collect(Collectors.toList())
+						)
+				.collect(Collectors.toList());
+		
+		mesh = triangleMeshes;
+		
+		System.exit(0);
+		
+//		launch();
 	}
 	
-	private static List<OCCShape> generatePylonShapes(
-			double[] engineUppReferencePnt, 
-			double[] engineRearReferencePnt, 
-			CADWire byPassLowOutletWire,
-			List<double[]> lsReferencePnts
-			) {
+	private static List<OCCShape> generateTurbofanEngineCAD(
+			NacelleCreator nacelle, Engine engine, boolean generatePylon) {
 		
 		List<OCCShape> returnedShapes = new ArrayList<>();
 		
@@ -450,4 +642,236 @@ public class Test43mds {
 		
 		return (0.36 + 0.03*bpr); // BPR 9.0 --> 0.63, BPR 12.0 --> 0.72	
 	}
+	
+	@Override 
+	public void start(final Stage stage) {	
+		camOffset.getChildren().add(cam);
+		resetCam();
+		
+		// creating the parent node and the main scene		
+		final Scene scene = new Scene(camOffset, 800, 800, true);
+		scene.setFill(new RadialGradient(225, 0.85, 300, 300, 500, false,
+                CycleMethod.NO_CYCLE, new Stop[]
+                { new Stop(0f, Color.WHITE),
+                  new Stop(1f, Color.LIGHTBLUE) }));
+		scene.setCamera(new PerspectiveCamera());
+		
+		Group components = new Group();
+		components.setDepthTest(DepthTest.ENABLE);
+		
+		// creating the mesh view		
+		mesh.forEach(mL -> {
+			mL.forEach(m -> {
+				MeshView face = new MeshView(m);
+				face.setDrawMode(DrawMode.FILL);
+				components.getChildren().add(face);
+			});
+		});
+		cam.getChildren().add(components);
+		
+		double halfSceneWidth = scene.getWidth()/2;
+		double halfSceneHeigth = scene.getHeight()/2;
+		cam.p.setX(halfSceneWidth);
+		cam.ip.setX(-halfSceneWidth);
+		cam.p.setY(halfSceneHeigth);
+		cam.ip.setY(-halfSceneHeigth);
+		
+		frameCam(stage, scene);
+		
+		// scale, rotate and translate using the mouse
+		scene.setOnMouseDragged(new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent me) {
+            	
+                mouseOldX = mousePosX;
+                mouseOldY = mousePosY;
+                mousePosX = me.getX();
+                mousePosY = me.getY();
+                mouseDeltaX = mousePosX - mouseOldX;
+                mouseDeltaY = mousePosY - mouseOldY;
+                
+                if (me.isAltDown() && me.isShiftDown() && me.isPrimaryButtonDown()) {
+                    double rzAngle = cam.rz.getAngle();
+                    cam.rz.setAngle(rzAngle - mouseDeltaX);
+                }
+                else if (me.isAltDown() && me.isPrimaryButtonDown()) {
+                    double ryAngle = cam.ry.getAngle();
+                    cam.ry.setAngle(ryAngle - mouseDeltaX);
+                    double rxAngle = cam.rx.getAngle();
+                    cam.rx.setAngle(rxAngle + mouseDeltaY);
+                }
+                else if (me.isAltDown() && me.isSecondaryButtonDown()) {
+                    double scale = cam.s.getX();
+                    double newScale = scale + mouseDeltaX*0.1;
+                    cam.s.setX(newScale);
+                    cam.s.setY(newScale);
+                    cam.s.setZ(newScale);
+                }
+                else if (me.isAltDown() && me.isMiddleButtonDown()) {
+                    double tx = cam.t.getX();
+                    double ty = cam.t.getY();
+                    cam.t.setX(tx + mouseDeltaX);
+                    cam.t.setY(ty + mouseDeltaY);
+                }                
+            }
+        });
+
+		// showing the stage
+		stage.setScene(scene);
+		stage.setTitle("Parametric turbofan engine test");
+		stage.show();
+	}
+	
+	private void frameCam(final Stage stage, final Scene scene) {
+        setCamOffset(camOffset, scene);
+        setCamPivot(cam);
+        setCamTranslate(cam);
+        setCamScale(cam, scene);
+    }
+	
+	private void setCamOffset(final Cam camOffset, final Scene scene) {
+        double width = scene.getWidth();
+        double height = scene.getHeight();
+        camOffset.t.setX(width/2.0);
+        camOffset.t.setY(height/2.0);
+    }
+	
+	private void setCamScale(final Cam cam, final Scene scene) {
+        final Bounds bounds = cam.getBoundsInLocal();
+
+        double width = scene.getWidth();
+        double height = scene.getHeight();
+
+        double scaleFactor = 1.0;
+        double scaleFactorY = 1.0;
+        double scaleFactorX = 1.0;
+        if (bounds.getWidth() > 0.0001) {
+            scaleFactorX = width / bounds.getWidth() / 2.0; // / 2.0;
+        }
+        if (bounds.getHeight() > 0.0001) {
+            scaleFactorY = height / bounds.getHeight() / 2.0; //  / 1.5;
+        }
+        if (scaleFactorX > scaleFactorY) {
+            scaleFactor = scaleFactorY;
+        } else {
+            scaleFactor = scaleFactorX;
+        }
+        cam.s.setX(scaleFactor);
+        cam.s.setY(scaleFactor);
+        cam.s.setZ(scaleFactor);
+    }
+	
+	private void setCamPivot(final Cam cam) {
+        final Bounds bounds = cam.getBoundsInLocal();
+        final double pivotX = bounds.getMinX() + bounds.getWidth()/2;
+        final double pivotY = bounds.getMinY() + bounds.getHeight()/2;
+        final double pivotZ = bounds.getMinZ() + bounds.getDepth()/2;
+        cam.p.setX(pivotX);
+        cam.p.setY(pivotY);
+        cam.p.setZ(pivotZ);
+        cam.ip.setX(-pivotX);
+        cam.ip.setY(-pivotY);
+        cam.ip.setZ(-pivotZ);
+    }
+	
+	private void setCamTranslate(final Cam cam) {
+        final Bounds bounds = cam.getBoundsInLocal();
+        final double pivotX = bounds.getMinX() + bounds.getWidth()/2;
+        final double pivotY = bounds.getMinY() + bounds.getHeight()/2;
+        cam.t.setX(-pivotX);
+        cam.t.setY(-pivotY);
+    }
+	
+	private void resetCam() {
+		cam.t.setX(0.0);
+		cam.t.setY(0.0);
+		cam.t.setZ(0.0);
+		
+		cam.rx.setAngle(135.0);
+		cam.ry.setAngle(-15.0);
+		cam.rz.setAngle(10.0);
+		
+		cam.s.setX(1.25);
+		cam.s.setY(1.25);
+		cam.s.setZ(1.25);
+
+		cam.p.setX(0.0);
+		cam.p.setY(0.0);
+		cam.p.setZ(0.0);
+
+		cam.ip.setX(0.0);
+		cam.ip.setY(0.0);
+		cam.ip.setZ(0.0);
+
+		final Bounds bounds = cam.getBoundsInLocal();
+		final double pivotX = bounds.getMinX() + bounds.getWidth() / 2;
+		final double pivotY = bounds.getMinY() + bounds.getHeight() / 2;
+		final double pivotZ = bounds.getMinZ() + bounds.getDepth() / 2;
+
+		cam.p.setX(pivotX);
+		cam.p.setY(pivotY);
+		cam.p.setZ(pivotZ);
+
+		cam.ip.setX(-pivotX);
+		cam.ip.setY(-pivotY);
+		cam.ip.setZ(-pivotZ);
+	}
+	
+	private PhongMaterial setComponentColor(ComponentEnum component) {
+
+		PhongMaterial material = new PhongMaterial();
+
+		switch(component) {
+
+		case FUSELAGE: 
+			material.setDiffuseColor(Color.BLUE);
+			material.setSpecularColor(Color.LIGHTBLUE);
+
+			break;
+
+		case WING:
+			material.setDiffuseColor(Color.RED);
+			material.setSpecularColor(Color.MAGENTA);
+
+			break;
+
+		case HORIZONTAL_TAIL:
+			material.setDiffuseColor(Color.DARKGREEN);
+			material.setSpecularColor(Color.GREEN);
+
+			break;
+
+		case VERTICAL_TAIL:
+			material.setDiffuseColor(Color.GOLD);
+			material.setSpecularColor(Color.YELLOW);
+
+			break;
+
+		case CANARD:
+			material.setDiffuseColor(Color.BLUEVIOLET);
+			material.setSpecularColor(Color.VIOLET);
+
+			break;
+
+		default:
+
+			break;
+		}
+		
+		return material;
+	}
+	
+	private class Cam extends Group {
+		Translate t  = new Translate();
+		Translate p  = new Translate();
+		Translate ip = new Translate();
+		Rotate rx = new Rotate();
+		{rx.setAxis(Rotate.X_AXIS);}
+		Rotate ry = new Rotate();
+		{ry.setAxis(Rotate.Y_AXIS);}
+		Rotate rz = new Rotate();
+		{rz.setAxis(Rotate.Z_AXIS);}
+		Scale s = new Scale();
+		public Cam() {super(); getTransforms().addAll(t, p, ip, rx, ry, rz, s); }
+		
+	}	
 }

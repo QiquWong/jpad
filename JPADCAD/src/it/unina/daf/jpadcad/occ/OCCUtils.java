@@ -153,13 +153,13 @@ public final class OCCUtils {
 		switch (fileExtension) {
 		
 		case BREP:
-			shapes.forEach(s -> builder.Add(compound, s.getShape()));
+			shapes.stream().filter(s -> s != null).forEach(s -> builder.Add(compound, s.getShape()));
 			BRepTools.Write(compound, fileNameComplete);
 			
 			break;
 			
 		case STEP:
-			shapes.forEach(s -> builder.Add(compound, s.getShape()));
+			shapes.stream().filter(s -> s != null).forEach(s -> builder.Add(compound, s.getShape()));
 			STEPControl_Writer stepWriter = new STEPControl_Writer();
 			Interface_Static.SetCVal("xstep.cascade.unit", "M");
 //			Interface_Static.SetCVal("write.step.unit", "M");
@@ -171,7 +171,7 @@ public final class OCCUtils {
 		case IGES:
 			if (IGESControl_Controller.Init() == 1) {
 				IGESControl_Writer igesWriter = new IGESControl_Writer("2HM");
-				shapes.forEach(s -> igesWriter.AddShape(s.getShape()));
+				shapes.stream().filter(s -> s != null).forEach(s -> igesWriter.AddShape(s.getShape()));
 				igesWriter.ComputeModel();
 				igesWriter.Write(fileNameComplete);
 			} else

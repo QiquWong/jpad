@@ -227,7 +227,7 @@ public class Test36mds {
 		List<OCCShape> fairingShapes = AircraftCADUtils.getFairingShapes(
 				fuselage, wing, 0.60, 0.75, 0.85, 0.05, 0.75, 0.65, 0.75, false, false, true);
 		
-		List<OCCShape> engineShapes = AircraftCADUtils.getEnginesCAD(MyConfiguration.inputDirectory, 
+		List<OCCShape> engineShapes = AircraftCADUtils.getEnginesCADFromTemplate(MyConfiguration.inputDirectory, 
 				nacelles.getNacellesList(), powerPlant.getEngineList(), 
 				templatesMapList, bladePitchAngleList, 
 				false, false, true);			

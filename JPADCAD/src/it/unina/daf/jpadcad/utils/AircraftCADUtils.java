@@ -1253,17 +1253,19 @@ public class AircraftCADUtils {
 		return requestedShapes;
 	}
 	
-	public static List<OCCShape> getEnginesCAD(String inputDirectory, List<NacelleCreator> nacelles, List<Engine> engines,
+	public static List<OCCShape> getEnginesCADFromTemplate(String inputDirectory, 
+			List<NacelleCreator> nacelles, List<Engine> engines,
 			List<Map<EngineCADComponentsEnum, String>> templateMapsList,
 			boolean exportSupportShapes, boolean exportShells, boolean exportSolids) {
 		
-		return getEnginesCAD(inputDirectory, nacelles, engines,
+		return getEnginesCADFromTemplate(inputDirectory, nacelles, engines,
 				templateMapsList, new ArrayList<>(),
 				exportSupportShapes, exportShells, exportSolids
 				);
 	}
  	
-	public static List<OCCShape> getEnginesCAD(String inputDirectory, List<NacelleCreator> nacelles, List<Engine> engines,
+	public static List<OCCShape> getEnginesCADFromTemplate(String inputDirectory, 
+			List<NacelleCreator> nacelles, List<Engine> engines,
 			List<Map<EngineCADComponentsEnum, String>> templateMapsList, List<Amount<Angle>> propellerBladePitchAngleList,
 			boolean exportSupportShapes, boolean exportShells, boolean exportSolids) {
 		
@@ -1350,7 +1352,7 @@ public class AircraftCADUtils {
 			
 			if (symmEngines[i] != 0 && i < engines.size()/2) {
 				
-				List<OCCShape> engineShapes = getEngineCAD(inputDirectory, engineCADPitchTupleList.get(i));
+				List<OCCShape> engineShapes = getEngineCADFromTemplate(inputDirectory, engineCADPitchTupleList.get(i));
 				
 				List<OCCShape> symmEngineShapes = OCCUtils.getShapesTranslated(
 						engineShapes, 
@@ -1370,7 +1372,7 @@ public class AircraftCADUtils {
 				
 			} else if (symmEngines[i] == 0) {
 				
-				solidShapes.addAll(getEngineCAD(inputDirectory, engineCADPitchTupleList.get(i)));
+				solidShapes.addAll(getEngineCADFromTemplate(inputDirectory, engineCADPitchTupleList.get(i)));
 			}
 		}
 		
@@ -2362,9 +2364,6 @@ public class AircraftCADUtils {
 			z = pts.get(i)[2] * chord;
 			
 			// Set the rotation due to the twist and the rigging angle			
-//			double r = Math.sqrt(x*x + z*z);
-//			x = x - r * (1 - Math.cos(twist + liftingSurface.getRiggingAngle().doubleValue(SI.RADIAN)));
-//			z = z - r * Math.sin(twist + liftingSurface.getRiggingAngle().doubleValue(SI.RADIAN));			
 			double[] rotPts = rotatePoint2D(
 					new double[] {0.0, 0.0}, 
 					twist + liftingSurface.getRiggingAngle().doubleValue(SI.RADIAN), 
@@ -3982,7 +3981,8 @@ public class AircraftCADUtils {
 		return new Tuple2<double[], double[]>(mainSidePnt, subSidePnt);
 	}
 	
-	private static List<OCCShape> getEngineCAD(String inputDirectory, Tuple2<EngineCAD, Amount<Angle>> engineCADPitchTuple) {
+	private static List<OCCShape> getEngineCADFromTemplate(String inputDirectory, 
+			Tuple2<EngineCAD, Amount<Angle>> engineCADPitchTuple) {
 		
 		List<OCCShape> requestedShapes = new ArrayList<>();	
 		
@@ -3992,12 +3992,12 @@ public class AircraftCADUtils {
 		switch (engineCADPitchTuple._1().getEngineType()) {
 		
 		case TURBOPROP:
-			requestedShapes.addAll(getTurbopropEngineCAD(inputDirectory, engineCADPitchTuple));
+			requestedShapes.addAll(getTurbopropEngineCADFromTemplate(inputDirectory, engineCADPitchTuple));
 			
 			break;
 			
 		case TURBOFAN:
-			requestedShapes.addAll(getTurbofanEngineCAD(inputDirectory, engineCADPitchTuple._1()));
+			requestedShapes.addAll(getTurbofanEngineCADFromTemplate(inputDirectory, engineCADPitchTuple._1()));
 			
 			break;
 			
@@ -4012,7 +4012,8 @@ public class AircraftCADUtils {
 		return requestedShapes;
 	} 
 	
-	private static List<OCCShape> getTurbopropEngineCAD(String inputDirectory, Tuple2<EngineCAD, Amount<Angle>> engineCADPitchTuple) {
+	private static List<OCCShape> getTurbopropEngineCADFromTemplate(String inputDirectory, 
+			Tuple2<EngineCAD, Amount<Angle>> engineCADPitchTuple) {
 		
 		// ----------------------------------------------------------
 		// Check the factory
@@ -4204,7 +4205,7 @@ public class AircraftCADUtils {
 		return solidShapes;
 	}
 	
-	private static List<OCCShape> getTurbofanEngineCAD(String inputDirectory, EngineCAD engineCAD) {
+	private static List<OCCShape> getTurbofanEngineCADFromTemplate(String inputDirectory, EngineCAD engineCAD) {
 		
 		// ----------------------------------------------------------
 		// Check the factory

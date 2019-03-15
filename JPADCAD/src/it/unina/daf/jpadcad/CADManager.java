@@ -791,7 +791,7 @@ public class CADManager {
 		// ENGINES
 		if (_theCADBuilderInterface.getGenerateEngines()) {
 			
-			List<OCCShape> enginesShapes = AircraftCADUtils.getEnginesCAD(
+			List<OCCShape> enginesShapes = AircraftCADUtils.getEnginesCADFromTemplate(
 					_theInputDirectory,
 					_theAircraft.getNacelles().getNacellesList(), 
 					_theAircraft.getPowerPlant().getEngineList(), 

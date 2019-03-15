@@ -147,7 +147,7 @@ public class Test41mds {
 				0.15, 0.95, 0.50, 
 				exportWires, exportShells, exportSolids);
 
-		List<OCCShape> engineShapes = AircraftCADUtils.getEnginesCAD(inputDirectory,
+		List<OCCShape> engineShapes = AircraftCADUtils.getEnginesCADFromTemplate(inputDirectory,
 				nacelles, engines, templatesMapList, bladePitchAngleList, exportWires, exportShells, exportSolids);
 		
 		long endTime = System.nanoTime();
