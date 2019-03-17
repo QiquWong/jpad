@@ -1,26 +1,26 @@
 -------------------
 Complete Analysis Test
 -------------------
-AIRCRAFT INPUT ===> D:\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\aircraft_ATR72.xml
-ANALYSES INPUT ===> D:\JPAD\jpad\JPADSandBox_v2\in\Template_Analyses\analysis_ATR72.xml
-OPERATING CONDITIONS INPUT ===> D:\JPAD\jpad\JPADSandBox_v2\in\Template_Analyses\operating_conditions_ATR72.xml
-AIRFOILS ===> D:\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\lifting_surfaces\airfoils
-FUSELAGES ===> D:\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\fuselages
-LIFTING SURFACES ===> D:\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\lifting_surfaces
-ENGINES ===> D:\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\engines
-NACELLES ===> D:\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\nacelles
-LANDING GEARS ===> D:\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\landing_gears
-CABIN CONFIGURATIONS ===> D:\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\cabin_configurations
+AIRCRAFT INPUT ===> C:\Users\Vittorio\ADOPT_PROJECT\jpad\JPADSandBox_v2\in\Template_Aircraft\aircraft_ATR72.xml
+ANALYSES INPUT ===> C:\Users\Vittorio\ADOPT_PROJECT\jpad\JPADSandBox_v2\in\Template_Analyses\analysis_ATR72.xml
+OPERATING CONDITIONS INPUT ===> C:\Users\Vittorio\ADOPT_PROJECT\jpad\JPADSandBox_v2\in\Template_Analyses\operating_conditions_ATR72.xml
+AIRFOILS ===> C:\Users\Vittorio\ADOPT_PROJECT\jpad\JPADSandBox_v2\in\Template_Aircraft\lifting_surfaces\airfoils
+FUSELAGES ===> C:\Users\Vittorio\ADOPT_PROJECT\jpad\JPADSandBox_v2\in\Template_Aircraft\fuselages
+LIFTING SURFACES ===> C:\Users\Vittorio\ADOPT_PROJECT\jpad\JPADSandBox_v2\in\Template_Aircraft\lifting_surfaces
+ENGINES ===> C:\Users\Vittorio\ADOPT_PROJECT\jpad\JPADSandBox_v2\in\Template_Aircraft\engines
+NACELLES ===> C:\Users\Vittorio\ADOPT_PROJECT\jpad\JPADSandBox_v2\in\Template_Aircraft\nacelles
+LANDING GEARS ===> C:\Users\Vittorio\ADOPT_PROJECT\jpad\JPADSandBox_v2\in\Template_Aircraft\landing_gears
+CABIN CONFIGURATIONS ===> C:\Users\Vittorio\ADOPT_PROJECT\jpad\JPADSandBox_v2\in\Template_Aircraft\cabin_configurations
 --------------
-11 [main] INFO ncsa.hdf.hdf5lib.H5 - HDF5 library: jhdf5
-11 [main] INFO ncsa.hdf.hdf5lib.H5 -  successfully loaded from java.library.path
-De-serializing file: D:\JPAD\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterAerodynamicDatabase.xml ...
+22 [main] INFO ncsa.hdf.hdf5lib.H5 - HDF5 library: jhdf5
+22 [main] INFO ncsa.hdf.hdf5lib.H5 -  successfully loaded from java.library.path
+De-serializing file: C:\Users\Vittorio\ADOPT_PROJECT\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterAerodynamicDatabase.xml ...
 database.databasefunctions.aerodynamics.AerodynamicDatabaseReader de-serialization complete
-De-serializing file: D:\JPAD\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterHighLiftDatabase.xml ...
+De-serializing file: C:\Users\Vittorio\ADOPT_PROJECT\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterHighLiftDatabase.xml ...
 database.databasefunctions.aerodynamics.HighLiftDatabaseReader de-serialization complete
-De-serializing file: D:\JPAD\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterFusDesDatabase.xml ...
+De-serializing file: C:\Users\Vittorio\ADOPT_PROJECT\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterFusDesDatabase.xml ...
 database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader de-serialization complete
-De-serializing file: D:\JPAD\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterVeDSCDatabase.xml ...
+De-serializing file: C:\Users\Vittorio\ADOPT_PROJECT\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterVeDSCDatabase.xml ...
 database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serialization complete
 
 
@@ -1396,27 +1396,18 @@ database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serializati
 
 
 		Performance Analysis :: START
-			Take-Off Analysis :: START
-				VMC calculation :: START
-				VMC calculation :: COMPLETE
-				VMC plot :: START
-				VMC plot :: COMPLETE
-				Balanced Field Length calculation :: START
-				Balanced Field Length calculation :: COMPLETE
-				Balanced Field Length plot :: START
-				Balanced Field Length plot :: COMPLETE
-				Take-Off simulation :: START
-				Take-Off simulation :: COMPLETE
-				Take-Off simulation plot :: START
-				Take-Off simulation plot :: COMPLETE
-			Take-Off Analysis :: COMPLETE
-			Landing Analysis :: START
-				Landing simulation :: START
-ERROR: TARGET RATE OF CLIMB AND/OR ALTITUDE ARE NOT REACHED 
-				Landing simulation :: COMPLETE
-				Landing plot :: START
-				Landing plot :: COMPLETE
-			Landing Analysis :: COMPLETE
+			Noise Trajectories Analysis :: START
+				Take-off noise trajectory simulation - 100% MAX-TO :: START
+				Take-off noise trajectory simulation - 100% MAX-TO :: COMPLETE
+				Take-off noise trajectory simulation - Lowest Cutback :: START
+				Take-off noise trajectory simulation - Lowest Cutback :: COMPLETE
+				Take-off noise trajectory plot :: START
+				Take-off noise trajectory plot :: COMPLETE
+				Landing noise trajectory simulation :: START
+				Landing noise trajectory simulation :: COMPLETE
+				Landing noise trajectory plot :: START
+				Landing noise trajectory plot :: COMPLETE
+			Noise Trajectories Analysis :: COMPLETE
 
 
 	Done!! 
@@ -1454,98 +1445,37 @@ ERROR: TARGET RATE OF CLIMB AND/OR ALTITUDE ARE NOT REACHED
 	-------------------------------------
 	XCG = 0.35
 	-------------------------------------
-	TAKE-OFF
+	NOISE TRAJECTORIES
 	-------------------------------------
-		Ground roll distance = 783.5882829487468 m
-		Rotation distance = 242.20216355278495 m
-		Airborne distance = 127.96317759586212 m
-		AEO take-off distance = 1153.7536240973936 m
-		FAR-25 take-off field length = 1326.8166677120025 m
-		Balanced field length = 1428.0702755545221 m
+		Sideline ( 100% MAX-TO )
+			Ground Distance = 5686.4575266674528 m
+			Altitude = 650.0000000000002 m
+			Speed (TAS) = 63.006272414259485 m/s
+			Speed (CAS) = 61.24130943406211 m/s
+			Alpha = 7.394993225170182 deg
+			Gamma = 7.8503590370215317 deg
+			Theta = 15.245352262191716 deg
+			Thrust (x1 eng.) = 24227.180875075403 N
 		.....................................
-		Ground roll distance = 2570.8276999630807 ft
-		Rotation distance = 794.6265208424704 ft
-		Airborne distance = 419.8266981491539 ft
-		AEO take-off distance = 3785.2809189547042 ft
-		FAR-25 take-off field length = 4353.073056797909 ft
-		Balanced field length = 4685.269932921661 ft
+		Flyover - Cutback ( 984.0 ft, 77% MAX-TO )
+			Ground Distance = 6500.0 m
+			Altitude = 594.80062256576 m
+			Speed (TAS) = 63.002502666711706 m/s
+			Speed (CAS) = 61.237645286553999 m/s
+			Alpha = 7.514993225170059 deg
+			Gamma = 4.8539162862235017 deg
+			Theta = 12.368909511393559 deg
+			Thrust (x1 eng.) = 18584.7060419098 N
 		.....................................
-		Stall speed take-off (VsTO)= 52.051301062593808 m/s
-		Decision speed (V1) = 56.55303520854698 m/s
-		Rotation speed (V_Rot) = 57.591247645958546 m/s
-		Miminum control speed (VMC) = 42.384621723986356 m/s
-		Lift-off speed (V_LO) = 63.448592789090554 m/s
-		Take-off safety speed (V2) = 63.863606518520328 m/s
-		.....................................
-		Stall speed take-off (VsTO)= 101.17963489489077 kn
-		Decision speed (V1) = 109.93030602093366 kn
-		Rotation speed (V_Rot) = 111.94842954937947 kn
-		Miminum control speed (VMC) = 82.389113502349289 kn
-		Lift-off speed (V_LO) = 123.33419764618034 kn
-		Take-off safety speed (V2) = 124.14091979841965 kn
-		.....................................
-		V1/VsTO = 1.0864864864864694 
-		V_Rot/VsTO = 1.1064324324324328 
-		VMC/VsTO = 0.8142855386653471 
-		V_LO/VsTO = 1.2189626674805119 
-		V2/VsTO = 1.2269358347396875 
-		.....................................
-		Take-off duration = 31.1111 s
-		.....................................
-		Take-off fuel used = 9.780850209489727 kg
-		.....................................
-		Take-off NOx emissions = 0.0 g
-		Take-off CO emissions = 0.0 g
-		Take-off HC emissions = 0.0 g
-		Take-off Soot emissions = 0.0 g
-		Take-off CO2 emissions = 30927.048362406516 g
-		Take-off SOx emissions = 0.0 g
-		Take-off H2O emissions = 12226.062761862158 g
-	-------------------------------------
-	LANDING
-	-------------------------------------
-		Ground roll distance = 0.0 m
-		Flare distance = 114.43160413338956 m
-		Airborne distance = 121.31912228720466 m
-		Landing distance = 0.0 m
-		FAR-25 landing field length = 0.0 m
-		Total distance = 0.0 m
-		.....................................
-		Ground roll distance = 0.0 ft
-		Flare distance = 375.43177209117306 ft
-		Airborne distance = 398.0286164278368 ft
-		Landing distance = 0.0 ft
-		FAR-25 landing field length = 0.0 ft
-		Total distance = 0.0 ft
-		.....................................
-		Rate of descent at touch-down = 1968503.9370078733ft/min
-		.....................................
-		Stall speed landing (VsLND)= 46.149772391090906 m/s
-		Touchdown speed (V_TD) = 73.36079855165297 m/s
-		Flare speed (V_Flare) = 75.766271976061688 m/s
-		Approach speed (V_Approach) = 56.764220041041817 m/s
-		.....................................
-		Stall speed landing (VsLND)= 89.70798088980953 kn
-		Touchdown speed (V_TD) = 142.6019842256753 kn
-		Flare speed (V_Flare) = 147.2778504934244 kn
-		Approach speed (V_Approach) = 110.34081649446573 kn
-		.....................................
-		V_TD/VsLND = 1.589624276582891
-		V_Flare/VsLND = 1.641747468091265
-		V_Approach/VsLND = 1.2299999999999998
-		.....................................
-		Landing duration = 0.0 s
-		Total duration = 0.0 s
-		.....................................
-		Total fuel used = 0.0 kg
-		.....................................
-		Total NOx emissions = 0.0 g
-		Total CO emissions = 0.0 g
-		Total HC emissions = 0.0 g
-		Total Soot emissions = 0.0 g
-		Total CO2 emissions = 0.0 g
-		Total SOx emissions = 0.0 g
-		Total H2O emissions = 0.0 g
+		Approach 
+			Ground Distance (from touch-down) = 2782.4368726004068 m
+			Altitude = 119.99999998123462 m
+			Speed (TAS) = 60.1518591459548 m/s
+			Speed (CAS) = 61.545803800666278 m/s
+			Alpha = 3.0374621514347266 deg
+			Gamma = -2.4975612839342194 deg
+			Theta = 0.5399008675005068 deg
+			Thrust (x1 eng.) = 5526.0629454183909 N
 	-------------------------------------
 
 
@@ -1555,4 +1485,4 @@ ERROR: TARGET RATE OF CLIMB AND/OR ALTITUDE ARE NOT REACHED
 
 
 
-	 TIME ESTIMATED = 63 seconds
+	 TIME ESTIMATED = 66 seconds

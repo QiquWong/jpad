@@ -78,7 +78,7 @@
 	-->
 	
 	<performance
-			file="analysis_performance_IRON_CANARD_LOOP2_FINAL_riblets.xml"
+			file="analysis_performance_IRON_CANARD_LOOP2_FINAL_no_riblets.xml"
 			plot="TRUE"
 			create_CSV="TRUE"
 			take_off="FALSE"

@@ -3584,7 +3584,14 @@ public class ACPerformanceManager {
 				try {
 					System.setOut(originalOut);
 					calcNoiseTrajectories.calculateTakeOffNoiseTrajectory(_thePerformanceInterface.getXcgPositionList().get(i), takeOffNoiseTrajectoriesFolderPath);
+				}
+				catch (Exception e) {
+					takeOffNoiseTrajectoryErrorFlag = true;
+					System.err.println("ERROR: (PERFORMANCE - TAKE-OFF NOISE TRAJECTORY) CALCULATION WILL BE SKIPPED ...");
+				}
 
+				if(takeOffNoiseTrajectoryErrorFlag == false) {
+					
 					//---------------------------------------------------------------------------------------------------------------------------------------------------
 					// SIDELINE VALUES - index (0)
 					groundDistanceList.add(0, _theTakeOffNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsGroundDistanceMap().get(1.0));
@@ -3609,16 +3616,44 @@ public class ACPerformanceManager {
 					thetaList.add(1, _theTakeOffNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsThetaMap().get(phiCutback));
 					thrustList.add(1, _theTakeOffNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsThrustMap().get(phiCutback).divide(_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineNumber()));
 				}
-				catch (Exception e) {
-					takeOffNoiseTrajectoryErrorFlag = true;
-					System.err.println("ERROR: (PERFORMANCE - TAKE-OFF NOISE TRAJECTORY) CALCULATION WILL BE SKIPPED ...");
+				else {
+					
+					//---------------------------------------------------------------------------------------------------------------------------------------------------
+					// SIDELINE VALUES - index (0)
+					groundDistanceList.add(0, Amount.valueOf(0.0, SI.METER));
+					altitudeList.add(0, Amount.valueOf(0.0, SI.METER));
+					speedTASList.add(0, Amount.valueOf(0.0, SI.METERS_PER_SECOND));
+					speedCASList.add(0, Amount.valueOf(0.0, SI.METERS_PER_SECOND));
+					alphaList.add(0, Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
+					gammaList.add(0, Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
+					thetaList.add(0, Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
+					thrustList.add(0, Amount.valueOf(0.0, SI.NEWTON));
+
+					//---------------------------------------------------------------------------------------------------------------------------------------------------
+					// FLYOVER VALUES with CUTBACK - index (1)
+					groundDistanceList.add(1, Amount.valueOf(0.0, SI.METER));
+					altitudeList.add(1, Amount.valueOf(0.0, SI.METER));
+					speedTASList.add(1, Amount.valueOf(0.0, SI.METERS_PER_SECOND));
+					speedCASList.add(1, Amount.valueOf(0.0, SI.METERS_PER_SECOND));
+					alphaList.add(1, Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
+					gammaList.add(1, Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
+					thetaList.add(1, Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
+					thrustList.add(1, Amount.valueOf(0.0, SI.NEWTON));
 				}
+					
 
 				try {
 					System.setOut(originalOut);
 					calcNoiseTrajectories.calculateLandingNoiseTrajectory(_thePerformanceInterface.getXcgPositionList().get(i), landingNoiseTrajectoriesFolderPath);
 					System.setOut(filterStream);
+				}
+				catch (Exception e) {
+					landingNoiseTrajectoryErrorFlag = true;
+					System.err.println("ERROR: (PERFORMANCE - LANDING NOISE TRAJECTORY) CALCULATION WILL BE SKIPPED ...");
+				}
 
+				if(landingNoiseTrajectoryErrorFlag == false) {
+					
 					//---------------------------------------------------------------------------------------------------------------------------------------------------
 					// APPROACH VALUES - index (2)
 					groundDistanceList.add(2, _theLandingNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsGroundDistance());
@@ -3630,11 +3665,20 @@ public class ACPerformanceManager {
 					thetaList.add(2, _theLandingNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsTheta());
 					thrustList.add(2, _theLandingNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsThrust().divide(_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineNumber()));
 				}
-				catch (Exception e) {
-					landingNoiseTrajectoryErrorFlag = true;
-					System.err.println("ERROR: (PERFORMANCE - LANDING NOISE TRAJECTORY) CALCULATION WILL BE SKIPPED ...");
+				else {
+					
+					//---------------------------------------------------------------------------------------------------------------------------------------------------
+					// APPROACH VALUES - index (2)
+					groundDistanceList.add(2, Amount.valueOf(0.0, SI.METER));
+					altitudeList.add(2, Amount.valueOf(0.0, SI.METER));
+					speedTASList.add(2, Amount.valueOf(0.0, SI.METERS_PER_SECOND));
+					speedCASList.add(2, Amount.valueOf(0.0, SI.METERS_PER_SECOND));
+					alphaList.add(2, Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
+					gammaList.add(2, Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
+					thetaList.add(2, Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
+					thrustList.add(2, Amount.valueOf(0.0, SI.NEWTON));					
 				}
-				
+
 				if(takeOffNoiseTrajectoryErrorFlag == false  || landingNoiseTrajectoryErrorFlag == false) {
 					_certificationPointsLongitudinalDistanceMap.put(_thePerformanceInterface.getXcgPositionList().get(i), groundDistanceList);
 					_certificationPointsAltitudeMap.put(_thePerformanceInterface.getXcgPositionList().get(i), altitudeList);
@@ -6116,17 +6160,6 @@ public class ACPerformanceManager {
 			}
 				
 				
-			_thrustAtCruiseAltitudeAndMachMap.put(
-					xcg, 
-					Amount.valueOf(
-							MyMathUtils.getInterpolatedValue1DLinear(
-									MyArrayUtils.convertListOfAmountTodoubleArray(_thePerformanceInterface.getAltitudeListCruise()),
-									MyArrayUtils.convertListOfAmountTodoubleArray(thrustAltitudesAtCruiseMach),
-									_thePerformanceInterface.getTheOperatingConditions().getAltitudeCruise().doubleValue(SI.METER)
-									),
-							SI.NEWTON
-							)
-					);
 			_dragAtCruiseAltitudeAndMachMap.put(
 					xcg, 
 					Amount.valueOf(
@@ -6138,16 +6171,9 @@ public class ACPerformanceManager {
 							SI.NEWTON
 							)
 					);
-			_powerAvailableAtCruiseAltitudeAndMachMap.put(
-					xcg,  
-					Amount.valueOf(
-							MyMathUtils.getInterpolatedValue1DLinear(
-									MyArrayUtils.convertListOfAmountTodoubleArray(_thePerformanceInterface.getAltitudeListCruise()),
-									MyArrayUtils.convertListOfAmountTodoubleArray(powerAvailableAltitudesAtCruiseMach),
-									_thePerformanceInterface.getTheOperatingConditions().getAltitudeCruise().doubleValue(SI.METER)
-									),
-							SI.WATT
-							)
+			_thrustAtCruiseAltitudeAndMachMap.put(
+					xcg, 
+					_dragAtCruiseAltitudeAndMachMap.get(xcg)
 					);
 			_powerNeededAtCruiseAltitudeAndMachMap.put(
 					xcg,  
@@ -6159,8 +6185,11 @@ public class ACPerformanceManager {
 									),
 							SI.WATT
 							)
-					); 
-			
+					);
+			_powerAvailableAtCruiseAltitudeAndMachMap.put(
+					xcg,  
+					_powerNeededAtCruiseAltitudeAndMachMap.get(xcg)
+					);
 
 			//--------------------------------------------------------------------
 			// WEIGHT PARAMETERIZATION AT FIXED ALTITUDE

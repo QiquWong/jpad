@@ -1,26 +1,26 @@
 -------------------
 Complete Analysis Test
 -------------------
-AIRCRAFT INPUT ===> D:\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\aircraft_CS300.xml
-ANALYSES INPUT ===> D:\JPAD\jpad\JPADSandBox_v2\in\Template_Analyses\analysis_CS300_VT.xml
-OPERATING CONDITIONS INPUT ===> D:\JPAD\jpad\JPADSandBox_v2\in\Template_Analyses\operating_conditions_CS300.xml
-AIRFOILS ===> D:\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\lifting_surfaces\airfoils
-FUSELAGES ===> D:\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\fuselages
-LIFTING SURFACES ===> D:\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\lifting_surfaces
-ENGINES ===> D:\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\engines
-NACELLES ===> D:\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\nacelles
-LANDING GEARS ===> D:\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\landing_gears
-CABIN CONFIGURATIONS ===> D:\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\cabin_configurations
+AIRCRAFT INPUT ===> C:\Users\Vittorio\ADOPT_PROJECT\jpad\JPADSandBox_v2\in\Template_Aircraft\aircraft_CS300.xml
+ANALYSES INPUT ===> C:\Users\Vittorio\ADOPT_PROJECT\jpad\JPADSandBox_v2\in\Template_Analyses\analysis_CS300_VT.xml
+OPERATING CONDITIONS INPUT ===> C:\Users\Vittorio\ADOPT_PROJECT\jpad\JPADSandBox_v2\in\Template_Analyses\operating_conditions_CS300.xml
+AIRFOILS ===> C:\Users\Vittorio\ADOPT_PROJECT\jpad\JPADSandBox_v2\in\Template_Aircraft\lifting_surfaces\airfoils
+FUSELAGES ===> C:\Users\Vittorio\ADOPT_PROJECT\jpad\JPADSandBox_v2\in\Template_Aircraft\fuselages
+LIFTING SURFACES ===> C:\Users\Vittorio\ADOPT_PROJECT\jpad\JPADSandBox_v2\in\Template_Aircraft\lifting_surfaces
+ENGINES ===> C:\Users\Vittorio\ADOPT_PROJECT\jpad\JPADSandBox_v2\in\Template_Aircraft\engines
+NACELLES ===> C:\Users\Vittorio\ADOPT_PROJECT\jpad\JPADSandBox_v2\in\Template_Aircraft\nacelles
+LANDING GEARS ===> C:\Users\Vittorio\ADOPT_PROJECT\jpad\JPADSandBox_v2\in\Template_Aircraft\landing_gears
+CABIN CONFIGURATIONS ===> C:\Users\Vittorio\ADOPT_PROJECT\jpad\JPADSandBox_v2\in\Template_Aircraft\cabin_configurations
 --------------
-10 [main] INFO ncsa.hdf.hdf5lib.H5 - HDF5 library: jhdf5
-11 [main] INFO ncsa.hdf.hdf5lib.H5 -  successfully loaded from java.library.path
-De-serializing file: D:\JPAD\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterAerodynamicDatabase.xml ...
+30 [main] INFO ncsa.hdf.hdf5lib.H5 - HDF5 library: jhdf5
+30 [main] INFO ncsa.hdf.hdf5lib.H5 -  successfully loaded from java.library.path
+De-serializing file: C:\Users\Vittorio\ADOPT_PROJECT\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterAerodynamicDatabase.xml ...
 database.databasefunctions.aerodynamics.AerodynamicDatabaseReader de-serialization complete
-De-serializing file: D:\JPAD\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterHighLiftDatabase.xml ...
+De-serializing file: C:\Users\Vittorio\ADOPT_PROJECT\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterHighLiftDatabase.xml ...
 database.databasefunctions.aerodynamics.HighLiftDatabaseReader de-serialization complete
-De-serializing file: D:\JPAD\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterFusDesDatabase.xml ...
+De-serializing file: C:\Users\Vittorio\ADOPT_PROJECT\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterFusDesDatabase.xml ...
 database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader de-serialization complete
-De-serializing file: D:\JPAD\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterVeDSCDatabase.xml ...
+De-serializing file: C:\Users\Vittorio\ADOPT_PROJECT\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterVeDSCDatabase.xml ...
 database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serialization complete
 
 
@@ -1449,20 +1449,18 @@ database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serializati
 
 
 		Performance Analysis :: START
-			Take-Off Analysis :: START
-				VMC calculation :: START
-				VMC calculation :: COMPLETE
-				VMC plot :: START
-				VMC plot :: COMPLETE
-				Balanced Field Length calculation :: START
-				Balanced Field Length calculation :: COMPLETE
-				Balanced Field Length plot :: START
-				Balanced Field Length plot :: COMPLETE
-				Take-Off simulation :: START
-				Take-Off simulation :: COMPLETE
-				Take-Off simulation plot :: START
-				Take-Off simulation plot :: COMPLETE
-			Take-Off Analysis :: COMPLETE
+			Noise Trajectories Analysis :: START
+				Take-off noise trajectory simulation - 100% MAX-TO :: START
+				Take-off noise trajectory simulation - 100% MAX-TO :: COMPLETE
+				Take-off noise trajectory simulation - Lowest Cutback :: START
+				Take-off noise trajectory simulation - Lowest Cutback :: COMPLETE
+				Take-off noise trajectory plot :: START
+				Take-off noise trajectory plot :: COMPLETE
+				Landing noise trajectory simulation :: START
+				Landing noise trajectory simulation :: COMPLETE
+				Landing noise trajectory plot :: START
+				Landing noise trajectory plot :: COMPLETE
+			Noise Trajectories Analysis :: COMPLETE
 
 
 	Done!! 
@@ -1500,53 +1498,37 @@ database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serializati
 	-------------------------------------
 	XCG = 0.2
 	-------------------------------------
-	TAKE-OFF
+	NOISE TRAJECTORIES
 	-------------------------------------
-		Ground roll distance = 993.7163846639289 m
-		Rotation distance = 282.1452529462797 m
-		Airborne distance = 151.46515118137688 m
-		AEO take-off distance = 1427.3267887915854 m
-		FAR-25 take-off field length = 1641.4258071103227 m
-		Balanced field length = 1853.2236402716744 m
+		Sideline ( 100% MAX-TO )
+			Ground Distance = 5085.1907143357039 m
+			Altitude = 650.0 m
+			Speed (TAS) = 76.74694127934654 m/s
+			Speed (CAS) = 74.59706786181085 m/s
+			Alpha = 4.308393653936333 deg
+			Gamma = 9.956084036909956 deg
+			Theta = 14.264477690846288 deg
+			Thrust (x1 eng.) = 74480.20560952909 N
 		.....................................
-		Ground roll distance = 3260.2243591336255 ft
-		Rotation distance = 925.6734020547234 ft
-		Airborne distance = 496.93291070005546 ft
-		AEO take-off distance = 4682.830671888403 ft
-		FAR-25 take-off field length = 5385.255272671663 ft
-		Balanced field length = 6080.1300533847589 ft
+		Flyover - Cutback ( 984.0 ft, 47% MAX-TO )
+			Ground Distance = 6500.0 m
+			Altitude = 516.7796416654598 m
+			Speed (TAS) = 76.06241720050425 m/s
+			Speed (CAS) = 73.93171901127388 m/s
+			Alpha = 4.838393653936175 deg
+			Gamma = 3.1349550318965917 deg
+			Theta = 7.973348685832766 deg
+			Thrust (x1 eng.) = 35758.662899281269 N
 		.....................................
-		Stall speed take-off (VsTO)= 63.719070774443196 m/s
-		Decision speed (V1) = 63.5085873574696 m/s
-		Rotation speed (V_Rot) = 68.3549361418386 m/s
-		Miminum control speed (VMC) = 59.750535586008674 m/s
-		Lift-off speed (V_LO) = 74.32625976845899 m/s
-		Take-off safety speed (V2) = 77.53034686818486 m/s
-		.....................................
-		Stall speed take-off (VsTO)= 123.85996478833452 kn
-		Decision speed (V1) = 123.45081775750032 kn
-		Rotation speed (V_Rot) = 132.87136615044224 kn
-		Miminum control speed (VMC) = 116.14574951923933 kn
-		Lift-off speed (V_LO) = 144.47869069462874 kn
-		Take-off safety speed (V2) = 150.70693775673084 kn
-		.....................................
-		V1/VsTO = 0.99669669669668126 
-		V_Rot/VsTO = 1.0727547547547536 
-		VMC/VsTO = 0.9377182507497228 
-		V_LO/VsTO = 1.1664680426926466 
-		V2/VsTO = 1.2167526287794068 
-		.....................................
-		Take-off duration = 34.11109999999999 s
-		.....................................
-		Take-off fuel used = 50.73686959720092 kg
-		.....................................
-		Take-off NOx emissions = 1180.8149251931632 g
-		Take-off CO emissions = 0.0 g
-		Take-off HC emissions = 0.0 g
-		Take-off Soot emissions = 0.0 g
-		Take-off CO2 emissions = 172623.83873822342 g
-		Take-off SOx emissions = 0.0 g
-		Take-off H2O emissions = 63421.08699650115 g
+		Approach 
+			Ground Distance (from touch-down) = 2265.8050627771008 m
+			Altitude = 120.0 m
+			Speed (TAS) = 65.31586091216067 m/s
+			Speed (CAS) = 66.82947489648434 m/s
+			Alpha = 0.61695300793618046 deg
+			Gamma = -3.0368015768939802 deg
+			Theta = -2.4198485689578 deg
+			Thrust (x1 eng.) = 246.60522063008096 N
 	-------------------------------------
 
 
@@ -1556,4 +1538,4 @@ database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serializati
 
 
 
-	 TIME ESTIMATED = 15 seconds
+	 TIME ESTIMATED = 63 seconds

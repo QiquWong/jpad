@@ -68,14 +68,14 @@
 			file="analysis_performance_CS300.xml"
 			plot="TRUE"
 			create_CSV="TRUE"
-			take_off="TRUE"
+			take_off="FALSE"
 			climb="FALSE"
 			cruise="FALSE"
 			descent="FALSE"
 			landing="FALSE"
 			payload_range="FALSE"
 			V_n_diagram="FALSE"
-			noise_trajectories="FALSE"
+			noise_trajectories="TRUE"
 			mission_profile="FALSE"
 		/>
 		<!--

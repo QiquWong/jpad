@@ -134,8 +134,8 @@
         </performance>
 		<calibrations> <!-- default values = 1.0 -->
 			<thrust>
-				<take_off_calibration_factor></take_off_calibration_factor>
-				<apr_calibration_factor></apr_calibration_factor>
+				<take_off_calibration_factor>1.08</take_off_calibration_factor>
+				<apr_calibration_factor>1.08</apr_calibration_factor>
 				<climb_calibration_factor></climb_calibration_factor>
 				<continuous_calibration_factor></continuous_calibration_factor>
 				<cruise_calibration_factor></cruise_calibration_factor>
