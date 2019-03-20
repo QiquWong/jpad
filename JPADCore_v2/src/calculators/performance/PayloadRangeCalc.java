@@ -2432,7 +2432,7 @@ public class PayloadRangeCalc {
 							theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 							);
 
-					theLandingCalculator.calculateLanding(true);
+					theLandingCalculator.calculateLanding(true, false);
 
 					rangeLanding.addAll(theLandingCalculator.getGroundDistanceList());			
 					fuelUsedLanding.addAll(theLandingCalculator.getFuelUsedList());

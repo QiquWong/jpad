@@ -3873,7 +3873,7 @@ public class MissionProfileCalc {
 								theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 								);
 
-						theLandingCalculator.calculateLanding(true);
+						theLandingCalculator.calculateLanding(true, false);
 
 						rangeLanding.addAll(theLandingCalculator.getGroundDistanceList());			
 						altitudeLanding.addAll(theLandingCalculator.getVerticalDistanceList());

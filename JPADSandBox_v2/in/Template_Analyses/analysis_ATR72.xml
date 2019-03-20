@@ -68,15 +68,15 @@
 			file="analysis_performance_ATR72.xml"
 			plot="TRUE"
 			create_CSV="TRUE"
-			take_off="FALSE"
-			climb="FALSE"
-			cruise="FALSE"
-			descent="FALSE"
-			landing="FALSE"
-			payload_range="FALSE"
-			V_n_diagram="FALSE"
+			take_off="TRUE"
+			climb="TRUE"
+			cruise="TRUE"
+			descent="TRUE"
+			landing="TRUE"
+			payload_range="TRUE"
+			V_n_diagram="TRUE"
 			noise_trajectories="TRUE"
-			mission_profile="FALSE"
+			mission_profile="TRUE"
 		/>
 		<!--
 		<costs 

@@ -7751,7 +7751,7 @@ public class ACPerformanceManager {
 			
 			//------------------------------------------------------------
 			// SIMULATION
-			_theLandingCalculatorMap.get(xcg).calculateLanding(true);
+			_theLandingCalculatorMap.get(xcg).calculateLanding(true, true);
 			
 			// Distances:
 			_groundRollDistanceLandingMap.put(xcg, _theLandingCalculatorMap.get(xcg).getsGround());
