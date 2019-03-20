@@ -870,8 +870,6 @@ public final class OCCUtils {
 	}
 	
 	public static OCCShell applyFilletOnShell(OCCShell shell, int[] edgeIndexes, double radius) {
-		
-		OCCShell filletShell = null;
 
 		BRepFilletAPI_MakeFillet filletMaker = new BRepFilletAPI_MakeFillet(shell.getShape());
 
@@ -884,17 +882,19 @@ public final class OCCUtils {
 		}
 
 		Arrays.stream(edgeIndexes).forEach(i -> filletMaker.Add(radius, ((OCCEdge) shellEdges.get(i)).getShape()));
-
-		List<TopoDS_Shell> filletShells = new ArrayList<>();
-		TopExp_Explorer filletShellExplorer = new TopExp_Explorer(filletMaker.Shape(), TopAbs_ShapeEnum.TopAbs_SHELL);
-		while(filletShellExplorer.More() > 0) {
-			filletShells.add(TopoDS.ToShell(filletShellExplorer.Current()));
-			filletShellExplorer.Next();
-		}
-
-		filletShell = (OCCShell) OCCUtils.theFactory.newShape(filletShells.get(0));
-
-		return filletShell;
+		filletMaker.Build();
+		if (filletMaker.NbFaultyVertices() > 0 || filletMaker.NbFaultyContours() > 0) {
+			return shell;
+		} else {
+			List<TopoDS_Shell> filletShells = new ArrayList<>();
+			TopExp_Explorer filletShellExplorer = new TopExp_Explorer(filletMaker.Shape(), TopAbs_ShapeEnum.TopAbs_SHELL);
+			while(filletShellExplorer.More() > 0) {
+				filletShells.add(TopoDS.ToShell(filletShellExplorer.Current()));
+				filletShellExplorer.Next();
+			}
+			OCCShell filletShell = (OCCShell) OCCUtils.theFactory.newShape(filletShells.get(0));
+			return filletShell;
+		}	
 	}
 	
 	public static List<CADWire> revolveWireAroundGuideCurve(

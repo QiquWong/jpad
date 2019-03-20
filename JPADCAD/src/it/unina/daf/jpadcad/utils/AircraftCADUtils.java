@@ -23,12 +23,14 @@ import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
+import aircraft.Aircraft;
 import aircraft.components.fuselage.Fuselage;
 import aircraft.components.liftingSurface.LiftingSurface;
 import aircraft.components.liftingSurface.airfoils.Airfoil;
 import aircraft.components.nacelles.NacelleCreator;
 import aircraft.components.powerplant.Engine;
 import configuration.enumerations.ComponentEnum;
+import configuration.enumerations.EngineTypeEnum;
 import it.unina.daf.jpadcad.EngineCAD;
 import it.unina.daf.jpadcad.FairingDataCollection;
 import it.unina.daf.jpadcad.enums.EngineCADComponentsEnum;
@@ -56,7 +58,14 @@ import it.unina.daf.jpadcad.occ.OCCVertex;
 import it.unina.daf.jpadcad.occ.OCCWire;
 import javaslang.Tuple2;
 import javaslang.Tuple3;
+import javaslang.Tuple4;
+import opencascade.BRepBuilderAPI_Transform;
 import opencascade.Interface_Static;
+import opencascade.TopoDS;
+import opencascade.gp_Ax1;
+import opencascade.gp_Dir;
+import opencascade.gp_Pnt;
+import opencascade.gp_Trsf;
 import processing.core.PVector;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyMathUtils;
@@ -121,12 +130,12 @@ public class AircraftCADUtils {
 		// Check whether continuing with the method
 		if (fuselage == null) {
 			System.err.println("\n\tThe fuselage object passed to the method is null! Exiting the method ...");
-			return null;
+			return new ArrayList<>();
 		}
 		
 		if (!exportSupportShapes && !exportShells && !exportSolids) {
 			System.err.println("\n\tNo shapes to export! Exiting the method ...");
-			return null;
+			return new ArrayList<>();
 		} else {
 			System.out.println("\n\tShapes selected to be exported:\n" + 
 							   "\t\t- Shells: " + exportShells + "\n" + 
@@ -706,12 +715,12 @@ public class AircraftCADUtils {
 		// Check whether continuing with the method
 		if (liftingSurface == null) {
 			System.err.println("\n\tThe lifting surface object passed to the method is null! Exiting the method ...");
-			return null;
+			return new ArrayList<>();
 		}
 		
 		if (!exportSupportShapes && !exportShells && !exportSolids) {
 			System.err.println("\n\tNo shapes to export! Exiting the method ...");
-			return null;
+			return new ArrayList<>();
 		} else {
 			System.out.println("\n\tBuilding the " + liftingSurface.getType().name() + " CAD\n\n" +
 							   "\tShapes selected to be exported:\n" + 
@@ -916,24 +925,31 @@ public class AircraftCADUtils {
 			double etaOut = liftingSurface.getEtaBreakPoints().get(i) - tipOffset;		
 			Double diff = (etaOut - liftingSurface.getEtaBreakPoints().get(i-1)) * 10;	
 			
-			if (diff >= 3.0 && diff <= 7.0) {			
-				nAirfoils[i-1] = Double.valueOf(Math.rint(diff)).intValue();
-			} else {				
-				if (diff < 3.0) {
-					nAirfoils[i-1] = 3;
-				} else {
-					if (diff > 7.0 && diff < 10.0) {
-						nAirfoils[i-1] = 7;
-					} else {
-						nAirfoils[i-1] = 5;
-					}
-				}
-			}
-					
-			Double[] yStations = MyArrayUtils.linspaceDouble(
-					liftingSurface.getYBreakPoints().get(i-1).doubleValue(SI.METER), 
-					etaOut * liftingSurface.getSemiSpan().doubleValue(SI.METER), 
-					nAirfoils[i-1]);
+//			if (diff >= 3.0 && diff <= 7.0) {			
+//				nAirfoils[i-1] = Double.valueOf(Math.rint(diff)).intValue();
+//			} else {				
+//				if (diff < 3.0) {
+//					nAirfoils[i-1] = 3;
+//				} else {
+//					if (diff > 7.0 && diff < 10.0) {
+//						nAirfoils[i-1] = 7;
+//					} else {
+//						nAirfoils[i-1] = 5;
+//					}
+//				}
+//			}
+//					
+//			Double[] yStations = MyArrayUtils.linspaceDouble(
+//					liftingSurface.getYBreakPoints().get(i-1).doubleValue(SI.METER), 
+//					etaOut * liftingSurface.getSemiSpan().doubleValue(SI.METER), 
+//					nAirfoils[i-1]);
+			
+			nAirfoils[i-1] = 2;
+			
+			Double[] yStations = new Double[] {
+					liftingSurface.getYBreakPoints().get(i-1).doubleValue(SI.METER),
+					etaOut * liftingSurface.getSemiSpan().doubleValue(SI.METER)
+			};
 			
 			airfoilCrvs.add(Arrays.asList(yStations).stream()
 					.map(y -> generateAirfoilAtY(y, liftingSurface))
@@ -1403,6 +1419,130 @@ public class AircraftCADUtils {
 	
 		requestedShapes.addAll(supportShapes);
 		requestedShapes.addAll(shellShapes);
+		
+		return requestedShapes;
+	}
+	
+	public static List<OCCShape> getTurbofanEnginesCAD(
+			Aircraft aircraft, boolean generatePylon,
+			boolean exportSupportShapes, boolean exportShells, boolean exportSolids
+			) {
+		
+		List<OCCShape> requestedShapes = new ArrayList<>();
+		
+		// ------------------------------------------
+		// Check whether continuing with the method
+		if (aircraft == null) {
+			System.out.println("========== [AircraftCADUtils::getTurbofanEnginesCAD] The aircraft object passed to the getTurbofanEnginesCAD " + 
+							   "method is null! Exiting the method ...");
+			return requestedShapes;
+		}
+		
+		if ((aircraft.getNacelles().getNacellesList().isEmpty() || aircraft.getNacelles().getNacellesList().stream().anyMatch(n -> n == null)) || 
+			(aircraft.getPowerPlant().getEngineList().isEmpty() || aircraft.getPowerPlant().getEngineList().stream().anyMatch(e -> e == null))) {			
+			System.out.println("========== [AircraftCADUtils::getTurbofanEnginesCAD] One or more engine/nacelle object passed to the "
+					+ "getTurbofanEnginesCAD method is null! Exiting the method ...");		
+			return requestedShapes;
+		}
+		
+		if (aircraft.getPowerPlant().getEngineList().stream().map(e -> e.getEngineType()).anyMatch(t -> !t.equals(EngineTypeEnum.TURBOFAN))) {
+			System.out.println("========== [AircraftCADUtils::getTurbofanEnginesCAD] One or more engines are not TURBOFAN! " + 
+							   "Please select another method in order to produce the CAD of the engines! Exiting the method ...");		
+			return requestedShapes;
+		}
+		
+		if (!exportSupportShapes && !exportShells && !exportSolids) {
+			System.out.println("========== [AircraftCADUtils::getTurbofanEnginesCAD] No shapes to export! Exiting the method ...");		
+			return requestedShapes;
+		}
+		
+		// ------------------------
+		// Initialize the factory
+		if (OCCUtils.theFactory == null)
+			OCCUtils.initCADShapeFactory();
+				
+		// -----------------------------
+		// Generate engines CAD shapes
+		for (int i = 0; i < aircraft.getPowerPlant().getEngineNumber(); i++) {
+			
+			requestedShapes.addAll(getTurbofanEngineCAD(
+					aircraft, 
+					aircraft.getNacelles().getNacellesList().get(i), 
+					aircraft.getPowerPlant().getEngineList().get(i), 
+					generatePylon, 
+					exportSupportShapes, 
+					exportShells, 
+					exportSolids,
+					false
+					));
+		}
+		
+		return requestedShapes;
+	}
+	
+	public static List<OCCShape> getTurbofanEngineCAD(
+			Aircraft aircraft, NacelleCreator nacelle, Engine engine, boolean generatePylon,
+			boolean exportSupportShapes, boolean exportShells, boolean exportSolids, boolean standalone
+			) {
+		
+		List<OCCShape> supportShapes = new ArrayList<>();
+		List<OCCShape> shellShapes = new ArrayList<>();
+		List<OCCShape> solidShapes = new ArrayList<>();
+		List<OCCShape> requestedShapes = new ArrayList<>();
+		
+		if (standalone) {		
+			// ------------------------------------------
+			// Check whether continuing with the method
+			if (nacelle == null || engine == null) {		
+				System.out.println("========== [AircraftCADUtils::getTurbofanEngineCAD] Nacelle and/or engine object passed to the "
+						+ "getTurbofanEngineCAD method is null! Exiting the method ...");
+				
+				return requestedShapes;
+			}
+			
+			if (!engine.getEngineType().equals(EngineTypeEnum.TURBOFAN)) {
+				System.out.println("========== [AircraftCADUtils::getTurbofanEngineCAD] Engine is not a TURBOFAN! Exiting the method ...");
+				
+				return requestedShapes;
+			}
+			
+			if (!exportSupportShapes && !exportShells && !exportSolids) {
+				System.out.println("========== [AircraftCADUtils::getTurbofanEngineCAD] No shapes to export! Exiting the method ...");
+				
+				return requestedShapes;
+			}
+			
+			// ------------------------------------
+			// Initialize the shape factory
+			if (OCCUtils.theFactory == null)
+				OCCUtils.initCADShapeFactory();
+		}
+	
+		// -------------------------
+		// Generate NACELLE shapes
+		Tuple4<List<CADEdge>, List<OCCShape>, List<OCCShape>, List<OCCShape>> nacelleShapes = getTurbofanEngineNacelleCAD(
+				nacelle, engine, exportSupportShapes, exportShells, exportSolids);
+		
+		List<CADEdge> engineMainWireEdges = nacelleShapes._1();
+		supportShapes.addAll(nacelleShapes._2());
+		shellShapes.addAll(nacelleShapes._3());
+		solidShapes.addAll(nacelleShapes._4());
+
+		// ----------------------------------
+		// Eventually generate PYLON shapes
+		if (generatePylon) {
+			
+			Tuple3<List<OCCShape>, List<OCCShape>, List<OCCShape>> pylonShapes = getTurbofanEnginePylonCAD(
+					aircraft, nacelle, engine, engineMainWireEdges, exportSupportShapes, exportShells, exportSolids);
+			
+			supportShapes.addAll(pylonShapes._1());
+			shellShapes.addAll(pylonShapes._2());
+			solidShapes.addAll(pylonShapes._3());
+		}
+		
+		requestedShapes.addAll(supportShapes);
+		requestedShapes.addAll(shellShapes);
+		requestedShapes.addAll(solidShapes);
 		
 		return requestedShapes;
 	}
@@ -2287,7 +2427,7 @@ public class AircraftCADUtils {
 		return retShapes;
 	}
 	
-	public static List<double[]> generateCamberAtY(double yStation, LiftingSurface liftingSurface) {
+	private static List<double[]> generateCamberAtY(double yStation, LiftingSurface liftingSurface) {
 
 		// -----------------------
 		// Determine the airfoil 
@@ -2298,9 +2438,9 @@ public class AircraftCADUtils {
 			double yIn = liftingSurface.getYBreakPoints().get(i-1).doubleValue(SI.METER);
 			double yOut = liftingSurface.getYBreakPoints().get(i).doubleValue(SI.METER);
 
-			if (yStation > yIn && yStation < yOut || 
-				Math.abs(yStation - yIn) <= 1e-5 || 
-				Math.abs(yStation - yOut) <= 1e-5) {			
+			if (Math.abs(yStation) > yIn && Math.abs(yStation) < yOut || 
+				Math.abs(Math.abs(yStation) - yIn) <= 1e-5 || 
+				Math.abs(Math.abs(yStation) - yOut) <= 1e-5) {			
 				airfoil = liftingSurface.getAirfoilList().get(i-1);
 				break;
 			}
@@ -2321,7 +2461,7 @@ public class AircraftCADUtils {
 		return generatePtsAtY(pts, yStation, liftingSurface);
 	}
 	
-	private static List<double[]> generatePtsAtY(List<double[]> pts, 
+	public static List<double[]> generatePtsAtY(List<double[]> pts, 
 			double yStation, LiftingSurface liftingSurface) {
 		
 		List<double[]> ptsAtY = new ArrayList<>();
@@ -2332,24 +2472,24 @@ public class AircraftCADUtils {
 		double xLE = MyMathUtils.getInterpolatedValue1DLinear(
 				MyArrayUtils.convertListOfAmountTodoubleArray(liftingSurface.getYBreakPoints()), 
 				MyArrayUtils.convertListOfAmountTodoubleArray(liftingSurface.getXLEBreakPoints()), 
-				yStation);
+				Math.abs(yStation));
 		
 		double zLE = MyMathUtils.getInterpolatedValue1DLinear(
 				MyArrayUtils.convertListOfAmountTodoubleArray(liftingSurface.getYBreakPoints()), 
 				MyArrayUtils.convertListOfAmountTodoubleArray(liftingSurface.getZLEBreakPoints()), 
-				yStation);
+				Math.abs(yStation));
 		
 		double chord = MyMathUtils.getInterpolatedValue1DLinear(
 				MyArrayUtils.convertListOfAmountTodoubleArray(liftingSurface.getYBreakPoints()), 
 				MyArrayUtils.convertListOfAmountTodoubleArray(liftingSurface.getChordsBreakPoints()), 
-				yStation);
+				Math.abs(yStation));
 		
 		double twist = MyMathUtils.getInterpolatedValue1DLinear(
 				MyArrayUtils.convertListOfAmountTodoubleArray(liftingSurface.getYBreakPoints()), 
 				MyArrayUtils.convertListOfAmountTodoubleArray(liftingSurface.getTwistsBreakPoints().stream()
 						.map(a -> a.to(SI.RADIAN))
 						.collect(Collectors.toList())), 
-				yStation);
+				Math.abs(yStation));
 		
 		// -------------------------------
 		// Calculate actual coordinates
@@ -4354,5 +4494,570 @@ public class AircraftCADUtils {
 		
 		return solidShapes;
 	}
+	
+	private static Tuple4<List<CADEdge>, List<OCCShape>, List<OCCShape>, List<OCCShape>> getTurbofanEngineNacelleCAD(
+			NacelleCreator nacelle, Engine engine,
+			boolean exportSupportShapes, boolean exportShells, boolean exportSolids) {
+		
+		List<OCCShape> supportShapes = new ArrayList<>();
+		List<OCCShape> shellShapes = new ArrayList<>();
+		List<OCCShape> solidShapes = new ArrayList<>();
+		
+		List<CADEdge> engineMainWireEdges = new ArrayList<>();
+		
+		// -----------------------
+		// Fix engine parameters
+		// -----------------------	
+		
+		// Design parameters, x axis
+		double xPercentMinInlet = 0.05;		 // All percentages referred to length core (NACELLE total length)
+		double xPercentInletCone = 0.15;
+		double xPercentFanInlet = 0.22;       
+		double xPercentFanOutlet = 0.46;
+		double xPercentOutletMin = 0.78;
+		double xPercentCowlLength = 0.86;
+		double xPercentTurbineOutlet = 0.88;
+		double xPercentNozzle = 0.17;
+		
+		// Design parameters, z axis
+		double zPercentMinInlet = 0.76;       // All percentages referred to max diameter
+		double zPercentFanInletUpp = 0.79;
+		double zPercentFanInletLow = 0.23;
+		double zPercentFanOutletUpp = 0.80;
+		double zPercentFanOutletLow = zPercentFanOutletUpp*getTurbofanEngineCADZPercentFanOutletLowDueToBPR(engine.getBPR());
+		double zPercentOutletMin = zPercentFanOutletLow*getTurbofanEngineCADZPercentOutletMinDueToBPR(engine.getBPR());
+		double zPercentOutletCore = zPercentFanOutletLow*getTurbofanEngineCADZPercentOutletCoreDueToBPR(engine.getBPR());
+		double zPercentTurbineOutletUpp = zPercentOutletCore*getTurbofanEngineCADZPercentTurbineOutletUppDueToBPR(engine.getBPR());
+		double zPercentTurbineOutletLow = zPercentOutletCore*getTurbofanEngineCADZPercentTurbineOutletLowDueToBPR(engine.getBPR());
+		
+		// CAD parameters
+		double byPassOutletOffset = nacelle.getDiameterOutlet().times(0.5).doubleValue(SI.METER)*(1-zPercentFanOutletUpp)*0.05;
+		double coreOutletOffset = byPassOutletOffset;
+		
+		// ---------------------------------------------------
+		// Generate sketching points for the sketching curves
+		// ---------------------------------------------------
+		double[] ptA = new double[] {
+				nacelle.getXApexConstructionAxes().doubleValue(SI.METER), 
+				nacelle.getYApexConstructionAxes().doubleValue(SI.METER), 
+				nacelle.getZApexConstructionAxes().doubleValue(SI.METER) + nacelle.getDiameterInlet().times(0.5).doubleValue(SI.METER)
+				};
+		double[] ptB = new double[] {
+				nacelle.getXApexConstructionAxes().doubleValue(SI.METER) + nacelle.getXPositionMaximumDiameterLRF().doubleValue(SI.METER), 
+				nacelle.getYApexConstructionAxes().doubleValue(SI.METER), 
+				nacelle.getZApexConstructionAxes().doubleValue(SI.METER) + nacelle.getDiameterMax().times(0.5).doubleValue(SI.METRE)
+				};
+		double[] ptC = new double[] {
+				nacelle.getXApexConstructionAxes().doubleValue(SI.METER) + xPercentCowlLength*nacelle.getLength().doubleValue(SI.METER), 
+				nacelle.getYApexConstructionAxes().doubleValue(SI.METER), 
+				nacelle.getZApexConstructionAxes().doubleValue(SI.METER) + 
+					nacelle.getDiameterOutlet().times(0.5).doubleValue(SI.METER) + byPassOutletOffset
+				};
+		double[] ptD = new double[] {
+				nacelle.getXApexConstructionAxes().doubleValue(SI.METER) + xPercentCowlLength*nacelle.getLength().doubleValue(SI.METER), 
+				nacelle.getYApexConstructionAxes().doubleValue(SI.METER), 
+				nacelle.getZApexConstructionAxes().doubleValue(SI.METER) + 
+					nacelle.getDiameterOutlet().times(0.5).doubleValue(SI.METER) - byPassOutletOffset
+				};
+		double[] ptE = new double[] {
+				nacelle.getXApexConstructionAxes().doubleValue(SI.METER) + xPercentFanOutlet*nacelle.getLength().doubleValue(SI.METER), 
+				nacelle.getYApexConstructionAxes().doubleValue(SI.METER), 
+				nacelle.getZApexConstructionAxes().doubleValue(SI.METER) + 
+					zPercentFanOutletUpp*nacelle.getDiameterMax().times(0.5).doubleValue(SI.METRE)
+				};
+		double[] ptF = new double[] {
+				nacelle.getXApexConstructionAxes().doubleValue(SI.METER) + xPercentFanOutlet*nacelle.getLength().doubleValue(SI.METER), 
+				nacelle.getYApexConstructionAxes().doubleValue(SI.METER), 
+				nacelle.getZApexConstructionAxes().doubleValue(SI.METER) + 
+					zPercentFanOutletLow*nacelle.getDiameterMax().times(0.5).doubleValue(SI.METRE)
+				};
+		double[] ptG = new double[] {
+				nacelle.getXApexConstructionAxes().doubleValue(SI.METER) + xPercentOutletMin*nacelle.getLength().doubleValue(SI.METER), 
+				nacelle.getYApexConstructionAxes().doubleValue(SI.METER), 
+				nacelle.getZApexConstructionAxes().doubleValue(SI.METER) + 
+					zPercentOutletMin*nacelle.getDiameterMax().times(0.5).doubleValue(SI.METRE)};
+		double[] ptH = new double[] {
+				nacelle.getXApexConstructionAxes().doubleValue(SI.METER) + nacelle.getLength().doubleValue(SI.METER), 
+				nacelle.getYApexConstructionAxes().doubleValue(SI.METER), 
+				nacelle.getZApexConstructionAxes().doubleValue(SI.METER) + 
+					zPercentOutletCore*nacelle.getDiameterMax().times(0.5).doubleValue(SI.METRE) + coreOutletOffset
+				};
+		double[] ptI = new double[] {
+				nacelle.getXApexConstructionAxes().doubleValue(SI.METER) + nacelle.getLength().doubleValue(SI.METER), 
+				nacelle.getYApexConstructionAxes().doubleValue(SI.METER), 
+				nacelle.getZApexConstructionAxes().doubleValue(SI.METER) + 
+					zPercentOutletCore*nacelle.getDiameterMax().times(0.5).doubleValue(SI.METRE) - coreOutletOffset
+				};
+		double[] ptL = new double[] {
+				nacelle.getXApexConstructionAxes().doubleValue(SI.METER) + xPercentTurbineOutlet*nacelle.getLength().doubleValue(SI.METER), 
+				nacelle.getYApexConstructionAxes().doubleValue(SI.METER), 
+				nacelle.getZApexConstructionAxes().doubleValue(SI.METER) + 
+					zPercentTurbineOutletUpp*nacelle.getDiameterMax().times(0.5).doubleValue(SI.METRE)
+				};
+		double[] ptM = new double[] {
+				nacelle.getXApexConstructionAxes().doubleValue(SI.METER) + xPercentTurbineOutlet*nacelle.getLength().doubleValue(SI.METER), 
+				nacelle.getYApexConstructionAxes().doubleValue(SI.METER), 
+				nacelle.getZApexConstructionAxes().doubleValue(SI.METER) + 
+					zPercentTurbineOutletLow*nacelle.getDiameterMax().times(0.5).doubleValue(SI.METRE)
+				};
+		double[] ptN = new double[] {
+				nacelle.getXApexConstructionAxes().doubleValue(SI.METER) + nacelle.getLength().doubleValue(SI.METER)*(1+xPercentNozzle), 
+				nacelle.getYApexConstructionAxes().doubleValue(SI.METER), 
+				nacelle.getZApexConstructionAxes().doubleValue(SI.METER)
+				};
+		double[] ptO = new double[] {
+				nacelle.getXApexConstructionAxes().doubleValue(SI.METER) + xPercentInletCone*nacelle.getLength().doubleValue(SI.METER), 
+				nacelle.getYApexConstructionAxes().doubleValue(SI.METER), 
+				nacelle.getZApexConstructionAxes().doubleValue(SI.METER)
+				};
+		double[] ptP = new double[] {
+				nacelle.getXApexConstructionAxes().doubleValue(SI.METER) + xPercentFanInlet*nacelle.getLength().doubleValue(SI.METER), 
+				nacelle.getYApexConstructionAxes().doubleValue(SI.METER), 
+				nacelle.getZApexConstructionAxes().doubleValue(SI.METER) + 
+					zPercentFanInletLow*nacelle.getDiameterMax().times(0.5).doubleValue(SI.METRE)
+				};
+		double[] ptQ = new double[] {
+				nacelle.getXApexConstructionAxes().doubleValue(SI.METER) + xPercentFanInlet*nacelle.getLength().doubleValue(SI.METER), 
+				nacelle.getYApexConstructionAxes().doubleValue(SI.METER), 
+				nacelle.getZApexConstructionAxes().doubleValue(SI.METER) + 
+					zPercentFanInletUpp*nacelle.getDiameterMax().times(0.5).doubleValue(SI.METRE)
+				};
+		double[] ptR = new double[] {
+				nacelle.getXApexConstructionAxes().doubleValue(SI.METER) + xPercentMinInlet*nacelle.getLength().doubleValue(SI.METER), 
+				nacelle.getYApexConstructionAxes().doubleValue(SI.METER), 
+				nacelle.getZApexConstructionAxes().doubleValue(SI.METER) + 
+					zPercentMinInlet*nacelle.getDiameterMax().times(0.5).doubleValue(SI.METRE)
+				};
+		
+		// --------------------------------------------
+		// Generate tangents for the sketching curves
+		// --------------------------------------------
+		PVector pvB = new PVector((float) ptB[0], (float) ptB[1], (float) ptB[2]);
+		PVector pvC = new PVector((float) ptC[0], (float) ptC[1], (float) ptC[2]);
+		PVector pvS = new PVector((float) ptC[0], (float) ptC[1], (float) ptB[2]);
+		PVector pvT = PVector.lerp(pvB, pvS, 0.45f);
+		
+		PVector pvTngC = PVector.sub(pvC, pvT).normalize();
+		PVector pvTngD = PVector.mult(pvTngC, -1.0f);
+		
+		PVector pvG = new PVector((float) ptG[0], (float) ptG[1], (float) ptG[2]);
+		PVector pvH = new PVector((float) ptH[0], (float) ptH[1], (float) ptH[2]);
+		PVector pvU = new PVector((float) ptH[0], (float) ptH[1], (float) ptG[2]);
+		PVector pvV = PVector.lerp(pvG, pvU, 0.25f);
+		
+		PVector pvTngH = PVector.sub(pvH, pvV).normalize();
+		PVector pvTngI = PVector.mult(pvTngH, -1.0f);
+		
+		PVector pvM = new PVector((float) ptM[0], (float) ptM[1], (float) ptM[2]);
+		PVector pvN = new PVector((float) ptN[0], (float) ptN[1], (float) ptN[2]);
+		PVector pvZ = new PVector((float) ptN[0], (float) ptN[1], (float) ptM[2]);
+		PVector pvAA = PVector.lerp(pvM, pvZ, 0.25f);
+		
+		PVector pvTngN = PVector.sub(pvN, pvAA).normalize();
+		
+		PVector pvP = new PVector((float) ptP[0], (float) ptP[1], (float) ptP[2]);
+		PVector pvO = new PVector((float) ptO[0], (float) ptO[1], (float) ptO[2]);
+		PVector pvAB = new PVector((float) ptO[0], (float) ptO[1], (float) ptP[2]);
+		PVector pvAC = PVector.lerp(pvAB, pvP, 0.15f);
+		
+		PVector pvTngO = PVector.sub(pvAC, pvO).normalize();
+		
+		PVector pvR = new PVector((float) ptR[0], (float) ptR[1], (float) ptR[2]);
+		PVector pvQ = new PVector((float) ptQ[0], (float) ptQ[1], (float) ptQ[2]);
+		PVector pvAD = new PVector((float) ptQ[0], (float) ptQ[1], (float) ptR[2]);
+		PVector pvAE = PVector.lerp(pvAD, pvR, 0.50f);
 
+		PVector pvTngQ = PVector.sub(pvAE, pvQ).normalize();
+		
+		double[] tngA = new double[] {0.0, 0.0, 0.5};
+		double[] tngB = new double[] {1.0, 0.0, 0.0};
+		double[] tngC = new double[] {pvTngC.x, pvTngC.y, pvTngC.z};
+		double[] tngD = new double[] {pvTngD.x, pvTngD.y, pvTngD.z};
+		double[] tngE = new double[] {-1.0, 0.0, 0.0};
+		double[] tngF = new double[] {1.0, 0.0, 0.0};
+		double[] tngG = new double[] {1.0, 0.0, 0.0};
+		double[] tngH = new double[] {pvTngH.x, pvTngH.y, pvTngH.z};
+		double[] tngI = new double[] {pvTngI.x, pvTngI.y, pvTngI.z};
+		double[] tngL = new double[] {-1.0, 0.0, 0.0};
+		double[] tngM = new double[] {1.0, 0.0, 0.0};
+		double[] tngN = new double[] {pvTngN.x, pvTngN.y, pvTngN.z};
+		double[] tngO = new double[] {pvTngO.x, pvTngO.y, pvTngO.z};
+		double[] tngP = new double[] {1.0, 0.0, 0.0};
+		double[] tngQ = new double[] {pvTngQ.x, pvTngQ.y, pvTngQ.z};
+		double[] tngR = new double[] {-1.0, 0.0, 0.0};
+		
+		// ---------------------------
+		// Generate sketching curves
+		List<double[]> ptsCrv1 = new ArrayList<>();
+		List<double[]> ptsCrv2 = new ArrayList<>();
+		List<double[]> ptsCrv3 = new ArrayList<>();
+		List<double[]> ptsCrv4 = new ArrayList<>();
+		List<double[]> ptsCrv5 = new ArrayList<>();
+		List<double[]> ptsCrv6 = new ArrayList<>();
+		List<double[]> ptsCrv7 = new ArrayList<>();
+		List<double[]> ptsCrv8 = new ArrayList<>();
+		List<double[]> ptsCrv9 = new ArrayList<>();
+		List<double[]> ptsCrv10 = new ArrayList<>();
+		List<double[]> ptsCrv11 = new ArrayList<>();
+		List<double[]> ptsCrv12 = new ArrayList<>();
+		List<double[]> ptsCrv13 = new ArrayList<>();
+		List<double[]> ptsCrv14 = new ArrayList<>();
+		List<double[]> ptsCrv15 = new ArrayList<>();
+		List<double[]> ptsCrv16 = new ArrayList<>();
+		
+		ptsCrv1.add(ptA);	ptsCrv1.add(ptB);		
+		ptsCrv2.add(ptB);	ptsCrv2.add(ptC);	
+		ptsCrv3.add(ptC);	ptsCrv3.add(ptD);
+		ptsCrv4.add(ptD);	ptsCrv4.add(ptE);
+		ptsCrv5.add(ptE);	ptsCrv5.add(ptF);
+		ptsCrv6.add(ptF);	ptsCrv6.add(ptG);
+		ptsCrv7.add(ptG);	ptsCrv7.add(ptH);
+		ptsCrv8.add(ptH);	ptsCrv8.add(ptI);
+		ptsCrv9.add(ptI);	ptsCrv9.add(ptL);
+		ptsCrv10.add(ptL);	ptsCrv10.add(ptM);
+		ptsCrv11.add(ptM);	ptsCrv11.add(ptN);
+		ptsCrv12.add(ptN);	ptsCrv12.add(ptO);
+		ptsCrv13.add(ptO);	ptsCrv13.add(ptP);
+		ptsCrv14.add(ptP);	ptsCrv14.add(ptQ);
+		ptsCrv15.add(ptQ);	ptsCrv15.add(ptR);
+		ptsCrv16.add(ptR);	ptsCrv16.add(ptA);
+				
+		CADEdge edge1 = OCCUtils.theFactory.newCurve3D(ptsCrv1, false, tngA, tngB, false).edge();
+		CADEdge edge2 = OCCUtils.theFactory.newCurve3D(ptsCrv2, false, tngB, tngC, false).edge();
+		CADEdge edge3 = OCCUtils.theFactory.newCurve3D(ptsCrv3, false).edge();
+		CADEdge edge4 = OCCUtils.theFactory.newCurve3D(ptsCrv4, false, tngD, tngE, false).edge();
+		CADEdge edge5 = OCCUtils.theFactory.newCurve3D(ptsCrv5, false).edge();
+		CADEdge edge6 = OCCUtils.theFactory.newCurve3D(ptsCrv6, false, tngF, tngG, false).edge();
+		CADEdge edge7 = OCCUtils.theFactory.newCurve3D(ptsCrv7, false, tngG, tngH, false).edge();
+		CADEdge edge8 = OCCUtils.theFactory.newCurve3D(ptsCrv8, false).edge();
+		CADEdge edge9 = OCCUtils.theFactory.newCurve3D(ptsCrv9, false, tngI, tngL, false).edge();
+		CADEdge edge10 = OCCUtils.theFactory.newCurve3D(ptsCrv10, false).edge();
+		CADEdge edge11 = OCCUtils.theFactory.newCurve3D(ptsCrv11, false, tngM, tngN, false).edge();
+		CADEdge edge12 = OCCUtils.theFactory.newCurve3D(ptsCrv12, false).edge();
+		CADEdge edge13 = OCCUtils.theFactory.newCurve3D(ptsCrv13, false, tngO, tngP, false).edge();
+		CADEdge edge14 = OCCUtils.theFactory.newCurve3D(ptsCrv14, false).edge();
+		CADEdge edge15 = OCCUtils.theFactory.newCurve3D(ptsCrv15, false, tngQ, tngR, false).edge();
+		CADEdge edge16 = OCCUtils.theFactory.newCurve3D(ptsCrv16, false, tngR, tngA, false).edge();
+		
+		engineMainWireEdges.add(edge1);
+		engineMainWireEdges.add(edge2);
+		engineMainWireEdges.add(edge3);
+		engineMainWireEdges.add(edge4);
+		engineMainWireEdges.add(edge5);
+		engineMainWireEdges.add(edge6);
+		engineMainWireEdges.add(edge7);
+		engineMainWireEdges.add(edge8);
+		engineMainWireEdges.add(edge9);
+		engineMainWireEdges.add(edge10);
+		engineMainWireEdges.add(edge11);
+		engineMainWireEdges.add(edge12);
+		engineMainWireEdges.add(edge13);
+		engineMainWireEdges.add(edge14);
+		engineMainWireEdges.add(edge15);
+		engineMainWireEdges.add(edge16);
+		
+		// -------------------
+		// Generate the wire
+		CADWire engineWire = OCCUtils.theFactory.newWireFromAdjacentEdges(engineMainWireEdges);
+		
+		// ---------------------------
+		// Generate supporting wires
+		List<CADWire> revolvedWires = new ArrayList<>();
+		
+		int numSuppWires = 20;
+		double[] rotAngles = MyArrayUtils.linspace(0, 2*Math.PI, numSuppWires);
+		gp_Trsf rotTrsf = new gp_Trsf();
+		gp_Ax1 rotAxis = new gp_Ax1(
+				new gp_Pnt(
+						nacelle.getXApexConstructionAxes().doubleValue(SI.METER), 
+						nacelle.getYApexConstructionAxes().doubleValue(SI.METER), 
+						nacelle.getZApexConstructionAxes().doubleValue(SI.METER)
+						), 
+				new gp_Dir(1.0, 0.0, 0.0)
+				);
+		
+		revolvedWires.add(engineWire);
+		for (int i = 1; i < numSuppWires; i++) {		
+			rotTrsf.SetRotation(rotAxis, rotAngles[i]);
+			revolvedWires.add(
+					(OCCWire) OCCUtils.theFactory.newShape(
+							TopoDS.ToWire(
+									new BRepBuilderAPI_Transform(
+											((OCCShape) engineWire).getShape(), 
+											rotTrsf, 
+											0).Shape()
+									)));			
+		}
+		
+		if (exportSupportShapes) {
+			supportShapes.addAll(revolvedWires.stream().map(w -> (OCCShape) w).collect(Collectors.toList()));
+		}
+		
+		if (exportShells || exportSolids) {
+			
+			// ----------------------------------
+			// Generate the solid of the engine
+			OCCShell engineShell = (OCCShell) OCCUtils.makePatchThruSections(revolvedWires);	
+			
+			if (exportShells) {
+				shellShapes.add(engineShell);
+			}
+			
+			if (exportSolids) {
+				OCCShape engineSolid = (OCCShape) OCCUtils.theFactory.newSolidFromShell(engineShell);				
+				solidShapes.add(engineSolid);
+			}		
+		}
+
+		return new Tuple4<List<CADEdge>, List<OCCShape>, List<OCCShape>, List<OCCShape>>(
+				engineMainWireEdges, supportShapes, shellShapes, solidShapes);
+	}
+	
+	private static Tuple3<List<OCCShape>, List<OCCShape>, List<OCCShape>> getTurbofanEnginePylonCAD(
+			Aircraft aircraft, NacelleCreator nacelle, Engine engine, List<CADEdge> engineMainWireEdges,
+			boolean exportSupportShapes, boolean exportShells, boolean exportSolids) {
+		
+		List<OCCShape> supportShapes = new ArrayList<>();
+		List<OCCShape> shellShapes = new ArrayList<>();
+		List<OCCShape> solidShapes = new ArrayList<>();
+		
+		// ------------------------------------
+		// Check the engine mounting position
+		LiftingSurface mountingLS = null;
+		
+		switch (engine.getMountingPosition()) {
+
+		case WING:		
+			mountingLS = aircraft.getWing();
+			
+			break;
+
+		case HTAIL:
+			mountingLS = aircraft.getHTail();
+
+			break;
+
+		default:
+
+			break;
+		}
+		
+		// ----------------------------------------------
+		// Check the whether continuing with the method		
+		if (mountingLS == null) {
+			
+			System.out.println("Pylon CAD construction in case of " + engine.getMountingPosition().name() + " mounting position " + 
+							   "is not currently supported. No pylon shapes are going to be returned by the method");
+			
+			return new Tuple3<List<OCCShape>, List<OCCShape>, List<OCCShape>>(supportShapes, shellShapes, solidShapes);
+		}
+		
+		List<double[]> airfoilCamberLinePts = generateCamberAtY(
+				nacelle.getYApexConstructionAxes().doubleValue(SI.METER), 
+				mountingLS
+				);
+
+		if (engineMainWireEdges.get(0).vertices()[1].pnt()[2] > airfoilCamberLinePts.get(airfoilCamberLinePts.size()-1)[2]) {
+			
+			System.out.println("The engine nacelle intersects the lifting surface and/or is too close to it. " + 
+							   "No pylon shapes are going to be returned by the method");
+			
+			return new Tuple3<List<OCCShape>, List<OCCShape>, List<OCCShape>>(supportShapes, shellShapes, solidShapes);
+		}
+		
+		// --------------------------
+		// Fix the PYLON parameters
+		double pylonWidthEngineMaxRadiusPercent = 0.25;
+		double pylonWidth = pylonWidthEngineMaxRadiusPercent*nacelle.getDiameterMax().times(0.5).doubleValue(SI.METRE); 
+		
+		// ------------------------------
+		// Generate the PYLON main wire		
+		double byPassOutletZOffset = Math.abs(engineMainWireEdges.get(2).vertices()[0].pnt()[2] - 
+				engineMainWireEdges.get(2).vertices()[1].pnt()[2])/2;
+		
+		CADWire byPassLowOutletWire = OCCUtils.theFactory.newWireFromAdjacentEdges(
+				engineMainWireEdges.get(5), 
+				engineMainWireEdges.get(6)
+				);
+		
+		double[] byPassLowOutletWireRefVtx = byPassLowOutletWire.vertices().get(0).pnt();
+		
+		CADWire byPassLowOutletWireMid = (CADWire) OCCUtils.getShapeTranslated(
+				(OCCShape) byPassLowOutletWire, 
+				byPassLowOutletWireRefVtx, 
+				new double[] {
+						byPassLowOutletWireRefVtx[0],
+						byPassLowOutletWireRefVtx[1],
+						byPassLowOutletWireRefVtx[2] + byPassOutletZOffset
+				});
+		
+		OCCGeomCurve3D airfoilCamberLine = (OCCGeomCurve3D) OCCUtils.theFactory.newCurve3D(airfoilCamberLinePts, false);
+		airfoilCamberLine.discretize(30);
+		List<double[]> upperCurvePylonMidWirePts = airfoilCamberLine.getDiscretizedCurve().getDoublePoints().stream()
+				.skip(2).limit(26).collect(Collectors.toList());
+		
+		double[] camberLineFirstPt = upperCurvePylonMidWirePts.get(0);
+		double[] camberLineLastPt = upperCurvePylonMidWirePts.get(upperCurvePylonMidWirePts.size() - 1);
+		double[] coreOutletUppPt = byPassLowOutletWireMid.vertices().get(byPassLowOutletWireMid.vertices().size() - 1).pnt();
+		
+		double[] pt1 = upperCurvePylonMidWirePts.get(upperCurvePylonMidWirePts.size() - 1);
+		
+		double[] pt2 = (engineMainWireEdges.get(0).vertices()[1].pnt()[0] > engineMainWireEdges.get(14).vertices()[0].pnt()[0] && 
+						engineMainWireEdges.get(0).vertices()[1].pnt()[0] < engineMainWireEdges.get(3).vertices()[1].pnt()[0]) ?
+				engineMainWireEdges.get(0).vertices()[1].pnt() : 
+				new double[] {
+						engineMainWireEdges.get(14).vertices()[0].pnt()[0] + 
+								(engineMainWireEdges.get(3).vertices()[1].pnt()[0] - engineMainWireEdges.get(14).vertices()[0].pnt()[0])/2,
+						nacelle.getYApexConstructionAxes().doubleValue(SI.METER), 
+						nacelle.getZApexConstructionAxes().doubleValue(SI.METER) + nacelle.getDiameterMax().doubleValue(SI.METER)*0.5*0.90
+						};
+		
+		double[] pt3 = new double[] {
+			    pt2[0], 
+			    nacelle.getYApexConstructionAxes().doubleValue(SI.METER), 
+			    byPassLowOutletWireMid.vertices().get(0).pnt()[2]
+		};
+		
+		double[] pt4 = byPassLowOutletWireMid.vertices().get(0).pnt();
+		
+		double[] pt5 = coreOutletUppPt;		
+		
+		double[] pt6 = new double[] {
+				coreOutletUppPt[0] + 0.20*Math.abs((camberLineFirstPt[0] - camberLineLastPt[0])),
+				coreOutletUppPt[1],
+				coreOutletUppPt[2]
+		};	
+		
+		double[] pt7 = camberLineFirstPt;
+		
+		PVector pv1 = new PVector((float) pt1[0], (float) pt1[1], (float) pt1[2]);
+		PVector pv2 = new PVector((float) pt2[0], (float) pt2[1], (float) pt2[2]);
+		PVector pv8 = (pv1.x > pv2.x) ? 
+				new PVector(pv2.x, pv1.y, pv1.z) :
+				new PVector(pv1.x, pv2.y, pv2.z);
+		PVector pv9 = (pv1.x > pv2.x) ?
+				PVector.lerp(pv8, pv1, 0.25f) :
+				PVector.lerp(pv8, pv2, 0.25f);
+				
+		PVector pvTng1 = (pv1.x > pv2.x) ?
+				new PVector(-1.0f, 0.0f, 0.0f) :
+				PVector.sub(pv9, pv1).normalize();
+				
+		PVector pvTng2 = (pv1.x > pv2.x) ? 
+				PVector.sub(pv2, pv9).normalize() :
+				PVector.sub(pv9, pv1).normalize();
+				
+		double[] tng1 = new double[] {pvTng1.x, pvTng1.y, pvTng1.z};
+		double[] tng2 = new double[] {pvTng2.x, pvTng2.y, pvTng2.z};
+		
+		List<double[]> ptsCrvA = new ArrayList<>();
+		List<double[]> ptsCrvB = new ArrayList<>();
+		List<double[]> ptsCrvC = new ArrayList<>();
+		List<double[]> ptsCrvF = new ArrayList<>();
+		List<double[]> ptsCrvG = new ArrayList<>();
+		
+		ptsCrvA.add(pt1); 	ptsCrvA.add(pt2);
+		ptsCrvB.add(pt2);	ptsCrvB.add(pt3);
+		ptsCrvC.add(pt3);	ptsCrvC.add(pt4);
+		ptsCrvF.add(pt5);	ptsCrvF.add(pt6);
+		ptsCrvG.add(pt6);	ptsCrvG.add(pt7);
+		
+		CADEdge edgeA = OCCUtils.theFactory.newCurve3D(ptsCrvA, false, tng1, tng2, false).edge();
+		CADEdge edgeB = OCCUtils.theFactory.newCurve3D(ptsCrvB, false).edge();
+		CADEdge edgeC = OCCUtils.theFactory.newCurve3D(ptsCrvC, false).edge();
+		CADEdge edgeD = byPassLowOutletWireMid.edges().get(0);
+		CADEdge edgeE = byPassLowOutletWireMid.edges().get(1);
+		CADEdge edgeF = OCCUtils.theFactory.newCurve3D(ptsCrvF, false).edge();
+		CADEdge edgeG = OCCUtils.theFactory.newCurve3D(ptsCrvG, false).edge();
+		CADEdge edgeH = OCCUtils.theFactory.newCurve3D(upperCurvePylonMidWirePts, false).edge();
+		
+		CADWire pylonMidWire = OCCUtils.theFactory.newWireFromAdjacentEdges(
+				edgeA, edgeB, edgeC, edgeD, edgeE, edgeF, edgeG, edgeH);
+		
+		if (exportSupportShapes) {
+			supportShapes.add((OCCShape) pylonMidWire);
+		}
+		
+		// ----------------------
+		// Generate offset wire
+		CADWire pylonRightWire = (CADWire) OCCUtils.getShapeTranslated((OCCShape) pylonMidWire, 
+				pylonMidWire.vertices().get(0).pnt(), 
+				new double[] {
+						pylonMidWire.vertices().get(0).pnt()[0],
+						pylonMidWire.vertices().get(0).pnt()[1] + pylonWidth/2,
+						pylonMidWire.vertices().get(0).pnt()[2]
+						}
+				);
+		
+		if (exportShells || exportSolids) {		
+			// -------------------------------
+			// Generate the PYLON right shell
+			OCCShape pylonRightShell = (OCCShape) OCCUtils.theFactory.newShellFromAdjacentShapes(
+					OCCUtils.makePatchThruSections(pylonMidWire, pylonRightWire),
+					OCCUtils.theFactory.newFacePlanar(pylonRightWire)
+					);
+						
+			OCCShape filletedPylonRightShell = OCCUtils.applyFilletOnShell(
+					(OCCShell) pylonRightShell, 
+					new int[] {2, 6, 10, 14, 18, 22, 26, 30}, 
+					0.75*pylonWidth/2
+					);
+			
+			if (exportShells) {
+				shellShapes.add(filletedPylonRightShell);
+			}
+			
+			// ------------------------------------------------------------
+			// Mirror the right shell and generate the solid of the PYLON
+			OCCShape filletedLeftShell = OCCUtils.getShapeMirrored(
+					filletedPylonRightShell, 
+					new PVector(
+							(float) nacelle.getXApexConstructionAxes().doubleValue(SI.METER), 
+							(float) nacelle.getYApexConstructionAxes().doubleValue(SI.METER), 
+							(float) nacelle.getZApexConstructionAxes().doubleValue(SI.METER)
+							), 
+					new PVector(0.0f, 1.0f, 0.0f), 
+					new PVector(1.0f, 0.0f, 0.0f)
+					);
+
+			if (exportShells) {
+				shellShapes.add(filletedLeftShell);
+			}
+
+			if (exportSolids) {
+				OCCShape pylonSolid = (OCCShape) OCCUtils.theFactory.newSolidFromAdjacentShapes(
+						filletedPylonRightShell, filletedLeftShell);
+
+				solidShapes.add(pylonSolid);
+			}
+			
+		}
+		
+		return new Tuple3<List<OCCShape>, List<OCCShape>, List<OCCShape>>(supportShapes, shellShapes, solidShapes);		
+	}
+
+	private static double getTurbofanEngineCADZPercentFanOutletLowDueToBPR(double bpr) {
+		
+		return (0.6303 - 0.0067*bpr); // BPR 9.0 --> 0.57, BPR 12.0 --> 0.55	
+	}
+	
+	private static double getTurbofanEngineCADZPercentOutletMinDueToBPR(double bpr) {
+		
+		return (1.15 + 0.0067*bpr); // BPR 9.0 --> 1.21, BPR 12.0 --> 1.23	
+	}
+	
+	private static double getTurbofanEngineCADZPercentOutletCoreDueToBPR(double bpr) {
+		
+		return (0.84 + 0.0067*bpr); // BPR 9.0 --> 0.90, BPR 12.0 --> 0.92			
+	}
+	
+	private static double getTurbofanEngineCADZPercentTurbineOutletUppDueToBPR(double bpr) {
+		
+		return (0.92 + 0.013*bpr); // BPR 9.0 --> 1.04, BPR 12.0 --> 1.08	
+	}
+	
+	private static double getTurbofanEngineCADZPercentTurbineOutletLowDueToBPR(double bpr) {
+		
+		return (0.36 + 0.03*bpr); // BPR 9.0 --> 0.63, BPR 12.0 --> 0.72	
+	}
 }
