@@ -1576,6 +1576,7 @@ public class MomentCalc {
 			List<Double> liftingSurfaceCmC4Distribution,
 			List<Amount<Length>> liftingSurfaceChordDistribution,
 			List<Amount<Length>> liftingSurfaceXLEDistribution,
+			List<Amount<Length>> liftingSurfaceXACDistribution,
 			List<List<Double>> airfoilClMatrix, //this is a list of list. each list is referred to an airfoil along the semispan
 			List<Amount<Angle>> anglesOfAttackClMatrix, // references angle of attack of the list of list airfoilClMatrix
 			Amount<Area> liftingSurfaceArea,
@@ -1628,10 +1629,11 @@ public class MomentCalc {
 							);
 				}
 
+				//TODO modify here 
 				distancesArrayAC[ii] =
 						momentumPole.doubleValue(SI.METER) - 
 						(liftingSurfaceXLEDistribution.get(ii).doubleValue(SI.METER) +
-								(liftingSurfaceChordDistribution.get(ii).doubleValue(SI.METER)/4));
+								(liftingSurfaceXACDistribution.get(ii).doubleValue(SI.METER)));
 
 				cmDistribution [ii] = clInducedDistributionAtAlphaNew[ii] * 
 						(distancesArrayAC[ii]/

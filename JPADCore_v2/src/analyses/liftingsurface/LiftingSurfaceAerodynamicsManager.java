@@ -3120,6 +3120,7 @@ public class LiftingSurfaceAerodynamicsManager {
 									_cmACDistribution,
 									_chordDistribution,
 									_xLEDistribution,
+									_xACDistribution,
 									_discretizedAirfoilsCl,
 									_alphaArrayClean, 
 									_theLiftingSurface.getSurfacePlanform(), 

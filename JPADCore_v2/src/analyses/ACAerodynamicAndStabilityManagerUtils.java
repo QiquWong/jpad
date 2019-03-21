@@ -203,7 +203,7 @@ public class ACAerodynamicAndStabilityManagerUtils {
 
 		//.........................................................................................................................
 		//	MOMENT_CURVE_3D
-		analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcMomentCurve calcMomentCurve = liftingSurfaceAerodynamicManager.new CalcMomentCurve();
+ 		analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcMomentCurve calcMomentCurve = liftingSurfaceAerodynamicManager.new CalcMomentCurve();
 		calcMomentCurve.fromAirfoilDistribution();
 
 		//.........................................................................................................................

@@ -81,7 +81,7 @@
 			</airfoil_curves>
 			<!---->
 			<!-- these data are always needed -->            
-			<x_ac_normalized unit="">0.26</x_ac_normalized>
+			<x_ac_normalized unit="">0.2586</x_ac_normalized>
 			<mach_critical>0.61</mach_critical>
 			<x_transition_upper>0.03</x_transition_upper>                                     
             <x_transition_lower>0.14</x_transition_lower>
