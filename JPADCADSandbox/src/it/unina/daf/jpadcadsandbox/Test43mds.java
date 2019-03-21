@@ -97,45 +97,45 @@ public class Test43mds extends Application {
 		System.out.println("----- TURBOFAN engine creation -----");
 			
 		List<OCCShape> exportShapes = new ArrayList<>();	
+		boolean exportSupportShapes = false;
+		boolean exportShells = false;
+		boolean exportSolids = true;
+		boolean generatePylons = true;
 		
-		// ------------------------
+		// --------------------
 		// Collect components
-		// ------------------------
 		Aircraft aircraft = AircraftUtils.importAircraft(args);
 		aircraft.getNacelles().getNacellesList().forEach(n -> 
 				n.setZApexConstructionAxes(n.getZApexConstructionAxes().minus(Amount.valueOf(0.3, SI.METER)))
 				);
 		
 		List<OCCShape> fuselageShapes = AircraftCADUtils.getFuselageCAD(
-				aircraft.getFuselage(), 7, 7, false, false, true);
+				aircraft.getFuselage(), 7, 7, exportSupportShapes, exportShells, exportSolids);
 
 		List<OCCShape> wingShapes = AircraftCADUtils.getLiftingSurfaceCAD(
-				aircraft.getWing(), WingTipType.WINGLET, false, false, true);
+				aircraft.getWing(), WingTipType.ROUNDED, exportSupportShapes, exportShells, exportSolids);
 
 		List<OCCShape> hTailShapes = AircraftCADUtils.getLiftingSurfaceCAD(
-				aircraft.getHTail(), WingTipType.ROUNDED, false, false, true);
+				aircraft.getHTail(), WingTipType.ROUNDED, exportSupportShapes, exportShells, exportSolids);
 
 		List<OCCShape> vTailShapes = AircraftCADUtils.getLiftingSurfaceCAD(
-				aircraft.getVTail(), WingTipType.ROUNDED, false, false, true);	
+				aircraft.getVTail(), WingTipType.ROUNDED, exportSupportShapes, exportShells, exportSolids);	
 		
 		List<OCCShape> canardShapes = AircraftCADUtils.getLiftingSurfaceCAD(
-				aircraft.getCanard(), WingTipType.ROUNDED, false, false, true);
+				aircraft.getCanard(), WingTipType.ROUNDED, exportSupportShapes, exportShells, exportSolids);
 		
-		List<OCCShape> wingFairingShapes = AircraftCADUtils.getFairingShapes(
+		List<OCCShape> wingFairingShapes = AircraftCADUtils.getFairingCAD(
 				aircraft.getFuselage(), aircraft.getWing(), 
 				0.50, 0.50, 1.01, 0.05, 0.65, 0.15, 0.90, 
-				false, false, true);
+				exportSupportShapes, exportShells, exportSolids);
 		
-//		List<OCCShape> canardFairingShapes = AircraftCADUtils.getFairingShapes(
-//				aircraft.getFuselage(), aircraft.getCanard(), 
-//				0.50, 0.50, 0.50, 0.10, 0.55, 0.85, 0.75, 
-//				false, false, true);
+		List<OCCShape> canardFairingShapes = AircraftCADUtils.getFairingCAD(
+				aircraft.getFuselage(), aircraft.getCanard(), 
+				0.50, 0.50, 0.50, 0.10, 0.55, 0.85, 0.75, 
+				exportSupportShapes, exportShells, exportSolids);
 		
 		List<OCCShape> engineShapes = AircraftCADUtils.getTurbofanEnginesCAD(
-				aircraft, true, false, false, true);
-		
-//		List<OCCShape> engineShapes = AircraftCADUtils.getTurbofanEngineCAD(
-//		aircraft, nacelle, engine, true, false, false, true, true);
+				aircraft, generatePylons, exportSupportShapes, exportShells, exportSolids);
 		
 		exportShapes.addAll(fuselageShapes);
 		exportShapes.addAll(wingShapes);
@@ -143,11 +143,12 @@ public class Test43mds extends Application {
 		exportShapes.addAll(vTailShapes);
 		exportShapes.addAll(canardShapes);
 		exportShapes.addAll(wingFairingShapes);
-//		exportShapes.addAll(canardFairingShapes);
+		exportShapes.addAll(canardFairingShapes);
 		exportShapes.addAll(engineShapes);
 		
 		OCCUtils.write("turbofan_test_01", FileExtension.STEP, exportShapes);
 		
+		// --------------------
 		// Extract the meshes
 		List<List<TriangleMesh>> triangleMeshes = exportShapes.stream()
 				.map(s -> (new OCCFXMeshExtractor(s.getShape())).getFaces().stream()
@@ -162,9 +163,9 @@ public class Test43mds extends Application {
 		
 		mesh = triangleMeshes;
 		
-//		System.exit(0);
+		System.exit(0);
 		
-		launch();
+//		launch();
 	}
 	
 //	private static List<OCCShape> getTurbofanEngineCAD(

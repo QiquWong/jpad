@@ -59,6 +59,7 @@ import it.unina.daf.jpadcad.occ.OCCWire;
 import javaslang.Tuple2;
 import javaslang.Tuple3;
 import javaslang.Tuple4;
+import jdk.nashorn.tools.Shell;
 import opencascade.BRepBuilderAPI_Transform;
 import opencascade.Interface_Static;
 import opencascade.TopoDS;
@@ -120,21 +121,21 @@ public class AircraftCADUtils {
 		
 		// -------------------------------
 		// Initializing the time counter
-		System.out.println("\t======================================================================================\n" + 
-						   "\t========================= [AircraftCADUtils::getFuselageCAD] =========================\n" + 
-						   "\t======================================================================================");
+		System.out.println("\t==============================================================================================\n" + 
+						   "\t============================= [AircraftCADUtils::getFuselageCAD] =============================\n" + 
+						   "\t==============================================================================================");
 		
 		long startTime = System.nanoTime();
 		
 		// ------------------------------------------
 		// Check whether continuing with the method
 		if (fuselage == null) {
-			System.err.println("\n\tThe fuselage object passed to the method is null! Exiting the method ...");
+			System.out.println("\n\tThe fuselage object passed to the method is null! Exiting the method ...\n");
 			return new ArrayList<>();
 		}
 		
 		if (!exportSupportShapes && !exportShells && !exportSolids) {
-			System.err.println("\n\tNo shapes to export! Exiting the method ...");
+			System.out.println("\n\tNo shapes to export! Exiting the method ...\n");
 			return new ArrayList<>();
 		} else {
 			System.out.println("\n\tShapes selected to be exported:\n" + 
@@ -179,7 +180,7 @@ public class AircraftCADUtils {
 		
 		// ----------------------------------
 		// NOSE CAP AND NOSE TRUNK CREATION
-		System.out.println("\n\t--------------------------------------------------------------------------------------\n" + 
+		System.out.println("\n\t----------------------------------------------------------------------------------------------\n" + 
 						   "\tCreating shapes for the nose cap and the nose trunk ...\n\n" +  
 						   "\t\tNose cap sections spacing: " + XSpacingType.HALFCOSINUS2.name() + "\n" + 
 						   "\t\tNose cap section factor #1: " + noseCapSectionFactor1 + "\n" + 
@@ -270,7 +271,7 @@ public class AircraftCADUtils {
 		
 		// -------------------
 		// CYLINDER CREATION
-		System.out.println("\n\t--------------------------------------------------------------------------------------\n" + 
+		System.out.println("\n\t----------------------------------------------------------------------------------------------\n" + 
 						   "\tCreating shapes for the cylinder trunk ...\n\n" + 
 						   "\t\tCylinder trunk sections spacing: " + XSpacingType.UNIFORM + "\n" + 
 						   "\t\tNumber of cylinder trunk sections? 3");
@@ -309,7 +310,7 @@ public class AircraftCADUtils {
 			
 		// ----------------------------------
 		// TAIL TRUNK AND TAIL CAP CREATION
-		System.out.println("\n\t--------------------------------------------------------------------------------------\n" + 
+		System.out.println("\n\t----------------------------------------------------------------------------------------------\n" + 
 						   "\tCreating shapes for the tail trunk and the tail cap ...\n\n" + 
 						   "\t\tTail trunk sections spacing: " + spacingTypeTailTrunk.name() + "\n" + 
 						   "\t\tNumber of tail trunk sections: " + numberTailTrunkSections);
@@ -405,7 +406,7 @@ public class AircraftCADUtils {
 		// -------------------------------------------
 		// Generate outline curves whether necessary
 		if (exportSupportShapes) {
-			System.out.println("\n\t--------------------------------------------------------------------------------------\n" + 
+			System.out.println("\n\t----------------------------------------------------------------------------------------------\n" + 
 			                   "\tAdding outline curves to the supporting shapes to be exported ...");
 			
 			// -------------------------
@@ -595,7 +596,7 @@ public class AircraftCADUtils {
 		if (exportShells || exportSolids) {				
 			// -----------------------------------------------
 			// Sew together all the faces generated till now
-			System.out.println("\n\t--------------------------------------------------------------------------------------\n" + 
+			System.out.println("\n\t----------------------------------------------------------------------------------------------\n" + 
 			                   "\tSewing fuselage patches together ...\n\n" + 
 							   "\t\tCalling CADShapeFactory.newShellFromAdjacentFaces method ...");
 			
@@ -612,7 +613,7 @@ public class AircraftCADUtils {
 			
 			// --------------------------------------------------------------
 			// Mirroring the right shell with respect to the symmetry plane
-			System.out.println("\n\t--------------------------------------------------------------------------------------\n" + 
+			System.out.println("\n\t----------------------------------------------------------------------------------------------\n" + 
 			                   "\tMirroring the right shell with respect to the symmetry plane ...\n\n" + 
 							   "\t\tCalling OCCUtils.getShapeMirrored method ...");
 			
@@ -629,7 +630,7 @@ public class AircraftCADUtils {
 			if (exportSolids) {				
 				// --------------------------------------------------------------
 				// Sew together the right and left shell and generate the solid
-				System.out.println("\n\t--------------------------------------------------------------------------------------\n" + 
+				System.out.println("\n\t----------------------------------------------------------------------------------------------\n" + 
 				                   "\tSewing right and left shell together, in order to obtain the solid of the fuselage ...\n\n" + 
 								   "\t\tCalling CADShapeFactory.newSolidFromAdjacentShells method ...");
 				
@@ -645,7 +646,7 @@ public class AircraftCADUtils {
 			if (exportShells) {				
 				// --------------------------------------
 				// Return the left and right shell
-				System.out.println("\n\t--------------------------------------------------------------------------------------\n" + 
+				System.out.println("\n\t----------------------------------------------------------------------------------------------\n" + 
 								   "\tAdding the left and right shell of the fuselage to the exported shapes ...\n\n" + 
 								   "\t\tFuselage left shell added to the exported shapes? " + shellShapes.add(fuselageLeftShell) + "\n" + 
 								   "\t\tFuselage right shell added to the exported shapes? " + shellShapes.add(fuselageRightShell));
@@ -664,7 +665,7 @@ public class AircraftCADUtils {
 		OCCCompound fuselageCompound = (OCCCompound) OCCUtils.theFactory.newCompound(
 				requestedShapes.stream().map(s -> (CADShape) s).collect(Collectors.toList()));
 		
-		System.out.println("\n\t--------------------------------------------------------------------------------------\n" + 
+		System.out.println("\n\t----------------------------------------------------------------------------------------------\n" + 
 		                   "\n\t\t\t[Fuselage CAD creation completed!]\n\n" + 
 						   "\tTotal elapsed time: " + elapsedTime + " milliseconds\n" + 
 						   OCCUtils.reportOnShape(fuselageCompound.getShape(), "Fuselage shapes compound") + "\n");
@@ -705,21 +706,21 @@ public class AircraftCADUtils {
 		
 		// -------------------------------
 		// Initializing the time counter
-		System.out.println("\t============================================================================================\n" + 
-						   "\t========================= [AircraftCADUtils::getLiftingSurfaceCAD] =========================\n" + 
-						   "\t============================================================================================");
+		System.out.println("\t====================================================================================================\n" + 
+						   "\t============================= [AircraftCADUtils::getLiftingSurfaceCAD] =============================\n" + 
+						   "\t====================================================================================================");
 		
 		long startTime = System.nanoTime();
 		
 		// ------------------------------------------
 		// Check whether continuing with the method
 		if (liftingSurface == null) {
-			System.err.println("\n\tThe lifting surface object passed to the method is null! Exiting the method ...");
+			System.out.println("\n\tThe lifting surface object passed to the method is null! Exiting the method ...\n");
 			return new ArrayList<>();
 		}
 		
 		if (!exportSupportShapes && !exportShells && !exportSolids) {
-			System.err.println("\n\tNo shapes to export! Exiting the method ...");
+			System.out.println("\n\tNo shapes to export! Exiting the method ...\n");
 			return new ArrayList<>();
 		} else {
 			System.out.println("\n\tBuilding the " + liftingSurface.getType().name() + " CAD\n\n" +
@@ -768,7 +769,7 @@ public class AircraftCADUtils {
 		
 		// --------------------------------------
 		// Build the leading and trailing edges
-		System.out.println("\n\t--------------------------------------------------------------------------------------\n" + 
+		System.out.println("\n\t----------------------------------------------------------------------------------------------\n" + 
 				   		   "\tBuilding the leading edge and the trailing edge of the lifting surface ..."); 
 		
 		List<double[]> ptsLE = new ArrayList<>();
@@ -833,7 +834,7 @@ public class AircraftCADUtils {
 		
 		// ----------------
 		// Wing tip check
-		System.out.println("\n\t--------------------------------------------------------------------------------------\n" + 
+		System.out.println("\n\t----------------------------------------------------------------------------------------------\n" + 
 		   		   		   "\tChecking wing tip options ...\n"); 
 		
 		if (wingTip.equals(WingTipType.WINGLET)) {
@@ -889,7 +890,7 @@ public class AircraftCADUtils {
 			
 		// -----------------------------
 		// Generate span wise airfoils
-		System.out.println("\n\t--------------------------------------------------------------------------------------\n" + 
+		System.out.println("\n\t----------------------------------------------------------------------------------------------\n" + 
 		   		   		   "\tGenerating supporting airfoil curves ...\n"); 
 		
 		List<List<CADGeomCurve3D>> airfoilCrvs = new ArrayList<List<CADGeomCurve3D>>();
@@ -922,28 +923,7 @@ public class AircraftCADUtils {
 				}
 			}
 			
-			double etaOut = liftingSurface.getEtaBreakPoints().get(i) - tipOffset;		
-			Double diff = (etaOut - liftingSurface.getEtaBreakPoints().get(i-1)) * 10;	
-			
-//			if (diff >= 3.0 && diff <= 7.0) {			
-//				nAirfoils[i-1] = Double.valueOf(Math.rint(diff)).intValue();
-//			} else {				
-//				if (diff < 3.0) {
-//					nAirfoils[i-1] = 3;
-//				} else {
-//					if (diff > 7.0 && diff < 10.0) {
-//						nAirfoils[i-1] = 7;
-//					} else {
-//						nAirfoils[i-1] = 5;
-//					}
-//				}
-//			}
-//					
-//			Double[] yStations = MyArrayUtils.linspaceDouble(
-//					liftingSurface.getYBreakPoints().get(i-1).doubleValue(SI.METER), 
-//					etaOut * liftingSurface.getSemiSpan().doubleValue(SI.METER), 
-//					nAirfoils[i-1]);
-			
+			double etaOut = liftingSurface.getEtaBreakPoints().get(i) - tipOffset;				
 			nAirfoils[i-1] = 2;
 			
 			Double[] yStations = new Double[] {
@@ -1004,7 +984,7 @@ public class AircraftCADUtils {
 		
 		// -----------------------
 		// Wing tip construction
-		System.out.println("\n\n\t--------------------------------------------------------------------------------------\n" + 
+		System.out.println("\n\n\t----------------------------------------------------------------------------------------------\n" + 
 						   "\tBuilding the lifting surface tip (" + wingTip.name() + " type selected) ...\n"); 
 		switch (wingTip) {
 		
@@ -1076,7 +1056,7 @@ public class AircraftCADUtils {
 		if (exportShells || exportSolids) {
 			// ------------------------------------------------
 			// Generate a loft (shell element) for each panel
-			System.out.println("\n\t--------------------------------------------------------------------------------------\n" + 
+			System.out.println("\n\t----------------------------------------------------------------------------------------------\n" + 
 					           "\tGenerating panel patches (shell elements) ...\n\n" + 
 					           "\t\tCalling OCCUtils.makePatchThruSections method ..."); 
 			
@@ -1093,7 +1073,7 @@ public class AircraftCADUtils {
 			
 			// -----------------------------------
 			// Sew all the right shells together
-			System.out.println("\n\t--------------------------------------------------------------------------------------\n" + 
+			System.out.println("\n\t----------------------------------------------------------------------------------------------\n" + 
 			                   "\tSewing panel patches and tip shell ...\n\n" + 
 			                   "\t\tCalling CADShapeFactory.newShellFromAdjacentShapes method ..."); 
 			
@@ -1107,7 +1087,7 @@ public class AircraftCADUtils {
 			// ------------------------------------
 			// Mirroring shells whether necessary
 			if (!liftingSurface.getType().equals(ComponentEnum.VERTICAL_TAIL)) {
-				System.out.println("\n\t--------------------------------------------------------------------------------------\n" + 
+				System.out.println("\n\t----------------------------------------------------------------------------------------------\n" + 
 		                           "\tMirroring right shell element ...\n\n" + 
 		                           "\t\tCalling OCCUtils.getShapeMirrored method ...");
 				
@@ -1121,7 +1101,7 @@ public class AircraftCADUtils {
 				System.out.println("\t\tRight lifting surface shell successfully mirrored? " + (leftPanelsShell != null));
 
 			} else {
-				System.out.println("\n\t--------------------------------------------------------------------------------------\n" + 
+				System.out.println("\n\t----------------------------------------------------------------------------------------------\n" + 
                                    "\tLifting surface is not symmetric. Closing the shell freebounds ...\n\n" + 
                                    "\t\tCalling OCCUtils.newFacePlanar method ...");
 				
@@ -1133,7 +1113,7 @@ public class AircraftCADUtils {
 			if (exportSolids) {
 				// --------------------------------------------------------------
 				// Sew together the right and left shell and generate the solid
-				System.out.println("\n\t--------------------------------------------------------------------------------------\n" + 
+				System.out.println("\n\t----------------------------------------------------------------------------------------------\n" + 
                         		   "\tSewing right and left shell together, in order to obtain the final solid ...\n\n" + 
                                    "\t\tCalling CADShapeFactory.newSolidFromAdjacentShapes method ..."); 
 											
@@ -1149,7 +1129,7 @@ public class AircraftCADUtils {
 			if (exportShells) {
 				// -----------------------------------------
 				// Return the left and right shell
-				System.out.println("\n\t--------------------------------------------------------------------------------------\n" + 
+				System.out.println("\n\t----------------------------------------------------------------------------------------------\n" + 
 						   		   "\tAdding the left and right shell of the lifting surface to the exported shapes ...\n\n" + 
 						           "\t\tLifting surface left shell added to the exported shapes? " + shellShapes.add(rightPanelsShell) + "\n" + 
 						           "\t\tLifting surface right shell added to the exported shapes? " + shellShapes.add(leftPanelsShell));
@@ -1181,7 +1161,7 @@ public class AircraftCADUtils {
 		OCCCompound liftingSurfaceCompound = (OCCCompound) OCCUtils.theFactory.newCompound(
 				requestedShapes.stream().map(s -> (CADShape) s).collect(Collectors.toList()));
 		
-		System.out.println("\n\t--------------------------------------------------------------------------------------\n" + 
+		System.out.println("\n\t----------------------------------------------------------------------------------------------\n" + 
 		                   "\n\t\t\t[Lifting surface (" + liftingSurface.getType().name() + ") CAD creation completed!]\n\n" + 
 						   "\tTotal elapsed time: " + elapsedTime + " milliseconds\n" + 
 						   OCCUtils.reportOnShape(liftingSurfaceCompound.getShape(), "Lifting surface shapes compound") + "\n");
@@ -1189,22 +1169,51 @@ public class AircraftCADUtils {
 		return requestedShapes;
 	}
 	
-	public static List<OCCShape> getFairingShapes(Fuselage fuselage, LiftingSurface liftingSurface,
+	public static List<OCCShape> getFairingCAD(Fuselage fuselage, LiftingSurface liftingSurface,
 			double frontLengthFactor, double backLengthFactor, double widthFactor, double heightFactor,
 			double heightBelowReferenceFactor, double heightAboveReferenceFactor,
 			double filletRadiusFactor,
 			boolean exportSupportShapes, boolean exportShells, boolean exportSolids		
 			) {
 		
-		// ----------------------------------------------------------
-		// Initialize the CAD shapes factory
-		// ----------------------------------------------------------
-		if (OCCUtils.theFactory == null)
+		// -------------------------------
+		// Initializing the time counter
+		System.out.println("\t=============================================================================================\n" + 
+						   "\t============================= [AircraftCADUtils::getFairingCAD] =============================\n" + 
+						   "\t=============================================================================================");
+		
+		long startTime = System.nanoTime();
+		
+		// ------------------------------------------
+		// Check whether continuing with the method
+		if (fuselage == null || liftingSurface == null) {
+			System.out.println("\n\tThe fuselage object and/or lifting surface object passed to the method is null! " + 
+							   "Exiting the method ...\n");
+			return new ArrayList<>();
+		}
+		
+		if (!exportSupportShapes && !exportShells && !exportSolids) {
+			System.out.println("\n\tNo shapes to export! Exiting the method ...\n");
+			return new ArrayList<>();
+		} else {
+			System.out.println("\n\tBuilding the " + liftingSurface.getType().name() + " fairing CAD\n\n" +
+							   "\tShapes selected to be exported:\n" + 
+					           "\t\t- Shells: " + exportShells + "\n" + 
+					           "\t\t- Solids: " + exportSolids + "\n" +
+					           "\t\t- Supporting shapes: " + exportSupportShapes + "\n");
+		}
+		
+		// -------------------
+		// Check the factory
+		if (OCCUtils.theFactory == null) {
+			System.out.println("\tShape factory is null. Initializing the CAD shape factory ...");
 			OCCUtils.initCADShapeFactory();
+		}
 				
-		// ----------------------------------------------------------
-		// Initialize shape lists
-		// ----------------------------------------------------------
+		// ------------------------------------
+		// Initialize patches and shape lists
+		System.out.println("\tInitializing fairing patches and shape lists ...");
+		
 		Tuple3<List<OCCShape>, List<OCCShape>, List<OCCShape>> fairingShapes = null;
 		
 		List<OCCShape> requestedShapes = new ArrayList<>();
@@ -1212,52 +1221,80 @@ public class AircraftCADUtils {
 		List<OCCShape> shellShapes = new ArrayList<>();
 		List<OCCShape> solidShapes = new ArrayList<>();
 		
-		// ----------------------------------------------------------
-		// Geometric data collection
-		// ----------------------------------------------------------
+		// --------------------------------
+		// Collect fairing geometric data
+		System.out.println("\n\t----------------------------------------------------------------------------------------------\n" + 
+		   		   "\tCollecting fairing main geometric data through FairingDataCollection class ..."); 
+		
 		FairingDataCollection fairingData = new FairingDataCollection(fuselage, liftingSurface, 
 				frontLengthFactor, backLengthFactor, widthFactor, heightFactor, 
 				heightBelowReferenceFactor, heightAboveReferenceFactor, 
 				filletRadiusFactor);
 		
-		// ----------------------------------------------------------
+		System.out.println(fairingData.toString());
+		
+		// --------------------------------------------
 		// Invoke a specific fairing generator method
-		// ----------------------------------------------------------
+		System.out.println("\n\t----------------------------------------------------------------------------------------------\n" + 
+		   		   "\tInvoking a specific fairing generator method, based on the lifting surface position ...\n"); 
+		
 		FairingPosition fairingPosition = fairingData.getFairingPosition();
 		
 		switch (fairingPosition) {
 		
 		case DETACHED_UP:
+			System.out.println("\t\tRelative position between the lifting surface (" + liftingSurface.getType().name() + ") " + 
+		                       		"and the fuselage: " + fairingPosition.name() + "\n" + 
+					           "\t\tCalling AircraftCADUtils.generateDetachedUpFairingShapes private method ...");
+			
 			fairingShapes = generateDetachedUpFairingShapes(fairingData,
 					exportSupportShapes, exportShells, exportSolids);
 			
 			break;
 			
 		case ATTACHED_UP:
+			System.out.println("\t\tRelative position between the lifting surface (" + liftingSurface.getType().name() + ") " + 
+               		"and the fuselage: " + fairingPosition.name() + "\n" + 
+	           "\t\tCalling AircraftCADUtils.generateAttachedUpFairingShapes private method ...");
+			
 			fairingShapes = generateAttachedUpFairingShapes(fairingData,
 					exportSupportShapes, exportShells, exportSolids);
 			
 			break;
 			
 		case MIDDLE:
+			System.out.println("\t\tRelative position between the lifting surface (" + liftingSurface.getType().name() + ") " + 
+               		"and the fuselage: " + fairingPosition.name() + "\n" + 
+	           "\t\tCalling AircraftCADUtils.generateMiddleFairingShapes private method ...");
+			
 			fairingShapes = generateMiddleFairingShapes(fairingData,
 					exportSupportShapes, exportShells, exportSolids);
 			
 			break;
 			
 		case ATTACHED_DOWN:
+			System.out.println("\t\tRelative position between the lifting surface (" + liftingSurface.getType().name() + ") " + 
+               		"and the fuselage: " + fairingPosition.name() + "\n" + 
+	           "\t\tCalling AircraftCADUtils.generateAttachedDownFairingShapes private method ...");
+			
 			fairingShapes = generateAttachedDownFairingShapes(fairingData,
 					exportSupportShapes, exportShells, exportSolids);
 			
 			break;
 			
 		case DETACHED_DOWN:
+			System.out.println("\t\tRelative position between the lifting surface (" + liftingSurface.getType().name() + ") " + 
+               		"and the fuselage: " + fairingPosition.name() + "\n" + 
+	           "\t\tCalling AircraftCADUtils.generateDetachedDownFairingShapes private method ...");
+			
 			fairingShapes = generateDetachedDownFairingShapes(fairingData,
 					exportSupportShapes, exportShells, exportSolids);
 			
 			break;
 		}
 		
+		// ---------------------------------
+		// Adding produced shapes to lists
 		supportShapes.addAll(fairingShapes._1());
 		shellShapes.addAll(fairingShapes._2());
 		solidShapes.addAll(fairingShapes._3());
@@ -1265,6 +1302,19 @@ public class AircraftCADUtils {
 		requestedShapes.addAll(supportShapes);
 		requestedShapes.addAll(shellShapes);
 		requestedShapes.addAll(solidShapes);
+		
+		// ------------------------
+		// Calculate elapsed time
+		long endTime = System.nanoTime();
+		long elapsedTime = TimeUnit.NANOSECONDS.toMillis(endTime - startTime);
+		
+		OCCCompound fairingCompound = (OCCCompound) OCCUtils.theFactory.newCompound(
+				requestedShapes.stream().map(s -> (CADShape) s).collect(Collectors.toList()));
+		
+		System.out.println("\n\t----------------------------------------------------------------------------------------------\n" + 
+		                   "\n\t\t\t[Fairing (" + liftingSurface.getType().name() + " fairing) CAD creation completed!]\n\n" + 
+						   "\tTotal elapsed time: " + elapsedTime + " milliseconds\n" + 
+						   OCCUtils.reportOnShape(fairingCompound.getShape(), "Fairing shapes compound") + "\n");
 		
 		return requestedShapes;
 	}
@@ -1428,42 +1478,71 @@ public class AircraftCADUtils {
 			boolean exportSupportShapes, boolean exportShells, boolean exportSolids
 			) {
 		
-		List<OCCShape> requestedShapes = new ArrayList<>();
+		// -------------------------------
+		// Initializing the time counter
+		System.out.println("\t=====================================================================================================\n" + 
+						   "\t============================= [AircraftCADUtils::getTurbofanEnginesCAD] =============================\n" + 
+						   "\t=====================================================================================================");
+		
+		long startTime = System.nanoTime();
 		
 		// ------------------------------------------
 		// Check whether continuing with the method
 		if (aircraft == null) {
-			System.out.println("========== [AircraftCADUtils::getTurbofanEnginesCAD] The aircraft object passed to the getTurbofanEnginesCAD " + 
-							   "method is null! Exiting the method ...");
-			return requestedShapes;
+			System.out.println("\n\tThe aircraft object passed to the method is null! Exiting the method ...\n");
+			return new ArrayList<>();
 		}
 		
 		if ((aircraft.getNacelles().getNacellesList().isEmpty() || aircraft.getNacelles().getNacellesList().stream().anyMatch(n -> n == null)) || 
 			(aircraft.getPowerPlant().getEngineList().isEmpty() || aircraft.getPowerPlant().getEngineList().stream().anyMatch(e -> e == null))) {			
-			System.out.println("========== [AircraftCADUtils::getTurbofanEnginesCAD] One or more engine/nacelle object passed to the "
-					+ "getTurbofanEnginesCAD method is null! Exiting the method ...");		
-			return requestedShapes;
+			System.out.println("\n\t One or more engine/nacelle objects passed to the getTurbofanEnginesCAD method are null!\n" + 
+							   "\tExiting the method ...\n");		
+			return new ArrayList<>();
 		}
 		
 		if (aircraft.getPowerPlant().getEngineList().stream().map(e -> e.getEngineType()).anyMatch(t -> !t.equals(EngineTypeEnum.TURBOFAN))) {
-			System.out.println("========== [AircraftCADUtils::getTurbofanEnginesCAD] One or more engines are not TURBOFAN! " + 
-							   "Please select another method in order to produce the CAD of the engines! Exiting the method ...");		
-			return requestedShapes;
+			System.out.println("\n\tOne or more engines are not TURBOFAN!\n" + 
+							   "\tPlease select another method in order to produce the CAD of the engines!\n" + 
+							   "\tExiting the method ...\n");		
+			return new ArrayList<>();
 		}
 		
 		if (!exportSupportShapes && !exportShells && !exportSolids) {
-			System.out.println("========== [AircraftCADUtils::getTurbofanEnginesCAD] No shapes to export! Exiting the method ...");		
-			return requestedShapes;
+			System.out.println("\n\tNo shapes to export! Exiting the method ...\n");
+			return new ArrayList<>();
+		} else {
+			System.out.println("\n\tBuilding the turbofan engines CAD\n\n" +
+							   "\tShapes selected to be exported:\n" + 
+					           "\t\t- Shells: " + exportShells + "\n" + 
+					           "\t\t- Solids: " + exportSolids + "\n" +
+					           "\t\t- Supporting shapes: " + exportSupportShapes + "\n");
+			if (generatePylon) {
+				System.out.println("\tThe generatePylon option has been selected\n" + 
+								   "\tThe algorithm will TRY to produce shapes for the pylons\n");
+			}
 		}
 		
-		// ------------------------
-		// Initialize the factory
-		if (OCCUtils.theFactory == null)
+		// -------------------
+		// Check the factory
+		if (OCCUtils.theFactory == null) {
+			System.out.println("\tShape factory is null. Initializing the CAD shape factory ...");
 			OCCUtils.initCADShapeFactory();
+		}
+		
+		// ------------------------------------
+		// Initialize patches and shape lists
+		System.out.println("\tInitializing turbofan engines patches and shape lists ...");
+
+		List<OCCShape> requestedShapes = new ArrayList<>();
 				
 		// -----------------------------
 		// Generate engines CAD shapes
+		System.out.println("\n\t----------------------------------------------------------------------------------------------\n" + 
+		   		   "\tInvoking AircraftCADUtils.getTurbofanEngineCAD to produce shapes for each engine ...\n\n" + 
+				   "\tNumber of engines to produce: " + aircraft.getPowerPlant().getEngineNumber()); 
+		
 		for (int i = 0; i < aircraft.getPowerPlant().getEngineNumber(); i++) {
+			System.out.println("\n\t[AircraftCADUtils.getTurbofanEngineCAD] ---> Engine N°" + (i+1) + "\n");
 			
 			requestedShapes.addAll(getTurbofanEngineCAD(
 					aircraft, 
@@ -1477,6 +1556,19 @@ public class AircraftCADUtils {
 					));
 		}
 		
+		// ------------------------
+		// Calculate elapsed time
+		long endTime = System.nanoTime();
+		long elapsedTime = TimeUnit.NANOSECONDS.toMillis(endTime - startTime);
+		
+		OCCCompound enginesCompound = (OCCCompound) OCCUtils.theFactory.newCompound(
+				requestedShapes.stream().map(s -> (CADShape) s).collect(Collectors.toList()));
+		
+		System.out.println("\n\t----------------------------------------------------------------------------------------------\n" + 
+		                   "\n\t\t\t[Turbofan engines CAD creation completed!]\n\n" + 
+						   "\tTotal elapsed time: " + elapsedTime + " milliseconds\n" + 
+						   OCCUtils.reportOnShape(enginesCompound.getShape(), "Turbofan engines shapes compound") + "\n");
+		
 		return requestedShapes;
 	}
 	
@@ -1485,41 +1577,67 @@ public class AircraftCADUtils {
 			boolean exportSupportShapes, boolean exportShells, boolean exportSolids, boolean standalone
 			) {
 		
+		long startTime = 0;
+		
+		if (standalone) {		
+			// -------------------------------
+			// Initializing the time counter
+			System.out.println("\t=====================================================================================================\n" + 
+							   "\t============================= [AircraftCADUtils::getTurbofanEngineCAD] =============================\n" + 
+							   "\t=====================================================================================================");
+			
+			startTime = System.nanoTime();
+			
+			// ------------------------------------------
+			// Check whether continuing with the method
+			if (nacelle == null || engine == null) {
+				System.out.println("\n\t\tThe nacelle and/or the engine object passed to the method is null! Exiting the method ...\n");		
+				return new ArrayList<>();
+			}
+			
+			if (!engine.getEngineType().equals(EngineTypeEnum.TURBOFAN)) {
+				System.out.println("\n\tOne or more engines are not TURBOFAN!\n" + 
+						   		   "\tPlease select another method in order to produce the CAD of the engines!\n" + 
+						           "\tExiting the method ...\n");					
+				return new ArrayList<>();
+			}
+			
+			if (!exportSupportShapes && !exportShells && !exportSolids) {
+				System.out.println("\n\tNo shapes to export! Exiting the method ...\n");
+				return new ArrayList<>();
+			} else {
+				System.out.println("\n\tBuilding the turbofan engine CAD\n\n" +
+								   "\tShapes selected to be exported:\n" + 
+						           "\t\t- Shells: " + exportShells + "\n" + 
+						           "\t\t- Solids: " + exportSolids + "\n" +
+						           "\t\t- Supporting shapes: " + exportSupportShapes + "\n");
+				if (generatePylon) {
+					System.out.println("\tThe generatePylon option has been selected\n" + 
+									   "\tThe algorithm will TRY to produce shapes for the pylons\n");
+				}
+			}
+			
+			// -------------------
+			// Check the factory
+			if (OCCUtils.theFactory == null) {
+				System.out.println("\tShape factory is null. Initializing the CAD shape factory ...");
+				OCCUtils.initCADShapeFactory();
+			}
+		}
+		
+		// ------------------------------------
+		// Initialize patches and shape lists
+		System.out.println("\tInitializing turbofan engine patches and shape lists ...");
+		
 		List<OCCShape> supportShapes = new ArrayList<>();
 		List<OCCShape> shellShapes = new ArrayList<>();
 		List<OCCShape> solidShapes = new ArrayList<>();
 		List<OCCShape> requestedShapes = new ArrayList<>();
-		
-		if (standalone) {		
-			// ------------------------------------------
-			// Check whether continuing with the method
-			if (nacelle == null || engine == null) {		
-				System.out.println("========== [AircraftCADUtils::getTurbofanEngineCAD] Nacelle and/or engine object passed to the "
-						+ "getTurbofanEngineCAD method is null! Exiting the method ...");
-				
-				return requestedShapes;
-			}
-			
-			if (!engine.getEngineType().equals(EngineTypeEnum.TURBOFAN)) {
-				System.out.println("========== [AircraftCADUtils::getTurbofanEngineCAD] Engine is not a TURBOFAN! Exiting the method ...");
-				
-				return requestedShapes;
-			}
-			
-			if (!exportSupportShapes && !exportShells && !exportSolids) {
-				System.out.println("========== [AircraftCADUtils::getTurbofanEngineCAD] No shapes to export! Exiting the method ...");
-				
-				return requestedShapes;
-			}
-			
-			// ------------------------------------
-			// Initialize the shape factory
-			if (OCCUtils.theFactory == null)
-				OCCUtils.initCADShapeFactory();
-		}
 	
 		// -------------------------
 		// Generate NACELLE shapes
+		System.out.println("\tCalling AircraftCADUtils.getTurbofanEngineNacelleCAD ...");
+		
 		Tuple4<List<CADEdge>, List<OCCShape>, List<OCCShape>, List<OCCShape>> nacelleShapes = getTurbofanEngineNacelleCAD(
 				nacelle, engine, exportSupportShapes, exportShells, exportSolids);
 		
@@ -1531,6 +1649,7 @@ public class AircraftCADUtils {
 		// ----------------------------------
 		// Eventually generate PYLON shapes
 		if (generatePylon) {
+			System.out.println("\tCalling AircraftCADUtils.getTurbofanEnginePylonCAD ...");
 			
 			Tuple3<List<OCCShape>, List<OCCShape>, List<OCCShape>> pylonShapes = getTurbofanEnginePylonCAD(
 					aircraft, nacelle, engine, engineMainWireEdges, exportSupportShapes, exportShells, exportSolids);
@@ -1561,19 +1680,23 @@ public class AircraftCADUtils {
 			double yIn = liftingSurface.getYBreakPoints().get(i-1).doubleValue(SI.METER);
 			double yOut = liftingSurface.getYBreakPoints().get(i).doubleValue(SI.METER);
 			
-			if (yStation > yIn && yStation < yOut || 
-				Math.abs(yStation - yIn) <= 1e-5 || 
-				Math.abs(yStation - yOut) <= 1e-5) {			
-				baseAirfoil = liftingSurface.getAirfoilList().get(i-1);
+			if (Math.abs(yStation) > yIn && Math.abs(yStation) < yOut || 
+			    Math.abs(Math.abs(yStation) - yIn) <= 1e-5 ||
+			    Math.abs(Math.abs(yStation) - yOut) <= 1e-5) {	
+				
+//				baseAirfoil = liftingSurface.getAirfoilList().get(i-1);
+				baseAirfoil = ((Math.abs(yStation) - yIn) > (yOut - Math.abs(yStation))) ? 
+						liftingSurface.getAirfoilList().get(i) :
+						liftingSurface.getAirfoilList().get(i-1);
 				tci = liftingSurface.getAirfoilList().get(i-1).getThicknessToChordRatio();
 				tcf = liftingSurface.getAirfoilList().get(i).getThicknessToChordRatio();
 				scaleFactor = MyMathUtils.getInterpolatedValue1DLinear(
 						new double[] {yIn, yOut}, 
 						new double[] {1, tcf/tci}, 
-						yStation);
+						Math.abs(yStation));
 				
-				break;
-			}
+				break;			
+			} 
 		}
 		
 		// -----------------------------------------------------------------
@@ -2617,320 +2740,6 @@ public class AircraftCADUtils {
 		return new double[] {x, y};
 	}
 	
-//	public static List<double[]> interpolateAirfoils(Airfoil airfoil1, Airfoil airfoil2, double w) {
-//		
-//		List<double[]> interpPts = new ArrayList<>();
-//		
-//		// -----------------------------------------------------------------
-//		// Delete duplicates in the airfoil points list, whether necessary
-//		// -----------------------------------------------------------------
-//		List<PVector> noDuplicatesCoords1 = new ArrayList<>();
-//		for (int i = 0; i < airfoil1.getXCoords().length; i++) {
-//			noDuplicatesCoords1.add(new PVector (
-//					(float) airfoil1.getXCoords()[i],
-//					0.0f,
-//					(float) airfoil1.getZCoords()[i]
-//					));
-//		}
-//
-//		Set<PVector> uniqueEntries1 = new HashSet<>();
-//		for (Iterator<PVector> iter = noDuplicatesCoords1.listIterator(1); iter.hasNext(); ) {
-//			PVector point = (PVector) iter.next();
-//			if (!uniqueEntries1.add(point))
-//				iter.remove();
-//		}
-//		
-//		List<PVector> noDuplicatesCoords2 = new ArrayList<>();
-//		for (int i = 0; i < airfoil2.getXCoords().length; i++) {
-//			noDuplicatesCoords2.add(new PVector (
-//					(float) airfoil2.getXCoords()[i],
-//					0.0f,
-//					(float) airfoil2.getZCoords()[i]
-//					));
-//		}
-//
-//		Set<PVector> uniqueEntries2 = new HashSet<>();
-//		for (Iterator<PVector> iter = noDuplicatesCoords2.listIterator(1); iter.hasNext(); ) {
-//			PVector point = (PVector) iter.next();
-//			if (!uniqueEntries2.add(point))
-//				iter.remove();
-//		}
-//		
-//		// Split airfoil points in two separated lists
-//		
-//		// airfoil1
-//		List<Double> xUpper1 = new ArrayList<>();
-//		List<Double> zUpper1 = new ArrayList<>();
-//		List<Double> xLower1 = new ArrayList<>(); 
-//		List<Double> zLower1 = new ArrayList<>();
-//		
-//		List<Double> x1 = new ArrayList<>();
-//		List<Double> z1 = new ArrayList<>();
-//		
-//		noDuplicatesCoords1.forEach(pv -> {
-//			x1.add((double) pv.x);
-//			z1.add((double) pv.z);
-//		});
-//		
-//		int nPts1 = x1.size();
-//		int iMin1 = MyArrayUtils.getIndexOfMin(MyArrayUtils.convertToDoublePrimitive(x1));
-//		
-//		IntStream.range(0, iMin1 + 1).forEach(i -> {
-//			xUpper1.add(x1.get(i));
-//			zUpper1.add(z1.get(i));
-//			});
-//		
-//		IntStream.range(iMin1 + 1, nPts1).forEach(i -> {
-//			xLower1.add(x1.get(i));
-//			zLower1.add(z1.get(i));
-//		});
-//
-//		Collections.reverse(xUpper1);
-//		Collections.reverse(zUpper1);
-//		
-//		// airfoil2
-//		List<Double> xUpper2 = new ArrayList<>();
-//		List<Double> zUpper2 = new ArrayList<>();
-//		List<Double> xLower2 = new ArrayList<>(); 
-//		List<Double> zLower2 = new ArrayList<>();
-//		
-//		List<Double> x2 = new ArrayList<>();
-//		List<Double> z2 = new ArrayList<>();
-//		
-//		noDuplicatesCoords2.forEach(pv -> {
-//			x2.add((double) pv.x);
-//			z2.add((double) pv.z);
-//		});
-//		
-//		int nPts2 = x2.size();
-//		int iMin2 = MyArrayUtils.getIndexOfMin(MyArrayUtils.convertToDoublePrimitive(x2));
-//		
-//		IntStream.range(0, iMin2 + 1).forEach(i -> {
-//			xUpper2.add(x2.get(i));
-//			zUpper2.add(z2.get(i));
-//			});
-//
-//		IntStream.range(iMin2 + 1, nPts2).forEach(i -> {
-//			xLower2.add(x2.get(i));
-//			zLower2.add(z2.get(i));
-//			});
-//		
-//		Collections.reverse(xUpper2);
-//		Collections.reverse(zUpper2);
-//		
-//		// Interpolate 2
-//		List<Double> interpZUpper2 = new ArrayList<>();
-//		List<Double> interpZLower2 = new ArrayList<>();
-//		
-//		interpZUpper2.addAll(xUpper1.stream()
-//			   .map(x -> MyMathUtils.getInterpolatedValue1DSpline(
-//					   MyArrayUtils.convertToDoublePrimitive(xUpper2), 
-//					   MyArrayUtils.convertToDoublePrimitive(zUpper2), 
-//					   x))
-//			   .collect(Collectors.toList()));
-//		
-//		interpZLower2.addAll(xLower1.stream()
-//				   .map(x -> MyMathUtils.getInterpolatedValue1DSpline(
-//						   MyArrayUtils.convertToDoublePrimitive(xLower2), 
-//						   MyArrayUtils.convertToDoublePrimitive(zLower2), 
-//						   x))
-//				   .collect(Collectors.toList()));
-//		
-//		// Generate new airfoil
-//		List<Double> zUpper = new ArrayList<>();
-//		List<Double> zLower = new ArrayList<>();
-//		
-//		for (int i = 0; i < xUpper1.size(); i++)			
-//			zUpper.add(zUpper1.get(i)*(1-w) + interpZUpper2.get(i)*w);
-//		
-//		for (int i = 0; i < xLower1.size(); i++)
-//			zLower.add(zLower1.get(i)*(1-w) + interpZLower2.get(i)*w);
-//		
-//		// Generate the double[] list of points
-//		Collections.reverse(xUpper1);
-//		Collections.reverse(zUpper);
-//
-//		List<Double> x = new ArrayList<>();
-//		List<Double> z = new ArrayList<>();
-//
-//		x.addAll(xUpper1);
-//		x.addAll(xLower1);
-//
-//		z.addAll(zUpper);
-//		z.addAll(zLower);
-//
-//		for (int i = 0; i < x.size(); i++) 
-//			interpPts.add(new double[] {x.get(i), 0.0, z.get(i)});
-		
-		
-		
-//		// Generate a spline curve for the first airfoil
-//		OCCGeomCurve3D airfoil1Curve = (OCCGeomCurve3D) OCCUtils.theFactory.newCurve3DP(noDuplicatesCoords1, false);
-//		airfoil1Curve.discretize(350);
-//
-//		List<double[]> airfoil1Pts = airfoil1Curve.getDiscretizedCurve().getDoublePoints();
-//		
-//		// Generate a spline curve for the second airfoil
-//		OCCGeomCurve3D airfoil2Curve = (OCCGeomCurve3D) OCCUtils.theFactory.newCurve3DP(noDuplicatesCoords2, false);
-//		airfoil2Curve.discretize(350);
-//		
-//		List<double[]> airfoil2Pts = airfoil2Curve.getDiscretizedCurve().getDoublePoints();
-//		
-//		// Split the airfoil pts in two separated lists, one for the upper and one for the lower
-//		
-//		// airfoil2
-//		List<Double> xUpper2 = new ArrayList<>();
-//		List<Double> zUpper2 = new ArrayList<>();
-//		List<Double> xLower2 = new ArrayList<>(); 
-//		List<Double> zLower2 = new ArrayList<>();
-//		
-//		List<Double> x2 = new ArrayList<>();
-//		List<Double> z2 = new ArrayList<>();
-//		
-//		airfoil2Pts.forEach(pt -> {
-//			x2.add(pt[0]);
-//			z2.add(pt[2]);
-//		});
-//		
-//		int nPts2 = x2.size();
-//		int iMin2 = MyArrayUtils.getIndexOfMin(MyArrayUtils.convertToDoublePrimitive(x2));
-//		
-//		IntStream.range(0, iMin2 + 1).forEach(i -> {
-//			xUpper2.add(x2.get(i));
-//			zUpper2.add(z2.get(i));
-//			});
-//		
-//		// Making the lower list start from the last point of the upper one, whether necessary
-////		if(Math.abs(x2.get(iMin2 + 1) - x2.get(iMin2)) > 1e-5) { 
-////			xLower2.add(x2.get(iMin2));
-////			zLower2.add(z2.get(iMin2));
-////		}
-//		
-//		IntStream.range(iMin2 + 1, nPts2).forEach(i -> {
-//			xLower2.add(x2.get(i));
-//			zLower2.add(z2.get(i));
-//			});
-//		
-//		Collections.reverse(xUpper2);
-//		Collections.reverse(zUpper2);
-//		
-//		// airfoil1
-//		List<Double> xUpper1 = new ArrayList<>();
-//		List<Double> zUpper1 = new ArrayList<>();
-//		List<Double> xLower1 = new ArrayList<>(); 
-//		List<Double> zLower1 = new ArrayList<>();
-//		
-//		List<Double> x1 = new ArrayList<>();
-//		List<Double> z1 = new ArrayList<>();
-//		
-//		airfoil1Pts.forEach(pt -> {
-//			x1.add(pt[0]);
-//			z1.add(pt[2]);
-//		});
-//		
-//		int nPts1 = x1.size();
-//		int iMin1 = MyArrayUtils.getIndexOfMin(MyArrayUtils.convertToDoublePrimitive(x1));
-//		
-//		IntStream.range(0, iMin1 + 1).forEach(i -> {
-//			xUpper1.add(x1.get(i));
-//			zUpper1.add(z1.get(i));
-//			});
-//		
-//		// Making the lower list start from the last point of the upper one, whether necessary
-////		if(Math.abs(x1.get(iMin1 + 1) - x1.get(iMin1)) > 1e-5) { 
-////			xLower1.add(x1.get(iMin1));
-////			zLower1.add(z1.get(iMin1));
-////		}
-//		
-//		IntStream.range(iMin1 + 1, nPts1).forEach(i -> {
-//			xLower1.add(x1.get(i));
-//			zLower1.add(z1.get(i));
-//			});
-//		
-//		Collections.reverse(xUpper1);
-//		Collections.reverse(zUpper1);
-//		
-//		// Generate new xUpper1 and xLower1
-//		List<Double> finerXUpper1 = MyArrayUtils.convertDoubleArrayToListDouble(
-//				MyArrayUtils.halfCosine1SpaceDouble(
-//						xUpper1.get(0), 
-//						xUpper1.get(xUpper1.size()-1), 
-//						75));
-//		
-//		List<Double> finerXLower1 = MyArrayUtils.convertDoubleArrayToListDouble(
-//				MyArrayUtils.halfCosine1SpaceDouble(
-//						xLower1.get(0), 
-//						xLower1.get(xLower1.size()-1), 
-//						75));
-//		
-//		// Interpolate 1
-//		List<Double> interpZUpper1 = new ArrayList<>();
-//		List<Double> interpZLower1 = new ArrayList<>();
-//		
-//		interpZUpper1.addAll(finerXUpper1.stream()
-//			   .map(x -> MyMathUtils.getInterpolatedValue1DSpline(
-//					   MyArrayUtils.convertToDoublePrimitive(xUpper1), 
-//					   MyArrayUtils.convertToDoublePrimitive(zUpper1), 
-//					   x))
-//			   .collect(Collectors.toList()));
-//		
-//		interpZLower1.addAll(finerXLower1.stream()
-//				   .map(x -> MyMathUtils.getInterpolatedValue1DSpline(
-//						   MyArrayUtils.convertToDoublePrimitive(xLower1), 
-//						   MyArrayUtils.convertToDoublePrimitive(zLower1), 
-//						   x))
-//				   .collect(Collectors.toList()));
-//		
-//		// Interpolate 2
-//		List<Double> interpZUpper2 = new ArrayList<>();
-//		List<Double> interpZLower2 = new ArrayList<>();
-//		
-//		interpZUpper2.addAll(finerXUpper1.stream()
-//			   .map(x -> MyMathUtils.getInterpolatedValue1DSpline(
-//					   MyArrayUtils.convertToDoublePrimitive(xUpper2), 
-//					   MyArrayUtils.convertToDoublePrimitive(zUpper2), 
-//					   x))
-//			   .collect(Collectors.toList()));
-//		
-//		interpZLower2.addAll(finerXLower1.stream()
-//				   .map(x -> MyMathUtils.getInterpolatedValue1DSpline(
-//						   MyArrayUtils.convertToDoublePrimitive(xLower2), 
-//						   MyArrayUtils.convertToDoublePrimitive(zLower2), 
-//						   x))
-//				   .collect(Collectors.toList()));
-//		
-//		// Generate new airfoil
-//		List<Double> zUpper = new ArrayList<>();
-//		List<Double> zLower = new ArrayList<>();
-//		
-//		for (int i = 0; i < finerXUpper1.size(); i++)			
-//			zUpper.add(interpZUpper1.get(i)*(1-w) + interpZUpper2.get(i)*w);
-//		
-//		for (int i = 0; i < finerXLower1.size(); i++)
-//			zLower.add(interpZLower1.get(i)*(1-w) + interpZLower2.get(i)*w);
-//		
-//		// Generate the double[] list of points
-////		finerXUpper1.remove(0);
-////		zUpper.remove(0);
-//		
-//		Collections.reverse(finerXUpper1);
-//		Collections.reverse(zUpper);
-//		
-//		List<Double> x = new ArrayList<>();
-//		List<Double> z = new ArrayList<>();
-//		
-//		x.addAll(finerXUpper1);
-//		x.addAll(finerXLower1);
-//		
-//		z.addAll(zUpper);
-//		z.addAll(zLower);
-//		
-//		for (int i = 0; i < x.size(); i++) 
-//			interpPts.add(new double[] {x.get(i), 0.0, z.get(i)});
-//		
-//		return interpPts;
-//	}
-	
 	private static List<double[]> getCrvIntersectionWithNormalSegments(
 			CADGeomCurve3D curve,
 			PVector normalVector,
@@ -3082,6 +2891,12 @@ public class AircraftCADUtils {
 			boolean exportSupportShapes, boolean exportShells, boolean exportSolids
 			) {
 		
+		System.out.println("\n\t\t==== AircraftCADUtils.generateDetachedUpFairingShapes\n"); 
+		
+		// ---------------------------
+		// Initializing shapes lists
+		System.out.println("\t\t\tInitializing shapes lists ..."); 
+		
 		Tuple3<List<OCCShape>, List<OCCShape>, List<OCCShape>> retShapes = null;
 		
 		List<OCCShape> supportShapes = new ArrayList<>();
@@ -3090,7 +2905,8 @@ public class AircraftCADUtils {
 		
 		// -------------------------------------
 		// FAIRING sketching points generation
-		// -------------------------------------
+		System.out.println("\t\t\tGenerating fairing main curves sketching points ..."); 
+		
 		double[] pntA = new double[] {
 				fairingData.getRootAirfoilLE()[0] - fairingData.getFairingFrontLength(),
 				fairingData.getRootAirfoilLE()[1],
@@ -3175,9 +2991,10 @@ public class AircraftCADUtils {
 				fairingData.getFairingReferenceZ() 
 		};
 		
-		// ------------------------------------------------------
+		// -----------------------------------------
 		// FAIRING curves tangent vectors creation
-		// ------------------------------------------------------
+		System.out.println("\t\t\tGenerating fairing main curves tangent vectors ..."); 
+		
 		float width       = (float) Math.abs(pntK[1] - pntJ[1]);
 		float height      = (float) Math.abs(pntC[2] - pntA[2]);
 		float frontLength = (float) Math.abs(pntC[0] - pntA[0]);
@@ -3205,7 +3022,8 @@ public class AircraftCADUtils {
 			
 		// ------------------------------------------------------
 		// FAIRING supporting curves and right patches creation
-		// ------------------------------------------------------
+		System.out.println("\t\t\tGenerating fairing main points and vectors lists ..."); 
+		
 		List<double[]> upperCurvePts = new ArrayList<>();
 		List<double[]> sideCurvePts = new ArrayList<>();
 		List<double[]> lowerCurvePts = new ArrayList<>();
@@ -3226,27 +3044,36 @@ public class AircraftCADUtils {
 		lowerCurvePts.add(pntG);
 		lowerCurvePts.add(pntF);
 		
+		System.out.println("\t\t\tCalling AircraftCADUtils.generateFairingShapes private method ..."); 
 		Tuple2<List<OCCShape>, List<OCCShape>> fairingShapes = generateFairingShapes(fairingData,
 				upperCurvePts, sideCurvePts, lowerCurvePts, 
 				new PVector[] {upperCurveInTng, upperCurveFiTng}, new PVector[] {sideCurveInTng, sideCurveFiTng}, 
 				exportSupportShapes, exportShells || exportSolids);
 		
-		supportShapes.addAll(fairingShapes._1());
+		if (exportSupportShapes) {
+			System.out.println("\t\t\tAdding supporting curves to the exported shapes ...");		
+			supportShapes.addAll(fairingShapes._1());
+		}	
 		
 		if (exportShells) {
+			System.out.println("\t\t\tAdding shells to the exported shapes ...");
 			shellShapes.addAll(fairingShapes._2());
 		}
 		
 		if (exportSolids) {
+			System.out.println("\t\t\tGenerating the solid of the fairing ...");
 			OCCSolid fairingSolid = (OCCSolid) OCCUtils.theFactory.newSolidFromAdjacentShells(
 					(CADShell) fairingShapes._2().get(0), 
 					(CADShell) fairingShapes._2().get(1)
 					);
-			
+			System.out.println("\t\t\t\tFairing solid successfully generated? " + (fairingSolid != null));
+			System.out.println("\t\t\tAdding the solid of the fairing to the exported shapes ...");
 			solidShapes.add(fairingSolid);	
 		}
 		
 		retShapes = new Tuple3<List<OCCShape>, List<OCCShape>, List<OCCShape>>(supportShapes, shellShapes, solidShapes);
+		
+		System.out.println("\n\t\t==== End of AircraftCADUtils.generateDetachedUpFairingShapes");
 		
 		return retShapes;	
 	}
@@ -3256,6 +3083,12 @@ public class AircraftCADUtils {
 			boolean exportSupportShapes, boolean exportShells, boolean exportSolids
 			) {
 		
+		System.out.println("\n\t\t==== AircraftCADUtils.generateAttachedUpFairingShapes\n"); 
+		
+		// ---------------------------
+		// Initializing shapes lists
+		System.out.println("\t\t\tInitializing shapes lists ...");
+		
 		Tuple3<List<OCCShape>, List<OCCShape>, List<OCCShape>> retShapes = null;
 		
 		List<OCCShape> supportShapes = new ArrayList<>();
@@ -3264,7 +3097,8 @@ public class AircraftCADUtils {
 		
 		// -------------------------------------
 		// FAIRING sketching points generation
-		// -------------------------------------
+		System.out.println("\t\t\tGenerating fairing main curves sketching points ..."); 
+		
 		double[] pntA = new double[] {
 				fairingData.getRootAirfoilLE()[0] - fairingData.getFairingFrontLength(),
 				fairingData.getRootAirfoilLE()[1],
@@ -3349,9 +3183,10 @@ public class AircraftCADUtils {
 				fairingData.getFairingReferenceZ() 
 		};
 		
-		// ------------------------------------------------------
+		// -----------------------------------------
 		// FAIRING curves tangent vectors creation
-		// ------------------------------------------------------
+		System.out.println("\t\t\tGenerating fairing main curves tangent vectors ..."); 
+
 		float width       = (float) Math.abs(pntK[1] - pntJ[1]);
 		float height      = (float) Math.abs(pntC[2] - pntA[2]);
 		float frontLength = (float) Math.abs(pntC[0] - pntA[0]);
@@ -3379,7 +3214,8 @@ public class AircraftCADUtils {
 			
 		// ------------------------------------------------------
 		// FAIRING supporting curves and right patches creation
-		// ------------------------------------------------------
+		System.out.println("\t\t\tGenerating fairing main points and vectors lists ..."); 
+		
 		List<double[]> upperCurvePts = new ArrayList<>();
 		List<double[]> sideCurvePts = new ArrayList<>();
 		List<double[]> lowerCurvePts = new ArrayList<>();
@@ -3400,27 +3236,36 @@ public class AircraftCADUtils {
 		lowerCurvePts.add(pntG);
 		lowerCurvePts.add(pntF);
 		
+		System.out.println("\t\t\tCalling AircraftCADUtils.generateFairingShapes private method ..."); 
 		Tuple2<List<OCCShape>, List<OCCShape>> fairingShapes = generateFairingShapes(fairingData,
 				upperCurvePts, sideCurvePts, lowerCurvePts, 
 				new PVector[] {upperCurveInTng, upperCurveFiTng}, new PVector[] {sideCurveInTng, sideCurveFiTng}, 
 				exportSupportShapes, exportShells || exportSolids);
 		
-		supportShapes.addAll(fairingShapes._1());
+		if (exportSupportShapes) {
+			System.out.println("\t\t\tAdding supporting curves to the exported shapes ...");		
+			supportShapes.addAll(fairingShapes._1());
+		}	
 		
 		if (exportShells) {
+			System.out.println("\t\t\tAdding shells to the exported shapes ...");
 			shellShapes.addAll(fairingShapes._2());
 		}
 		
 		if (exportSolids) {
+			System.out.println("\t\t\tGenerating the solid of the fairing ...");
 			OCCSolid fairingSolid = (OCCSolid) OCCUtils.theFactory.newSolidFromAdjacentShells(
 					(CADShell) fairingShapes._2().get(0), 
 					(CADShell) fairingShapes._2().get(1)
 					);
-			
+			System.out.println("\t\t\t\tFairing solid successfully generated? " + (fairingSolid != null));
+			System.out.println("\t\t\tAdding the solid of the fairing to the exported shapes ...");
 			solidShapes.add(fairingSolid);	
 		}
 		
 		retShapes = new Tuple3<List<OCCShape>, List<OCCShape>, List<OCCShape>>(supportShapes, shellShapes, solidShapes);
+		
+		System.out.println("\n\t\t==== End of AircraftCADUtils.generateAttachedUpFairingShapes");
 		
 		return retShapes;		
 	}
@@ -3446,6 +3291,12 @@ public class AircraftCADUtils {
 			boolean exportSupportShapes, boolean exportShells, boolean exportSolids
 			) {
 		
+		System.out.println("\n\t\t==== AircraftCADUtils.generateAttachedDownFairingShapes\n"); 
+		
+		// ---------------------------
+		// Initializing shapes lists
+		System.out.println("\t\t\tInitializing shapes lists ..."); 
+		
 		Tuple3<List<OCCShape>, List<OCCShape>, List<OCCShape>> retShapes = null;
 		
 		List<OCCShape> supportShapes = new ArrayList<>();
@@ -3454,7 +3305,8 @@ public class AircraftCADUtils {
 		
 		// -------------------------------------
 		// FAIRING sketching points generation
-		// -------------------------------------
+		System.out.println("\t\t\tGenerating fairing main curves sketching points ..."); 
+
 		double[] pntA = new double[] {
 				fairingData.getRootAirfoilLE()[0] - fairingData.getFairingFrontLength(),
 				fairingData.getRootAirfoilLE()[1],
@@ -3539,9 +3391,10 @@ public class AircraftCADUtils {
 				fairingData.getFairingReferenceZ() 
 		};
 		
-		// ------------------------------------------------------
+		// -----------------------------------------
 		// FAIRING curves tangent vectors creation
-		// ------------------------------------------------------
+		System.out.println("\t\t\tGenerating fairing main curves tangent vectors ..."); 
+
 		float width       = (float) Math.abs(pntK[1] - pntJ[1]);
 		float height      = (float) Math.abs(pntC[2] - pntA[2]);
 		float frontLength = (float) Math.abs(pntC[0] - pntA[0]);
@@ -3569,7 +3422,8 @@ public class AircraftCADUtils {
 			
 		// ------------------------------------------------------
 		// FAIRING supporting curves and right patches creation
-		// ------------------------------------------------------
+		System.out.println("\t\t\tGenerating fairing main points and vectors lists ..."); 
+
 		List<double[]> lowerCurvePts = new ArrayList<>();
 		List<double[]> sideCurvePts = new ArrayList<>();
 		List<double[]> upperCurvePts = new ArrayList<>();
@@ -3590,27 +3444,36 @@ public class AircraftCADUtils {
 		upperCurvePts.add(pntG);
 		upperCurvePts.add(pntF);
 		
+		System.out.println("\t\t\tCalling AircraftCADUtils.generateFairingShapes private method ..."); 
 		Tuple2<List<OCCShape>, List<OCCShape>> fairingShapes = generateFairingShapes(fairingData,
 				lowerCurvePts, sideCurvePts, upperCurvePts, 
 				new PVector[] {lowerCurveInTng, lowerCurveFiTng}, new PVector[] {sideCurveInTng, sideCurveFiTng}, 
 				exportSupportShapes, exportShells || exportSolids);
 		
-		supportShapes.addAll(fairingShapes._1());
+		if (exportSupportShapes) {
+			System.out.println("\t\t\tAdding supporting curves to the exported shapes ...");		
+			supportShapes.addAll(fairingShapes._1());
+		}	
 		
 		if (exportShells) {
+			System.out.println("\t\t\tAdding shells to the exported shapes ...");
 			shellShapes.addAll(fairingShapes._2());
 		}
 		
 		if (exportSolids) {
+			System.out.println("\t\t\tGenerating the solid of the fairing ...");
 			OCCSolid fairingSolid = (OCCSolid) OCCUtils.theFactory.newSolidFromAdjacentShells(
 					(CADShell) fairingShapes._2().get(0), 
 					(CADShell) fairingShapes._2().get(1)
 					);
-			
+			System.out.println("\t\t\t\tFairing solid successfully generated? " + (fairingSolid != null));
+			System.out.println("\t\t\tAdding the solid of the fairing to the exported shapes ...");
 			solidShapes.add(fairingSolid);	
 		}
 		
 		retShapes = new Tuple3<List<OCCShape>, List<OCCShape>, List<OCCShape>>(supportShapes, shellShapes, solidShapes);
+		
+		System.out.println("\n\t\t==== End of AircraftCADUtils.generateAttachedDownFairingShapes");
 		
 		return retShapes;
 	}
@@ -3620,6 +3483,12 @@ public class AircraftCADUtils {
 			boolean exportSupportShapes, boolean exportShells, boolean exportSolids
 			) {
 		
+		System.out.println("\n\t\t==== AircraftCADUtils.generateDetachedDownFairingShapes\n"); 
+		
+		// ---------------------------
+		// Initializing shapes lists
+		System.out.println("\t\t\tInitializing shapes lists ..."); 
+		
 		Tuple3<List<OCCShape>, List<OCCShape>, List<OCCShape>> retShapes = null;
 		
 		List<OCCShape> supportShapes = new ArrayList<>();
@@ -3628,7 +3497,8 @@ public class AircraftCADUtils {
 		
 		// -------------------------------------
 		// FAIRING sketching points generation
-		// -------------------------------------
+		System.out.println("\t\t\tGenerating fairing main curves sketching points ..."); 
+
 		double[] pntA = new double[] {
 				fairingData.getRootAirfoilLE()[0] - fairingData.getFairingFrontLength(),
 				fairingData.getRootAirfoilLE()[1],
@@ -3713,9 +3583,10 @@ public class AircraftCADUtils {
 				fairingData.getFairingReferenceZ() 
 		};
 		
-		// ------------------------------------------------------
+		// -----------------------------------------
 		// FAIRING curves tangent vectors creation
-		// ------------------------------------------------------
+		System.out.println("\t\t\tGenerating fairing main curves tangent vectors ..."); 
+
 		float width       = (float) Math.abs(pntK[1] - pntJ[1]);
 		float height      = (float) Math.abs(pntC[2] - pntA[2]);
 		float frontLength = (float) Math.abs(pntC[0] - pntA[0]);
@@ -3743,7 +3614,8 @@ public class AircraftCADUtils {
 			
 		// ------------------------------------------------------
 		// FAIRING supporting curves and right patches creation
-		// ------------------------------------------------------
+		System.out.println("\t\t\tGenerating fairing main points and vectors lists ..."); 
+		
 		List<double[]> lowerCurvePts = new ArrayList<>();
 		List<double[]> sideCurvePts = new ArrayList<>();
 		List<double[]> upperCurvePts = new ArrayList<>();
@@ -3764,27 +3636,36 @@ public class AircraftCADUtils {
 		upperCurvePts.add(pntG);
 		upperCurvePts.add(pntF);
 		
+		System.out.println("\t\t\tCalling AircraftCADUtils.generateFairingShapes private method ..."); 
 		Tuple2<List<OCCShape>, List<OCCShape>> fairingShapes = generateFairingShapes(fairingData,
 				lowerCurvePts, sideCurvePts, upperCurvePts, 
 				new PVector[] {lowerCurveInTng, lowerCurveFiTng}, new PVector[] {sideCurveInTng, sideCurveFiTng}, 
 				exportSupportShapes, exportShells || exportSolids);
 		
-		supportShapes.addAll(fairingShapes._1());
+		if (exportSupportShapes) {
+			System.out.println("\t\t\tAdding supporting curves to the exported shapes ...");		
+			supportShapes.addAll(fairingShapes._1());
+		}	
 		
 		if (exportShells) {
+			System.out.println("\t\t\tAdding shells to the exported shapes ...");
 			shellShapes.addAll(fairingShapes._2());
 		}
 		
 		if (exportSolids) {
+			System.out.println("\t\t\tGenerating the solid of the fairing ...");
 			OCCSolid fairingSolid = (OCCSolid) OCCUtils.theFactory.newSolidFromAdjacentShells(
 					(CADShell) fairingShapes._2().get(0), 
 					(CADShell) fairingShapes._2().get(1)
 					);
-			
+			System.out.println("\t\t\t\tFairing solid successfully generated? " + (fairingSolid != null));
+			System.out.println("\t\t\tAdding the solid of the fairing to the exported shapes ...");
 			solidShapes.add(fairingSolid);	
 		}
 		
 		retShapes = new Tuple3<List<OCCShape>, List<OCCShape>, List<OCCShape>>(supportShapes, shellShapes, solidShapes);
+		
+		System.out.println("\n\t\t==== End of AircraftCADUtils.generateDetachedDownFairingShapes");
 		
 		return retShapes;
 	}
@@ -3794,6 +3675,12 @@ public class AircraftCADUtils {
 			PVector[] mainCurveTngs, PVector[] sideCurveTngs,
 			boolean exportSupportShapes, boolean exportShells
 			) {
+		
+		System.out.println("\n\t\t\t==== AircraftCADUtils.generateFairingShapes\n"); 
+		
+		// ---------------------------
+		// Initializing shapes lists
+		System.out.println("\t\t\t\tInitializing shapes lists ..."); 
 		
 		Tuple2<List<OCCShape>, List<OCCShape>> retShapes = null;
 		
@@ -3805,7 +3692,10 @@ public class AircraftCADUtils {
 		double[] pntI = supSegmPts.get(0);
 		double[] pntF = supSegmPts.get(supSegmPts.size() - 1);
 		
+		// ---------------------------------
 		// Generate main supporting curves	
+		System.out.println("\t\t\t\tGenerating fairing main supporting curves ..."); 
+		
 		CADGeomCurve3D mainCurve = OCCUtils.theFactory.newCurve3D(
 				mainCurvePts, false, 
 				new double[] {mainCurveTngs[0].x, mainCurveTngs[0].y, mainCurveTngs[0].z}, 
@@ -3843,7 +3733,6 @@ public class AircraftCADUtils {
 		CADGeomCurve3D supSegm3 = OCCUtils.theFactory.newCurve3D(
 				supSegmPts.stream().skip(2).collect(Collectors.toList()), false);
 		
-		// Generate vertical supporting curves
 		int nMain = 10; // number of supporting curves for first and last shell 
 		int nSide = 15; // number of interpolation point on side curves #1 and #3
 		
@@ -3958,6 +3847,8 @@ public class AircraftCADUtils {
 		}
 				
 		if (exportSupportShapes) {
+			System.out.println("\t\t\t\tAdding supporting curves to the exported shapes ..."); 
+			
 			supportShapes.add((OCCShape) mainCurve1.edge());
 			supportShapes.add((OCCShape) mainCurve2.edge());
 			supportShapes.add((OCCShape) mainCurve3.edge());
@@ -3986,6 +3877,8 @@ public class AircraftCADUtils {
 		}
 		
 		if (exportShells) {
+			System.out.println("\t\t\t\tGenerating fairing main patches ...\n" + 
+							   "\t\t\t\t\tCalling OCCUtils.makePatchThruSections ...");
 			
 			OCCShape mainPatch = OCCUtils.makePatchThruCurveSections( 
 					OCCUtils.theFactory.newVertex(pntA),
@@ -3996,7 +3889,7 @@ public class AircraftCADUtils {
 					OCCUtils.theFactory.newVertex(pntI), 
 					subSegms, 
 					OCCUtils.theFactory.newVertex(pntF));	
-			
+						
 			List<CADEdge> mainEdges = new ArrayList<>();
 			OCCExplorer expMain = new OCCExplorer();
 			expMain.init(mainPatch, CADShapeTypes.EDGE);
@@ -4032,10 +3925,18 @@ public class AircraftCADUtils {
 						);
 			}	
 			
+			System.out.println("\t\t\t\t\tMain patches successfully produced? " + 
+					((mainPatch != null) && (subPatch != null) && (sidePatch != null)));
+			
+			System.out.println("\t\t\t\tGenerating fairing right shell ...\n" + 
+							   "\t\t\t\t\tCalling CADShapeFactory.newShellFromAdjacentShapes ...");
+			
 			OCCShell rightShell = (OCCShell) OCCUtils.theFactory.newShellFromAdjacentShapes(
 					mainPatch,
 					sidePatch,
 					subPatch);
+			
+			System.out.println("\t\t\t\t\tFairing right shell successfully produced? " + (rightShell != null));
 			
 			double filletRadius = Math.abs(
 					mainCurvePts.get(0)[2] - supSegmPts.get(supSegmPts.size() - 1)[2])
@@ -4059,8 +3960,20 @@ public class AircraftCADUtils {
 						
 			}		
 			
-			OCCShell filletRightShell = OCCUtils.applyFilletOnShell(
+			System.out.println("\t\t\t\tApplying a fillet to the right shell ...\n" + 
+					   "\t\t\t\t\tCalling OCCUtils.applyFilletOnShell ...");
+			
+			Tuple2<OCCShell, Boolean> filletRightShellResult = OCCUtils.applyFilletOnShell(
 					rightShell, edgeIndexes, filletRadius);
+			
+			System.out.println("\t\t\t\t\tShell successfully filleted? " + filletRightShellResult._2());
+			if (!filletRightShellResult._2()) 
+				System.out.println("\t\t\t\t\tNot filleted shell returned instead ...");
+			
+			OCCShell filletRightShell = filletRightShellResult._1();
+			
+			System.out.println("\t\t\t\tMirroring the right shell ...\n" + 
+					   "\t\t\t\t\tCalling OCCUtils.getShapeMirrored ...");
 			
 			OCCShell filletLeftShell = (OCCShell) OCCUtils.getShapeMirrored(
 					filletRightShell, 
@@ -4068,9 +3981,13 @@ public class AircraftCADUtils {
 					new PVector(0.0f, 1.0f, 0.0f), 
 					new PVector(1.0f, 0.0f, 0.0f));
 			
+			System.out.println("\t\t\t\t\tFairing left shell successfully produced? " + (filletLeftShell != null));
+			
 			fairingShells.add(filletRightShell);
 			fairingShells.add(filletLeftShell);
 		}
+		
+		System.out.println("\n\t\t\t==== End of AircraftCADUtils.generateFairingShapes\n");
 		
 		retShapes = new Tuple2<List<OCCShape>, List<OCCShape>>(supportShapes, fairingShells);
 		
@@ -4499,6 +4416,10 @@ public class AircraftCADUtils {
 			NacelleCreator nacelle, Engine engine,
 			boolean exportSupportShapes, boolean exportShells, boolean exportSolids) {
 		
+		// ------------------------------------
+		// Initialize patches and shape lists
+		System.out.println("\t\tInitializing turbofan engine nacelle patches and shape lists ...");
+
 		List<OCCShape> supportShapes = new ArrayList<>();
 		List<OCCShape> shellShapes = new ArrayList<>();
 		List<OCCShape> solidShapes = new ArrayList<>();
@@ -4507,7 +4428,7 @@ public class AircraftCADUtils {
 		
 		// -----------------------
 		// Fix engine parameters
-		// -----------------------	
+		System.out.println("\t\tFixing engine nacelle geometric parameters ...");
 		
 		// Design parameters, x axis
 		double xPercentMinInlet = 0.05;		 // All percentages referred to length core (NACELLE total length)
@@ -4535,8 +4456,9 @@ public class AircraftCADUtils {
 		double coreOutletOffset = byPassOutletOffset;
 		
 		// ---------------------------------------------------
-		// Generate sketching points for the sketching curves
-		// ---------------------------------------------------
+		// Generate points for the sketching curves
+		System.out.println("\t\tGenerating points for the sketching curves ...");
+		
 		double[] ptA = new double[] {
 				nacelle.getXApexConstructionAxes().doubleValue(SI.METER), 
 				nacelle.getYApexConstructionAxes().doubleValue(SI.METER), 
@@ -4631,7 +4553,8 @@ public class AircraftCADUtils {
 		
 		// --------------------------------------------
 		// Generate tangents for the sketching curves
-		// --------------------------------------------
+		System.out.println("\t\tGenerating tangent vectors for the sketching curves ...");
+		
 		PVector pvB = new PVector((float) ptB[0], (float) ptB[1], (float) ptB[2]);
 		PVector pvC = new PVector((float) ptC[0], (float) ptC[1], (float) ptC[2]);
 		PVector pvS = new PVector((float) ptC[0], (float) ptC[1], (float) ptB[2]);
@@ -4688,6 +4611,8 @@ public class AircraftCADUtils {
 		
 		// ---------------------------
 		// Generate sketching curves
+		System.out.println("\t\tGenerating sketching curves ...");
+		
 		List<double[]> ptsCrv1 = new ArrayList<>();
 		List<double[]> ptsCrv2 = new ArrayList<>();
 		List<double[]> ptsCrv3 = new ArrayList<>();
@@ -4758,13 +4683,19 @@ public class AircraftCADUtils {
 		
 		// -------------------
 		// Generate the wire
+		System.out.println("\t\tGenerating the nacelle main wire ...");
 		CADWire engineWire = OCCUtils.theFactory.newWireFromAdjacentEdges(engineMainWireEdges);
+		System.out.println("\t\t\tMain wire successfully generated? " + (engineWire != null));
 		
 		// ---------------------------
 		// Generate supporting wires
-		List<CADWire> revolvedWires = new ArrayList<>();
-		
 		int numSuppWires = 20;
+		
+		System.out.println("\t\tGenerating the remaining nacelle supporting wires ...\n" + 
+						   "\t\t\tTotal number of supporting wires: " + numSuppWires);
+		
+		List<CADWire> revolvedWires = new ArrayList<>();	
+		
 		double[] rotAngles = MyArrayUtils.linspace(0, 2*Math.PI, numSuppWires);
 		gp_Trsf rotTrsf = new gp_Trsf();
 		gp_Ax1 rotAxis = new gp_Ax1(
@@ -4790,21 +4721,27 @@ public class AircraftCADUtils {
 		}
 		
 		if (exportSupportShapes) {
+			System.out.println("\t\t\tAdding supporting wires to the exported shapes ...");
 			supportShapes.addAll(revolvedWires.stream().map(w -> (OCCShape) w).collect(Collectors.toList()));
 		}
 		
-		if (exportShells || exportSolids) {
-			
+		if (exportShells || exportSolids) {		
 			// ----------------------------------
 			// Generate the solid of the engine
-			OCCShell engineShell = (OCCShell) OCCUtils.makePatchThruSections(revolvedWires);	
+			System.out.println("\t\tGenerating the shell of the nacelle ...");
+			OCCShell engineShell = (OCCShell) OCCUtils.makePatchThruSections(revolvedWires);
+			System.out.println("\t\t\tNacelle shell successfully generated? " + (engineShell != null));
 			
 			if (exportShells) {
+				System.out.println("\t\t\tAdding the nacelle shell to the eported shapes ...");
 				shellShapes.add(engineShell);
 			}
 			
 			if (exportSolids) {
-				OCCShape engineSolid = (OCCShape) OCCUtils.theFactory.newSolidFromShell(engineShell);				
+				System.out.println("\t\tGenerating the solid of the nacelle ...");
+				OCCShape engineSolid = (OCCShape) OCCUtils.theFactory.newSolidFromShell(engineShell);	
+				System.out.println("\t\t\tNacelle solid successfully generated? " + (engineShell != null) + "\n" + 
+								   "\t\t\tAdding the nacelle solid to the exported shapes ...");
 				solidShapes.add(engineSolid);
 			}		
 		}
@@ -4817,12 +4754,10 @@ public class AircraftCADUtils {
 			Aircraft aircraft, NacelleCreator nacelle, Engine engine, List<CADEdge> engineMainWireEdges,
 			boolean exportSupportShapes, boolean exportShells, boolean exportSolids) {
 		
-		List<OCCShape> supportShapes = new ArrayList<>();
-		List<OCCShape> shellShapes = new ArrayList<>();
-		List<OCCShape> solidShapes = new ArrayList<>();
-		
 		// ------------------------------------
 		// Check the engine mounting position
+		System.out.println("\t\tChecking the engine mounting position ...");
+		
 		LiftingSurface mountingLS = null;
 		
 		switch (engine.getMountingPosition()) {
@@ -4844,12 +4779,12 @@ public class AircraftCADUtils {
 		
 		// ----------------------------------------------
 		// Check the whether continuing with the method		
-		if (mountingLS == null) {
-			
-			System.out.println("Pylon CAD construction in case of " + engine.getMountingPosition().name() + " mounting position " + 
-							   "is not currently supported. No pylon shapes are going to be returned by the method");
-			
-			return new Tuple3<List<OCCShape>, List<OCCShape>, List<OCCShape>>(supportShapes, shellShapes, solidShapes);
+		System.out.println("\t\tThe engine mounting position is: " + engine.getMountingPosition().name());
+
+		if (mountingLS == null) {		
+			System.out.println("\t\tPylon CAD construction in case of " + engine.getMountingPosition().name() + " mounting position " + 
+							   "is not currently supported\n\t\tNo pylon shapes are going to be returned by the method");			
+			return new Tuple3<List<OCCShape>, List<OCCShape>, List<OCCShape>>(new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 		}
 		
 		List<double[]> airfoilCamberLinePts = generateCamberAtY(
@@ -4857,21 +4792,31 @@ public class AircraftCADUtils {
 				mountingLS
 				);
 
-		if (engineMainWireEdges.get(0).vertices()[1].pnt()[2] > airfoilCamberLinePts.get(airfoilCamberLinePts.size()-1)[2]) {
-			
-			System.out.println("The engine nacelle intersects the lifting surface and/or is too close to it. " + 
-							   "No pylon shapes are going to be returned by the method");
-			
-			return new Tuple3<List<OCCShape>, List<OCCShape>, List<OCCShape>>(supportShapes, shellShapes, solidShapes);
+		if (engineMainWireEdges.get(0).vertices()[1].pnt()[2] > airfoilCamberLinePts.get(airfoilCamberLinePts.size()-1)[2]) {		
+			System.out.println("\t\tThe engine nacelle intersects the lifting surface and/or is too close to it\n" + 
+							   "\t\tNo pylon shapes are going to be returned by the method");		
+			return new Tuple3<List<OCCShape>, List<OCCShape>, List<OCCShape>>(new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 		}
+		
+		// ------------------------------------
+		// Initialize patches and shape lists
+		System.out.println("\t\tInitializing turbofan engine pylon patches and shape lists ...");
+		
+		List<OCCShape> supportShapes = new ArrayList<>();
+		List<OCCShape> shellShapes = new ArrayList<>();
+		List<OCCShape> solidShapes = new ArrayList<>();
 		
 		// --------------------------
 		// Fix the PYLON parameters
+		System.out.println("\t\tFixing pylon parameters ...");
+		
 		double pylonWidthEngineMaxRadiusPercent = 0.25;
 		double pylonWidth = pylonWidthEngineMaxRadiusPercent*nacelle.getDiameterMax().times(0.5).doubleValue(SI.METRE); 
 		
 		// ------------------------------
 		// Generate the PYLON main wire		
+		System.out.println("\t\tGenerating the pylon main wire ...");
+		
 		double byPassOutletZOffset = Math.abs(engineMainWireEdges.get(2).vertices()[0].pnt()[2] - 
 				engineMainWireEdges.get(2).vertices()[1].pnt()[2])/2;
 		
@@ -4974,6 +4919,9 @@ public class AircraftCADUtils {
 		CADWire pylonMidWire = OCCUtils.theFactory.newWireFromAdjacentEdges(
 				edgeA, edgeB, edgeC, edgeD, edgeE, edgeF, edgeG, edgeH);
 		
+		//TODO
+		System.out.println("\t\t\tPylon main wire successfully generated? " + (pylonMidWire != null));
+		
 		if (exportSupportShapes) {
 			supportShapes.add((OCCShape) pylonMidWire);
 		}
@@ -5001,7 +4949,7 @@ public class AircraftCADUtils {
 					(OCCShell) pylonRightShell, 
 					new int[] {2, 6, 10, 14, 18, 22, 26, 30}, 
 					0.75*pylonWidth/2
-					);
+					)._1();
 			
 			if (exportShells) {
 				shellShapes.add(filletedPylonRightShell);
