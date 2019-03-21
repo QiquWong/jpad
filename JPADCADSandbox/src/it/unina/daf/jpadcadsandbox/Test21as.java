@@ -3,6 +3,7 @@ package it.unina.daf.jpadcadsandbox;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -12,7 +13,9 @@ import it.unina.daf.jpadcad.enums.FileExtension;
 import it.unina.daf.jpadcad.occ.OCCShape;
 import it.unina.daf.jpadcad.occ.OCCUtils;
 import it.unina.daf.jpadcadsandbox.utils.AircraftUtils;
+import javaslang.Tuple3;
 import it.unina.daf.jpadcad.utils.FlappedWing;
+import it.unina.daf.jpadcad.utils.FlappedWing.ShellType;
 import it.unina.daf.jpadcad.utils.FlappedWing.SolidType;
 
 public class Test21as {
@@ -30,14 +33,18 @@ public class Test21as {
 		Boolean exportWing = true;
 		Boolean exportFlap = true;
 		Boolean exportSlat = true;
+		Boolean exportShell = true;
+		Boolean exportSupportShapes = true;
 //		Boolean exportCleanWing = true;
 		
-		Map<SolidType, List<OCCShape>> solidsMap = FlappedWing.getFlappedWingCAD(liftingSurface, exportWing, exportFlap, exportSlat);
+//		Map<SolidType, List<OCCShape>> solidsMap = FlappedWing.getFlappedWingCAD(liftingSurface, exportWing, exportFlap, exportSlat);
+		Tuple3<Map<SolidType, List<OCCShape>>, List<OCCShape>, List<OCCShape>> returnShapes = FlappedWing.getFlappedWingCAD(liftingSurface, exportWing, exportFlap, exportSlat, exportShell, exportSupportShapes);
+		Map<SolidType, List<OCCShape>> solidsMap = new HashMap<>();
+		solidsMap = returnShapes._1;
 		
 		// ----------------------------------------------------------
 		// Rotate Slats
 		// ----------------------------------------------------------	
-
 		List<OCCShape> slatsList = solidsMap.get(SolidType.SLAT);
 		OCCShape slat = slatsList.get(0);
 
@@ -114,13 +121,16 @@ public class Test21as {
 
 		
 		List<OCCShape> exportShapes = new ArrayList<>();
-		exportShapes.addAll(solidsMap.get(SolidType.WING));
+//		exportShapes.addAll(solidsMap.get(SolidType.WING));
 //		exportShapes.addAll(solidsMap.get(SolidType.FLAP));
 //		exportShapes.addAll(solidsMap.get(SolidType.SLAT));
-		exportShapes.add(rotatedInnerFlap);
-		exportShapes.add(rotatedOuterFlap);
-		exportShapes.add(rotatedAileron);
-		exportShapes.add(rotatedSlat);
+//		exportShapes.add(rotatedInnerFlap);
+//		exportShapes.add(rotatedOuterFlap);
+//		exportShapes.add(rotatedAileron);
+//		exportShapes.add(rotatedSlat);
+//		exportShapes.addAll(returnShapes._2);
+		exportShapes.addAll(returnShapes._3);
+
 	
 		String fileName = "Test21as";
 		System.out.println("========== [main] Output written on file: " + fileName);

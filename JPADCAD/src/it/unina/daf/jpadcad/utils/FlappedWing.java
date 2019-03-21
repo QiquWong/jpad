@@ -26,6 +26,7 @@ import it.unina.daf.jpadcad.occ.OCCGeomCurve3D;
 import it.unina.daf.jpadcad.occ.OCCShape;
 import it.unina.daf.jpadcad.occ.OCCUtils;
 import it.unina.daf.jpadcad.utils.FlappedWing.SolidType;
+import javaslang.Tuple3;
 import opencascade.BRepAlgoAPI_Cut;
 import opencascade.BRepBuilderAPI_MakeEdge;
 import opencascade.BRepBuilderAPI_MakeSolid;
@@ -63,8 +64,10 @@ import standaloneutils.MyMathUtils;
 		Boolean exportWing = true;
 		Boolean exportFlap = true;
 		Boolean exportSlat = true;
-		Map<SolidType, List<OCCShape>> solidsMap = FlappedWing.getFlappedWingCAD(liftingSurface, exportWing, exportFlap, exportSlat);
-
+		Tuple3<Map<SolidType, List<OCCShape>>, List<OCCShape>, List<OCCShape>> returnShapes = FlappedWing.getFlappedWingCAD(liftingSurface, exportWing, exportFlap, exportSlat);
+		Map<SolidType, List<OCCShape>> solidsMap = new HashMap<>();
+		solidsMap = returnShapes._1;
+		
 		List<OCCShape> slatsList = solidsMap.get(SolidType.SLAT);
 		OCCShape slat = slatsList.get(0);
 
@@ -131,9 +134,21 @@ public class FlappedWing {
 
 	Map<ShellType, CADShell> shellMap = new HashMap<>();
 
-	// Assume that flap and slat share the same pair (yInnerPct, yOuterPct)
-	public static Map<SolidType, List<OCCShape>> getFlappedWingCAD(LiftingSurface liftingSurface, Boolean exportWing, Boolean exportFlap, 
-			Boolean exportSlat) {
+	/**
+	 * Creates a tuple3 consisting of a map of solid for the lifting surface, a list of shells and support shapes.
+	 * 
+	 * ...
+	 * 
+	 * @param liftingSurface 				the lifting-surface object, extracted from a Aircraft object
+	 * @param exportWing					include wing solid in the output 
+	 * @param exportFlap					include flap solids in the output
+	 * @param exportSlat						include slat solids in the output
+	 * @param exportShells					include shells in the output shape list
+	 * @param exportSupportShapes	include supporting sections, outline curves, etc in the output shape list 
+	 * @return
+	 */
+	public static Tuple3<Map<SolidType, List<OCCShape>>, List<OCCShape>, List<OCCShape>> getFlappedWingCAD(LiftingSurface liftingSurface, Boolean exportWing, Boolean exportFlap, 
+			Boolean exportSlat, Boolean exportShells, Boolean exportSupportShapes) {
 
 		// ----------------------------------------------------------
 		// Check whether continuing with the method
@@ -144,7 +159,7 @@ public class FlappedWing {
 			return null;
 		}
 
-		if (!exportWing && !exportFlap && !exportSlat) {
+		if (!exportWing && !exportFlap && !exportSlat && !exportShells && !exportSupportShapes) {
 			System.out.println("========== [AircraftCADUtils::getLiftingSurfaceCAD] No shapes to export! Exiting the method ...");
 			return null;
 		}
@@ -166,7 +181,10 @@ public class FlappedWing {
 		Map<SolidType, List<OCCShape>> solidsMap = new HashMap<>();
 		solidsMap.put(SolidType.WING, new ArrayList<OCCShape>());
 		solidsMap.put(SolidType.FLAP, new ArrayList<OCCShape>());
-		solidsMap.put(SolidType.SLAT, new ArrayList<OCCShape>());		
+		solidsMap.put(SolidType.SLAT, new ArrayList<OCCShape>());
+		
+		List<OCCShape> shellsList = new ArrayList<>();
+		List<OCCShape> supportShapes = new ArrayList<>();
 
 		// ---------------------------
 		// Collect main geometry data 
@@ -181,7 +199,7 @@ public class FlappedWing {
 		int numNonSymFlap = 2;
 		nonSymFlapStations.add(new double[] {
 				0.15,
-				0.31
+				0.29
 				//				0.10,
 				//				0.28
 		});
@@ -215,7 +233,7 @@ public class FlappedWing {
 		int numSlat = 1;
 		slatStations.add(new double[] {
 				0.15,
-				0.31
+				0.29
 				//				0.10,
 				//				0.28
 		});
@@ -276,7 +294,7 @@ public class FlappedWing {
 					nonSymFlapStations.set(i, new double[] {etaInn, etaOut});
 					nonSymFlapChordRatios.set(i, new double[] {innChordRatio, outChordRatio});				
 				}
-
+				
 				if((etaInn >= etaBreakPnts.get(j) && etaInn < etaBreakPnts.get(j+1)) 
 						&& etaOut > etaBreakPnts.get(j+1)) {
 
@@ -690,8 +708,17 @@ public class FlappedWing {
 				}
 
 				getShell(shellMap, liftingSurface, yInner, yOuter, isFlapped, flapType, innerChordRatio, outerChordRatio, isSlatted, innerChordRatioSlat, 
-						outerChordRatioSlat, lateralGap, doMakeHorn);
+						outerChordRatioSlat, lateralGap, doMakeHorn, supportShapes, exportSupportShapes);
 			}
+		
+		if (exportShells) {
+			
+			shellsList.addAll(shellMap.get(ShellType.WING_CLEAN));
+			shellsList.addAll(shellMap.get(ShellType.WING_CUT));
+			shellsList.addAll(shellMap.get(ShellType.FLAP));
+			shellsList.addAll(shellMap.get(ShellType.SLAT));
+			
+		}
 
 		if(exportWing) {
 			System.out.println("Sewing wing shells");
@@ -890,14 +917,53 @@ public class FlappedWing {
 
 			}
 		}
-		return solidsMap;
+		
+		Tuple3<Map<SolidType, List<OCCShape>>, List<OCCShape>, List<OCCShape>> returnShapes = 
+				new Tuple3<Map<SolidType, List<OCCShape>>, List<OCCShape>, List<OCCShape>>(solidsMap, shellsList, supportShapes);
+//		return solidsMap;
+		return returnShapes;
+	}
+	
+	public static Tuple3<Map<SolidType, List<OCCShape>>, List<OCCShape>, List<OCCShape>> getFlappedWingCAD(LiftingSurface liftingSurface) {
+		
+		return getFlappedWingCAD(liftingSurface, true, true, 
+				true, false, false);
 	}
 
-	public static void getShell(Map<ShellType, List<OCCShape>> shellMap, LiftingSurface liftingSurface, double yInnerPct, double yOuterPct, Boolean isFlapped, FlapType flapType, 
-			double innerChordRatio, double outerChordRatio, Boolean isSlatted, double innerChordRatioSlat, 
-			double outerChordRatioSlat, double lateralGap, Boolean doMakeHorn) {
+	/**
+	 * Creates shell of a single lifting surface segment and put it in a map
+	 * 	Assume that flap and slat share the same pair (yInnerPct, yOuterPct)
+
+	 * 
+	 * ...
+	 * 
+	 * @param shellMap						the Map containing all shells
+	 * @param liftingSurface 				the lifting-surface object, extracted from a Aircraft object
+	 * @param yInnerPct						lifting surface segment inner section, expressed as percentage of wing span  
+	 * @param yOuterPct					lifting surface segment outer section, expressed as percentage of wing span
+	 * @param isFlapped						lifting surface segment is flapped
+	 * @param flapType						the type of flap, symmetric, non symmetric, etc
+	 * @param innerChordRatio			flap inner chord ratio
+	 * @param outerChordRatio			flap outer chord ratio
+	 * @param isSlatted						lifting surface segment is slatted
+	 * @param innerChordRatioSlat		slat inner chord ratio
+	 * @param outerChordRatioSlat		slat outer chord ratio
+	 * @param lateralGap					flap and slat lateral gap
+	 * @param doMakeHorn				include horn balanced rudder/elevator construction 
+	 * @param supportShapes				list of support shapes
+	 * @param exportSupportShapes	include supporting sections, outline curves, etc in the output shape list 
+	 * @return
+	 */
+	public static void getShell(Map<ShellType, List<OCCShape>> shellMap, LiftingSurface liftingSurface, double yInnerPct, double yOuterPct, 
+			Boolean isFlapped, FlapType flapType, double innerChordRatio, double outerChordRatio, Boolean isSlatted, 
+			double innerChordRatioSlat, double outerChordRatioSlat, double lateralGap, Boolean doMakeHorn, 
+			List<OCCShape> supportShapes, Boolean exportSupportShapes) {
 
 		List<CADEdge> airfoilsClean = makeAirfoilsClean(liftingSurface, yInnerPct, yOuterPct);
+		if(exportSupportShapes) {
+			airfoilsClean.forEach(e -> supportShapes.add((OCCShape) e));
+		}
+			
 		List<List<CADWire>> airfoilsCutAndFlap = null;
 		List<List<CADWire>> airfoilsCutAndSlat = null;
 
@@ -925,13 +991,18 @@ public class FlappedWing {
 						outerChordRatioSlat, isFlapped, flapType, lateralGap);
 				makeShellSlat(shellMap, airfoilsCutAndSlat);
 				makeShellCut(shellMap, airfoilsCutAndSlat, yInnerPct, yOuterPct, liftingSurface);
-
+				if(exportSupportShapes) {
+					airfoilsCutAndSlat.forEach(wList -> wList.forEach(w -> supportShapes.add((OCCShape) w)));
+				}
 
 			} 
 
 			if (!isSlatted) {
 
 				makeShellCut(shellMap, airfoilsCutAndFlap, yInnerPct, yOuterPct, liftingSurface);
+				if(exportSupportShapes) {
+					airfoilsCutAndFlap.forEach(wList -> wList.forEach(w -> supportShapes.add((OCCShape) w)));
+				}
 
 			}
 
@@ -939,6 +1010,15 @@ public class FlappedWing {
 
 	}
 
+	/**
+	 * Creates a list of CADEdge with clean airfoils at yInnerPct and yOuterPct stations
+	 * 
+	 * ...
+	 * @param liftingSurface 		the lifting-surface object, extracted from a Aircraft object
+	 * @param yInnerPct				lifting surface segment inner section, expressed as percentage of wing span 
+	 * @param yOuterPct			lifting surface segment outer section, expressed as percentage of wing span 
+	 * @return
+	 */
 	public static List<CADEdge> makeAirfoilsClean(LiftingSurface liftingSurface, double yInnerPct, double yOuterPct) {
 
 		List<CADEdge> airfoils = new ArrayList<>();
@@ -1177,6 +1257,18 @@ public class FlappedWing {
 		return airfoils;	
 	}
 
+	/**
+	 * 	Creates shell from clean airfoils and puts it in the shellMap 
+	 * 
+	 * ...
+	 * @param shellMap				the Map containing all shells
+	 * @param airfoilsClean			list of CADEdge with clean airfoils at yInnerPct and yOuterPct
+	 * @param liftingSurface 		the lifting-surface object, extracted from a Aircraft object
+	 * @param yInnerPct				lifting surface segment inner section, expressed as percentage of wing span 
+	 * @param yOuterPct			lifting surface segment outer section, expressed as percentage of wing span 
+	 * @param doMakeHorn		include horn balanced rudder/elevator construction
+	 * @return
+	 */
 	public static void makeShellClean(Map<ShellType, List<OCCShape>> shellMap, List<CADEdge> airfoilsClean, 
 			LiftingSurface liftingSurface, double yInnerPct, double yOuterPct, boolean doMakeHorn) {
 
@@ -1227,6 +1319,21 @@ public class FlappedWing {
 
 	}
 
+	/**
+	 * 	Creates cut airfoil and flap wires 
+	 * 
+	 * ...
+	 * @param liftingSurface 		the lifting-surface object, extracted from a Aircraft object
+ 	 * @param airfoilsClean			list of CADEdge with clean airfoils at yInnerPct and yOuterPct
+	 * @param yInnerPct				lifting surface segment inner section, expressed as percentage of wing span 
+	 * @param yOuterPct			lifting surface segment outer section, expressed as percentage of wing span 
+	 * @param innerChordRatio	flap inner chord ratio
+	 * @param outerChordRatio	flap outer chord ratio
+	 * @param flapType				the type of flap, symmetric, non symmetric, etc
+	 * @param doMakeHorn		include horn balanced rudder/elevator construction
+	 * @param lateralGap			flap and slat lateral gap
+	 * @return
+	 */
 	public static List<List<CADWire>> makeAirfoilsCutAndFlap(LiftingSurface liftingSurface, List<CADEdge> airfoilsClean, double yInnerPct, double yOuterPct, 
 			double innerChordRatio, double outerChordRatio, FlapType flapType, boolean doMakeHorn, double lateralGap){
 
@@ -2173,6 +2280,17 @@ public class FlappedWing {
 		return airfoilsCutAndFlap;	
 	}
 
+	/**
+	 * 	Creates flapped/slatted wing shell and puts it in the shellMap 
+	 * 
+	 * ...
+	 * @param shellMap					the Map containing all shells
+	 * @param airfoilsCutAndFlap	list of CADWire with cut airfoils and flap/slat wires
+	 * @param yInnerPct					lifting surface segment inner section, expressed as percentage of wing span 
+	 * @param yOuterPct				lifting surface segment outer section, expressed as percentage of wing span 
+	 * @param liftingSurface 			the lifting-surface object, extracted from a Aircraft object
+	 * @return
+	 */
 	public static void makeShellCut(Map<ShellType, List<OCCShape>> shellMap, List<List<CADWire>> airfoilsCutAndFlap, 
 			double yInnerPct, double yOuterPct, LiftingSurface liftingSurface) {
 
@@ -2188,12 +2306,36 @@ public class FlappedWing {
 		shellMap.get(ShellType.WING_CUT).add(Shape);
 	}
 
+	/**
+	 * 	Creates flap shell and puts it in the shellMap 
+	 * 
+	 * ...
+	 * @param shellMap					the Map containing all shells
+	 * @param airfoilsCutAndFlap	list of CADWire with cut airfoils and flap/slat wires
+	 * @return
+	 */
 	public static void makeShellFlap(Map<ShellType, List<OCCShape>> shellMap, List<List<CADWire>> airfoilsCutAndFlap) {
 
 		OCCShape Shape = OCCUtils.makePatchThruSections(airfoilsCutAndFlap.get(1));
 		shellMap.get(ShellType.FLAP).add(Shape);
 	}
 
+	/**
+	 * 	Creates cut airfoil and slat wires 
+	 * 
+	 * ...
+	 * @param liftingSurface 			the lifting-surface object, extracted from a Aircraft object
+ 	 * @param airfoilsClean				list of CADEdge with clean airfoils at yInnerPct and yOuterPct
+ 	 * @param airfoilsCutAndFlap	list of CADWire with cut airfoils and flap wires
+	 * @param yInnerPct					lifting surface segment inner section, expressed as percentage of wing span 
+	 * @param yOuterPct				lifting surface segment outer section, expressed as percentage of wing span 
+	 * @param innerChordRatioSlat	slat inner chord ratio
+	 * @param outerChordRatioSlat	slat outer chord ratio
+	 * @param isFlapped						lifting surface segment is flapped
+	 * @param flapType				the type of flap, symmetric, non symmetric, etc
+	 * @param lateralGap			flap and slat lateral gap
+	 * @return
+	 */
 	public static  List<List<CADWire>> makeAirfoilsSlat(LiftingSurface liftingSurface, List<CADEdge> airfoilsClean, List<List<CADWire>> airfoilsCutAndFlap, 
 			double yInnerPct, double yOuterPct, double innerChordRatioSlat, double outerChordRatioSlat, boolean isFlapped, FlapType flapType, double lateralGap) {
 
@@ -3063,13 +3205,30 @@ public class FlappedWing {
 		return airfoilsCutAndSlat;
 	}
 
+	/**
+	 * 	Creates slat shell and puts it in the shellMap 
+	 * 
+	 * ...
+	 * @param shellMap					the Map containing all shells
+	 * @param airfoilsCutAndFlap	list of CADWire with cut airfoils and slat wires
+	 * @return
+	 */
 	public static void makeShellSlat(Map<ShellType, List<OCCShape>> shellMap, List<List<CADWire>> airfoilsCutAndFlap) {
 
 		OCCShape Shape = OCCUtils.makePatchThruSections(airfoilsCutAndFlap.get(1));
 		shellMap.get(ShellType.SLAT).add(Shape);
 
 	}
-
+	
+	/**
+	 * 	Creates clean wing section and puts it in the ShellMap with the flap 
+	 * 
+	 * ...
+	 * @param shellMap					the Map containing all shells
+	 * @param liftingSurface 			the lifting-surface object, extracted from a Aircraft object
+	  * @param airfoilsClean			list of CADEdge with clean airfoils at yInnerPct and yOuterPct
+	 * @return
+	 */
 	public static void doMakeHorn(Map<ShellType, List<OCCShape>> shellMap, LiftingSurface liftingSurface, List<CADEdge> airfoilsClean) {
 
 		List<CADGeomCurve3D> airfoilCurve = new ArrayList<CADGeomCurve3D>();
@@ -3104,6 +3263,12 @@ public class FlappedWing {
 		shellMap.get(ShellType.FLAP).add((OCCShape) OCCUtils.theFactory.newShape(sewedSection));
 	}
 
+	/**
+	 * 	Creates rounded tip 
+	 * 
+	 * @param liftingSurface 			the lifting-surface object, extracted from a Aircraft object
+	 * @return
+	 */
 	public static TopoDS_Shape makeTip(LiftingSurface liftingSurface) {
 
 		List<OCCShape> patchWingTip = new ArrayList<>();
@@ -4180,6 +4345,20 @@ public class FlappedWing {
 		return new double[] {gpPnt.X(), gpPnt.Y(), gpPnt.Z()};
 	}
 
+	/**
+	 * Creates shape with rotated symmetric flap 
+	 * 
+	 * ...
+	 * 
+	 * @param liftingSurface 				the lifting-surface object, extracted from a Aircraft object
+	 * @param deflection						angle of rotations (rad)
+	 * @param flap								flap shape 
+	 * @param innerHingePntx				inner section hinge position, x coordinate
+	 * @param innerHingePntz				inner section hinge position, z coordinate
+	 * @param outerHingePntx				outer section hinge position, x coordinate
+	 * @param outerHingePntz			    outer section hinge position, z coordinate
+	 * @return
+	 */
 	public static OCCShape symFlapRotation(LiftingSurface liftingSurface, double deflection, OCCShape flap, double innerHingePntx, double innerHingePntz,
 			double outerHingePntx, double outerHingePntz)	{
 
@@ -4259,6 +4438,23 @@ public class FlappedWing {
 		return rotatedFlap;
 	}
 
+	/**
+	 * Creates shape with rotated non symmetric flap 
+	 * 
+	 * ...
+	 * 
+	 * @param liftingSurface 				the lifting-surface object, extracted from a Aircraft object
+	 * @param deflection						angle of rotations (rad)
+	 * @param wing							wing shape
+	 * @param flap								flap shape 
+	 * @param innerChordRatio			flap inner chord ratio
+	 * @param outerChordRatio			flap outer chord ratio
+	 * @param innerHingePntx				inner section hinge position, x coordinate
+	 * @param innerHingePntz				inner section hinge position, z coordinate
+	 * @param outerHingePntx				outer section hinge position, x coordinate
+	 * @param outerHingePntz			    outer section hinge position, z coordinate
+	 * @return
+	 */
 	public static OCCShape nonSymRotation(LiftingSurface liftingSurface, double deflection, OCCShape wing, OCCShape flap,
 			double innerChordRatio, double outerChordRatio, double innerHingePntx, 
 			double innerHingePntz, double outerHingePntx, double outerHingePntz) {
@@ -4455,6 +4651,20 @@ public class FlappedWing {
 		return rotatedFlap;		
 	}
 
+	/**
+	 * Check if there's an intersection between a symmetric flap and the wing for
+	 * different rotation 
+	 * 
+	 * ...
+	 * 
+	 * @param liftingSurface 				the lifting-surface object, extracted from a Aircraft object
+	 * @param minDeflection				minimum angle of rotation (rad)
+	 * @param maxDeflection				maximum angle of rotation (rad)
+	 * @param wing							wing shape
+	 * @param flap								flap shape 
+	 * @param numAng						number of angle to be checked between minDeflection and maxDeflection with a linear spacing
+	 * @return
+	 */
 	public static void checkInterferenceSym(LiftingSurface liftingSurface, double minDeflection, double maxDeflection, 
 			OCCShape wing, OCCShape flap, int numAng) {
 
