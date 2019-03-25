@@ -12,8 +12,8 @@ NACELLES ===> C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\nacelle
 LANDING GEARS ===> C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\landing_gears
 CABIN CONFIGURATIONS ===> C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\cabin_configurations
 --------------
-25 [main] INFO ncsa.hdf.hdf5lib.H5 - HDF5 library: jhdf5
-25 [main] INFO ncsa.hdf.hdf5lib.H5 -  successfully loaded from java.library.path
+11 [main] INFO ncsa.hdf.hdf5lib.H5 - HDF5 library: jhdf5
+11 [main] INFO ncsa.hdf.hdf5lib.H5 -  successfully loaded from java.library.path
 De-serializing file: C:\Users\oem\JPAD\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterAerodynamicDatabase.xml ...
 database.databasefunctions.aerodynamics.AerodynamicDatabaseReader de-serialization complete
 De-serializing file: C:\Users\oem\JPAD\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterHighLiftDatabase.xml ...
@@ -1628,8 +1628,8 @@ Reading operating conditions data ...
 	.....................................
 	Alpha current Climb: 9.999999999999996 deg
 	Beta current Climb: 0.0 deg
-	Mach Climb: 0.3
-	Altitude Climb: 30000.0 ft
+	Mach Climb: 0.17
+	Altitude Climb: 0.0 ft
 	ISA Deviation Climb: 0.0 ?
 	Throttle Climb: 1.0
 	.....................................
@@ -1660,18 +1660,18 @@ Reading operating conditions data ...
 
 	.....................................
 	CLIMB
-	Climb pressure coefficient: 1.0227029548085431
-	Climb density: 0.45900465956738479 kg/m³
-	Climb static pressure: 30148.629805493336 Pa
-	Climb dynamic pressure: 1899.3636777460797 Pa
-	Climb stagnation pressure: 32091.11465098027 Pa
-	Climb maximum delta pressure outside-inside: 49352.774664842276 Pa
-	Climb static temperature: 228.79936302711849 K
-	Climb stagnation temperature: 232.91775156160659 K
-	Climb speed (TAS): 90.9688922049516 m/s
-	Climb speed (CAS): 56.12419185870773 m/s
-	Climb speed (EAS): 55.686636491018945 m/s
-	Climb dynamic viscosity: 0.000016167973073666094 Pa·s
+	Climb pressure coefficient: 1.0072458953272552
+	Climb density: 1.2250001734860936 kg/m³
+	Climb static pressure: 101324.99896925152 Pa
+	Climb dynamic pressure: 2049.8047291479579 Pa
+	Climb stagnation pressure: 103389.65636890818 Pa
+	Climb maximum delta pressure outside-inside: 21823.594498915903 Pa
+	Climb static temperature: 288.14998626311638 K
+	Climb stagnation temperature: 289.81549318371708 K
+	Climb speed (TAS): 57.84997349025289 m/s
+	Climb speed (CAS): 57.849978100251775 m/s
+	Climb speed (EAS): 57.84997400175028 m/s
+	Climb dynamic viscosity: 0.000017329722120616798 Pa·s
 	.....................................
 	CRUISE
 	Cruise pressure coefficient: 1.161492851055672
