@@ -1,12 +1,12 @@
 <database.databasefunctions.aerodynamics.AerodynamicDatabaseReader>
-  <databaseFolderPath>C:\Users\Asus\JPAD\jpad\JPADSandBox_v2\data</databaseFolderPath>
+  <databaseFolderPath>d:\agodemar\github\jpad\JPADSandBox_v2\data</databaseFolderPath>
   <databaseFileName>Aerodynamic_Database_Ultimate.h5</databaseFileName>
   <database>
-    <__fileName>C:\Users\Asus\JPAD\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</__fileName>
+    <__fileName>d:\agodemar\github\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</__fileName>
     <__fileH5 serialization="custom">
       <file>
         <default>
-          <path>C:\Users\Asus\JPAD\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</path>
+          <path>d:\agodemar\github\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</path>
         </default>
         <char>\</char>
       </file>
@@ -16,7 +16,7 @@
           <isReadOnly>true</isReadOnly>
           <max__members>1000000</max__members>
           <start__members>0</start__members>
-          <fullFileName>C:\Users\Asus\JPAD\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</fullFileName>
+          <fullFileName>d:\agodemar\github\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</fullFileName>
         </default>
       </ncsa.hdf.object.FileFormat>
       <ncsa.hdf.object.h5.H5File>
@@ -33,7 +33,7 @@
       </ncsa.hdf.object.h5.H5File>
     </__fileH5>
     <__rootGroup>
-      <filename>C:\Users\Asus\JPAD\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+      <filename>d:\agodemar\github\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
       <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../__fileH5"/>
       <name>/</name>
       <fullName>/</fullName>
@@ -42,7 +42,7 @@
       </oid>
       <memberList class="vector">
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\Asus\JPAD\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>d:\agodemar\github\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(AR_v_eff)_c1_vs_b_v_over_2_times_r1_(lambda_v)</name>
           <path>/</path>
@@ -66,7 +66,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\Asus\JPAD\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>d:\agodemar\github\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(AR_v_eff)_c2_vs_Z_h_over_b_v_(x_ac_h--v_over_c_bar_v)</name>
           <path>/</path>
@@ -90,7 +90,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\Asus\JPAD\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>d:\agodemar\github\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(AR_v_eff)_k_h_v_vs_S_h_over_S_v</name>
           <path>/</path>
@@ -114,7 +114,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\Asus\JPAD\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>d:\agodemar\github\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(C_l_beta_w_b)_C_l_beta_over_C_Lift1_(AR)_vs_AR_(lambda)</name>
           <path>/</path>
@@ -138,7 +138,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\Asus\JPAD\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>d:\agodemar\github\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(C_l_beta_w_b)_C_l_beta_over_C_Lift1_(L_c2)_vs_L_c2_(AR)_(lambda)</name>
           <path>/</path>
@@ -162,7 +162,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\Asus\JPAD\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>d:\agodemar\github\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(C_l_beta_w_b)_C_l_beta_over_Gamma_w_vs_AR_(L_c2)_(lambda)</name>
           <path>/</path>
@@ -186,7 +186,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\Asus\JPAD\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>d:\agodemar\github\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(C_l_beta_w_b)_dC_l_beta_over_eps_w_times_tan_(L_c4)_vs_AR_(lambda)</name>
           <path>/</path>
@@ -210,7 +210,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\Asus\JPAD\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>d:\agodemar\github\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(C_l_beta_w_b)_k_M_Gamma_vs_Mach_times_cos(L_c2)_(AR_over_cos(L_c2))</name>
           <path>/</path>
@@ -234,7 +234,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\Asus\JPAD\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>d:\agodemar\github\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(C_l_beta_w_b)_k_M_L_vs_Mach_times_cos(L_c2)_(AR_over_cos(L_c2))</name>
           <path>/</path>
@@ -258,7 +258,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\Asus\JPAD\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>d:\agodemar\github\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(C_l_beta_w_b)_k_f_vs_A_over_b_(AR_over_cos(L_c2))</name>
           <path>/</path>
@@ -282,7 +282,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\Asus\JPAD\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>d:\agodemar\github\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(C_l_delta_a)_RME_vs_eta_(Lambda_beta)_(beta_times_AR_over_k)_(lambda)</name>
           <path>/</path>
@@ -306,7 +306,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\Asus\JPAD\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>d:\agodemar\github\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(C_l_p_w)_RDP_vs_Lambda_beta_(beta_times_AR_over_k)_(lambda)</name>
           <path>/</path>
@@ -330,7 +330,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\Asus\JPAD\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>d:\agodemar\github\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(C_l_r_w)_C_l_r_over_C_Lift1_vs_AR_(lambda)_(L_c4)</name>
           <path>/</path>
@@ -354,7 +354,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\Asus\JPAD\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>d:\agodemar\github\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(C_l_r_w)_dC_l_r_over_eps_w_vs_AR_(lambda)</name>
           <path>/</path>
@@ -378,7 +378,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\Asus\JPAD\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>d:\agodemar\github\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(C_m0_b)_k2_minus_k1_vs_FFR</name>
           <path>/</path>
@@ -402,7 +402,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\Asus\JPAD\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>d:\agodemar\github\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(C_m_alpha_b)_upwash_(NTWLE)_vs_x_i_over_root_chord</name>
           <path>/</path>
@@ -426,7 +426,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\Asus\JPAD\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>d:\agodemar\github\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(C_m_alpha_b)_upwash_vs_x_i_over_root_chord</name>
           <path>/</path>
@@ -450,7 +450,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\Asus\JPAD\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>d:\agodemar\github\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(C_m_q_w)_k_q_vs_AR</name>
           <path>/</path>
@@ -474,7 +474,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\Asus\JPAD\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>d:\agodemar\github\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(C_n_beta_b)_K_N_vs_x_cg_over_l_b_(squared_l_b_over_S_b_s)_(square_root_(h1_over_h2))_(h_b_over_w_b)</name>
           <path>/</path>
@@ -498,7 +498,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\Asus\JPAD\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>d:\agodemar\github\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(C_n_beta_b)_K_Re_b_vs_Re_l_b_times_1e-6</name>
           <path>/</path>
@@ -522,7 +522,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\Asus\JPAD\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>d:\agodemar\github\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(C_n_delta_a)_k_n_a_vs_eta_(AR)_(lambda)</name>
           <path>/</path>
@@ -546,7 +546,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\Asus\JPAD\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>d:\agodemar\github\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(C_n_p_w)_dC_n_p_over_eps_w_vs_AR_(lambda)</name>
           <path>/</path>
@@ -570,7 +570,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\Asus\JPAD\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>d:\agodemar\github\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(C_n_r_w)_C_n_r_over_C_D0_bar_vs_AR_(L_c4)_(x_bar_ac_minus_x_bar_cg)</name>
           <path>/</path>
@@ -594,7 +594,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\Asus\JPAD\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>d:\agodemar\github\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(C_n_r_w)_C_n_r_over_squared_(C_Lift1)_vs_AR_(lambda)_(L_c4)_(x_bar_ac_minus_x_bar_cg)</name>
           <path>/</path>
@@ -618,7 +618,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\Asus\JPAD\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>d:\agodemar\github\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(C_y_beta_v)_K_Y_V_vs_b_v_over_2_times_r1</name>
           <path>/</path>
@@ -642,7 +642,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\Asus\JPAD\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>d:\agodemar\github\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(C_y_delta_r)_K_R_vs_eta_(lambda_v)</name>
           <path>/</path>
@@ -666,7 +666,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\Asus\JPAD\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>d:\agodemar\github\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(Delta_alpha_CL_Ground_Effect)_Delta(Delta_CL)_flap_vs_h_cr_4_cr</name>
           <path>/</path>
@@ -690,7 +690,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\Asus\JPAD\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>d:\agodemar\github\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(Delta_alpha_CL_Ground_Effect)_L_L0_minus1_vs_h_cr_4_cr</name>
           <path>/</path>
@@ -714,7 +714,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\Asus\JPAD\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>d:\agodemar\github\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(Delta_alpha_CL_Ground_Effect)_x_vs_2hfracb_Deltax</name>
           <path>/</path>
@@ -738,7 +738,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\Asus\JPAD\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>d:\agodemar\github\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(Delta_alpha_G)_B_vs_h_frac_overline_c_C_L_WB</name>
           <path>/</path>
@@ -762,7 +762,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\Asus\JPAD\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>d:\agodemar\github\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(Delta_alpha_G)_sigma_vs_2hfracb</name>
           <path>/</path>
@@ -786,7 +786,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\Asus\JPAD\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>d:\agodemar\github\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(Delta_epsilon_G)_b_apex_f_frac_b_apex_w_vs_b_f_frac_b</name>
           <path>/</path>
@@ -810,7 +810,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\Asus\JPAD\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>d:\agodemar\github\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(Delta_epsilon_G)_b_apex_frac_b_vs_frac_lambda</name>
           <path>/</path>
@@ -834,7 +834,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\Asus\JPAD\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>d:\agodemar\github\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(alpha0_L)_alpha0_lift_over_alpha0_lift_(M_=_0.3)_vs_mach_times_cos_(L_c4)_(t_over_c)</name>
           <path>/</path>
@@ -858,7 +858,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\Asus\JPAD\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>d:\agodemar\github\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(alpha0_L)_dalpha0_lift_over_epsT_vs_L_c4_(AR)_(lambda)</name>
           <path>/</path>
@@ -882,7 +882,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\Asus\JPAD\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>d:\agodemar\github\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(control_surface)_C_h_alpha_vs_flap_chord_over_airfoil_chord</name>
           <path>/</path>
@@ -906,7 +906,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\Asus\JPAD\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>d:\agodemar\github\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(control_surface)_C_h_delta_vs_flap_chord_over_airfoil_chord</name>
           <path>/</path>
@@ -930,7 +930,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\Asus\JPAD\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>d:\agodemar\github\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(control_surface)_tau_e_vs_c_control_surface_over_c_horizontal_tail</name>
           <path>/</path>
@@ -954,7 +954,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\Asus\JPAD\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>d:\agodemar\github\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(twin_vertical_tails)_AR_v_eff_over_AR_v_vs_b&apos;_v_over_ b_v</name>
           <path>/</path>
@@ -978,7 +978,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\Asus\JPAD\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>d:\agodemar\github\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(twin_vertical_tails)_C_y_beta_v_eff_vs_AR_eff_(Gamma_v)</name>
           <path>/</path>
@@ -1002,7 +1002,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\Asus\JPAD\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>d:\agodemar\github\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(twin_vertical_tails)_c_v_t_vs_2_times_r1_over_b_v_(b_h_over_l_b)</name>
           <path>/</path>
@@ -1026,7 +1026,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\Asus\JPAD\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>d:\agodemar\github\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(x_bar_ac_w)_k1_vs_lambda</name>
           <path>/</path>
@@ -1050,7 +1050,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\Asus\JPAD\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>d:\agodemar\github\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(x_bar_ac_w)_k2_vs_L_LE_(AR)_(lambda)</name>
           <path>/</path>
@@ -1074,7 +1074,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\Asus\JPAD\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>d:\agodemar\github\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>(x_bar_ac_w)_x&apos;_ac_over_root_chord_vs_tan_(L_LE)_over_beta_(AR_times_tan_(L_LE))_(lambda)</name>
           <path>/</path>
@@ -1098,7 +1098,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\Asus\JPAD\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>d:\agodemar\github\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>Clmax_CLmax_vs_LambdaLE_vs_dy</name>
           <path>/</path>
@@ -1122,7 +1122,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\Asus\JPAD\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>d:\agodemar\github\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>DAlphaDdeltavsAspectratio</name>
           <path>/</path>
@@ -1146,7 +1146,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\Asus\JPAD\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>d:\agodemar\github\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>DAlphaVsLambdaLEVsDy</name>
           <path>/</path>
@@ -1170,7 +1170,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\Asus\JPAD\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>d:\agodemar\github\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>DeltaYvsThicknessRatio</name>
           <path>/</path>
@@ -1194,7 +1194,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\Asus\JPAD\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>d:\agodemar\github\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>K_Omega_vs_CLalphaOmegaFracClmax_(taperRatio)_(AR)</name>
           <path>/</path>
@@ -1218,7 +1218,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\Asus\JPAD\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>d:\agodemar\github\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>c_c1_deltaalpha2d</name>
           <path>/</path>
@@ -1242,7 +1242,7 @@
           </obj__info>
         </ncsa.hdf.object.h5.H5Group>
         <ncsa.hdf.object.h5.H5Group>
-          <filename>C:\Users\Asus\JPAD\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
+          <filename>d:\agodemar\github\jpad\JPADSandBox_v2\data\Aerodynamic_Database_Ultimate.h5</filename>
           <fileFormat class="ncsa.hdf.object.h5.H5File" reference="../../../../__fileH5"/>
           <name>upwashvsposition</name>
           <path>/</path>
@@ -64502,6 +64502,254 @@
     <kMin>0.0</kMin>
     <kMax>0.0</kMax>
   </C__n__r__w__C__n__r__over__squared__C__Lift1__vs__AR__lambda__L__c4__x__bar__ac__minus__x__bar__cg__data0>
+  <C__n__r__w__C__n__r__over__squared__C__Lift1__vs__AR__lambda__L__c4__x__bar__ac__minus__x__bar__cg__data1>
+    <tif>
+      <x>
+        <double>0.0</double>
+        <double>0.20000000298023224</double>
+        <double>0.4000000059604645</double>
+      </x>
+      <xMin>0.0</xMin>
+      <xMax>0.4000000059604645</xMax>
+      <y>
+        <double>0.0</double>
+        <double>3.0</double>
+        <double>6.0</double>
+        <double>7.75</double>
+      </y>
+      <yMin>0.0</yMin>
+      <yMax>7.75</yMax>
+      <z>
+        <double>0.0</double>
+        <double>1.0</double>
+      </z>
+      <zMin>0.0</zMin>
+      <zMax>1.0</zMax>
+      <interpolatedDataAlongYAndZ>
+        <standaloneutils.MyInterpolatingFunction_-BilinearInterpolatingFunction>
+          <x reference="../../../y"/>
+          <xMin>0.0</xMin>
+          <xMax>7.75</xMax>
+          <y reference="../../../z"/>
+          <yMin>0.0</yMin>
+          <yMax>1.0</yMax>
+          <interpolatedDataAlongX>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>0.0</double>
+                <double>1.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-1.350000023841858</double>
+                    <double>-0.1499999761581421</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>1</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>0.0</double>
+                <double>1.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>0.4147000014781952</double>
+                    <double>-0.15000000596046448</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>1</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>0.0</double>
+                <double>1.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>2.1793999671936035</double>
+                    <double>-0.14999985694885254</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>1</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>0.0</double>
+                <double>1.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>3.2088000774383545</double>
+                    <double>-0.15000009536743164</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>1</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+          </interpolatedDataAlongX>
+        </standaloneutils.MyInterpolatingFunction_-BilinearInterpolatingFunction>
+        <standaloneutils.MyInterpolatingFunction_-BilinearInterpolatingFunction>
+          <x reference="../../../y"/>
+          <xMin>0.0</xMin>
+          <xMax>7.75</xMax>
+          <y reference="../../../z"/>
+          <yMin>0.0</yMin>
+          <yMax>1.0</yMax>
+          <interpolatedDataAlongX>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>0.0</double>
+                <double>1.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-1.350000023841858</double>
+                    <double>-0.1499999761581421</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>1</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>0.0</double>
+                <double>1.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.05689999833703041</double>
+                    <double>-0.15000000223517418</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>1</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>0.0</double>
+                <double>1.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>1.236199975013733</double>
+                    <double>-0.1499999761581421</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>1</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>0.0</double>
+                <double>1.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>1.9904999732971191</double>
+                    <double>-0.1499999761581421</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>1</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+          </interpolatedDataAlongX>
+        </standaloneutils.MyInterpolatingFunction_-BilinearInterpolatingFunction>
+        <standaloneutils.MyInterpolatingFunction_-BilinearInterpolatingFunction>
+          <x reference="../../../y"/>
+          <xMin>0.0</xMin>
+          <xMax>7.75</xMax>
+          <y reference="../../../z"/>
+          <yMin>0.0</yMin>
+          <yMax>1.0</yMax>
+          <interpolatedDataAlongX>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>0.0</double>
+                <double>1.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-1.350000023841858</double>
+                    <double>-0.1499999761581421</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>1</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>0.0</double>
+                <double>1.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>-0.3822999894618988</double>
+                    <double>-0.15000000596046448</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>1</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>0.0</double>
+                <double>1.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>0.5855000019073486</double>
+                    <double>-0.15000000596046448</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>1</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+            <org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+              <knots>
+                <double>0.0</double>
+                <double>1.0</double>
+              </knots>
+              <polynomials>
+                <org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+                  <coefficients>
+                    <double>1.149999976158142</double>
+                    <double>-0.1499999761581421</double>
+                  </coefficients>
+                </org.apache.commons.math3.analysis.polynomials.PolynomialFunction>
+              </polynomials>
+              <n>1</n>
+            </org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction>
+          </interpolatedDataAlongX>
+        </standaloneutils.MyInterpolatingFunction_-BilinearInterpolatingFunction>
+      </interpolatedDataAlongYAndZ>
+    </tif>
+    <x reference="../tif/x"/>
+    <y reference="../tif/y"/>
+    <z reference="../tif/z"/>
+    <xMin>0.0</xMin>
+    <xMax>0.4000000059604645</xMax>
+    <yMin>0.0</yMin>
+    <yMax>7.75</yMax>
+    <zMin>0.0</zMin>
+    <zMax>1.0</zMax>
+    <kMin>0.0</kMin>
+    <kMax>0.0</kMax>
+  </C__n__r__w__C__n__r__over__squared__C__Lift1__vs__AR__lambda__L__c4__x__bar__ac__minus__x__bar__cg__data1>
   <C__n__r__w__C__n__r__over__C__D0__bar__vs__AR__L__c4__x__bar__ac__minus__x__bar__cg>
     <tif>
       <x>

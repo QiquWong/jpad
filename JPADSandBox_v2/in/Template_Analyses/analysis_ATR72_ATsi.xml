@@ -46,6 +46,9 @@
 			method_power_plant=""
 			method_landing_gears=""
 		/>
+
+		<point_mass_simulation file="analysis_mission_simulation_CLIMB-TURN.xml"/>
+
 		<!--
 		<aerodynamic_and_stability
 			plot="FALSE"
