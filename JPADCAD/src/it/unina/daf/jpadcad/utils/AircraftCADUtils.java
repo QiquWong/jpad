@@ -2406,7 +2406,7 @@ public class AircraftCADUtils {
 			// -------------------------------------
 			// Sewing all the tip patches together
 			// -------------------------------------
-			wingTipShell = (OCCShell) OCCUtils.theFactory.newShellFromAdjacentShapes(1e-5,
+			wingTipShell = (OCCShell) OCCUtils.theFactory.newShellFromAdjacentShapes(1e-4,
 					wingTipFillerFaceUpp,
 					wingTipFillerFaceLow,
 					wingTipShell1,

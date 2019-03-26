@@ -105,9 +105,10 @@ public class Test43mds extends Application {
 		// --------------------
 		// Collect components
 		Aircraft aircraft = AircraftUtils.importAircraft(args);
-		aircraft.getNacelles().getNacellesList().forEach(n -> 
-				n.setZApexConstructionAxes(n.getZApexConstructionAxes().minus(Amount.valueOf(0.3, SI.METER)))
-				);
+		aircraft.getNacelles().getNacellesList().forEach(n -> {
+				n.setZApexConstructionAxes(n.getZApexConstructionAxes().minus(Amount.valueOf(0.30, SI.METER)));	
+				n.setXApexConstructionAxes(n.getXApexConstructionAxes().plus(Amount.valueOf(0.35, SI.METER)));
+		});
 		
 		List<OCCShape> fuselageShapes = AircraftCADUtils.getFuselageCAD(
 				aircraft.getFuselage(), 7, 7, exportSupportShapes, exportShells, exportSolids);
@@ -126,7 +127,7 @@ public class Test43mds extends Application {
 		
 		List<OCCShape> wingFairingShapes = AircraftCADUtils.getFairingCAD(
 				aircraft.getFuselage(), aircraft.getWing(), 
-				0.50, 0.50, 1.01, 0.05, 0.65, 0.15, 0.90, 
+				0.45, 0.45, 1.01, 0.05, 0.65, 0.10, 0.95, 
 				exportSupportShapes, exportShells, exportSolids);
 		
 		List<OCCShape> canardFairingShapes = AircraftCADUtils.getFairingCAD(
