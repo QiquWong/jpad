@@ -23,6 +23,7 @@ import aircraft.components.liftingSurface.airfoils.Airfoil;
 import analyses.OperatingConditions;
 import calculators.aerodynamics.AerodynamicCalc;
 import calculators.aerodynamics.AirfoilCalc;
+import calculators.aerodynamics.AlphaEffective;
 import calculators.aerodynamics.AnglesCalc;
 import calculators.aerodynamics.DragCalc;
 import calculators.aerodynamics.LiftCalc;
@@ -3129,6 +3130,8 @@ public class LiftingSurfaceAerodynamicsManager {
 							)
 
 					);
+			
+		
 		}
 		
 	}

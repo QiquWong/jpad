@@ -112,6 +112,7 @@ public class LiftingSurfacePanelCreator {
 		Amount<Length> chordTip = null;
 		Amount<Angle> twistGeometricRoot = null;
 		Amount<Angle> twistGeometricTip = null;
+		Amount<Angle> a0lTip = null;
 		
 		System.out.println("Reading lifting surface panel data from XML doc ...");
 		
@@ -512,6 +513,7 @@ public class LiftingSurfacePanelCreator {
 	public Amount<Angle> getTwistGeometricAtTip() {
 		return _theLiftingSurfacePanelInterface.getTwistGeometricAtTip();
 	}
+
 
 	public void setTwistGeometricAtTip(Amount<Angle> epsilonG) {
 		setTheLiftingSurfacePanelInterface(ILiftingSurfacePanelCreator.Builder.from(_theLiftingSurfacePanelInterface).setTwistGeometricAtTip(epsilonG).build());

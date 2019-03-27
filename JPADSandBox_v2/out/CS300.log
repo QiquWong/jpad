@@ -12,8 +12,8 @@ NACELLES ===> C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\nacelle
 LANDING GEARS ===> C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\landing_gears
 CABIN CONFIGURATIONS ===> C:\Users\oem\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\cabin_configurations
 --------------
-10 [main] INFO ncsa.hdf.hdf5lib.H5 - HDF5 library: jhdf5
-10 [main] INFO ncsa.hdf.hdf5lib.H5 -  successfully loaded from java.library.path
+11 [main] INFO ncsa.hdf.hdf5lib.H5 - HDF5 library: jhdf5
+11 [main] INFO ncsa.hdf.hdf5lib.H5 -  successfully loaded from java.library.path
 De-serializing file: C:\Users\oem\JPAD\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterAerodynamicDatabase.xml ...
 database.databasefunctions.aerodynamics.AerodynamicDatabaseReader de-serialization complete
 De-serializing file: C:\Users\oem\JPAD\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterHighLiftDatabase.xml ...
@@ -725,7 +725,7 @@ Twists Break-Points ->
 	=====================================================
 	Spanwise discretized WING, size 30
 	........................................................................................................................
-	Y(m),	chord(m),		Xle(m),	Zle(m),	twist(deg)
+	Y(m),	chord(m),		Xle(m),	Zle(m),	twist(deg),\tA0l(deg)
 	........................................................................................................................
 	0,000	6,740	0,000	0,000	0,000
 	0,602	6,394	0,348	0,058	0,000
@@ -1065,7 +1065,7 @@ Twists Break-Points ->
 	=====================================================
 	Spanwise discretized WING, size 31
 	........................................................................................................................
-	Y(m),	chord(m),		Xle(m),	Zle(m),	twist(deg)
+	Y(m),	chord(m),		Xle(m),	Zle(m),	twist(deg),\tA0l(deg)
 	........................................................................................................................
 	0,000	5,945	0,000	0,000	0,000
 	0,536	5,636	0,310	0,052	0,000
@@ -1232,7 +1232,7 @@ Twists Break-Points ->
 	=====================================================
 	Spanwise discretized HORIZONTAL_TAIL, size 30
 	........................................................................................................................
-	Y(m),	chord(m),		Xle(m),	Zle(m),	twist(deg)
+	Y(m),	chord(m),		Xle(m),	Zle(m),	twist(deg),\tA0l(deg)
 	........................................................................................................................
 	0,000	3,360	0,000	0,000	0,000
 	0,206	3,290	0,129	0,020	0,000
@@ -1398,7 +1398,7 @@ Twists Break-Points ->
 	=====================================================
 	Spanwise discretized VERTICAL_TAIL, size 30
 	........................................................................................................................
-	Y(m),	chord(m),		Xle(m),	Zle(m),	twist(deg)
+	Y(m),	chord(m),		Xle(m),	Zle(m),	twist(deg),\tA0l(deg)
 	........................................................................................................................
 	0,000	5,530	0,000	0,000	0,000
 	0,212	5,405	0,212	0,000	0,000

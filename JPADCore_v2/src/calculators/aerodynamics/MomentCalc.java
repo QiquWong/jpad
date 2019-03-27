@@ -1605,6 +1605,7 @@ public class MomentCalc {
 					
 			theNasaBlackwellCalculator.calculate(anglesOfAttack.get(i));
 			clDistribution = theNasaBlackwellCalculator.getClTotalDistribution().toArray();
+			momentumPole = Amount.valueOf(5.06, SI.METER);
 			
 			for (int ii=0; ii<numberOfPointSemiSpanWise; ii++){
 				
@@ -1657,17 +1658,19 @@ public class MomentCalc {
 					MyArrayUtils.convertListOfAmountTodoubleArray(liftingSurfaceDimensionalY),
 					cCmFromCM);
 					
+			
+
 			liftingSurfaceMomentCoefficient.add(
 					i,
-					((2/(liftingSurfaceArea.doubleValue(SI.SQUARE_METRE)*liftingSurfaceMAC.doubleValue(SI.METER)))
+					(((2/(liftingSurfaceArea.doubleValue(SI.SQUARE_METRE)*liftingSurfaceMAC.doubleValue(SI.METER))))
 					* 
-					MyMathUtils.integrate1DSimpsonSpline(
+					(MyMathUtils.integrate1DSimpsonSpline(
 							MyArrayUtils.convertListOfAmountTodoubleArray(liftingSurfaceDimensionalY),
 							cCmFromCl)
-					*
+					+
 					MyMathUtils.integrate1DSimpsonSpline(
 							MyArrayUtils.convertListOfAmountTodoubleArray(liftingSurfaceDimensionalY),
-							cCmFromCM))
+							cCmFromCM)))
 					);
 			
 		}

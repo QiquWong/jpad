@@ -42,6 +42,7 @@ import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
 import javaslang.Tuple;
 import javaslang.Tuple2;
 import javaslang.Tuple5;
+import javaslang.Tuple6;
 import standaloneutils.GeometryCalc;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyArrayUtils;
@@ -2012,36 +2013,36 @@ public class LiftingSurface {
 			tuple0.map(
 				p -> _theLiftingSurfaceInterface.getPanels().get(0),
 				y -> Tuple.of(
-					y.stream()
+						y.stream()
 						// Innermost panel: Y's include 0 and panel's tip breakpoint Y
 						.filter(y_ -> y_.isLessThan( _theLiftingSurfaceInterface.getPanels().get(0).getSpan() ) 
 								|| y_.equals( _theLiftingSurfaceInterface.getPanels().get(0).getSpan()) )
 						.collect(Collectors.toList())
-					,
-					y.stream()
+						,
+						y.stream()
 						.filter(y_ -> y_.isLessThan( _theLiftingSurfaceInterface.getPanels().get(0).getSpan() ) 
 								|| y_.equals( _theLiftingSurfaceInterface.getPanels().get(0).getSpan()) )
 						.map(Y__ -> Amount.valueOf(0.0, SI.METRE))
 						.collect(Collectors.toList()) // initialize Chords
-					,
-					y.stream()
+						,
+						y.stream()
 						.filter(y_ -> y_.isLessThan( _theLiftingSurfaceInterface.getPanels().get(0).getSpan() )
 								|| y_.equals( _theLiftingSurfaceInterface.getPanels().get(0).getSpan()) )
 						.map(Y__ -> Amount.valueOf(0.0, SI.METRE))
 						.collect(Collectors.toList()) // initialize Xle
-					,
-					y.stream()
+						,
+						y.stream()
 						.filter(y_ -> y_.isLessThan( _theLiftingSurfaceInterface.getPanels().get(0).getSpan() )
 								|| y_.equals( _theLiftingSurfaceInterface.getPanels().get(0).getSpan()) )
 						.map(Y__ -> Amount.valueOf(0.0, SI.METRE))
 						.collect(Collectors.toList()) // initialize Zle
-					,
-					y.stream()
+						,
+						y.stream()
 						.filter(y_ -> y_.isLessThan( _theLiftingSurfaceInterface.getPanels().get(0).getSpan() ) 
 								|| y_.equals( _theLiftingSurfaceInterface.getPanels().get(0).getSpan()) )
 						.map(Y__ -> Amount.valueOf(0.0, SI.RADIAN))
 						.collect(Collectors.toList()) // initialize twists
-					)
+						)
 				)
 			);
 
@@ -2474,7 +2475,7 @@ public class LiftingSurface {
 		sb.append("\t=====================================================\n");
 		sb.append("\tSpanwise discretized " + _theLiftingSurfaceInterface.getType() + ", size " + _spanwiseDiscretizedVariables.size() + "\n");
 		sb.append("\t........................................................................................................................\n");
-		sb.append("\tY(m),\tchord(m),\t\tXle(m),\tZle(m),\ttwist(deg)\n");
+		sb.append("\tY(m),\tchord(m),\t\tXle(m),\tZle(m),\ttwist(deg),\\tA0l(deg)\n");
 		sb.append("\t........................................................................................................................\n");
 		_spanwiseDiscretizedVariables.stream()
 			.forEach( t5 ->	{
@@ -3460,13 +3461,14 @@ public class LiftingSurface {
 			.mapToObj(y -> Amount.valueOf(y, 1e-8, SI.METRE))
 			.collect(Collectors.toList());
 	}
+	
 
 	public List<Amount<Length>> getDiscretizedChords() {
 		return _spanwiseDiscretizedVariables.stream()
 				.mapToDouble(t5 ->
 					t5._2()
 					.to(SI.METRE).getEstimatedValue())
-				.mapToObj(y -> Amount.valueOf(y, 1e-8, SI.METRE))
+				.mapToObj(y -> Amount.valueOf(y, 1e-8, SI.METRE)) 
 				.collect(Collectors.toList());
 	}
 
@@ -3496,7 +3498,6 @@ public class LiftingSurface {
 				.mapToObj(y -> Amount.valueOf(y, 1e-9, SI.RADIAN))
 				.collect(Collectors.toList());
 	}
-
 	public List<Amount<Length>> getYBreakPoints() {
 		return _yBreakPoints;
 	}
