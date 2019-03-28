@@ -1577,27 +1577,20 @@ public class MomentCalc {
 			List<Amount<Length>> liftingSurfaceChordDistribution,
 			List<Amount<Length>> liftingSurfaceXLEDistribution,
 			List<Amount<Length>> liftingSurfaceXACDistribution,
-			List<List<Double>> airfoilClMatrix, //this is a list of list. each list is referred to an airfoil along the semispan
-			List<Amount<Angle>> anglesOfAttackClMatrix, // references angle of attack of the list of list airfoilClMatrix
 			Amount<Area> liftingSurfaceArea,
 			Amount<Length> momentumPole  //referred to the origin of LRF
 			){
 
 		List<Double> liftingSurfaceMomentCoefficient = new ArrayList<>();
 
-		double[] distancesArrayAC, clDistribution, alphaDistribution, clInducedDistributionAtAlphaNew, cmDistributionFromCl, cCmFromCl,
-		xcPfracC, cCmFromCM;
+		double[] distancesArrayAC, clDistribution, cmDistributionFromCl, cCmFromCl, cCmFromCM;
 
 		int numberOfAlphas = anglesOfAttack.size();
 		int numberOfPointSemiSpanWise = liftingSurfaceCl0Distribution.size();
 
 		for (int i=0; i<numberOfAlphas; i++){
 
-			double alphaCheck = anglesOfAttack.get(i).doubleValue(NonSI.DEGREE_ANGLE);
-			
 			clDistribution = new double[numberOfPointSemiSpanWise];
-			alphaDistribution = new double[numberOfPointSemiSpanWise];
-			clInducedDistributionAtAlphaNew = new double[numberOfPointSemiSpanWise];
 			distancesArrayAC = new double[numberOfPointSemiSpanWise];
 			cmDistributionFromCl = new double[numberOfPointSemiSpanWise];
 			cCmFromCl = new double[numberOfPointSemiSpanWise];
@@ -1605,7 +1598,7 @@ public class MomentCalc {
 					
 			theNasaBlackwellCalculator.calculate(anglesOfAttack.get(i));
 			clDistribution = theNasaBlackwellCalculator.getClTotalDistribution().toArray();
-			momentumPole = Amount.valueOf(5.06, SI.METER);
+	     	//momentumPole = Amount.valueOf(4.687, SI.METER);
 			
 			for (int ii=0; ii<numberOfPointSemiSpanWise; ii++){
 				

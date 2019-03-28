@@ -840,6 +840,39 @@ public class LiftingSurfaceAerodynamicsManager {
 							)
 					);
 		}
+		
+		public void pointAtCmConstant() {
+			_xacMRF.put(
+					MethodEnum.CMCONSTANT,
+					LSGeometryCalc.calcXacPointAtCmConstant(
+							theNasaBlackwellCalculator, 
+							_theLiftingSurface.getMeanAerodynamicChord(),
+							_theLiftingSurface.getMeanAerodynamicChordLeadingEdgeX(),
+							_yStationDistribution,
+							_clZeroDistribution,
+							_clAlphaDistribution.stream()
+							.map(cla -> cla.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue())
+							.collect(Collectors.toList()), 
+							_cmACDistribution,
+							_chordDistribution,
+							_xLEDistribution,
+							_xACDistribution,
+							_theLiftingSurface.getSurfacePlanform()
+							)
+					
+					);
+			_xacLRF.put(
+					MethodEnum.CMCONSTANT, 
+					Amount.valueOf(
+							_xacMRF.get(MethodEnum.CMCONSTANT)
+							*_theLiftingSurface.getMeanAerodynamicChord().doubleValue(SI.METER),
+							SI.METER)
+						.plus(getTheLiftingSurface()
+							
+								.getMeanAerodynamicChordLeadingEdgeX()
+							)
+					);
+		}
 
 	}
 	//............................................................................
@@ -3122,8 +3155,6 @@ public class LiftingSurfaceAerodynamicsManager {
 									_chordDistribution,
 									_xLEDistribution,
 									_xACDistribution,
-									_discretizedAirfoilsCl,
-									_alphaArrayClean, 
 									_theLiftingSurface.getSurfacePlanform(), 
 									_momentumPole
 									)

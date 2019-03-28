@@ -150,10 +150,19 @@ public class ACAerodynamicAndStabilityManagerUtils {
 		//.........................................................................................................................
 		//	AERODYNAMIC_CENTER
 		CalcXAC calcXAC = liftingSurfaceAerodynamicManager.new CalcXAC();
-		calcXAC.datcomNapolitano();
+		if(liftingSurfaceAerodynamicManager.getTheLiftingSurface().getType() == ComponentEnum.WING) {
+		calcXAC.pointAtCmConstant();
 		liftingSurfaceAerodynamicManager.setMomentumPole(
-				liftingSurfaceAerodynamicManager.getXacLRF().get(MethodEnum.NAPOLITANO_DATCOM )
+				liftingSurfaceAerodynamicManager.getXacLRF().get(MethodEnum.CMCONSTANT)
 				);
+		}
+		else {
+			calcXAC.datcomNapolitano();
+			liftingSurfaceAerodynamicManager.setMomentumPole(
+					liftingSurfaceAerodynamicManager.getXacLRF().get(MethodEnum.NAPOLITANO_DATCOM)
+					);
+		}
+//		calcXAC.deYoungHarper();
 
 		//.........................................................................................................................
 		//	CL_ALPHA
