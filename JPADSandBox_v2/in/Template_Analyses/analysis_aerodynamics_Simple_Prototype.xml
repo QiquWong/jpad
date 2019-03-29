@@ -28,9 +28,9 @@
 				<nacelle_dimensional_center_of_gravity_z_position unit="m">-1.59</nacelle_dimensional_center_of_gravity_z_position> <!-- in BRF --> 
 			</balance>
 			<global_data>
-				<alpha_body_initial unit="deg">-4</alpha_body_initial> <!-- MANDATORY-->
-				<alpha_body_final unit="deg">22</alpha_body_final> <!-- MANDATORY-->
-				<number_of_alpha_body></number_of_alpha_body> <!-- if not set, default value = 20 -->
+				<alpha_body_initial unit="deg">-4.027</alpha_body_initial> <!-- MANDATORY-->
+				<alpha_body_final unit="deg">16.554</alpha_body_final> <!-- MANDATORY-->
+				<number_of_alpha_body>21</number_of_alpha_body> <!-- if not set, default value = 20 -->
 				<beta_initial unit="deg">0</beta_initial> <!-- MANDATORY-->
 				<beta_final unit="deg">20</beta_final> <!-- MANDATORY-->
 				<number_of_beta>21</number_of_beta> <!-- if not set, default value = 20 -->
