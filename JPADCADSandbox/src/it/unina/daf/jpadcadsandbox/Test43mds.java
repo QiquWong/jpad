@@ -57,6 +57,7 @@ import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Scale;
 import javafx.scene.transform.Translate;
 import javafx.stage.Stage;
+import opencascade.BRepAlgoAPI_Fuse;
 import opencascade.BRepAlgoAPI_Section;
 import opencascade.BRepBuilderAPI_MakeEdge;
 import opencascade.BRepBuilderAPI_Transform;
@@ -64,7 +65,10 @@ import opencascade.BRepFilletAPI_MakeFillet2d;
 import opencascade.BRepOffsetAPI_MakeOffsetShape;
 import opencascade.BRepOffset_Mode;
 import opencascade.GeomAbs_JoinType;
+import opencascade.TopAbs_ShapeEnum;
+import opencascade.TopExp_Explorer;
 import opencascade.TopoDS;
+import opencascade.TopoDS_Shape;
 import opencascade.gp_Ax1;
 import opencascade.gp_Ax2;
 import opencascade.gp_Circ;
@@ -138,31 +142,53 @@ public class Test43mds extends Application {
 		List<OCCShape> engineShapes = AircraftCADUtils.getTurbofanEnginesCAD(
 				aircraft, generatePylons, exportSupportShapes, exportShells, exportSolids);
 		
-		exportShapes.addAll(fuselageShapes);
+//		exportShapes.addAll(fuselageShapes);
 		exportShapes.addAll(wingShapes);
-		exportShapes.addAll(hTailShapes);
-		exportShapes.addAll(vTailShapes);
+//		exportShapes.addAll(hTailShapes);
+//		exportShapes.addAll(vTailShapes);
 		exportShapes.addAll(canardShapes);
-		exportShapes.addAll(wingFairingShapes);
-		exportShapes.addAll(canardFairingShapes);
-		exportShapes.addAll(engineShapes);
+//		exportShapes.addAll(wingFairingShapes);
+//		exportShapes.addAll(canardFairingShapes);
+//		exportShapes.addAll(engineShapes);
+			
+//		// -------------------------------
+//		// Testing on FILLET capabilities
+//		char unionOperation = 'u';
+//		exportShapes.add((OCCShape) OCCUtils.theFactory.newShape(
+//				wingFairingShapes.get(0).reversed(),
+//				wingShapes.get(0).reversed(),
+//				unionOperation
+//				));
+//		
+//		TopoDS_Shape cutResults = new BRepAlgoAPI_Section(
+//				wingFairingShapes.get(0).getShape().Reversed(), 
+//				wingShapes.get(0).getShape().Reversed()
+//				).Shape();
+//		
+//		List<OCCWire> sectionWires = new ArrayList<>();
+//		TopExp_Explorer exp = new TopExp_Explorer();
+//		exp.Init(cutResults, TopAbs_ShapeEnum.TopAbs_WIRE);
+//		while (exp.More() == 1) {
+//			sectionWires.add((OCCWire) OCCUtils.theFactory.newShape(TopoDS.ToWire(exp.Current())));
+//			exp.Next();
+//		}
 		
 		OCCUtils.write("turbofan_test_01", FileExtension.STEP, exportShapes);
 		
-		// --------------------
-		// Extract the meshes
-		List<List<TriangleMesh>> triangleMeshes = exportShapes.stream()
-				.map(s -> (new OCCFXMeshExtractor(s.getShape())).getFaces().stream()
-						.map(f -> {
-							OCCFXMeshExtractor.FaceData faceData = new OCCFXMeshExtractor.FaceData(f, true);
-							faceData.load();
-							return faceData.getTriangleMesh();
-						})
-						.collect(Collectors.toList())
-						)
-				.collect(Collectors.toList());
-		
-		mesh = triangleMeshes;
+//		// --------------------
+//		// Extract the meshes
+//		List<List<TriangleMesh>> triangleMeshes = exportShapes.stream()
+//				.map(s -> (new OCCFXMeshExtractor(s.getShape())).getFaces().stream()
+//						.map(f -> {
+//							OCCFXMeshExtractor.FaceData faceData = new OCCFXMeshExtractor.FaceData(f, true);
+//							faceData.load();
+//							return faceData.getTriangleMesh();
+//						})
+//						.collect(Collectors.toList())
+//						)
+//				.collect(Collectors.toList());
+//		
+//		mesh = triangleMeshes;
 		
 		System.exit(0);
 		
