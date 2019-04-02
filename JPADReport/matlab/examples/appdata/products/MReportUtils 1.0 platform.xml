@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<productAdditionalComps>
+   <dependsOn>
+      <component>
+         <name>MReportUtils</name>
+         <locale/>
+         <platformList>
+            <platform>win64</platform>
+         </platformList>
+         <version>1.0</version>
+      </component>
+   </dependsOn>
+   <isControllingProduct>true</isControllingProduct>
+   <platform>win64</platform>
+   <productName>MReportUtils</productName>
+   <productNumber>5000</productNumber>
+   <productBaseCode>MReportUtils</productBaseCode>
+   <productVersion>1.0</productVersion>
+   <releaseFamily>R2018b</releaseFamily>
+   <releaseDescription>R2018b</releaseDescription>
+</productAdditionalComps>
