@@ -8,7 +8,7 @@ import standaloneutils.JPADXmlReader;
 public final class CmdLineUtils {
 	
 	public static CmdLineParser theCmdLineParser;
-	public static ArgumentsCavasSandbox va;
+	public static MyArgumentsForTesting va;
 	public static JPADXmlReader reader;
 
 }

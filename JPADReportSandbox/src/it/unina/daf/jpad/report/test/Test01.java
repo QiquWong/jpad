@@ -27,8 +27,9 @@ public class Test01 {
 		String pathToMatlabWorkingDirectory = CmdLineUtils.va.getMatlabWorkingDirectory().getAbsolutePath();
 		
 		try {
-			
+			System.out.println("------------------ JPADReport :: START -----------------");
 			JPADReportUtils.makeReport02a(aircraft, pathToMatlabWorkingDirectory);
+			System.out.println("------------------ JPADReport :: COMPLETE -----------------");
 			
 		} catch (Exception e) {
 			e.printStackTrace();

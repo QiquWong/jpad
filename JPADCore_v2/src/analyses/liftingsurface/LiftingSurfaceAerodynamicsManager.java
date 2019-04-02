@@ -23,6 +23,7 @@ import aircraft.components.liftingSurface.airfoils.Airfoil;
 import analyses.OperatingConditions;
 import calculators.aerodynamics.AerodynamicCalc;
 import calculators.aerodynamics.AirfoilCalc;
+import calculators.aerodynamics.AlphaEffective;
 import calculators.aerodynamics.AnglesCalc;
 import calculators.aerodynamics.DragCalc;
 import calculators.aerodynamics.LiftCalc;
@@ -836,6 +837,39 @@ public class LiftingSurfaceAerodynamicsManager {
 					.plus(getTheLiftingSurface()
 							
 							.getMeanAerodynamicChordLeadingEdgeX()
+							)
+					);
+		}
+		
+		public void pointAtCmConstant() {
+			_xacMRF.put(
+					MethodEnum.CMCONSTANT,
+					LSGeometryCalc.calcXacPointAtCmConstant(
+							theNasaBlackwellCalculator, 
+							_theLiftingSurface.getMeanAerodynamicChord(),
+							_theLiftingSurface.getMeanAerodynamicChordLeadingEdgeX(),
+							_yStationDistribution,
+							_clZeroDistribution,
+							_clAlphaDistribution.stream()
+							.map(cla -> cla.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue())
+							.collect(Collectors.toList()), 
+							_cmACDistribution,
+							_chordDistribution,
+							_xLEDistribution,
+							_xACDistribution,
+							_theLiftingSurface.getSurfacePlanform()
+							)
+					
+					);
+			_xacLRF.put(
+					MethodEnum.CMCONSTANT, 
+					Amount.valueOf(
+							_xacMRF.get(MethodEnum.CMCONSTANT)
+							*_theLiftingSurface.getMeanAerodynamicChord().doubleValue(SI.METER),
+							SI.METER)
+						.plus(getTheLiftingSurface()
+							
+								.getMeanAerodynamicChordLeadingEdgeX()
 							)
 					);
 		}
@@ -3120,14 +3154,15 @@ public class LiftingSurfaceAerodynamicsManager {
 									_cmACDistribution,
 									_chordDistribution,
 									_xLEDistribution,
-									_discretizedAirfoilsCl,
-									_alphaArrayClean, 
+									_xACDistribution,
 									_theLiftingSurface.getSurfacePlanform(), 
 									_momentumPole
 									)
 							)
 
 					);
+			
+		
 		}
 		
 	}

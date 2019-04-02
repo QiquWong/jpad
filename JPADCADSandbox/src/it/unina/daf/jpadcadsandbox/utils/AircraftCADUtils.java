@@ -3156,7 +3156,7 @@ public class AircraftCADUtils {
 					new int[] {1};
 			
 			OCCShell filletRightShell = OCCUtils.applyFilletOnShell(
-					rightShell, edgeIndexes, filletRadius);
+					rightShell, edgeIndexes, filletRadius)._1();
 			
 			OCCShell filletLeftShell = (OCCShell) OCCUtils.getShapeMirrored(
 					filletRightShell, 

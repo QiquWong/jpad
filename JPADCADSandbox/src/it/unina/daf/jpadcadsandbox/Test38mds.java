@@ -244,11 +244,9 @@ public class Test38mds {
 		caseFaces.remove(4);
 		caseFaces.addAll(lipFaces);
 		
-		OCCShell caseShell = (OCCShell) OCCUtils.theFactory.newShellFromAdjacentShapes(
+		OCCShape caseSolid = (OCCShape) OCCUtils.theFactory.newSolidFromAdjacentShapes(
 				caseFaces.toArray(new OCCShape[caseFaces.size()])
 				);
-		
-		OCCShape caseSolid = (OCCShape) OCCUtils.theFactory.newSolidFromAdjacentShells(caseShell);
 		
 		engineSolid.remove(0);
 		engineSolid.remove(0);

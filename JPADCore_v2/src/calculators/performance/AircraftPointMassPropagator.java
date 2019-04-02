@@ -1921,7 +1921,9 @@ public class AircraftPointMassPropagator {
 						Amount.valueOf(airspeed, SI.METERS_PER_SECOND)), 
 				Amount.valueOf(0.0, SI.CELSIUS), 
 				1.0,
-				1.0 /* Thrust Correction Factor */
+				1.0, /* Thrust Correction Factor */
+				aircraft.getPowerPlant().getEngineList().get(0).getEngineType(),				
+				aircraft.getPowerPlant().getEngineList().get(0).getEtaPropeller()
 				).doubleValue(SI.NEWTON);
 	}
 

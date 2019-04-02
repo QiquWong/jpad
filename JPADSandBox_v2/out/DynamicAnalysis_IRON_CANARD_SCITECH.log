@@ -1,17 +1,30 @@
 -------------------------------------------------------------
 ------------------ JPADReport modeling test -----------------
 -------------------------------------------------------------
-MATLAB WORKING DIRECTORY ===> D:\JPAD\jpad\JPADReport\matlab\examples
-AIRCRAFT INPUT ===> D:\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\aircraft_IRON_CANARD_LOOP2_FINAL.xml
-AIRFOILS ===> D:\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\lifting_surfaces\airfoils
-FUSELAGES ===> D:\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\fuselages
-LIFTING SURFACES ===> D:\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\lifting_surfaces
-ENGINES ===> D:\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\engines
-NACELLES ===> D:\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\nacelles
-LANDING GEARS ===> D:\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\landing_gears
-CABIN CONFIGURATIONS ===> D:\JPAD\jpad\JPADSandBox_v2\in\Template_Aircraft\cabin_configurations
+MATLAB WORKING DIRECTORY ===> d:\agodemar\github\jpad\JPADReport\matlab\examples
+AIRCRAFT INPUT ===> d:\agodemar\github\jpad\JPADSandBox_v2\in\Template_Aircraft\aircraft_IRON_CANARD_LOOP2_FINAL.xml
+AIRFOILS ===> D:\agodemar\github\jpad\JPADSandBox_v2\in\Template_Aircraft\lifting_surfaces\airfoils
+FUSELAGES ===> D:\agodemar\github\jpad\JPADSandBox_v2\in\Template_Aircraft\fuselages
+LIFTING SURFACES ===> D:\agodemar\github\jpad\JPADSandBox_v2\in\Template_Aircraft\lifting_surfaces
+ENGINES ===> D:\agodemar\github\jpad\JPADSandBox_v2\in\Template_Aircraft\engines
+NACELLES ===> D:\agodemar\github\jpad\JPADSandBox_v2\in\Template_Aircraft\nacelles
+LANDING GEARS ===> D:\agodemar\github\jpad\JPADSandBox_v2\in\Template_Aircraft\landing_gears
+CABIN CONFIGURATIONS ===> D:\agodemar\github\jpad\JPADSandBox_v2\in\Template_Aircraft\cabin_configurations
 --------------
 SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
 SLF4J: Defaulting to no-operation (NOP) logger implementation
 SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.
-De-serializing file: D:\JPAD\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterAerodynamicDatabase.xml ...
+De-serializing file: d:\agodemar\github\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterAerodynamicDatabase.xml ...
+database.databasefunctions.aerodynamics.AerodynamicDatabaseReader de-serialization complete
+De-serializing file: d:\agodemar\github\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterHighLiftDatabase.xml ...
+database.databasefunctions.aerodynamics.HighLiftDatabaseReader de-serialization complete
+De-serializing file: d:\agodemar\github\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterFusDesDatabase.xml ...
+database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader de-serialization complete
+De-serializing file: d:\agodemar\github\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterVeDSCDatabase.xml ...
+database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serialization complete
+Creating the Aircraft ... 
+------------------ JPADReport :: START -----------------
+Unable to initialize connector: null
+------------------ JPADReport :: COMPLETE -----------------
+
+	DONE.

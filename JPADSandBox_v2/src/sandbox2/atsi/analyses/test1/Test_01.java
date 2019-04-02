@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +29,7 @@ import analyses.OperatingConditions;
 import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager;
 import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcCLAlpha;
 import calculators.aerodynamics.LiftCalc;
+import calculators.performance.AircraftPointMassPropagator;
 import configuration.MyConfiguration;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.ConditionEnum;
@@ -60,8 +63,20 @@ public class Test_01 {
 		// Import the aircraft
 		Aircraft aircraft = AircraftUtils.importAircraft(args);
 
+		if (aircraft == null) {
+			System.err.println("Could not load the selected aircraft!");
+			System.exit(1);
+		}
+
 		// Import operating conditions
 		OperatingConditions operatingConditions = AircraftUtils.importOperatingCondition(args);
+
+		////////////////////////////////////////////////////////////////////////
+		// Folders tree Initialization
+		String folderPath = ""; 
+		String aircraftFolder = ""; 
+		String subfolderPath = "";
+		String pathToAnalysesXML = "";
 
 		// Perform analysis
 		try {
@@ -73,57 +88,14 @@ public class Test_01 {
 
 			////////////////////////////////////////////////////////////////////////
 			// Set the folders tree
-			String folderPath = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR); 
-			String aircraftFolder = JPADStaticWriteUtils.createNewFolder(folderPath + aircraft.getId() + File.separator);
-			String subfolderPath = JPADStaticWriteUtils.createNewFolder(aircraftFolder);
+			folderPath = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR); 
+			aircraftFolder = JPADStaticWriteUtils.createNewFolder(folderPath + aircraft.getId() + File.separator);
+			subfolderPath = JPADStaticWriteUtils.createNewFolder(aircraftFolder);
+			pathToAnalysesXML = CmdLineUtils.va.getInputFileAnalyses().getAbsolutePath();
 
 			FileUtils.cleanDirectory(new File(subfolderPath));
-
-			String subfolderViewPath = JPADStaticWriteUtils.createNewFolder(aircraftFolder + "VIEWS" + File.separator);
-			String subfolderViewComponentsPath = JPADStaticWriteUtils.createNewFolder(subfolderViewPath + "COMPONENTS");
-			if(aircraft != null) {
-				AircraftAndComponentsViewPlotUtils.createAircraftTopView(aircraft, subfolderViewPath);
-				AircraftAndComponentsViewPlotUtils.createAircraftSideView(aircraft, subfolderViewPath);
-				AircraftAndComponentsViewPlotUtils.createAircraftFrontView(aircraft, subfolderViewPath);
-			}
-			if(aircraft.getFuselage() != null) {
-				AircraftAndComponentsViewPlotUtils.createFuselageTopView(aircraft, subfolderViewComponentsPath);
-				AircraftAndComponentsViewPlotUtils.createFuselageSideView(aircraft, subfolderViewComponentsPath);
-				AircraftAndComponentsViewPlotUtils.createFuselageFrontView(aircraft, subfolderViewComponentsPath);
-			}
-			if(aircraft.getWing() != null) {
-				AircraftAndComponentsViewPlotUtils.createWingPlanformView(aircraft, subfolderViewComponentsPath);
-				AircraftAndComponentsViewPlotUtils.createEquivalentWingView(aircraft, subfolderViewComponentsPath);
-			}
-			if(aircraft.getHTail() != null)
-				AircraftAndComponentsViewPlotUtils.createHTailPlanformView(aircraft, subfolderViewComponentsPath);
-			if(aircraft.getVTail() != null)
-				AircraftAndComponentsViewPlotUtils.createVTailPlanformView(aircraft, subfolderViewComponentsPath);
-			if(aircraft.getCanard() != null)
-				AircraftAndComponentsViewPlotUtils.createCanardPlanformView(aircraft, subfolderViewComponentsPath);
-			if(aircraft.getNacelles() != null) {
-				AircraftAndComponentsViewPlotUtils.createNacelleTopView(aircraft, subfolderViewComponentsPath);
-				AircraftAndComponentsViewPlotUtils.createNacelleSideView(aircraft, subfolderViewComponentsPath);
-				AircraftAndComponentsViewPlotUtils.createNacelleFrontView(aircraft, subfolderViewComponentsPath);
-			}
-
-
-			String pathToAnalysesXML = CmdLineUtils.va.getInputFileAnalyses().getAbsolutePath();
-
-			////////////////////////////////////////////////////////////////////////
-			// Analyzing the aircraft
-			System.setOut(originalOut);
-			System.out.println("\n\n\tRunning requested analyses ... \n\n");
-			System.setOut(filterStream);
-
-			aircraft.setTheAnalysisManager(ACAnalysisManager.importFromXML(pathToAnalysesXML, aircraft, operatingConditions));
-			aircraft.getTheAnalysisManager().calculateDependentVariables();
-			System.setOut(originalOut);
-			aircraft.getTheAnalysisManager().doAnalysis(aircraft, operatingConditions, subfolderPath);
-			System.setOut(originalOut);
-			System.out.println("\n\n\tDone!! \n\n");
-			System.setOut(filterStream);
-
+			AircraftUtils.createViews(aircraft, aircraftFolder);
+			AircraftUtils.performAnalyses(aircraft, operatingConditions, pathToAnalysesXML, subfolderPath);
 
 			////////////////////////////////////////////////////////////////////////
 			// Printing results (activating system.out)
@@ -135,8 +107,7 @@ public class Test_01 {
 			long estimatedTime = System.currentTimeMillis() - startTime;
 			System.out.println("\n\n\t TIME ESTIMATED = " + (estimatedTime/1000) + " seconds");
 
-		} catch (IOException | HDF5LibraryException e) {
-			// TODO Auto-generated catch block
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
@@ -1352,6 +1323,108 @@ public class Test_01 {
 				System.out.println(sb);
 
 			}
+
+
+			// CREATION OF THE POINT MASS PROPAGATOR OBJECT. THIS WILL PERFORM THE SIMULATION.
+			AircraftPointMassPropagator aircraftPointMassPropagator = null;
+			try {
+				aircraftPointMassPropagator = AircraftUtils.importMissionScriptFromXML(
+						pathToAnalysesXML,
+						aircraft);
+				if(aircraftPointMassPropagator == null) {
+					System.err.println("Could not create the point mass propagator!");
+					System.exit(1);
+				}
+			} catch (IOException e) {
+				System.err.println("Could not import the mission script!");
+				System.exit(1);
+			}
+
+			//----------------------------------------------------------------------------------------------------
+			// INITIAL DATA (TODO)
+			// initial mass
+			double mass0 = 53000.0; // kg
+
+			// initial air density (at initial altitude)
+			double rho0 = AtmosphereCalc.getDensity(aircraftPointMassPropagator.getAltitude0(), 0.0); // kg/m^3
+
+			// initial lift
+			double lift0 = mass0*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND)
+					*Math.cos(aircraftPointMassPropagator.getFlightpathAngle0())
+					/Math.cos(aircraftPointMassPropagator.getBankAngle0());
+			// initial lift coefficient
+			double cL0 = lift0
+					/(0.5*rho0
+							*Math.pow(aircraftPointMassPropagator.getSpeedInertial0(), 2)
+							*aircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
+							);
+			// initial drag
+			// double cD0 = 0.025; <-- duplicated TODO CHECK
+			double aspectRatio = aircraft.getWing().getAspectRatio();
+			double oswaldFactor = 0.85;
+			double kD = Math.PI * aspectRatio * oswaldFactor;
+			double airDensity = AtmosphereCalc.getDensity(aircraftPointMassPropagator.getAltitude0(), 0.0);
+			double kD0 = 0.5 * airDensity * surfaceWing.doubleValue(SI.SQUARE_METRE) * cD0;
+			double kD1 = 2.0/(airDensity * surfaceWing.doubleValue(SI.SQUARE_METRE) * kD);
+			double drag0 = kD0 * Math.pow(aircraftPointMassPropagator.getSpeedInertial0(), 2) 
+					+ kD1 * Math.pow(lift0, 2)/Math.pow(aircraftPointMassPropagator.getSpeedInertial0(), 2);
+
+			double thrust0 = drag0  // 200000.0; // N
+					+ mass0*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND)*Math.sin(aircraftPointMassPropagator.getFlightpathAngle0());
+
+			double xT0 = thrust0/aircraftPointMassPropagator.getkTi().doubleValue(MyUnits.ONE_PER_SECOND_SQUARED);
+			double xL0 = lift0/aircraftPointMassPropagator.getkLi().doubleValue(MyUnits.ONE_PER_SECOND_SQUARED);
+
+
+			// complete the initial settings
+			aircraftPointMassPropagator.setXThrust0(xT0);
+			aircraftPointMassPropagator.setThrust0(thrust0);
+			aircraftPointMassPropagator.setXLift0(xL0);
+			aircraftPointMassPropagator.setLift0(lift0);
+			aircraftPointMassPropagator.setMass0(mass0);
+
+			System.out.println("========================================");
+			System.out.println("m(0)   = " + mass0);
+			System.out.println("rho(0) = " + rho0);			
+			System.out.println("xL(0)  = " + xL0);
+			System.out.println("L(0)   = " + lift0);
+			System.out.println("CL(0)  = " + cL0);
+			System.out.println("D(0)   = " + lift0);
+			System.out.println("xT(0)  = " + xT0);
+			System.out.println("T(0)   = " + thrust0);
+			System.out.println("========================================");
+
+			//----------------------------------------------------------------------------------------------------------------
+
+			// Final time
+			aircraftPointMassPropagator.setTimeFinal(180.0); // sec
+
+			aircraftPointMassPropagator.enableCharts(true);
+
+			// propagate in time
+			aircraftPointMassPropagator.propagate();
+
+			// Plot
+			Path path = Paths.get(subfolderPath);
+			String missionID = path.getFileName().toString().replace("analysis_mission_simulation_", "").replace(".xml", "");
+			String missionOutputDir = JPADStaticWriteUtils.createNewFolder(
+					aircraftFolder + "MISSION_SIM" + File.separator);
+			missionOutputDir = JPADStaticWriteUtils.createNewFolder(
+					missionOutputDir + File.separator + missionID + File.separator);
+			if (aircraftPointMassPropagator.chartsEnabled())
+				System.out.println("\nPlots saved in folder: " + missionOutputDir);
+
+			aircraftPointMassPropagator.setOutputChartDir(missionOutputDir);
+			try {
+				aircraftPointMassPropagator.createOutputCharts(0.5);
+			} catch (InstantiationException | IllegalAccessException e) {
+				System.err.println("Could not create charts!");
+				System.exit(1);
+			}
+
+			aircraftPointMassPropagator.getTheIntegrator().clearEventHandlers();
+			aircraftPointMassPropagator.getTheIntegrator().clearStepHandlers();
+
 		} else {
 			System.err.println("No analysis manager found");
 

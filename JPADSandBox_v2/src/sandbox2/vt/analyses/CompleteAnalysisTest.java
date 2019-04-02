@@ -1,12 +1,12 @@
 package sandbox2.vt.analyses;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -210,6 +210,8 @@ public class CompleteAnalysisTest extends Application {
 
 			//------------------------------------------------------------------------------------
 			// Setup database(s)
+			long databaseAndFoldersStartTime = System.currentTimeMillis();
+			
 			MyConfiguration.initWorkingDirectoryTree(
 					MyConfiguration.databaseDirectory,
 					MyConfiguration.inputDirectory,
@@ -246,13 +248,16 @@ public class CompleteAnalysisTest extends Application {
 							),
 					databaseFolderPath
 					);
-
+			
+			long databaseAndFoldersEndTime = System.currentTimeMillis();
 			////////////////////////////////////////////////////////////////////////
 			// Aircraft creation
 			System.out.println("\n\n\tCreating the Aircraft ... \n\n");
 			
 			// deactivating system.out
 			System.setOut(filterStream);
+			
+			long aircraftStartTime = System.currentTimeMillis();
 			
 			// reading aircraft from xml ... 
 			theAircraft = Aircraft.importFromXML(
@@ -274,14 +279,18 @@ public class CompleteAnalysisTest extends Application {
 			System.out.println(theAircraft.toString());
 			System.setOut(filterStream);
 			
+			long aircraftEndTime = System.currentTimeMillis();
 			
 			////////////////////////////////////////////////////////////////////////
 			// Set the folders tree
+			long folderCleaningStartTime = System.currentTimeMillis();
 			String folderPath = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR); 
 			String aircraftFolder = JPADStaticWriteUtils.createNewFolder(folderPath + theAircraft.getId() + File.separator);
 			String subfolderPath = JPADStaticWriteUtils.createNewFolder(aircraftFolder);
 			FileUtils.cleanDirectory(new File(subfolderPath)); 
-
+			long folderCleaningEndTime = System.currentTimeMillis();
+			
+			long aircraftViewsStartTime = System.currentTimeMillis();
 			String subfolderViewPath = JPADStaticWriteUtils.createNewFolder(aircraftFolder + "VIEWS" + File.separator);
 			String subfolderViewComponentsPath = JPADStaticWriteUtils.createNewFolder(subfolderViewPath + "COMPONENTS");
 			if(theAircraft != null) {
@@ -309,9 +318,12 @@ public class CompleteAnalysisTest extends Application {
 				AircraftAndComponentsViewPlotUtils.createNacelleSideView(theAircraft, subfolderViewComponentsPath);
 				AircraftAndComponentsViewPlotUtils.createNacelleFrontView(theAircraft, subfolderViewComponentsPath);
 			}
+			long aircraftViewsEndTime = System.currentTimeMillis();
 			
 			////////////////////////////////////////////////////////////////////////
 			// Defining the operating conditions ...
+			long operatingConditionsStartTime = System.currentTimeMillis();
+			
 			System.setOut(originalOut);
 			System.out.println("\n\n\tDefining the operating conditions ... \n\n");
 			System.setOut(filterStream);
@@ -320,8 +332,11 @@ public class CompleteAnalysisTest extends Application {
 			System.out.println(theOperatingConditions.toString());
 			System.setOut(filterStream);
 			
+			long operatingConditionsEndTime = System.currentTimeMillis();
 			////////////////////////////////////////////////////////////////////////
 			// Analyzing the aircraft
+			long analysisStartTime = System.currentTimeMillis();
+			
 			System.setOut(originalOut);
 			System.out.println("\n\n\tRunning requested analyses ... \n\n");
 			System.setOut(filterStream);
@@ -333,6 +348,7 @@ public class CompleteAnalysisTest extends Application {
 			System.out.println("\n\n\tDone!! \n\n");
 			System.setOut(filterStream);
 			
+			long analysisEndTime = System.currentTimeMillis();
 			////////////////////////////////////////////////////////////////////////
 			// Printing results (activating system.out)
 			System.setOut(originalOut);
@@ -340,8 +356,21 @@ public class CompleteAnalysisTest extends Application {
 			System.out.println(theAircraft.getTheAnalysisManager().toString());
 			System.out.println("\n\n\tDone!! \n\n");
 			
+			long databaseAndFoldersEstimatedTime = databaseAndFoldersEndTime - databaseAndFoldersStartTime;
+			long aircraftEstimatedTime = aircraftEndTime - aircraftStartTime;
+			long foldersCleaningEstimatedTime = folderCleaningEndTime - folderCleaningStartTime;
+			long aircraftViewsEstimatedTime = aircraftViewsEndTime - aircraftViewsStartTime;
+			long operatingConditionsEstimatedTime = operatingConditionsEndTime - operatingConditionsStartTime;
+			long analysisEstimatedTime = analysisEndTime - analysisStartTime;
 			long estimatedTime = System.currentTimeMillis() - startTime;
-			System.out.println("\n\n\t TIME ESTIMATED = " + (estimatedTime/1000) + " seconds");
+			
+			System.out.println("\n\t TIME ESTIMATED FOR DATABASE AND FOLDERS CREATION = " + TimeUnit.MILLISECONDS.toSeconds(databaseAndFoldersEstimatedTime) + " seconds");
+			System.out.println("\n\t TIME ESTIMATED FOR AIRCRAFT CREATION = " + TimeUnit.MILLISECONDS.toSeconds(aircraftEstimatedTime) + " seconds");
+			System.out.println("\n\t TIME ESTIMATED FOR FOLDERS CLEANING = " + TimeUnit.MILLISECONDS.toSeconds(foldersCleaningEstimatedTime) + " seconds");
+			System.out.println("\n\t TIME ESTIMATED FOR AIRCRAFT VIEWS CREATION = " + TimeUnit.MILLISECONDS.toSeconds(aircraftViewsEstimatedTime) + " seconds");
+			System.out.println("\n\t TIME ESTIMATED FOR OPERATING CONDITIONS = " + TimeUnit.MILLISECONDS.toSeconds(operatingConditionsEstimatedTime) + " seconds");
+			System.out.println("\n\t TIME ESTIMATED FOR ANALYSIS = " + TimeUnit.MILLISECONDS.toSeconds(analysisEstimatedTime) + " seconds");
+			System.out.println("\n\t TOTAL TIME ESTIMATED = " + TimeUnit.MILLISECONDS.toSeconds(estimatedTime) + " seconds");
 			
 			System.setOut(filterStream);
 			

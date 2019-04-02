@@ -43,6 +43,7 @@ import configuration.enumerations.AerodynamicAndStabilityPlotEnum;
 import configuration.enumerations.AerodynamicAnlaysisApproachEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.ConditionEnum;
+import configuration.enumerations.FoldersEnum;
 import configuration.enumerations.MethodEnum;
 import javaslang.Tuple2;
 import standaloneutils.JPADXmlReader;
@@ -298,21 +299,21 @@ public class ACAerodynamicAndStabilityManager_v2 {
 					// XCG AND ZCG POSITIONS FUSELAGE
 					if(theAircraft.getFuselage() != null) {
 						xCGFuselage = theAircraft.getTheAnalysisManager().getTheBalance().getCGMap().get(ComponentEnum.FUSELAGE).getXBRF().to(SI.METER);
-						zCGFuselage = theAircraft.getTheAnalysisManager().getTheBalance().getCGMap().get(ComponentEnum.FUSELAGE).getXBRF().to(SI.METER);
+						zCGFuselage = theAircraft.getTheAnalysisManager().getTheBalance().getCGMap().get(ComponentEnum.FUSELAGE).getZBRF().to(SI.METER);
 					}
 
 					//---------------------------------------------------------------
 					// XCG AND ZCG POSITIONS LANDING GEAR
 					if(theAircraft.getLandingGears() != null) {
 						xCGLandingGears = theAircraft.getTheAnalysisManager().getTheBalance().getCGMap().get(ComponentEnum.LANDING_GEAR).getXBRF().to(SI.METER);
-						zCGLandingGears = theAircraft.getTheAnalysisManager().getTheBalance().getCGMap().get(ComponentEnum.LANDING_GEAR).getXBRF().to(SI.METER);
+						zCGLandingGears = theAircraft.getTheAnalysisManager().getTheBalance().getCGMap().get(ComponentEnum.LANDING_GEAR).getZBRF().to(SI.METER);
 					}
 
 					//---------------------------------------------------------------
 					// XCG AND ZCG POSITIONS NACELLE
 					if(theAircraft.getNacelles() != null) {
 						xCGNacelles = theAircraft.getTheAnalysisManager().getTheBalance().getCGMap().get(ComponentEnum.NACELLE).getXBRF().to(SI.METER);
-						zCGNacelles = theAircraft.getTheAnalysisManager().getTheBalance().getCGMap().get(ComponentEnum.NACELLE).getXBRF().to(SI.METER);
+						zCGNacelles = theAircraft.getTheAnalysisManager().getTheBalance().getCGMap().get(ComponentEnum.NACELLE).getZBRF().to(SI.METER);
 					}
 				}
 				else {
@@ -2122,6 +2123,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 		calculateDependentData();
 		calculateComponentsData();
 
+		System.out.println("ciao");
 	}
 
 	private void calculateDependentData() {
@@ -2747,7 +2749,7 @@ public class ACAerodynamicAndStabilityManager_v2 {
 		}
 	}
 	
-	public void calculate(String resultsFolderPath) {
+	public void calculate(String resultsFolderPath) throws IOException {
 		
 		String aerodynamicAndStabilityFolderPath = JPADStaticWriteUtils.createNewFolder(
 				resultsFolderPath 
@@ -2759,6 +2761,237 @@ public class ACAerodynamicAndStabilityManager_v2 {
 		
 		initializeAnalysis();
 		calculateAircraftData();
+		
+		//WRITE HERE ON XLS FILE TO CHECK IF RESULTS ARE OK
+
+		String filenameWithPathAndExt = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR) +  getTheAerodynamicBuilderInterface().getTheAircraft().getId() +  File.separator + "Aerdoynamic Comparison Results"  ; 
+		Workbook wb;
+		File outputFile = new File(filenameWithPathAndExt + ".xlsx");
+		if (outputFile.exists()) { 
+			outputFile.delete();		
+			System.out.println("Deleting the old .xls file ...");
+		} 
+
+		if (outputFile.getName().endsWith(".xls")) {
+			wb = new HSSFWorkbook();
+		}
+		else if (outputFile.getName().endsWith(".xlsx")) {
+			wb = new XSSFWorkbook();
+		}
+		else {
+			throw new IllegalArgumentException("I don't know how to create that kind of new file");
+		}
+
+		CellStyle styleHead = wb.createCellStyle();
+		styleHead.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+		styleHead.setFillPattern(CellStyle.SOLID_FOREGROUND);
+		Font font = wb.createFont();
+		font.setFontHeightInPoints((short) 20);
+		font.setColor(IndexedColors.BLACK.getIndex());
+		font.setBoldweight(Font.BOLDWEIGHT_BOLD);
+		styleHead.setFont(font);
+
+		CellStyle styleHeader = wb.createCellStyle();
+		Font fontBold = wb.createFont();
+		fontBold.setFontHeightInPoints((short) 15);
+		fontBold.setColor(IndexedColors.BLACK.getIndex());
+		fontBold.setBoldweight(Font.BOLDWEIGHT_BOLD);
+		styleHeader.setFont(fontBold);
+		
+		// SET VALUES
+		//---
+		
+		//------------------------------------------------------------------------------------------------------------------------
+		// CREATING CELLS ...
+		//--------------------------------------------------------------------------------
+		
+		Sheet stallConditionSheet = wb.createSheet("Stall condition xcg = " + _theAerodynamicBuilderInterface.getXCGAircraft().get(0));
+		List<Object[]> dataListstallCondition = new ArrayList<>();
+
+		List<Integer> boldRowIndex = new ArrayList<>();
+		int currentBoldIndex = 1;
+
+		dataListstallCondition.add(new Object[] {"Alpha Wing","Alpha body","CL wing","CD wing",
+				"CM wing", "", "alpha h tail","CL htail ref to Sh", "CL htail ref to Sw", 
+				"CD htail ref to Sh", "CD htail ref to Sw", "CM htail ref to Sh" , "", 
+				"CL fuselage", "CD fuselage", 
+				"CM fuselage",
+				"", 
+				"CZ wing",
+				"CX wing",
+				"CMcg wing",
+				"", 
+				"CZ htail",
+				"CX htail",
+				"CMcg htail",
+				"", 
+				"CZ body",
+				"CX body",
+				"CMcg body",
+				"",
+				"",
+				"CMcg wing-body untrimmed",
+				"CMcg wing-body-htail untrimmed",
+				"CL wing-body untrimmed",
+				"CL htail trimmed",
+				"delta CL htail trimmed",
+				"CD htail trimmed ref to Sh",
+				"CD htail trimmed ref to Sw",
+				"delta CD htail trimmed",
+				"delta equilibratore",
+				"CL total trimmed",
+				"CD total trimmed",
+				"CM total trimmed",
+				});
+
+		
+		
+		for(int i=0; i<_alphaBodyList.size(); i++) {
+			dataListstallCondition.add(new Object[] {
+			_alphaWingList.get(i).doubleValue(NonSI.DEGREE_ANGLE),
+			_alphaBodyList.get(i).doubleValue(NonSI.DEGREE_ANGLE),
+			_current3DWingLiftCurve.get(i),
+			"",
+			_current3DWingMomentCurve.get(i),
+			"",
+			_alphaHTailList.get(i).doubleValue(NonSI.DEGREE_ANGLE),
+			_current3DHorizontalTailLiftCurve.get(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE)).get(i),
+			_current3DHorizontalTailLiftCurve.get(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE)).get(i)
+			*_theAerodynamicBuilderInterface.getHTailDynamicPressureRatio()
+			*_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getTheLiftingSurface().getSurfacePlanform().doubleValue(SI.SQUARE_METRE)/
+			_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getTheLiftingSurface().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
+			"",
+			"",
+			_current3DHorizontalTailMomentCurve.get(i),
+			"",
+			0.0,
+			_fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE)
+			.getPolar3DCurve()
+			.get(_theAerodynamicBuilderInterface.getComponentTaskList()
+					.get(ComponentEnum.FUSELAGE)
+					.get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_FUSELAGE))[i],
+			_fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE)
+			.getMoment3DCurve()
+			.get(_theAerodynamicBuilderInterface.getComponentTaskList()
+					.get(ComponentEnum.FUSELAGE)
+					.get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_FUSELAGE))[i],
+			"",
+			_current3DWingLiftCurve.get(i)*Math.cos(_alphaWingList.get(i).doubleValue(SI.RADIAN)),
+			_current3DWingLiftCurve.get(i)*Math.sin(_alphaWingList.get(i).doubleValue(SI.RADIAN)),
+			_totalMomentCoefficientBreakDown.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(0)).get(ComponentEnum.WING).get(i),
+			"",
+			_current3DHorizontalTailLiftCurve.get(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE)).get(i)*Math.cos(_alphaHTailList.get(i).doubleValue(SI.RADIAN)),
+			_current3DHorizontalTailLiftCurve.get(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE)).get(i)*Math.sin(_alphaHTailList.get(i).doubleValue(SI.RADIAN)),
+			_totalMomentCoefficientBreakDown.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(0)).get(ComponentEnum.HORIZONTAL_TAIL).get(i),
+			"",
+			_fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE)
+			.getPolar3DCurve()
+			.get(_theAerodynamicBuilderInterface.getComponentTaskList()
+					.get(ComponentEnum.FUSELAGE)
+					.get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_FUSELAGE))[i]*Math.sin(_alphaBodyList.get(i).doubleValue(SI.RADIAN)),
+			_fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE)
+			.getPolar3DCurve()
+			.get(_theAerodynamicBuilderInterface.getComponentTaskList()
+					.get(ComponentEnum.FUSELAGE)
+					.get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_FUSELAGE))[i]*Math.cos(_alphaBodyList.get(i).doubleValue(SI.RADIAN)),
+			_totalMomentCoefficientBreakDown.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(0)).get(ComponentEnum.FUSELAGE).get(i),
+			"",
+			"",
+			_totalMomentCoefficientBreakDown.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(0)).get(ComponentEnum.WING).get(i) +
+			_totalMomentCoefficientBreakDown.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(0)).get(ComponentEnum.FUSELAGE).get(i),
+			_totalMomentCoefficientBreakDown.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(0)).get(ComponentEnum.WING).get(i) +
+			_totalMomentCoefficientBreakDown.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(0)).get(ComponentEnum.HORIZONTAL_TAIL).get(i) + 
+			_totalMomentCoefficientBreakDown.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(0)).get(ComponentEnum.FUSELAGE).get(i),
+			_current3DWingLiftCurve.get(i) + (_current3DHorizontalTailLiftCurve.get(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE)).get(i)
+			*_theAerodynamicBuilderInterface.getHTailDynamicPressureRatio()
+			*_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getTheLiftingSurface().getSurfacePlanform().doubleValue(SI.SQUARE_METRE)/
+			_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getTheLiftingSurface().getSurfacePlanform().doubleValue(SI.SQUARE_METRE)),
+			_horizontalTailEquilibriumLiftCoefficient.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(0)).get(i),
+			_horizontalTailEquilibriumLiftCoefficient.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(0)).get(i)-_current3DHorizontalTailLiftCurve.get(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE)).get(i),
+			0.0,
+			0.0,
+			"",
+			_deltaEEquilibrium.get( _theAerodynamicBuilderInterface.getXCGAircraft().get(0)).get(i).doubleValue(NonSI.DEGREE_ANGLE),
+			_totalEquilibriumLiftCoefficient.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(0)).get(i),
+			_totalEquilibriumDragCoefficient.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(0)).get(i),
+			_totalEquilibriumEfficiencyMap.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(0)).get(i)		
+					});
+		}
+
+		
+//			dataListstallCondition.add(new Object[] {
+//					"Critical Mach Number",
+//					"",
+//					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCriticalMachNumber().get(
+//							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.CRITICAL_MACH)
+//							)});
+//			currentBoldIndex = currentBoldIndex+1;
+//
+//		dataListstallCondition.add(new Object[] {""});
+//		dataListstallCondition.add(new Object[] {""});
+//		dataListstallCondition.add(new Object[] {"LIFT"});
+//		currentBoldIndex = currentBoldIndex+3;
+//		boldRowIndex.add(currentBoldIndex);
+		
+		
+		
+		Row rowWing = stallConditionSheet.createRow(0);
+		Object[] objArrWing = dataListstallCondition.get(0);
+		int cellnumWing = 0;
+		for (Object obj : objArrWing) {
+			Cell cell = rowWing.createCell(cellnumWing++);
+			cell.setCellStyle(styleHead);
+			if (obj instanceof Date) {
+				cell.setCellValue((Date) obj);
+			} else if (obj instanceof Boolean) {
+				cell.setCellValue((Boolean) obj);
+			} else if (obj instanceof String) {
+				cell.setCellValue((String) obj);
+			} else if (obj instanceof Double) {
+				cell.setCellValue((Double) obj);
+			}
+		}
+
+		int rownumWing = 1;
+		for (int i = 1; i < dataListstallCondition.size(); i++) {
+			objArrWing = dataListstallCondition.get(i);
+			rowWing = stallConditionSheet.createRow(rownumWing++);
+			cellnumWing = 0;
+			Boolean isBold = Boolean.FALSE;
+			for(int bri=0; bri<boldRowIndex.size(); bri++) 
+				if(rownumWing == boldRowIndex.get(bri))
+					isBold = Boolean.TRUE;
+			for (Object obj : objArrWing) {
+				Cell cell = rowWing.createCell(cellnumWing++);
+				if(isBold == Boolean.TRUE)
+					cell.setCellStyle(styleHeader);
+				if (obj instanceof Date) {
+					cell.setCellValue((Date) obj);
+				} else if (obj instanceof Boolean) {
+					cell.setCellValue((Boolean) obj);
+				} else if (obj instanceof String) {
+					cell.setCellValue((String) obj);
+				} else if (obj instanceof Double) {
+					cell.setCellValue((Double) obj);
+				}
+			}
+
+			stallConditionSheet.setDefaultColumnWidth(35);
+			stallConditionSheet.setColumnWidth(1, 2048);
+			for(int k=2; k<100; k++)
+				stallConditionSheet.setColumnWidth(k, 3840);
+
+		}
+        //--------------------------------------------------------------------------------
+		// XLS FILE CREATION:
+		//--------------------------------------------------------------------------------
+		FileOutputStream fileOut = new FileOutputStream(filenameWithPathAndExt + ".xlsx");
+		wb.write(fileOut);
+		fileOut.close();
+		System.out.println("\n\tAerodynamic comparison results Excel file has been generated!\n");
+		
+	//-------------------------------------------------	
+		
 		// TODO
 		/*
 		 * CALLS FOR INITIALIZE ANALYSIS 
@@ -2826,7 +3059,8 @@ public class ACAerodynamicAndStabilityManager_v2 {
 						);
 			}
 
-			plotAllCharts();
+
+//		plotAllCharts();
 
 		}
 
@@ -2845,8 +3079,8 @@ public class ACAerodynamicAndStabilityManager_v2 {
 				verticalTailPlotFolderPath,
 				fuselagePlotFolderPath,
 				nacellePlotFolderPath,
-				aircraftPlotFolderPath
-				, _current3DHorizontalTailLiftCurve,
+				aircraftPlotFolderPath,
+				_current3DHorizontalTailLiftCurve,
 				_current3DHorizontalTailMomentCurve,
 				_current3DVerticalTailLiftCurve, 
 				_alphaBodyList,

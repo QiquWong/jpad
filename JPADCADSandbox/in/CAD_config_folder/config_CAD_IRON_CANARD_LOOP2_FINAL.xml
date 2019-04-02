@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jpad_CAD_config>
+	<!-- CAD input data -->
+	<fuselage generate="TRUE">
+		<numberNoseTrunkSections spacing="COSINUS">7</numberNoseTrunkSections>
+		<numberTailTrunkSections spacing="COSINUS">7</numberTailTrunkSections>
+	</fuselage>
+	<wing generate="TRUE" tipType="WINGLET">
+		<wingletParams>
+			<yOffsetFactor>0.75</yOffsetFactor>
+			<xOffsetFactor>0.45</xOffsetFactor>
+			<taperRatio>0.20</taperRatio>
+		</wingletParams>
+	</wing>
+	<horizontal generate="TRUE" tipType="ROUNDED"></horizontal>
+	<vertical generate="TRUE" tipType="ROUNDED"></vertical>
+	<canard generate="TRUE" tipType="ROUNDED"></canard>
+	<engines generate="TRUE">
+		<engine templateNacelle="TP_nacelle_01.step" templateBlade="TP_blade_02.step">
+			<propellerBladePitchAngle unit="deg">0.0</propellerBladePitchAngle>
+		</engine>
+		<engine templateNacelle="TP_nacelle_01.step" templateBlade="TP_blade_02.step">
+			<propellerBladePitchAngle unit="deg">0.0</propellerBladePitchAngle>
+		</engine>
+	</engines>
+	<wing_fairing generate="TRUE">
+		<frontLengthFactor>0.60</frontLengthFactor>
+		<backLengthFactor>0.60</backLengthFactor>
+		<widthFactor>0.85</widthFactor>
+		<heightFactor>0.10</heightFactor>
+		<heightBelowReferenceFactor>0.85</heightBelowReferenceFactor>
+		<heightAboveReferenceFactor>0.10</heightAboveReferenceFactor>
+		<filletRadiusFactor>0.80</filletRadiusFactor>
+	</wing_fairing>
+	<canard_fairing generate="TRUE">
+		<frontLengthFactor>0.85</frontLengthFactor>
+		<backLengthFactor>0.85</backLengthFactor>
+		<widthFactor>0.55</widthFactor>
+		<heightFactor>0.20</heightFactor>
+		<heightBelowReferenceFactor>0.15</heightBelowReferenceFactor>
+		<heightAboveReferenceFactor>0.95</heightAboveReferenceFactor>
+		<filletRadiusFactor>0.50</filletRadiusFactor>
+	</canard_fairing>
+	<export_to_file value="FALSE" format="STEP" exportWireframe="FALSE"></export_to_file>
+</jpad_CAD_config>

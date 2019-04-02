@@ -7,14 +7,18 @@ import org.inferred.freebuilder.FreeBuilder;
 
 @FreeBuilder
 public interface AVLWing {
+	/*
+	 * A data class defining the parameters of a wing or other body modeled
+	 * as a lifting surface (horizontal tail, vertical tail, canard).
+	 */
 
 	String getDescription();
-	
+
 	Integer getNSpanwise();
 	Integer getNChordwise();
 	Double getSSpace();
 	Double getCSpace();
-	
+
 	boolean isSymmetric();
 	boolean isVertical();
 	Double[] getOrigin();
@@ -23,11 +27,11 @@ public interface AVLWing {
 	Double getDihedral();
 	Double getIncidence();
 	List<AVLWingSection> getSections();
-	
-	
+
+
 	/** Builder of AVLInputData instances. */
 	class Builder extends AVLWing_Builder {
-		
+
 		public Builder() {
 			// Set defaults in the builder constructor.
 			setDescription("WING");
@@ -42,7 +46,7 @@ public interface AVLWing {
 			setSweep(0.0);
 			setDihedral(0.0);
 			setIncidence(0.0);
-			
+
 			clearSections();
 			addAllSections(new ArrayList<AVLWingSection>());
 
@@ -52,6 +56,5 @@ public interface AVLWing {
 			return this;
 		}
 	}
-	
-	
+
 }

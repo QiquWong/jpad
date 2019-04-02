@@ -1576,79 +1576,94 @@ public class MomentCalc {
 			List<Double> liftingSurfaceCmC4Distribution,
 			List<Amount<Length>> liftingSurfaceChordDistribution,
 			List<Amount<Length>> liftingSurfaceXLEDistribution,
-			List<List<Double>> airfoilClMatrix, //this is a list of list. each list is referred to an airfoil along the semispan
-			List<Amount<Angle>> anglesOfAttackClMatrix, // references angle of attack of the list of list airfoilClMatrix
+			List<Amount<Length>> liftingSurfaceXACDistribution,
 			Amount<Area> liftingSurfaceArea,
 			Amount<Length> momentumPole  //referred to the origin of LRF
 			){
 
 		List<Double> liftingSurfaceMomentCoefficient = new ArrayList<>();
 
-		double[] distancesArrayAC, clDistribution, alphaDistribution, clInducedDistributionAtAlphaNew, cmDistribution, cCm,
-		xcPfracC;
+		double[] distancesArrayAC, clDistribution, cmDistributionFromCl, cCmFromCl, cCmFromCM;
 
 		int numberOfAlphas = anglesOfAttack.size();
 		int numberOfPointSemiSpanWise = liftingSurfaceCl0Distribution.size();
 
 		for (int i=0; i<numberOfAlphas; i++){
 
-			double alphaCheck = anglesOfAttack.get(i).doubleValue(NonSI.DEGREE_ANGLE);
-			
 			clDistribution = new double[numberOfPointSemiSpanWise];
-			alphaDistribution = new double[numberOfPointSemiSpanWise];
-			clInducedDistributionAtAlphaNew = new double[numberOfPointSemiSpanWise];
 			distancesArrayAC = new double[numberOfPointSemiSpanWise];
-			cmDistribution = new double[numberOfPointSemiSpanWise];
-			cCm = new double[numberOfPointSemiSpanWise];
-
+			cmDistributionFromCl = new double[numberOfPointSemiSpanWise];
+			cCmFromCl = new double[numberOfPointSemiSpanWise];
+			cCmFromCM = new double[numberOfPointSemiSpanWise];
+					
 			theNasaBlackwellCalculator.calculate(anglesOfAttack.get(i));
 			clDistribution = theNasaBlackwellCalculator.getClTotalDistribution().toArray();
+	     	//momentumPole = Amount.valueOf(4.687, SI.METER);
 			
 			for (int ii=0; ii<numberOfPointSemiSpanWise; ii++){
 				
-				if(Double.isNaN(clDistribution[ii]))
-					clDistribution[ii] = 0.0;
-				
-				alphaDistribution [ii] = (clDistribution[ii] - liftingSurfaceCl0Distribution.get(ii))/
-						liftingSurfaceCLAlphaDegDistribution.get(ii);
+//				if(Double.isNaN(clDistribution[ii]))
+//					clDistribution[ii] = 0.0;
+//				
+//				alphaDistribution [ii] = (clDistribution[ii] - liftingSurfaceCl0Distribution.get(ii))/
+//						liftingSurfaceCLAlphaDegDistribution.get(ii);
+//
+//				if (alphaDistribution[ii]<anglesOfAttack.get(i).doubleValue(NonSI.DEGREE_ANGLE)){
+//					clInducedDistributionAtAlphaNew[ii] =
+//							liftingSurfaceCLAlphaDegDistribution.get(ii)*
+//							alphaDistribution[ii]+
+//							liftingSurfaceCl0Distribution.get(ii);
+//				}
+//				else{
+//					clInducedDistributionAtAlphaNew[ii] = MyMathUtils.getInterpolatedValue1DLinear(
+//							MyArrayUtils.convertListOfAmountTodoubleArray(anglesOfAttackClMatrix),
+//							MyArrayUtils.convertToDoublePrimitive(
+//									MyArrayUtils.convertListOfDoubleToDoubleArray(
+//											airfoilClMatrix.get(ii))),
+//							alphaDistribution[ii]
+//							);
+//				}
 
-				if (alphaDistribution[ii]<anglesOfAttack.get(i).doubleValue(NonSI.DEGREE_ANGLE)){
-					clInducedDistributionAtAlphaNew[ii] =
-							liftingSurfaceCLAlphaDegDistribution.get(ii)*
-							alphaDistribution[ii]+
-							liftingSurfaceCl0Distribution.get(ii);
-				}
-				else{
-					clInducedDistributionAtAlphaNew[ii] = MyMathUtils.getInterpolatedValue1DLinear(
-							MyArrayUtils.convertListOfAmountTodoubleArray(anglesOfAttackClMatrix),
-							MyArrayUtils.convertToDoublePrimitive(
-									MyArrayUtils.convertListOfDoubleToDoubleArray(
-											airfoilClMatrix.get(ii))),
-							alphaDistribution[ii]
-							);
-				}
-
+				//TODO modify here 
 				distancesArrayAC[ii] =
 						momentumPole.doubleValue(SI.METER) - 
 						(liftingSurfaceXLEDistribution.get(ii).doubleValue(SI.METER) +
-								(liftingSurfaceChordDistribution.get(ii).doubleValue(SI.METER)/4));
+								(liftingSurfaceXACDistribution.get(ii).doubleValue(SI.METER)));
 
-				cmDistribution [ii] = clInducedDistributionAtAlphaNew[ii] * 
-						(distancesArrayAC[ii]/
-								liftingSurfaceChordDistribution.get(ii).doubleValue(SI.METER))+ liftingSurfaceCmC4Distribution.get(ii);
+				cmDistributionFromCl [ii] = clDistribution[ii] *  
+						(distancesArrayAC[ii]);
 
-				cCm[ii] = cmDistribution [ii] * liftingSurfaceChordDistribution.get(ii).doubleValue(SI.METER) *
-						liftingSurfaceChordDistribution.get(ii).doubleValue(SI.METER) ;
+				cCmFromCl[ii] = cmDistributionFromCl [ii] * liftingSurfaceChordDistribution.get(ii).doubleValue(SI.METER);
+			
+				cCmFromCM[ii] = liftingSurfaceCmC4Distribution.get(ii) * 
+						liftingSurfaceChordDistribution.get(ii).doubleValue(SI.METER) *
+						liftingSurfaceChordDistribution.get(ii).doubleValue(SI.METER);
 			}
 			
-			cCm[numberOfPointSemiSpanWise-1] = 0;
+			cCmFromCl[numberOfPointSemiSpanWise-1] = 0;
+			cCmFromCM[numberOfPointSemiSpanWise-1] = 0;
+
+			double cm1 = MyMathUtils.integrate1DSimpsonSpline(
+					MyArrayUtils.convertListOfAmountTodoubleArray(liftingSurfaceDimensionalY),
+					cCmFromCl);
+			
+			double cm2 = MyMathUtils.integrate1DSimpsonSpline(
+					MyArrayUtils.convertListOfAmountTodoubleArray(liftingSurfaceDimensionalY),
+					cCmFromCM);
+					
+			
 
 			liftingSurfaceMomentCoefficient.add(
 					i,
-					((2/(liftingSurfaceArea.doubleValue(SI.SQUARE_METRE)*liftingSurfaceMAC.doubleValue(SI.METER)))
-					* MyMathUtils.integrate1DSimpsonSpline(
+					(((2/(liftingSurfaceArea.doubleValue(SI.SQUARE_METRE)*liftingSurfaceMAC.doubleValue(SI.METER))))
+					* 
+					(MyMathUtils.integrate1DSimpsonSpline(
 							MyArrayUtils.convertListOfAmountTodoubleArray(liftingSurfaceDimensionalY),
-							cCm))
+							cCmFromCl)
+					+
+					MyMathUtils.integrate1DSimpsonSpline(
+							MyArrayUtils.convertListOfAmountTodoubleArray(liftingSurfaceDimensionalY),
+							cCmFromCM)))
 					);
 			
 		}

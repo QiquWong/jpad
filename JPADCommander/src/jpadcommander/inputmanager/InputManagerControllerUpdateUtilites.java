@@ -4812,7 +4812,7 @@ public class InputManagerControllerUpdateUtilites {
 			List<Amount<Angle>> engineTiltList = new ArrayList<>();		
 			List<EngineMountingPositionEnum> engineMountingPositionList = new ArrayList<>();
 
-			for (int i=0; i<Main.getTheAircraft().getPowerPlant().getEngineList().size(); i++) {
+			for (int i=0; i<theController.getTabPaneAircraftEngines().getTabs().size(); i++) {
 
 				engineXList.add(
 						(Amount<Length>) Amount.valueOf(
@@ -4864,59 +4864,59 @@ public class InputManagerControllerUpdateUtilites {
 		// NACELLES
 		if (theController.isUpdateNacellesDataFromFile() == true) {
 			
-		List<NacelleCreator> nacelleList = new ArrayList<>();
-		List<Amount<Length>> nacelleXList = new ArrayList<>();
-		List<Amount<Length>> nacelleYList = new ArrayList<>();
-		List<Amount<Length>> nacelleZList = new ArrayList<>();
-		List<NacelleMountingPositionEnum> nacelleMountingPositionList = new ArrayList<>();
-		
-		Main.getTheAircraft().getNacelles().getNacellesList().stream().forEach(nacelle -> {
-			nacelleXList.add(nacelle.getXApexConstructionAxes());
-			nacelleYList.add(nacelle.getYApexConstructionAxes());
-			nacelleZList.add(nacelle.getZApexConstructionAxes());
-			nacelleMountingPositionList.add(nacelle.getMountingPosition());
-		});
+			List<NacelleCreator> nacelleList = new ArrayList<>();
+			List<Amount<Length>> nacelleXList = new ArrayList<>();
+			List<Amount<Length>> nacelleYList = new ArrayList<>();
+			List<Amount<Length>> nacelleZList = new ArrayList<>();
+			List<NacelleMountingPositionEnum> nacelleMountingPositionList = new ArrayList<>();
 
-		nacellesFilePathList.stream().filter(file -> file.exists()).forEach(
-				file -> nacelleList.add(
-						NacelleCreator.importFromXML(
-								file.getAbsolutePath(),
-								Main.getInputDirectoryPath() + File.separator
-								+ "Template_Aircraft" + File.separator
-								+ "engines" + File.separator
+			for (int i=0; i<theController.getTabPaneAircraftNacelles().getTabs().size(); i++) {
+
+				nacelleXList.add(
+						(Amount<Length>) Amount.valueOf(
+								Double.valueOf(theController.getNacelleXPositionValueList().get(i)),
+								Unit.valueOf(theController.getNacelleXPositionUnitList().get(i))
 								)
-						)
-				);
-		
-		for(int i=0; i<nacelleList.size(); i++) {
+						);			
+				nacelleYList.add(
+						(Amount<Length>) Amount.valueOf(
+								Double.valueOf(theController.getNacelleYPositionValueList().get(i)),
+								Unit.valueOf(theController.getNacelleYPositionUnitList().get(i))
+								)
+						);				
+				nacelleZList.add(
+						(Amount<Length>) Amount.valueOf(
+								Double.valueOf(theController.getNacelleZPositionValueList().get(i)),
+								Unit.valueOf(theController.getNacelleZPositionUnitList().get(i))
+								)
+						);
+				nacelleMountingPositionList.add(
+						NacelleMountingPositionEnum.valueOf(theController.getNacelleMountinPositionValueList().get(i))
+						);
+			}
 			
-			nacelleList.get(i).setXApexConstructionAxes(
-					(Amount<Length>) Amount.valueOf(
-							Double.valueOf(theController.getNacelleXPositionValueList().get(i)), 
-							Unit.valueOf(theController.getNacelleXPositionUnitList().get(i))
-							)
+			nacellesFilePathList.stream().filter(file -> file.exists()).forEach(
+					file -> nacelleList.add(NacelleCreator.importFromXML(
+							file.getAbsolutePath(), 
+							Main.getInputDirectoryPath() + File.separator
+							+ "Template_Aircraft" + File.separator
+							+ "engines" + File.separator
+							))
 					);
-			nacelleList.get(i).setYApexConstructionAxes(
-					(Amount<Length>) Amount.valueOf(
-							Double.valueOf(theController.getNacelleYPositionValueList().get(i)), 
-							Unit.valueOf(theController.getNacelleYPositionUnitList().get(i))
-							)
-					);
-			nacelleList.get(i).setZApexConstructionAxes(
-					(Amount<Length>) Amount.valueOf(
-							Double.valueOf(theController.getNacelleZPositionValueList().get(i)), 
-							Unit.valueOf(theController.getNacelleZPositionUnitList().get(i))
-							)
-					);
-			nacelleList.get(i).setMountingPosition(
-					NacelleMountingPositionEnum.valueOf(theController.getNacelleMountinPositionValueList().get(i))
-					);
+			
+			for (int i=0; i<nacelleList.size(); i++) {
+				
+				nacelleList.get(i).setXApexConstructionAxes(nacelleXList.get(i));
+				nacelleList.get(i).setYApexConstructionAxes(nacelleYList.get(i));
+				nacelleList.get(i).setZApexConstructionAxes(nacelleZList.get(i));
+				nacelleList.get(i).setMountingPosition(nacelleMountingPositionList.get(i));
+				
+			}
+			
+			Main.getTheAircraft().setNacelles(new Nacelles(nacelleList));
 			
 		}
-
-		Main.getTheAircraft().setNacelles(new Nacelles(nacelleList));
 		
-		}
 		//....................................................................................
 		// LANDING GEARS
 		if (theController.isUpdateLandingGearsDataFromFile() == true) {

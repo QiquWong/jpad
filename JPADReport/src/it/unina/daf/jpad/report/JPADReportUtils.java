@@ -78,7 +78,7 @@ public class JPADReportUtils {
 		List<MWArray> rhs = new ArrayList<>();
 		
 		// add "fileName" makeReport02.m
-		rhs.add(new MWCharArray(new String("JPADReport_Test")));
+		rhs.add(new MWCharArray(new String("JPADReport_Test_2")));
 		
 		// add "type" makeReport02.m
 		rhs.add(new MWCharArray(new String("docx")));

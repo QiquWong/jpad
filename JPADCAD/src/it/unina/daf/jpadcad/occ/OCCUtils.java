@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import it.unina.daf.jpadcad.enums.FileExtension;
+import javaslang.Tuple2;
 import opencascade.Adaptor3d_Curve;
 import opencascade.Adaptor3d_HCurve;
 import opencascade.BOPAlgo_PaveFiller;
@@ -153,15 +154,16 @@ public final class OCCUtils {
 		switch (fileExtension) {
 		
 		case BREP:
-			shapes.forEach(s -> builder.Add(compound, s.getShape()));
+			shapes.stream().filter(s -> s != null).forEach(s -> builder.Add(compound, s.getShape()));
 			BRepTools.Write(compound, fileNameComplete);
 			
 			break;
 			
 		case STEP:
-			shapes.forEach(s -> builder.Add(compound, s.getShape()));
+			shapes.stream().filter(s -> s != null).forEach(s -> builder.Add(compound, s.getShape()));
 			STEPControl_Writer stepWriter = new STEPControl_Writer();
-			Interface_Static.SetCVal("write.step.unit", "M");
+			Interface_Static.SetCVal("xstep.cascade.unit", "M");
+//			Interface_Static.SetCVal("write.step.unit", "M");
 			stepWriter.Transfer(compound, STEPControl_StepModelType.STEPControl_AsIs);
 			stepWriter.Write(fileNameComplete);	
 			
@@ -170,7 +172,7 @@ public final class OCCUtils {
 		case IGES:
 			if (IGESControl_Controller.Init() == 1) {
 				IGESControl_Writer igesWriter = new IGESControl_Writer("2HM");
-				shapes.forEach(s -> igesWriter.AddShape(s.getShape()));
+				shapes.stream().filter(s -> s != null).forEach(s -> igesWriter.AddShape(s.getShape()));
 				igesWriter.ComputeModel();
 				igesWriter.Write(fileNameComplete);
 			} else
@@ -204,7 +206,6 @@ public final class OCCUtils {
 			return null;
 		
 		// The CADShell object
-		System.out.println("OCCUtils.makePatchThruSections.Surfacing ...");
 		CADShell cadShell = OCCUtils.theFactory
 				                    .newShell(
 				                        v0, // initial vertex
@@ -256,7 +257,6 @@ public final class OCCUtils {
 			     .collect(Collectors.toList()));
 		
 		// Generate the CADShell object
-		System.out.println("OCCUtils.makePatchThruCurveSections. Surfacing ...");
 		CADShell cadShell = OCCUtils.theFactory
 				                    .newShell(
 				                        v0, // initial vertex
@@ -436,26 +436,23 @@ public final class OCCUtils {
 		StringBuilder sb = new StringBuilder()
 				.append("\t-------------------------------------\n");
 		
-		java.util.Arrays.asList(prepends).stream()
-			.forEach(s -> sb.append("\t" +s + "\n")); // user additional log messages
+		Arrays.asList(prepends).stream()
+			.forEach(s -> sb.append("\t" + s + "\n")); // user additional log messages
 				
 		sb
 			.append("\tTopoDS_Shape report\n")
-			//.append("\t-------------------------------------\n")
-			//.append("\tTypes: ")
-			//.append( java.util.Arrays.asList( TopAbs_ShapeEnum.class.getEnumConstants()) + "\n")
 			.append("\t-------------------------------------\n");
 		
 		sb
 			.append("\tShapes of type TopAbs_SHAPE: " + OCCUtils.numberOfShape(shape, TopAbs_ShapeEnum.TopAbs_SHAPE) + "\n")
-			.append("\tShapes of type TopAbs_VERTEX " + OCCUtils.numberOfShape(shape, TopAbs_ShapeEnum.TopAbs_VERTEX) + "\n")
-			.append("\tShapes of type TopAbs_EDGE " + OCCUtils.numberOfShape(shape, TopAbs_ShapeEnum.TopAbs_EDGE) + "\n")
-			.append("\tShapes of type TopAbs_WIRE " + OCCUtils.numberOfShape(shape, TopAbs_ShapeEnum.TopAbs_WIRE) + "\n")
-			.append("\tShapes of type TopAbs_FACE " + OCCUtils.numberOfShape(shape, TopAbs_ShapeEnum.TopAbs_FACE) + "\n")
-			.append("\tShapes of type TopAbs_SHELL " + OCCUtils.numberOfShape(shape, TopAbs_ShapeEnum.TopAbs_SHELL) + "\n")
-			.append("\tShapes of type TopAbs_SOLID " + OCCUtils.numberOfShape(shape, TopAbs_ShapeEnum.TopAbs_SOLID) + "\n")
-			.append("\tShapes of type TopAbs_COMPSOLID " + OCCUtils.numberOfShape(shape, TopAbs_ShapeEnum.TopAbs_COMPSOLID) + "\n")
-			.append("\tShapes of type TopAbs_COMPOUND " + OCCUtils.numberOfShape(shape, TopAbs_ShapeEnum.TopAbs_COMPOUND) + "\n")
+			.append("\tShapes of type TopAbs_VERTEX: " + OCCUtils.numberOfShape(shape, TopAbs_ShapeEnum.TopAbs_VERTEX) + "\n")
+			.append("\tShapes of type TopAbs_EDGE: " + OCCUtils.numberOfShape(shape, TopAbs_ShapeEnum.TopAbs_EDGE) + "\n")
+			.append("\tShapes of type TopAbs_WIRE: " + OCCUtils.numberOfShape(shape, TopAbs_ShapeEnum.TopAbs_WIRE) + "\n")
+			.append("\tShapes of type TopAbs_FACE: " + OCCUtils.numberOfShape(shape, TopAbs_ShapeEnum.TopAbs_FACE) + "\n")
+			.append("\tShapes of type TopAbs_SHELL: " + OCCUtils.numberOfShape(shape, TopAbs_ShapeEnum.TopAbs_SHELL) + "\n")
+			.append("\tShapes of type TopAbs_SOLID: " + OCCUtils.numberOfShape(shape, TopAbs_ShapeEnum.TopAbs_SOLID) + "\n")
+			.append("\tShapes of type TopAbs_COMPSOLID: " + OCCUtils.numberOfShape(shape, TopAbs_ShapeEnum.TopAbs_COMPSOLID) + "\n")
+			.append("\tShapes of type TopAbs_COMPOUND: " + OCCUtils.numberOfShape(shape, TopAbs_ShapeEnum.TopAbs_COMPOUND) + "\n")
 			.append("\t-------------------------------------");
 		
 		return sb.toString();
@@ -873,10 +870,10 @@ public final class OCCUtils {
 		return pars;		
 	}
 	
-	public static OCCShell applyFilletOnShell(OCCShell shell, int[] edgeIndexes, double radius) {
-		
+	public static Tuple2<OCCShell, Boolean> applyFilletOnShell(OCCShell shell, int[] edgeIndexes, double radius) {
+
 		BRepFilletAPI_MakeFillet filletMaker = new BRepFilletAPI_MakeFillet(shell.getShape());
-		
+
 		List<CADEdge> shellEdges = new ArrayList<>();
 		OCCExplorer exp = new OCCExplorer();
 		exp.init(shell, CADShapeTypes.EDGE);
@@ -884,17 +881,21 @@ public final class OCCUtils {
 			shellEdges.add((CADEdge) exp.current());
 			exp.next();
 		}
-		
+
 		Arrays.stream(edgeIndexes).forEach(i -> filletMaker.Add(radius, ((OCCEdge) shellEdges.get(i)).getShape()));
-		
-		List<TopoDS_Shell> filletShells = new ArrayList<>();
-		TopExp_Explorer filletShellExplorer = new TopExp_Explorer(filletMaker.Shape(), TopAbs_ShapeEnum.TopAbs_SHELL);
-		while(filletShellExplorer.More() > 0) {
-			filletShells.add(TopoDS.ToShell(filletShellExplorer.Current()));
-			filletShellExplorer.Next();
-		}
-		
-		return (OCCShell) OCCUtils.theFactory.newShape(filletShells.get(0));
+		filletMaker.Build();
+		if (filletMaker.NbFaultyVertices() > 0 || filletMaker.NbFaultyContours() > 0) {
+			return new Tuple2<OCCShell, Boolean>(shell, false);
+		} else {
+			List<TopoDS_Shell> filletShells = new ArrayList<>();
+			TopExp_Explorer filletShellExplorer = new TopExp_Explorer(filletMaker.Shape(), TopAbs_ShapeEnum.TopAbs_SHELL);
+			while(filletShellExplorer.More() > 0) {
+				filletShells.add(TopoDS.ToShell(filletShellExplorer.Current()));
+				filletShellExplorer.Next();
+			}
+			OCCShell filletShell = (OCCShell) OCCUtils.theFactory.newShape(filletShells.get(0));
+			return new Tuple2<OCCShell, Boolean>(filletShell, true);
+		}	
 	}
 	
 	public static List<CADWire> revolveWireAroundGuideCurve(

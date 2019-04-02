@@ -148,9 +148,9 @@ public static Aircraft importAircraft(String[] args) {
 
 			////////////////////////////////////////////////////////////////////////
 			// Defining the operating conditions ...
-			System.setOut(originalOut);
-			System.out.println("Defining the operating conditions ... ");
-			System.setOut(filterStream);
+//			System.setOut(originalOut);
+//			System.out.println("Defining the operating conditions ... ");
+//			System.setOut(filterStream);
 //			OperatingConditions theOperatingConditions = OperatingConditions.importFromXML(pathToOperatingConditionsXML);
 //			System.setOut(originalOut);
 //			System.out.println(theOperatingConditions.toString());

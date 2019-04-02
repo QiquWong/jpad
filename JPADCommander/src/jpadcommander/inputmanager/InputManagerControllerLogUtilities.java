@@ -724,7 +724,7 @@ public class InputManagerControllerLogUtilities {
 			int iStart = theController.getTabPaneAircraftEngines().getTabs().size();
 			
 			for(int i=iStart; i<Main.getTheAircraft().getPowerPlant().getEngineList().size(); i++)
-				theController.getInputManagerControllerUtilities().addAircraftEngineImplementation();
+				theController.getInputManagerControllerUtilities().addAircraftEngineImplementation(i);
 			
 		}
 		
@@ -877,7 +877,7 @@ public class InputManagerControllerLogUtilities {
 			int iStart = theController.getTabPaneAircraftNacelles().getTabs().size();
 			
 			for(int i=iStart; i<Main.getTheAircraft().getNacelles().getNacellesList().size(); i++)
-				theController.getInputManagerControllerUtilities().addAircraftNacelleImplementation();
+				theController.getInputManagerControllerUtilities().addAircraftNacelleImplementation(i);
 			
 		}
 		
@@ -4769,7 +4769,7 @@ public class InputManagerControllerLogUtilities {
 				int iStart = theController.getTabPaneNacelles().getTabs().size();
 
 				for(int i=iStart; i<Main.getTheAircraft().getNacelles().getNacellesList().size(); i++)
-					theController.getInputManagerControllerUtilities().addNacelleImplementation();
+					theController.getInputManagerControllerUtilities().addNacelleImplementation(i);
 
 			}
 
@@ -4896,7 +4896,7 @@ public class InputManagerControllerLogUtilities {
 				int iStart = theController.getTabPaneEngines().getTabs().size();
 
 				for(int i=iStart; i<Main.getTheAircraft().getPowerPlant().getEngineList().size(); i++)
-					theController.getInputManagerControllerUtilities().addEngineImplementation();
+					theController.getInputManagerControllerUtilities().addEngineImplementation(i);
 
 			}
 
@@ -5625,20 +5625,16 @@ public class InputManagerControllerLogUtilities {
 	
 	public void logCADConfigurationFromFileToInterface() {
 		
-		// Print the CADManager toString() method inside the text area of the GUI ...
+		// Print the CADManager toString() method inside the text area of the GUI
 		theController.getTextAreaCAD3DViewConsoleOutput().setText(
 				Main.getTheCADManager().toString()
 				);
 		
 		//-------------------------------------------------------------------------
 		// CAD EXPORT OPTIONS
-		if (theController.getExportCADWireframeCheckBox().isDisabled())
-			theController.getExportCADWireframeCheckBox().setDisable(false);
 		theController.getExportCADWireframeCheckBox().setSelected(
 				Main.getTheCADManager().getTheCADBuilderInterface().getExportWireframe());
 		
-		if (theController.getFileExtensionCADChoiceBox().isDisabled())
-			theController.getFileExtensionCADChoiceBox().setDisable(false);
 		if (Main.getTheCADManager().getTheCADBuilderInterface().getFileExtension().equals(FileExtension.BREP))
 			theController.getFileExtensionCADChoiceBox().getSelectionModel().select(0);
 		if (Main.getTheCADManager().getTheCADBuilderInterface().getFileExtension().equals(FileExtension.STEP))
@@ -5652,18 +5648,12 @@ public class InputManagerControllerLogUtilities {
 		// FUSELAGE OPTIONS
 		if (Main.getTheAircraft().getFuselage() != null) {
 			
-			if (theController.getGenerateFuselageCADCheckBox().isDisabled())
-				theController.getGenerateFuselageCADCheckBox().setDisable(false);
 			theController.getGenerateFuselageCADCheckBox().setSelected(
 					Main.getTheCADManager().getTheCADBuilderInterface().getGenerateFuselage());
 
-			if (theController.getFuselageCADNumberNoseSectionsTextField().isDisabled())
-				theController.getFuselageCADNumberNoseSectionsTextField().setDisable(false);
 			theController.getFuselageCADNumberNoseSectionsTextField().setText(
 					String.valueOf(Main.getTheCADManager().getTheCADBuilderInterface().getNumberNoseTrunkSections()));
 
-			if (theController.getFuselageCADNoseSpacingChoiceBox().isDisabled())
-				theController.getFuselageCADNoseSpacingChoiceBox().setDisable(false);
 			if (Main.getTheCADManager().getTheCADBuilderInterface().getSpacingTypeNoseTrunk().equals(XSpacingType.UNIFORM))
 				theController.getFuselageCADNoseSpacingChoiceBox().getSelectionModel().select(0);
 			if (Main.getTheCADManager().getTheCADBuilderInterface().getSpacingTypeNoseTrunk().equals(XSpacingType.COSINUS))
@@ -5673,13 +5663,9 @@ public class InputManagerControllerLogUtilities {
 			if (Main.getTheCADManager().getTheCADBuilderInterface().getSpacingTypeNoseTrunk().equals(XSpacingType.HALFCOSINUS2))
 				theController.getFuselageCADNoseSpacingChoiceBox().getSelectionModel().select(3);
 
-			if (theController.getFuselageCADNumberTailSectionsTextField().isDisabled())
-				theController.getFuselageCADNumberTailSectionsTextField().setDisable(false);
 			theController.getFuselageCADNumberTailSectionsTextField().setText(
 					String.valueOf(Main.getTheCADManager().getTheCADBuilderInterface().getNumberTailTrunkSections()));
 
-			if (theController.getFuselageCADTailSpacingChoiceBox().isDisabled())
-				theController.getFuselageCADTailSpacingChoiceBox().setDisable(false);
 			if (Main.getTheCADManager().getTheCADBuilderInterface().getSpacingTypeTailTrunk().equals(XSpacingType.UNIFORM))
 				theController.getFuselageCADTailSpacingChoiceBox().getSelectionModel().select(0);
 			if (Main.getTheCADManager().getTheCADBuilderInterface().getSpacingTypeTailTrunk().equals(XSpacingType.COSINUS))
@@ -5688,14 +5674,6 @@ public class InputManagerControllerLogUtilities {
 				theController.getFuselageCADTailSpacingChoiceBox().getSelectionModel().select(2);
 			if (Main.getTheCADManager().getTheCADBuilderInterface().getSpacingTypeTailTrunk().equals(XSpacingType.HALFCOSINUS2))
 				theController.getFuselageCADTailSpacingChoiceBox().getSelectionModel().select(3);
-
-		} else {
-			
-			theController.getGenerateFuselageCADCheckBox().setDisable(true);
-			theController.getFuselageCADNumberNoseSectionsTextField().setDisable(true);
-			theController.getFuselageCADNoseSpacingChoiceBox().setDisable(true);
-			theController.getFuselageCADNumberTailSectionsTextField().setDisable(true);
-			theController.getFuselageCADTailSpacingChoiceBox().setDisable(true);
 			
 		}
 		
@@ -5703,13 +5681,9 @@ public class InputManagerControllerLogUtilities {
 		// WING OPTIONS
 		if (Main.getTheAircraft().getWing() != null) {
 			
-			if (theController.getGenerateWingCADCheckBox().isDisabled())
-				theController.getGenerateWingCADCheckBox().setDisable(false);
 			theController.getGenerateWingCADCheckBox().setSelected(
 					Main.getTheCADManager().getTheCADBuilderInterface().getGenerateWing());
 			
-			if (theController.getWingCADTipTypeChoiceBox().isDisabled())
-				theController.getWingCADTipTypeChoiceBox().setDisable(false);
 			if (Main.getTheCADManager().getTheCADBuilderInterface().getWingTipType().equals(WingTipType.CUTOFF))
 				theController.getWingCADTipTypeChoiceBox().getSelectionModel().select(0);
 			if (Main.getTheCADManager().getTheCADBuilderInterface().getWingTipType().equals(WingTipType.ROUNDED))
@@ -5717,28 +5691,14 @@ public class InputManagerControllerLogUtilities {
 			if (Main.getTheCADManager().getTheCADBuilderInterface().getWingTipType().equals(WingTipType.WINGLET))
 				theController.getWingCADTipTypeChoiceBox().getSelectionModel().select(2);
 						
-			if (theController.getWingletCADYOffsetFactorTextField().isDisabled())
-				theController.getWingletCADYOffsetFactorTextField().setDisable(false);
 			theController.getWingletCADYOffsetFactorTextField().setText(
 					String.valueOf(Main.getTheCADManager().getTheCADBuilderInterface().getWingletYOffsetFactor()));
 
-			if (theController.getWingletCADXOffsetFactorTextField().isDisabled())
-				theController.getWingletCADXOffsetFactorTextField().setDisable(false);
 			theController.getWingletCADXOffsetFactorTextField().setText(
 					String.valueOf(Main.getTheCADManager().getTheCADBuilderInterface().getWingletXOffsetFactor()));
 
-			if (theController.getWingletCADTaperRatioTextField().isDisabled())
-				theController.getWingletCADTaperRatioTextField().setDisable(false);
 			theController.getWingletCADTaperRatioTextField().setText(
-					String.valueOf(Main.getTheCADManager().getTheCADBuilderInterface().getWingletTaperRatio()));
-		
-		} else {
-			
-			theController.getGenerateWingCADCheckBox().setDisable(true);
-			theController.getWingCADTipTypeChoiceBox().setDisable(true);
-			theController.getWingletCADYOffsetFactorTextField().setDisable(true);
-			theController.getWingletCADXOffsetFactorTextField().setDisable(true);
-			theController.getWingletCADTaperRatioTextField().setDisable(true);
+					String.valueOf(Main.getTheCADManager().getTheCADBuilderInterface().getWingletTaperRatio())); 
 			
 		}
 		
@@ -5746,236 +5706,132 @@ public class InputManagerControllerLogUtilities {
 		// HTAIL OPTIONS
 		if (Main.getTheAircraft().getHTail() != null) {
 			
-			if (theController.getGenerateHTailCADCheckBox().isDisabled())
-				theController.getGenerateHTailCADCheckBox().setDisable(false);
 			theController.getGenerateHTailCADCheckBox().setSelected(
 					Main.getTheCADManager().getTheCADBuilderInterface().getGenerateHTail());
 			
-			if (theController.getHTailCADTipTypeChoiceBox().isDisabled())
-				theController.getHTailCADTipTypeChoiceBox().setDisable(false);
 			if (Main.getTheCADManager().getTheCADBuilderInterface().getHTailTipType().equals(WingTipType.CUTOFF))
 				theController.getHTailCADTipTypeChoiceBox().getSelectionModel().select(0);
 			if (Main.getTheCADManager().getTheCADBuilderInterface().getHTailTipType().equals(WingTipType.ROUNDED))
 				theController.getHTailCADTipTypeChoiceBox().getSelectionModel().select(1);
 		
-		} else {
-			
-			theController.getGenerateHTailCADCheckBox().setDisable(true);
-			theController.getHTailCADTipTypeChoiceBox().setDisable(true);		
-			
-		}
+		} 
 		
 		//-------------------------------------------------------------------------
 		// VTAIL OPTIONS
 		if (Main.getTheAircraft().getVTail() != null) {
 			
-			if (theController.getGenerateVTailCADCheckBox().isDisabled())
-				theController.getGenerateVTailCADCheckBox().setDisable(false);
 			theController.getGenerateVTailCADCheckBox().setSelected(
 					Main.getTheCADManager().getTheCADBuilderInterface().getGenerateVTail());
 			
-			if (theController.getVTailCADTipTypeChoiceBox().isDisabled())
-				theController.getVTailCADTipTypeChoiceBox().setDisable(false);
 			if (Main.getTheCADManager().getTheCADBuilderInterface().getVTailTipType().equals(WingTipType.CUTOFF))
 				theController.getVTailCADTipTypeChoiceBox().getSelectionModel().select(0);
 			if (Main.getTheCADManager().getTheCADBuilderInterface().getVTailTipType().equals(WingTipType.ROUNDED))
 				theController.getVTailCADTipTypeChoiceBox().getSelectionModel().select(1);
 		
-		} else {
-			
-			theController.getGenerateVTailCADCheckBox().setDisable(true);
-			theController.getVTailCADTipTypeChoiceBox().setDisable(true);
-			
 		}
 		
 		//-------------------------------------------------------------------------
 		// CANARD OPTIONS
 		if (Main.getTheAircraft().getCanard() != null) {
 			
-			if (theController.getGenerateCanardCADCheckBox().isDisabled())
-				theController.getGenerateCanardCADCheckBox().setDisable(false);
 			theController.getGenerateCanardCADCheckBox().setSelected(
 					Main.getTheCADManager().getTheCADBuilderInterface().getGenerateCanard());
 			
-			if (theController.getCanardCADTipTypeChoiceBox().isDisabled())
-				theController.getCanardCADTipTypeChoiceBox().setDisable(false);
 			if (Main.getTheCADManager().getTheCADBuilderInterface().getCanardTipType().equals(WingTipType.CUTOFF))
 				theController.getCanardCADTipTypeChoiceBox().getSelectionModel().select(0);
 			if (Main.getTheCADManager().getTheCADBuilderInterface().getCanardTipType().equals(WingTipType.ROUNDED))
 				theController.getCanardCADTipTypeChoiceBox().getSelectionModel().select(1);
 		
-		} else {
-			
-			theController.getGenerateCanardCADCheckBox().setDisable(true);
-			theController.getCanardCADTipTypeChoiceBox().setDisable(true);
-			
-		}
+		} 
 		
 		//-------------------------------------------------------------------------
 		// ENGINES OPTIONS
 		if (Main.getTheAircraft().getNacelles() != null && Main.getTheAircraft().getPowerPlant() != null) {
 			
-			if (theController.getGenerateEnginesCADCheckBox().isDisabled())
-				theController.getGenerateEnginesCADCheckBox().setDisable(false);
 			theController.getGenerateEnginesCADCheckBox().setSelected(
 					Main.getTheCADManager().getTheCADBuilderInterface().getGenerateEngines());
 			
 			for (int i = 0; i < theController.getTabPaneCAD3DViewEngines().getTabs().size(); i++) {
 				
 				int numConfigEngines = Main.getTheCADManager().getTheCADBuilderInterface().getEngineTemplatesList().size();	
+				int idx = (i < numConfigEngines) ? i : (numConfigEngines - 1);
+												
+				theController.getEnginesCADNacelleTemplateFileTextFieldList().get(i).setText(
+						Main.getTheCADManager().getTheCADBuilderInterface().getEngineTemplatesList().get(idx).get(EngineCADComponentsEnum.NACELLE));
+
+				theController.getEnginesCADBladeTemplateFileTextFieldList().get(i).setText(
+						Main.getTheCADManager().getTheCADBuilderInterface().getEngineTemplatesList().get(idx).get(EngineCADComponentsEnum.BLADE));
+
+				theController.getEnginesCADBladePitchAngleTextFieldList().get(i).setText(
+						String.valueOf(
+								Main.getTheCADManager().getTheCADBuilderInterface()
+									.getPropellerBladePitchAngleList().get(idx).doubleValue(NonSI.DEGREE_ANGLE)));
 				
-				if (i < numConfigEngines) {			
-					
-					if (theController.getEnginesCADNacelleTemplateFileTextFieldList().get(i).isDisabled())
-						theController.getEnginesCADNacelleTemplateFileTextFieldList().get(i).setDisable(false);
-					theController.getEnginesCADNacelleTemplateFileTextFieldList().get(i).setText(
-							Main.getTheCADManager().getTheCADBuilderInterface().getEngineTemplatesList().get(i).get(EngineCADComponentsEnum.NACELLE));
-					
-					if (theController.getEnginesCADBladeTemplateFileTextFieldList().get(i).isDisabled())
-						theController.getEnginesCADBladeTemplateFileTextFieldList().get(i).setDisable(false);
-					theController.getEnginesCADBladeTemplateFileTextFieldList().get(i).setText(
-							Main.getTheCADManager().getTheCADBuilderInterface().getEngineTemplatesList().get(i).get(EngineCADComponentsEnum.BLADE));
-					
-					if (theController.getEnginesCADBladePitchAngleTextFieldList().get(i).isDisabled())
-						theController.getEnginesCADBladePitchAngleTextFieldList().get(i).setDisable(false);
-					theController.getEnginesCADBladePitchAngleTextFieldList().get(i).setText(
-							String.valueOf(Main.getTheCADManager().getTheCADBuilderInterface().getPropellerBladePitchAngleList().get(i).doubleValue(NonSI.DEGREE_ANGLE)));
-					theController.getEnginesCADBladePitchAngleUnitList().get(i).getSelectionModel().select(0);
-					
-				} else {
-					
-					if (theController.getEnginesCADNacelleTemplateFileTextFieldList().get(i).isDisabled())
-						theController.getEnginesCADNacelleTemplateFileTextFieldList().get(i).setDisable(false);
-					theController.getEnginesCADNacelleTemplateFileTextFieldList().get(i).setText(
-							Main.getTheCADManager().getTheCADBuilderInterface().getEngineTemplatesList().get(numConfigEngines-1).get(EngineCADComponentsEnum.NACELLE));
-				
-					if (theController.getEnginesCADBladeTemplateFileTextFieldList().get(i).isDisabled())
-						theController.getEnginesCADBladeTemplateFileTextFieldList().get(i).setDisable(false);
-					theController.getEnginesCADBladeTemplateFileTextFieldList().get(i).setText(
-							Main.getTheCADManager().getTheCADBuilderInterface().getEngineTemplatesList().get(numConfigEngines-1).get(EngineCADComponentsEnum.BLADE));
-				
-					if (theController.getEnginesCADBladePitchAngleTextFieldList().get(i).isDisabled())
-						theController.getEnginesCADBladePitchAngleTextFieldList().get(i).setDisable(false);
-					theController.getEnginesCADBladePitchAngleTextFieldList().get(i).setText(
-							String.valueOf(Main.getTheCADManager().getTheCADBuilderInterface().getPropellerBladePitchAngleList().get(numConfigEngines-1).doubleValue(NonSI.DEGREE_ANGLE)));
-					theController.getEnginesCADBladePitchAngleUnitList().get(i).getSelectionModel().select(0);
-				}			
+				theController.getEnginesCADBladePitchAngleUnitList().get(i).getSelectionModel().select(0);
+							
 			}		
-		}
+			
+		} 
 		
 		//-------------------------------------------------------------------------
 		// WING FAIRING OPTIONS
 		if (Main.getTheAircraft().getWing() != null && Main.getTheAircraft().getFuselage() != null) {
 			
-			if (theController.getGenerateWingFairingCADCheckBox().isDisabled())
-				theController.getGenerateWingFairingCADCheckBox().setDisable(false);
 			theController.getGenerateWingFairingCADCheckBox().setSelected(
 					Main.getTheCADManager().getTheCADBuilderInterface().getGenerateWingFairing());
 			
-			if (theController.getWingFairingCADFrontLengthFactorTextField().isDisabled())
-				theController.getWingFairingCADFrontLengthFactorTextField().setDisable(false);
 			theController.getWingFairingCADFrontLengthFactorTextField().setText(
 					String.valueOf(Main.getTheCADManager().getTheCADBuilderInterface().getWingFairingFrontLengthFactor()));
 			
-			if (theController.getWingFairingCADBackLengthFactorTextField().isDisabled())
-				theController.getWingFairingCADBackLengthFactorTextField().setDisable(false);
 			theController.getWingFairingCADBackLengthFactorTextField().setText(
 					String.valueOf(Main.getTheCADManager().getTheCADBuilderInterface().getWingFairingBackLengthFactor()));
 			
-			if (theController.getWingFairingCADWidthFactorTextField().isDisabled())
-				theController.getWingFairingCADWidthFactorTextField().setDisable(false);
 			theController.getWingFairingCADWidthFactorTextField().setText(
 					String.valueOf(Main.getTheCADManager().getTheCADBuilderInterface().getWingFairingWidthFactor()));
 			
-			if (theController.getWingFairingCADHeightFactorTextField().isDisabled())
-				theController.getWingFairingCADHeightFactorTextField().setDisable(false);
 			theController.getWingFairingCADHeightFactorTextField().setText(
 					String.valueOf(Main.getTheCADManager().getTheCADBuilderInterface().getWingFairingHeightFactor()));
 			
-			if (theController.getWingFairingCADHeightBelowReferenceFactorTextField().isDisabled())
-				theController.getWingFairingCADHeightBelowReferenceFactorTextField().setDisable(false);
 			theController.getWingFairingCADHeightBelowReferenceFactorTextField().setText(
 					String.valueOf(Main.getTheCADManager().getTheCADBuilderInterface().getWingFairingHeightBelowReferenceFactor()));
 			
-			if (theController.getWingFairingCADHeightAboveReferenceFactorTextField().isDisabled())
-				theController.getWingFairingCADHeightAboveReferenceFactorTextField().setDisable(false);
 			theController.getWingFairingCADHeightAboveReferenceFactorTextField().setText(
 					String.valueOf(Main.getTheCADManager().getTheCADBuilderInterface().getWingFairingHeightAboveReferenceFactor()));
 			
-			if (theController.getWingFairingCADFilletRadiusFactorTextField().isDisabled())
-				theController.getWingFairingCADFilletRadiusFactorTextField().setDisable(false);
 			theController.getWingFairingCADFilletRadiusFactorTextField().setText(
 					String.valueOf(Main.getTheCADManager().getTheCADBuilderInterface().getWingFairingFilletRadiusFactor()));
 			
-		} else {
-			
-			theController.getGenerateWingFairingCADCheckBox().setDisable(true);
-			theController.getWingFairingCADFrontLengthFactorTextField().setDisable(true);
-			theController.getWingFairingCADBackLengthFactorTextField().setDisable(true);
-			theController.getWingFairingCADWidthFactorTextField().setDisable(true);
-			theController.getWingFairingCADHeightFactorTextField().setDisable(true);
-			theController.getWingFairingCADHeightBelowReferenceFactorTextField().setDisable(true);
-			theController.getWingFairingCADHeightAboveReferenceFactorTextField().setDisable(true);
-			theController.getWingFairingCADFilletRadiusFactorTextField().setDisable(true);
-			
-		}
+		} 
 		
 		//-------------------------------------------------------------------------
 		// CANARD FAIRING OPTIONS
 		if (Main.getTheAircraft().getCanard() != null && Main.getTheAircraft().getFuselage() != null) {
 			
-			if (theController.getGenerateCanardFairingCADCheckBox().isDisabled())
-				theController.getGenerateCanardFairingCADCheckBox().setDisable(false);
 			theController.getGenerateCanardFairingCADCheckBox().setSelected(
 					Main.getTheCADManager().getTheCADBuilderInterface().getGenerateCanardFairing());
 			
-			if (theController.getCanardFairingCADFrontLengthFactorTextField().isDisabled())
-				theController.getCanardFairingCADFrontLengthFactorTextField().setDisable(false);
 			theController.getCanardFairingCADFrontLengthFactorTextField().setText(
 					String.valueOf(Main.getTheCADManager().getTheCADBuilderInterface().getCanardFairingFrontLengthFactor()));
 			
-			if (theController.getCanardFairingCADBackLengthFactorTextField().isDisabled())
-				theController.getCanardFairingCADBackLengthFactorTextField().setDisable(false);
 			theController.getCanardFairingCADBackLengthFactorTextField().setText(
 					String.valueOf(Main.getTheCADManager().getTheCADBuilderInterface().getCanardFairingBackLengthFactor()));
 			
-			if (theController.getCanardFairingCADWidthFactorTextField().isDisabled())
-				theController.getCanardFairingCADWidthFactorTextField().setDisable(false);
 			theController.getCanardFairingCADWidthFactorTextField().setText(
 					String.valueOf(Main.getTheCADManager().getTheCADBuilderInterface().getCanardFairingWidthFactor()));
 			
-			if (theController.getCanardFairingCADHeightFactorTextField().isDisabled())
-				theController.getCanardFairingCADHeightFactorTextField().setDisable(false);
 			theController.getCanardFairingCADHeightFactorTextField().setText(
 					String.valueOf(Main.getTheCADManager().getTheCADBuilderInterface().getCanardFairingHeightFactor()));
 			
-			if (theController.getCanardFairingCADHeightBelowReferenceFactorTextField().isDisabled())
-				theController.getCanardFairingCADHeightBelowReferenceFactorTextField().setDisable(false);
 			theController.getCanardFairingCADHeightBelowReferenceFactorTextField().setText(
 					String.valueOf(Main.getTheCADManager().getTheCADBuilderInterface().getCanardFairingHeightBelowReferenceFactor()));
 			
-			if (theController.getCanardFairingCADHeightAboveReferenceFactorTextField().isDisabled())
-				theController.getCanardFairingCADHeightAboveReferenceFactorTextField().setDisable(false);
 			theController.getCanardFairingCADHeightAboveReferenceFactorTextField().setText(
 					String.valueOf(Main.getTheCADManager().getTheCADBuilderInterface().getCanardFairingHeightAboveReferenceFactor()));
 			
-			if (theController.getCanardFairingCADFilletRadiusFactorTextField().isDisabled())
-				theController.getCanardFairingCADFilletRadiusFactorTextField().setDisable(false);
 			theController.getCanardFairingCADFilletRadiusFactorTextField().setText(
 					String.valueOf(Main.getTheCADManager().getTheCADBuilderInterface().getCanardFairingFilletRadiusFactor()));
 			
-		} else {
-			
-			theController.getGenerateCanardFairingCADCheckBox().setDisable(true);
-			theController.getCanardFairingCADFrontLengthFactorTextField().setDisable(true);
-			theController.getCanardFairingCADBackLengthFactorTextField().setDisable(true);
-			theController.getCanardFairingCADWidthFactorTextField().setDisable(true);
-			theController.getCanardFairingCADHeightFactorTextField().setDisable(true);
-			theController.getCanardFairingCADHeightBelowReferenceFactorTextField().setDisable(true);
-			theController.getCanardFairingCADHeightAboveReferenceFactorTextField().setDisable(true);
-			theController.getCanardFairingCADFilletRadiusFactorTextField().setDisable(true);
-			
-		}
+		} 
 		
 	}
 

@@ -504,6 +504,7 @@ public class MissionProfileCalc {
 	private List<Amount<Length>> altitudeLanding;
 	private List<Amount<Duration>> timeLanding;
 	private List<Amount<Mass>> fuelUsedLanding;
+	private Amount<Mass> initialLandingMassFinalIteration; 
 	private List<Amount<Mass>> aircraftMassLanding;
 	private List<Amount<Mass>> emissionNOxLanding;
 	private List<Amount<Mass>> emissionCOLanding;
@@ -1170,7 +1171,7 @@ public class MissionProfileCalc {
 					polarCDTakeOff,
 					theOperatingConditions.getAltitudeTakeOff(),
 					theOperatingConditions.getDeltaTemperatureTakeOff(),
-					maximumTakeOffMass,
+					initialMissionMass,
 					dtHold,
 					kCLmaxTakeOff,
 					kRotation,
@@ -1216,7 +1217,7 @@ public class MissionProfileCalc {
 					groundIdleCalibrationFactorEmissionIndexH2O
 					);
 
-			theTakeOffCalculator.calculateTakeOffDistanceODE(null, false, false, vMC);
+			theTakeOffCalculator.calculateTakeOffDistanceODE(null, false, false, vMC, false);
 			
 			rangeTakeOff.addAll(theTakeOffCalculator.getGroundDistance());			
 			altitudeTakeOff.addAll(theTakeOffCalculator.getVerticalDistance());
@@ -1568,7 +1569,9 @@ public class MissionProfileCalc {
 									cruiseMissionMachNumber.get(0),
 									theOperatingConditions.getDeltaTemperatureCruise(), 
 									theOperatingConditions.getThrottleCruise(), 
-									cruiseCalibrationFactorThrust
+									cruiseCalibrationFactorThrust,
+									theAircraft.getPowerPlant().getEngineList().get(iEng).getEngineType(),
+									theAircraft.getPowerPlant().getEngineList().get(iEng).getEtaPropeller()
 									)
 							);
 				}
@@ -1944,7 +1947,9 @@ public class MissionProfileCalc {
 										cruiseMissionMachNumber.get(j),
 										theOperatingConditions.getDeltaTemperatureCruise(), 
 										theOperatingConditions.getThrottleCruise(), 
-										cruiseCalibrationFactorThrust
+										cruiseCalibrationFactorThrust,
+										theAircraft.getPowerPlant().getEngineList().get(iEng).getEngineType(),
+										theAircraft.getPowerPlant().getEngineList().get(iEng).getEtaPropeller()
 										)
 								);
 					}
@@ -2466,7 +2471,9 @@ public class MissionProfileCalc {
 										alternateCruiseMachNumberList.get(0),
 										theOperatingConditions.getDeltaTemperatureCruise(), 
 										theOperatingConditions.getThrottleCruise(), 
-										cruiseCalibrationFactorThrust
+										cruiseCalibrationFactorThrust,
+										theAircraft.getPowerPlant().getEngineList().get(iEng).getEngineType(),
+										theAircraft.getPowerPlant().getEngineList().get(iEng).getEtaPropeller()
 										)
 								);
 					}
@@ -2879,7 +2886,9 @@ public class MissionProfileCalc {
 											alternateCruiseMachNumberList.get(j),
 											theOperatingConditions.getDeltaTemperatureCruise(), 
 											theOperatingConditions.getThrottleCruise(), 
-											cruiseCalibrationFactorThrust
+											cruiseCalibrationFactorThrust,
+											theAircraft.getPowerPlant().getEngineList().get(iEng).getEngineType(),
+											theAircraft.getPowerPlant().getEngineList().get(iEng).getEtaPropeller()
 											)
 									);
 						}
@@ -3298,7 +3307,9 @@ public class MissionProfileCalc {
 										holdingMachNumberList.get(0),
 										theOperatingConditions.getDeltaTemperatureClimb(), 
 										theOperatingConditions.getThrottleCruise(), 
-										cruiseCalibrationFactorThrust
+										cruiseCalibrationFactorThrust,
+										theAircraft.getPowerPlant().getEngineList().get(iEng).getEngineType(),
+										theAircraft.getPowerPlant().getEngineList().get(iEng).getEtaPropeller()
 										)
 								);
 					}
@@ -3693,7 +3704,9 @@ public class MissionProfileCalc {
 											holdingMachNumberList.get(j),
 											theOperatingConditions.getDeltaTemperatureClimb(), 
 											theOperatingConditions.getThrottleCruise(), 
-											cruiseCalibrationFactorThrust
+											cruiseCalibrationFactorThrust,
+											theAircraft.getPowerPlant().getEngineList().get(iEng).getEngineType(),
+											theAircraft.getPowerPlant().getEngineList().get(iEng).getEtaPropeller()
 											)
 									);
 						}
@@ -3791,7 +3804,7 @@ public class MissionProfileCalc {
 
 					//--------------------------------------------------------------------
 					// LANDING 
-					Amount<Mass> intialMassLanding = Amount.valueOf(
+					initialLandingMassFinalIteration = Amount.valueOf(
 							initialMissionMass.doubleValue(SI.KILOGRAM)
 							- theTakeOffCalculator.getFuelUsed().get(theTakeOffCalculator.getFuelUsed().size()-1).doubleValue(SI.KILOGRAM)
 							- theClimbCalculator.getFuelUsedClimb().get(theClimbCalculator.getFuelUsedClimb().size()-1).doubleValue(SI.KILOGRAM)
@@ -3811,12 +3824,13 @@ public class MissionProfileCalc {
 								theOperatingConditions.getAltitudeLanding(), 
 								theOperatingConditions.getDeltaTemperatureLanding(), 
 								approachAngle, 
-								intialMassLanding,
+								initialLandingMassFinalIteration,
 								theAircraft.getPowerPlant(),
 								polarCLLanding,
 								polarCDLanding, 
 								theAircraft.getWing().getAspectRatio(), 
 								theAircraft.getWing().getSurfacePlanform(),
+								theAircraft.getFuselage().getHeightFromGround(),
 								freeRollDuration,
 								mu, 
 								muBrake,
@@ -3825,7 +3839,10 @@ public class MissionProfileCalc {
 								cLmaxLanding, 
 								cLZeroLanding, 
 								cLAlphaLanding, 
-								theOperatingConditions.getThrottleLanding(), 
+								theOperatingConditions.getThrottleLanding(),
+								kApproach,
+								kFlare,
+								kTouchDown,
 								cruiseCalibrationFactorThrust,
 								flightIdleCalibrationFactorThrust,
 								groundIdleCalibrationFactorThrust,
@@ -3856,16 +3873,20 @@ public class MissionProfileCalc {
 								theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 								);
 
-						theLandingCalculator.calculateLanding(true);
+						theLandingCalculator.calculateLanding(true, false);
 
 						rangeLanding.addAll(theLandingCalculator.getGroundDistanceList());			
 						altitudeLanding.addAll(theLandingCalculator.getVerticalDistanceList());
 						timeLanding.addAll(theLandingCalculator.getTimeList());
 						fuelUsedLanding.addAll(theLandingCalculator.getFuelUsedList());
+						
+						Amount<Force> firstIterationLandingWeight = theLandingCalculator.getWeightList().get(i);
 						aircraftMassLanding.addAll(
 								theLandingCalculator.getWeightList().stream()
 								.map(w -> Amount.valueOf(
-										w.doubleValue(SI.NEWTON)/AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
+										w.doubleValue(SI.NEWTON)
+										/(AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND)
+												* firstIterationLandingWeight.doubleValue(SI.NEWTON)),
 										SI.KILOGRAM)
 										)
 								.collect(Collectors.toList())
@@ -3965,7 +3986,6 @@ public class MissionProfileCalc {
 						);
 				if(Math.abs(missionRange.doubleValue(NonSI.NAUTICAL_MILE) - totalMissionRange.doubleValue(NonSI.NAUTICAL_MILE)) < 1.0)
 					break;
-				
 				//.....................................................................
 				// NEW ITERATION CRUISE LENGTH
 				currentCruiseRange = Amount.valueOf( 
@@ -4207,7 +4227,11 @@ public class MissionProfileCalc {
 		this.massMap.put(MissionPhasesEnum.ALTERNATE_CRUISE, aircraftMassAlternateCruise.stream().map(e -> e.to(SI.KILOGRAM)).collect(Collectors.toList()));
 		this.massMap.put(MissionPhasesEnum.SECOND_DESCENT, aircraftMassSecondDescent.stream().map(e -> e.to(SI.KILOGRAM)).collect(Collectors.toList()));
 		this.massMap.put(MissionPhasesEnum.HOLDING, aircraftMassHolding.stream().map(e -> e.to(SI.KILOGRAM)).collect(Collectors.toList()));
-		this.massMap.put(MissionPhasesEnum.APPROACH_AND_LANDING, aircraftMassLanding.stream().map(e -> e.to(SI.KILOGRAM)).collect(Collectors.toList()));
+		this.massMap.put(MissionPhasesEnum.APPROACH_AND_LANDING, aircraftMassLanding.stream().map(e -> e
+				.times(initialLandingMassFinalIteration.times(AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND)).doubleValue(SI.KILOGRAM))
+				.to(SI.KILOGRAM))
+				.collect(Collectors.toList())
+				);
 		
 		//.................................................................................................
 		// EMISSION NOx
@@ -4415,15 +4439,15 @@ public class MissionProfileCalc {
 		
 		//.................................................................................................
 		// SFC
-		this.sfcMissionMap.put(MissionPhasesEnum.TAKE_OFF, sfcTakeOff.stream().map(sfc -> sfc.isNaN() ? 0.0 : sfc).collect(Collectors.toList())); /* lb/lb*hr */
-		this.sfcMissionMap.put(MissionPhasesEnum.CLIMB, sfcClimb.stream().map(sfc -> sfc.isNaN() ? 0.0 : sfc).collect(Collectors.toList())); /* lb/lb*hr */
-		this.sfcMissionMap.put(MissionPhasesEnum.CRUISE, sfcCruise.stream().map(sfc -> sfc.isNaN() ? 0.0 : sfc).collect(Collectors.toList())); /* lb/lb*hr */
-		this.sfcMissionMap.put(MissionPhasesEnum.FIRST_DESCENT, sfcFirstDescent.stream().map(sfc -> sfc.isNaN() ? 0.0 : sfc).collect(Collectors.toList())); /* lb/lb*hr */
-		this.sfcMissionMap.put(MissionPhasesEnum.SECOND_CLIMB, sfcSecondClimb.stream().map(sfc -> sfc.isNaN() ? 0.0 : sfc).collect(Collectors.toList())); /* lb/lb*hr */
-		this.sfcMissionMap.put(MissionPhasesEnum.ALTERNATE_CRUISE, sfcAlternateCruise.stream().map(sfc -> sfc.isNaN() ? 0.0 : sfc).collect(Collectors.toList())); /* lb/lb*hr */
-		this.sfcMissionMap.put(MissionPhasesEnum.SECOND_DESCENT, sfcSecondDescent.stream().map(sfc -> sfc.isNaN() ? 0.0 : sfc).collect(Collectors.toList())); /* lb/lb*hr */
-		this.sfcMissionMap.put(MissionPhasesEnum.HOLDING, sfcHolding.stream().map(sfc -> sfc.isNaN() ? 0.0 : sfc).collect(Collectors.toList())); /* lb/lb*hr */
-		this.sfcMissionMap.put(MissionPhasesEnum.APPROACH_AND_LANDING, sfcLanding.stream().map(sfc -> sfc.isNaN() ? 0.0 : sfc).collect(Collectors.toList())); /* lb/lb*hr */
+		this.sfcMissionMap.put(MissionPhasesEnum.TAKE_OFF, sfcTakeOff.stream().map(sfc -> sfc.isNaN() ? 0.0 : sfc).map(sfc -> sfc.isInfinite() ? 0.0 : sfc).collect(Collectors.toList())); /* lb/lb*hr */
+		this.sfcMissionMap.put(MissionPhasesEnum.CLIMB, sfcClimb.stream().map(sfc -> sfc.isNaN() ? 0.0 : sfc).map(sfc -> sfc.isInfinite() ? 0.0 : sfc).collect(Collectors.toList())); /* lb/lb*hr */
+		this.sfcMissionMap.put(MissionPhasesEnum.CRUISE, sfcCruise.stream().map(sfc -> sfc.isNaN() ? 0.0 : sfc).map(sfc -> sfc.isInfinite() ? 0.0 : sfc).collect(Collectors.toList())); /* lb/lb*hr */
+		this.sfcMissionMap.put(MissionPhasesEnum.FIRST_DESCENT, sfcFirstDescent.stream().map(sfc -> sfc.isNaN() ? 0.0 : sfc).map(sfc -> sfc.isInfinite() ? 0.0 : sfc).collect(Collectors.toList())); /* lb/lb*hr */
+		this.sfcMissionMap.put(MissionPhasesEnum.SECOND_CLIMB, sfcSecondClimb.stream().map(sfc -> sfc.isNaN() ? 0.0 : sfc).map(sfc -> sfc.isInfinite() ? 0.0 : sfc).collect(Collectors.toList())); /* lb/lb*hr */
+		this.sfcMissionMap.put(MissionPhasesEnum.ALTERNATE_CRUISE, sfcAlternateCruise.stream().map(sfc -> sfc.isNaN() ? 0.0 : sfc).map(sfc -> sfc.isInfinite() ? 0.0 : sfc).collect(Collectors.toList())); /* lb/lb*hr */
+		this.sfcMissionMap.put(MissionPhasesEnum.SECOND_DESCENT, sfcSecondDescent.stream().map(sfc -> sfc.isNaN() ? 0.0 : sfc).map(sfc -> sfc.isInfinite() ? 0.0 : sfc).collect(Collectors.toList())); /* lb/lb*hr */
+		this.sfcMissionMap.put(MissionPhasesEnum.HOLDING, sfcHolding.stream().map(sfc -> sfc.isNaN() ? 0.0 : sfc).map(sfc -> sfc.isInfinite() ? 0.0 : sfc).collect(Collectors.toList())); /* lb/lb*hr */
+		this.sfcMissionMap.put(MissionPhasesEnum.APPROACH_AND_LANDING, sfcLanding.stream().map(sfc -> sfc.isNaN() ? 0.0 : sfc).map(sfc -> sfc.isInfinite() ? 0.0 : sfc).collect(Collectors.toList())); /* lb/lb*hr */
 		
 		//.................................................................................................
 		// FUEL FLOW
@@ -5917,7 +5941,6 @@ public class MissionProfileCalc {
 		DecimalFormat numberFormat = new DecimalFormat("0.00");
 		
 		StringBuilder sb = new StringBuilder()
-				.append("\t-------------------------------------\n")
 				.append("\t\tMission distance = " + missionRange.to(NonSI.NAUTICAL_MILE) + "\n")
 				.append("\t\tTotal mission distance (plus alternate) = " + totalRange.to(NonSI.NAUTICAL_MILE) + "\n")
 				.append("\t\tBlock time = " + blockTime + "\n")
@@ -6425,9 +6448,6 @@ public class MissionProfileCalc {
 			+ "\t" + numberFormat.format(fuelEnergyMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(MyUnits.KILOWATT_HOUR))
 			+ "\t" + numberFormat.format(alternativeSourceEnergyMap.get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(MyUnits.KILOWATT_HOUR))
 			+ "\n");
-		
-		sb.append("\t-------------------------------------\n")
-		;
 
 		return sb.toString();
 
@@ -7586,6 +7606,14 @@ public class MissionProfileCalc {
 
 	public void setElectricThrustMissionMap(Map<MissionPhasesEnum, List<Amount<Force>>> electricThrustMissionMap) {
 		this.electricThrustMissionMap = electricThrustMissionMap;
+	}
+
+	public Amount<Mass> getInitialLandingMassFinalIteration() {
+		return initialLandingMassFinalIteration;
+	}
+
+	public void setInitialLandingMassFinalIteration(Amount<Mass> initialLandingMassFinalIteration) {
+		this.initialLandingMassFinalIteration = initialLandingMassFinalIteration;
 	}
 	
 }

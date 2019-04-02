@@ -49,10 +49,10 @@
 		<aerodynamic_and_stability
 			plot="TRUE"
 			create_CSV="FALSE"
-			take_off_condition="TRUE"
+			take_off_condition="FALSE"
 			file_take_off_condition="analysis_aerodynamics_Simple_Prototype.xml"
-			climb_condition="FALSE"
-			file_climb_condition="analysis_aerodynamics_CS300_climb.xml"
+			climb_condition="TRUE"
+			file_climb_condition="analysis_aerodynamics_Simple_Prototype.xml"
 			cruise_condition="FALSE"
 			file_cruise_condition="analysis_aerodynamics_CS300_cruise.xml"
 			landing_condition="FALSE"

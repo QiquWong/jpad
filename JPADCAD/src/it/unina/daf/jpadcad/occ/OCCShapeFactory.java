@@ -509,7 +509,6 @@ public class OCCShapeFactory extends CADShapeFactory
 
 		TopExp_Explorer exp = new TopExp_Explorer(tds_shape, TopAbs_ShapeEnum.TopAbs_SHELL);
 		if (exp.More() == 1) {
-			System.out.println("========== [OCCShapeFactory::newShellFromAdjacentFaces] exploring shells in sewed object ...");
 			ret = (CADShell) newShape(exp.Current());
 		}
 		return ret;
@@ -536,18 +535,48 @@ public class OCCShapeFactory extends CADShapeFactory
 	}
 	
 	@Override
+	public CADSolid newSolidFromAdjacentShapes(CADShape ... cadShapes) {
+		return newSolidFromAdjacentShapes(Arrays.asList(cadShapes));
+	}
+	
+	@Override
+	public CADSolid newSolidFromAdjacentShapes(double sewTol, CADShape ... cadShapes) {
+		return newSolidFromAdjacentShapes(sewTol, Arrays.asList(cadShapes));
+	}
+	
+	@Override
+	public CADSolid newSolidFromAdjacentShapes(List<CADShape> cadShapes) {
+		return newSolidFromAdjacentShapes(1.0e-06, cadShapes);
+	}
+	
+	@Override
+	public CADSolid newSolidFromAdjacentShapes(double sewTol, List<CADShape> cadShapes) {
+		CADSolid ret = null;
+		CADShell shell = newShellFromAdjacentShapes(sewTol, cadShapes);
+		TopoDS_Shape tds_shape = ((OCCShell) shell).getShape();
+		TopExp_Explorer exp = new TopExp_Explorer(tds_shape, TopAbs_ShapeEnum.TopAbs_SHELL);
+		if (exp.More() == 1) {
+			BRepBuilderAPI_MakeSolid solidMaker = new BRepBuilderAPI_MakeSolid();
+			solidMaker.Add(TopoDS.ToShell(exp.Current()));
+			solidMaker.Build();
+			ret = (CADSolid) newShape(solidMaker.Solid());
+		}
+		return ret;		
+	}
+	
+	@Override
 	public CADSolid newSolidFromAdjacentFaces(CADFace ... cadFaces) {
 		return newSolidFromAdjacentFaces(Arrays.asList(cadFaces));
+		
 	}
 	
 	@Override
 	public CADSolid newSolidFromAdjacentFaces(List<CADFace> cadFaces) {
 		CADSolid ret = null;
 		CADShell shell = newShellFromAdjacentFaces(cadFaces);
-		TopoDS_Shape tds_shape = ((OCCShell)shell).getShape();
+		TopoDS_Shape tds_shape = ((OCCShell) shell).getShape();
 		TopExp_Explorer exp = new TopExp_Explorer(tds_shape, TopAbs_ShapeEnum.TopAbs_SHELL);
 		if (exp.More() == 1) {
-			System.out.println("========== [OCCShapeFactory::newSolidFromAdjacentFaces] from shell to solid ...");
 			BRepBuilderAPI_MakeSolid solidMaker = new BRepBuilderAPI_MakeSolid();
 			solidMaker.Add(TopoDS.ToShell(exp.Current()));
 			solidMaker.Build();
@@ -564,14 +593,26 @@ public class OCCShapeFactory extends CADShapeFactory
 	@Override
 	public CADSolid newSolidFromAdjacentShells(List<CADShell> cadShells) {
 		CADSolid ret = null;
+		CADShell shell = newShellFromAdjacentShells(cadShells);
+		TopoDS_Shape tds_shape = ((OCCShell) shell).getShape();
+		TopExp_Explorer exp = new TopExp_Explorer(tds_shape, TopAbs_ShapeEnum.TopAbs_SHELL);
+		if (exp.More() == 1) {
+			BRepBuilderAPI_MakeSolid solidMaker = new BRepBuilderAPI_MakeSolid();
+			solidMaker.Add(TopoDS.ToShell(exp.Current()));
+			solidMaker.Build();
+			ret = (CADSolid) newShape(solidMaker.Solid());
+		}		
+		return ret;
+	}
+	
+	@Override
+	public CADSolid newSolidFromShell(CADShell cadShell) {
+		CADSolid ret = null;
+		TopoDS_Shape tds_shape = ((OCCShell) cadShell).getShape();
 		BRepBuilderAPI_MakeSolid solidMaker = new BRepBuilderAPI_MakeSolid();
-		
-		for (int i = 0; i < cadShells.size(); i++) {
-			solidMaker.Add(TopoDS.ToShell(((OCCShell) cadShells.get(i)).getShape()));
-		}
+		solidMaker.Add(TopoDS.ToShell(tds_shape));
 		solidMaker.Build();
-		ret = (CADSolid) newShape(solidMaker.Solid());
-		
+		ret = (CADSolid) newShape(solidMaker.Solid()); 
 		return ret;
 	}
 	
@@ -588,14 +629,12 @@ public class OCCShapeFactory extends CADShapeFactory
 	@Override
 	public CADVertex newVertex(double x, double y, double z) {
 		CADVertex vertex = null;
-		try
-		{
+		try {
 			vertex = new OCCVertex(x, y, z);
-		}
-		catch (RuntimeException ex)
-		{
-		}
-		
+			
+		} catch (RuntimeException ex) {
+			
+		}		
 		return vertex;
 	}
 

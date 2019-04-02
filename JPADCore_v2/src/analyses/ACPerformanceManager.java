@@ -100,6 +100,25 @@ public class ACPerformanceManager {
 	// INPUT DATA (IMPORTED AND CALCULATED)
 	private IACPerformanceManager _thePerformanceInterface;
 
+	/*
+	 * boolean flags used to store performance analysis status ...
+	 */
+	private boolean vMCErrorFlag = false;
+	private boolean takeOffSimulationErrorFlag = false;
+	private boolean balancedFieldLengthSimulationErrorFlag = false;
+	private boolean climbPerformanceErrorFlag = false;
+	private boolean cruiseThrustDragErrorFlag = false;
+	private boolean cruiseFlightEnvelopeErrorFlag = false;
+	private boolean cruiseEfficiencyErrorFlag = false;
+	private boolean cruiseGridErrorFlag = false;
+	private boolean descentPerformanceErrorFlag = false;
+	private boolean landingErrorFlag = false;
+	private boolean payloadRangeErrorFlag = false;
+	private boolean vNDiagramErrorFlag = false;
+	private boolean takeOffNoiseTrajectoryErrorFlag = false;
+	private boolean landingNoiseTrajectoryErrorFlag = false;
+	private boolean missionProfileErrorFlag = false;
+	
 	//------------------------------------------------------------------------------
 	// OUTPUT DATA
 	//..............................................................................
@@ -1730,7 +1749,6 @@ public class ACPerformanceManager {
 		double kLandingWeight = 0.97;
 		Amount<Length> initialAltitudeLanding = Amount.valueOf(1500, NonSI.FOOT).to(SI.METER);
 		Amount<Length> obstacleLanding = Amount.valueOf(50, NonSI.FOOT).to(SI.METER);
-		Amount<Angle> approachAngle = Amount.valueOf(-3.0, NonSI.DEGREE_ANGLE);
 		double kCLmaxLanding = 0.9;
 		double kApproach = 1.3;
 		double kFlare = 1.2;
@@ -1872,12 +1890,6 @@ public class ACPerformanceManager {
 			initialAltitudeLanding = reader.getXMLAmountLengthByPath("//performance/takeoff_landing/initial_altitude_landing");
 		
 		//...............................................................
-		// APPROACH ANGLE
-		String approachAngleProperty = reader.getXMLPropertyByPath("//performance/takeoff_landing/approach_angle");
-		if(approachAngleProperty != null)
-			approachAngle = (Amount<Angle>) reader.getXMLAmountWithUnitByPath("//performance/takeoff_landing/approach_angle");		
-		
-		//...............................................................
 		// K CLmax LANDING
 		String kCLmaxLandingProperty = reader.getXMLPropertyByPath("//performance/takeoff_landing/k_cLmax_landing");
 		if(kCLmaxLandingProperty != null)
@@ -2015,11 +2027,9 @@ public class ACPerformanceManager {
 		// READING NOISE TRAJECTORIES DATA ...
 		Amount<Length> takeOffNoiseTrajectoryXEndSimulation = Amount.valueOf(8000.0, SI.METER);
 		Amount<Length> takeOffNoiseTrajectoryCutbackAltitude = Amount.valueOf(984.0, NonSI.FOOT);
-		int takeOffNoiseTrajectoryNumberOfThrustSettingCutback = 3;
 		Amount<Duration> takeOffNoiseTrajectoryLandingGearRetractionTimeInterval = Amount.valueOf(12.0, SI.SECOND);
 		Amount<Duration> takeOffNoiseTrajectoryThrustReductionCutbackTimeInterval = Amount.valueOf(4.0, SI.SECOND);
 		Amount<Length> landingNoiseTrajectoryInitialAltitude = Amount.valueOf(4000.0, NonSI.FOOT);
-		Amount<Angle> landingNoiseTrajectoryTrajectoryAngle = Amount.valueOf(-3.0, NonSI.DEGREE_ANGLE);
 		//...............................................................
 		// TAKE-OFF GROUND DISTANCE END SIMULATION
 		String takeOffNoiseTrajectoryXEndSimulationProperty = reader.getXMLPropertyByPath("//performance/noise_trajectories/take_off/ground_distance_end_simulation");
@@ -2030,11 +2040,6 @@ public class ACPerformanceManager {
 		String takeOffNoiseTrajectoryCutbackAltitudeProperty = reader.getXMLPropertyByPath("//performance/noise_trajectories/take_off/cutback_altitude");
 		if(takeOffNoiseTrajectoryCutbackAltitudeProperty != null)
 			takeOffNoiseTrajectoryCutbackAltitude = reader.getXMLAmountLengthByPath("//performance/noise_trajectories/take_off/cutback_altitude");
-		//...............................................................
-		// TAKE-OFF NUMBER OF THRUST SETTINGS CUTBACK
-		String takeOffNoiseTrajectoryNumberOfThrustSettingCutbackProperty = reader.getXMLPropertyByPath("//performance/noise_trajectories/take_off/number_of_thrust_settings_cutback");
-		if(takeOffNoiseTrajectoryNumberOfThrustSettingCutbackProperty != null)
-			takeOffNoiseTrajectoryNumberOfThrustSettingCutback = Integer.valueOf(takeOffNoiseTrajectoryNumberOfThrustSettingCutbackProperty);
 		//...............................................................
 		// TAKE-OFF LANDING GEAR RETRACTION TIME INTERVAL
 		String takeOffNoiseTrajectoryLandingGearRetractionTimeIntervalProperty = reader.getXMLPropertyByPath("//performance/noise_trajectories/take_off/dt_landing_gear_retraction");
@@ -2050,11 +2055,6 @@ public class ACPerformanceManager {
 		String landingNoiseTrajectoryInitialAltitudeProperty = reader.getXMLPropertyByPath("//performance/noise_trajectories/landing/initial_altitude");
 		if(landingNoiseTrajectoryInitialAltitudeProperty != null)
 			landingNoiseTrajectoryInitialAltitude = reader.getXMLAmountLengthByPath("//performance/noise_trajectories/landing/initial_altitude");
-		//...............................................................
-		// LANDING TRAJECTORY ANGLE
-		String landingNoiseTrajectoryTrajectoryAngleProperty = reader.getXMLPropertyByPath("//performance/noise_trajectories/landing/trajectory_angle");
-		if(landingNoiseTrajectoryTrajectoryAngleProperty != null)
-			landingNoiseTrajectoryTrajectoryAngle = reader.getXMLAmountAngleByPath("//performance/noise_trajectories/landing/trajectory_angle");
 		
 		//===========================================================================================
 		// READING MISSION PROFILE DATA ...
@@ -2869,7 +2869,6 @@ public class ACPerformanceManager {
 				.setKLandingWeight(kLandingWeight)
 				.setInitialALtitudeLanding(initialAltitudeLanding.to(SI.METER))
 				.setObstacleLanding(obstacleLanding.to(SI.METER))
-				.setApproachAngle(approachAngle.to(NonSI.DEGREE_ANGLE))
 				.setKCLmaxLanding(kCLmaxLanding)
 				.setKApproach(kApproach)
 				.setKFlare(kFlare)
@@ -2890,11 +2889,9 @@ public class ACPerformanceManager {
 				.setCLmaxInverted(cLmaxInverted)
 				.setTakeOffNoiseTrajectoryXEndSimulation(takeOffNoiseTrajectoryXEndSimulation)
 				.setTakeOffNoiseTrajectoryCutbackAltitude(takeOffNoiseTrajectoryCutbackAltitude)
-				.setTakeOffNoiseTrajectoryNumberOfThrustSettingCutback(takeOffNoiseTrajectoryNumberOfThrustSettingCutback)
 				.setTakeOffNoiseTrajectoryLandingGearRetractionTimeInterval(takeOffNoiseTrajectoryLandingGearRetractionTimeInterval)
 				.setTakeOffNoiseTrajectoryThrustReductionCutbackTimeInterval(takeOffNoiseTrajectoryThrustReductionCutbackTimeInterval)
 				.setLandingNoiseTrajectoryInitialAltitude(landingNoiseTrajectoryInitialAltitude)
-				.setLandingNoiseTrajectoryTrajectoryAngle(landingNoiseTrajectoryTrajectoryAngle)
 				.setMissionRange(missionRange.to(SI.METER))
 				.setAlternateCruiseLength(alternateCruiseLength.to(SI.METER))
 				.setAlternateCruiseAltitude(alternateCruiseAltitude.to(SI.METER))
@@ -2961,10 +2958,10 @@ public class ACPerformanceManager {
 				.addAllTaskList(theAircraft.getTheAnalysisManager().getTaskListPerformance())
 				.addAllPlotList(plotList)
 				.build();
-		
+
 		ACPerformanceManager thePerformanceManager = new ACPerformanceManager();
 		thePerformanceManager.setThePerformanceInterface(thePerformanceManagerInterface);
-		
+
 		return thePerformanceManager;
 	}
 
@@ -2976,14 +2973,14 @@ public class ACPerformanceManager {
 
 		final PrintStream originalOut = System.out;
 		PrintStream filterStream = new PrintStream(new OutputStream() {
-		    public void write(int b) {
-		         // write nothing
-		    }
+			public void write(int b) {
+				// write nothing
+			}
 		});
 //		PrintStream filterStream = System.out;
-		
+
 		System.setOut(filterStream);
-		
+
 		initializeData();
 
 		String performanceFolderPath = JPADStaticWriteUtils.createNewFolder(
@@ -2999,13 +2996,13 @@ public class ACPerformanceManager {
 					+ "XCG_" + _thePerformanceInterface.getXcgPositionList().get(i)
 					+ File.separator
 					);
-			
+
 			if(_thePerformanceInterface.getTaskList().contains(PerformanceEnum.TAKE_OFF)) {
 
 				System.setOut(originalOut);
 				System.out.println("\t\t\tTake-Off Analysis :: START");
 				System.setOut(filterStream);
-				
+
 				String takeOffFolderPath = JPADStaticWriteUtils.createNewFolder(
 						xcgFolderPath 
 						+ "TAKE_OFF"
@@ -3013,79 +3010,118 @@ public class ACPerformanceManager {
 						);
 
 				CalcTakeOff calcTakeOff = new CalcTakeOff();
-				
+
 				//-----------------------------------------------------------------------------------------------
 				// VMC CALCULATION
 				System.setOut(originalOut);
 				System.out.println("\t\t\t\tVMC calculation :: START");
 				System.setOut(filterStream);
-				calcTakeOff.calculateVMC(_thePerformanceInterface.getXcgPositionList().get(i));
+				try {
+					calcTakeOff.calculateVMC(_thePerformanceInterface.getXcgPositionList().get(i));
+				}
+				catch (Exception e) {
+					vMCErrorFlag = true;
+					System.err.println("ERROR: (PERFORMANCE - VMC) CALCULATION WILL BE SKIPPED ...");
+				}
 				System.setOut(originalOut);
 				System.out.println("\t\t\t\tVMC calculation :: COMPLETE");
 				System.setOut(filterStream);
-				
+
 				//-----------------------------------------------------------------------------------------------
 				// VMC PLOT
 				if(_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getPlotPerformance() == true) {
-					System.setOut(originalOut);
-					System.out.println("\t\t\t\tVMC plot :: START");
-					System.setOut(filterStream);
-					calcTakeOff.plotVMC(takeOffFolderPath, _thePerformanceInterface.getXcgPositionList().get(i));
-					System.setOut(originalOut);
-					System.out.println("\t\t\t\tVMC plot :: COMPLETE");
-					System.setOut(filterStream);
+					if(vMCErrorFlag == false) {
+						try {
+							System.setOut(originalOut);
+							System.out.println("\t\t\t\tVMC plot :: START");
+							System.setOut(filterStream);
+							calcTakeOff.plotVMC(takeOffFolderPath, _thePerformanceInterface.getXcgPositionList().get(i));
+							System.setOut(originalOut);
+							System.out.println("\t\t\t\tVMC plot :: COMPLETE");
+							System.setOut(filterStream);
+						}
+						catch (Exception e) {
+							System.err.println("ERROR: (PERFORMANCE - VMC) PLOT WILL BE SKIPPED ...");
+						}
+					}
 				}
-				
-				//-----------------------------------------------------------------------------------------------
-				// TAKE-OFF SIMULATION
-				System.setOut(originalOut);
-				System.out.println("\t\t\t\tTake-Off simulation :: START");
-				System.setOut(filterStream);
-				calcTakeOff.performTakeOffSimulation(
-						_thePerformanceInterface.getMaximumTakeOffMass(), 
-						_thePerformanceInterface.getTheOperatingConditions().getAltitudeTakeOff().to(SI.METER),
-						_thePerformanceInterface.getXcgPositionList().get(i),
-						_vMCMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).to(SI.METERS_PER_SECOND)
-						);
-				System.setOut(originalOut);
-				System.out.println("\t\t\t\tTake-Off simulation :: COMPLETE");
-				System.setOut(filterStream);
-				
-				//-----------------------------------------------------------------------------------------------
-				// TAKE-OFF SIMULATION PLOT
-				if(_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getPlotPerformance() == true) {
-					System.setOut(originalOut);
-					System.out.println("\t\t\t\tTake-Off simulation plot :: START");
-					System.setOut(filterStream);
-					calcTakeOff.plotTakeOffPerformance(takeOffFolderPath, _thePerformanceInterface.getXcgPositionList().get(i));
-					System.setOut(originalOut);
-					System.out.println("\t\t\t\tTake-Off simulation plot :: COMPLETE");
-					System.setOut(filterStream);
-				}
-				
+
 				//-----------------------------------------------------------------------------------------------
 				// BALANCED FIELD LENGTH CALCULATION
 				System.setOut(originalOut);
 				System.out.println("\t\t\t\tBalanced Field Length calculation :: START");
 				System.setOut(filterStream);
-				calcTakeOff.calculateBalancedFieldLength(
-						_thePerformanceInterface.getXcgPositionList().get(i),
-						_vMCMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).to(SI.METERS_PER_SECOND)
-						);
+				try {
+					calcTakeOff.calculateBalancedFieldLength(
+							_thePerformanceInterface.getMaximumTakeOffMass(), 
+							_thePerformanceInterface.getTheOperatingConditions().getAltitudeTakeOff().to(SI.METER),
+							_thePerformanceInterface.getXcgPositionList().get(i),
+							_vMCMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).to(SI.METERS_PER_SECOND)
+							);
+				}
+				catch (Exception e) {
+					balancedFieldLengthSimulationErrorFlag = true;
+					System.err.println("ERROR: (PERFORMANCE - BALANCED FIELD LENGTH) CALCULATION WILL BE SKIPPED ...");
+				}
 				System.setOut(originalOut);
 				System.out.println("\t\t\t\tBalanced Field Length calculation :: COMPLETE");
 				System.setOut(filterStream);
-				
+
 				//-----------------------------------------------------------------------------------------------
 				// BALANCED FIELD LENGTH PLOT
 				if(_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getPlotPerformance() == true) {
-					System.setOut(originalOut);
-					System.out.println("\t\t\t\tBalanced Field Length plot :: START");
-					System.setOut(filterStream);
-					calcTakeOff.plotBalancedFieldLength(takeOffFolderPath, _thePerformanceInterface.getXcgPositionList().get(i));
-					System.setOut(originalOut);
-					System.out.println("\t\t\t\tBalanced Field Length plot :: COMPLETE");
-					System.setOut(filterStream);
+					if(balancedFieldLengthSimulationErrorFlag == false) {
+						try {
+							System.setOut(originalOut);
+							System.out.println("\t\t\t\tBalanced Field Length plot :: START");
+							System.setOut(filterStream);
+							calcTakeOff.plotBalancedFieldLength(takeOffFolderPath, _thePerformanceInterface.getXcgPositionList().get(i));
+							System.setOut(originalOut);
+							System.out.println("\t\t\t\tBalanced Field Length plot :: COMPLETE");
+							System.setOut(filterStream);
+						}
+						catch (Exception e) {
+							System.err.println("ERROR: (PERFORMANCE - BALANCED FIELD LENGTH) PLOT WILL BE SKIPPED ...");
+						}
+					}
+				}
+				
+				//-----------------------------------------------------------------------------------------------
+				// TAKE-OFF SIMULATION 
+				System.setOut(originalOut);
+				System.out.println("\t\t\t\tTake-Off simulation :: START");
+				System.setOut(filterStream);
+				try {
+					calcTakeOff.performTakeOffSimulation(
+							_thePerformanceInterface.getXcgPositionList().get(i),
+							_vMCMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).to(SI.METERS_PER_SECOND)
+							);
+				}
+				catch (Exception e) {
+					takeOffSimulationErrorFlag = true;
+					System.err.println("ERROR: (PERFORMANCE - TAKE-OFF SIMULATION) CALCULATION WILL BE SKIPPED ...");
+				}
+				System.setOut(originalOut);
+				System.out.println("\t\t\t\tTake-Off simulation :: COMPLETE");
+				System.setOut(filterStream);
+
+				//-----------------------------------------------------------------------------------------------
+				// TAKE-OFF SIMULATION PLOT
+				if(_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getPlotPerformance() == true) {
+					if(takeOffSimulationErrorFlag == false) {
+						try {
+							System.setOut(originalOut);
+							System.out.println("\t\t\t\tTake-Off simulation plot :: START");
+							System.setOut(filterStream);
+							calcTakeOff.plotTakeOffPerformance(takeOffFolderPath, _thePerformanceInterface.getXcgPositionList().get(i));
+							System.setOut(originalOut);
+							System.out.println("\t\t\t\tTake-Off simulation plot :: COMPLETE");
+							System.setOut(filterStream);
+						}
+						catch (Exception e) {
+							System.err.println("ERROR: (PERFORMANCE - TAKE-OFF SIMULATION) PLOT WILL BE SKIPPED ...");
+						}
+					}
 				}
 
 				System.setOut(originalOut);
@@ -3114,14 +3150,20 @@ public class ACPerformanceManager {
 				System.setOut(originalOut);
 				System.out.println("\t\t\t\tClimb performance calculation :: START");
 				System.setOut(filterStream);
-				calcClimb.calculateClimbPerformance(
-						_thePerformanceInterface.getMaximumTakeOffMass().times(_thePerformanceInterface.getKClimbWeightAEO()),
-						_thePerformanceInterface.getMaximumTakeOffMass().times(_thePerformanceInterface.getKClimbWeightOEI()),
-						_thePerformanceInterface.getInitialClimbAltitude(),
-						_thePerformanceInterface.getFinalClimbAltitude(),
-						true,
-						_thePerformanceInterface.getXcgPositionList().get(i)
-						);
+				try {
+					calcClimb.calculateClimbPerformance(
+							_thePerformanceInterface.getMaximumTakeOffMass().times(_thePerformanceInterface.getKClimbWeightAEO()),
+							_thePerformanceInterface.getMaximumTakeOffMass().times(_thePerformanceInterface.getKClimbWeightOEI()),
+							_thePerformanceInterface.getInitialClimbAltitude(),
+							_thePerformanceInterface.getFinalClimbAltitude(),
+							true,
+							_thePerformanceInterface.getXcgPositionList().get(i)
+							);
+				}
+				catch (Exception e) {
+					climbPerformanceErrorFlag = true;
+					System.err.println("ERROR: (PERFORMANCE - CLIMB) CALCULATION WILL BE SKIPPED ...");
+				}
 				System.setOut(originalOut);
 				System.out.println("\t\t\t\tClimb performance calculation :: COMPLETE");
 				System.setOut(filterStream);
@@ -3129,13 +3171,20 @@ public class ACPerformanceManager {
 				//-----------------------------------------------------------------------------------------------
 				// CLIMB PLOT
 				if(_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getPlotPerformance() == true) {
-					System.setOut(originalOut);
-					System.out.println("\t\t\t\tClimb performance plot :: START");
-					System.setOut(filterStream);
-					calcClimb.plotClimbPerformance(climbFolderPath, _thePerformanceInterface.getXcgPositionList().get(i));
-					System.setOut(originalOut);
-					System.out.println("\t\t\t\tClimb performance plot :: COMPLETE");
-					System.setOut(filterStream);
+					if(climbPerformanceErrorFlag == false) {
+						try {
+							System.setOut(originalOut);
+							System.out.println("\t\t\t\tClimb performance plot :: START");
+							System.setOut(filterStream);
+							calcClimb.plotClimbPerformance(climbFolderPath, _thePerformanceInterface.getXcgPositionList().get(i));
+							System.setOut(originalOut);
+							System.out.println("\t\t\t\tClimb performance plot :: COMPLETE");
+							System.setOut(filterStream);
+						}
+						catch (Exception e) {
+							System.err.println("ERROR: (PERFORMANCE - CLIMB) PLOT WILL BE SKIPPED ...");
+						}
+					}
 				}
 
 				System.setOut(originalOut);
@@ -3189,10 +3238,16 @@ public class ACPerformanceManager {
 				System.setOut(originalOut);
 				System.out.println("\t\t\t\tThrust and Drag curves calculation :: START");
 				System.setOut(filterStream);
-				calcCruise.calculateThrustAndDrag(
-						_thePerformanceInterface.getMaximumTakeOffMass().times(_thePerformanceInterface.getKCruiseWeight()),
-						_thePerformanceInterface.getXcgPositionList().get(i)
-						);
+				try {
+					calcCruise.calculateThrustAndDrag(
+							_thePerformanceInterface.getMaximumTakeOffMass().times(_thePerformanceInterface.getKCruiseWeight()),
+							_thePerformanceInterface.getXcgPositionList().get(i)
+							);
+				}
+				catch (Exception e) {
+					cruiseThrustDragErrorFlag = true;
+					System.err.println("ERROR: (PERFORMANCE - CRUISE THRUST-DRAG) CALCULATION WILL BE SKIPPED ...");
+				}
 				System.setOut(originalOut);
 				System.out.println("\t\t\t\tThrust and Drag curves calculation :: COMPLETE");
 				System.setOut(filterStream);
@@ -3202,10 +3257,16 @@ public class ACPerformanceManager {
 				System.setOut(originalOut);
 				System.out.println("\t\t\t\tFlight envelope calculation :: START");
 				System.setOut(filterStream);
+				try {
 				calcCruise.calculateFlightEnvelope(
 						_thePerformanceInterface.getMaximumTakeOffMass().times(_thePerformanceInterface.getKCruiseWeight()),
 						_thePerformanceInterface.getXcgPositionList().get(i)
 						);
+				}
+				catch (Exception e) {
+					cruiseFlightEnvelopeErrorFlag = true;
+					System.err.println("ERROR: (PERFORMANCE - CRUISE FLIGHT ENVELOPE) CALCULATION WILL BE SKIPPED ...");
+				}
 				System.setOut(originalOut);
 				System.out.println("\t\t\t\tFlight envelope calculation :: COMPLETE");
 				System.setOut(filterStream);
@@ -3215,7 +3276,13 @@ public class ACPerformanceManager {
 				System.setOut(originalOut);
 				System.out.println("\t\t\t\tEfficiency curves calculation :: START");
 				System.setOut(filterStream);
-				calcCruise.calculateEfficiency(_thePerformanceInterface.getXcgPositionList().get(i));
+				try {
+					calcCruise.calculateEfficiency(_thePerformanceInterface.getXcgPositionList().get(i));
+				}
+				catch (Exception e) {
+					cruiseEfficiencyErrorFlag = true;
+					System.err.println("ERROR: (PERFORMANCE - CRUISE EFFICIENCY) CALCULATION WILL BE SKIPPED ...");
+				}
 				System.setOut(originalOut);
 				System.out.println("\t\t\t\tEfficiency curves calculation :: COMPLETE");
 				System.setOut(filterStream);
@@ -3225,7 +3292,13 @@ public class ACPerformanceManager {
 				System.setOut(originalOut);
 				System.out.println("\t\t\t\tCruise grid calculation :: START");
 				System.setOut(filterStream);
-				calcCruise.calculateCruiseGrid(_thePerformanceInterface.getXcgPositionList().get(i));
+				try {
+					calcCruise.calculateCruiseGrid(_thePerformanceInterface.getXcgPositionList().get(i));
+				}
+				catch (Exception e) {
+					cruiseGridErrorFlag = true;
+					System.err.println("ERROR: (PERFORMANCE - CRUISE GRID) CALCULATION WILL BE SKIPPED ...");
+				}
 				System.setOut(originalOut);
 				System.out.println("\t\t\t\tCruise grid calculation :: COMPLETE");
 				System.setOut(filterStream);
@@ -3267,12 +3340,18 @@ public class ACPerformanceManager {
 				System.setOut(originalOut);
 				System.out.println("\t\t\t\tDescent performance calculation :: START");
 				System.setOut(filterStream);
-				calcDescent.calculateDescentPerformance(
-						_thePerformanceInterface.getInitialDescentAltitude().to(SI.METER),
-						_thePerformanceInterface.getFinalDescentAltitude().to(SI.METER),
-						_thePerformanceInterface.getMaximumTakeOffMass().times(_thePerformanceInterface.getKDescentWeight()),
-						_thePerformanceInterface.getXcgPositionList().get(i)
-						);
+				try {
+					calcDescent.calculateDescentPerformance(
+							_thePerformanceInterface.getInitialDescentAltitude().to(SI.METER),
+							_thePerformanceInterface.getFinalDescentAltitude().to(SI.METER),
+							_thePerformanceInterface.getMaximumTakeOffMass().times(_thePerformanceInterface.getKDescentWeight()),
+							_thePerformanceInterface.getXcgPositionList().get(i)
+							);
+				}
+				catch (Exception e) {
+					descentPerformanceErrorFlag = true;
+					System.err.println("ERROR: (PERFORMANCE - DESCENT) CALCULATION WILL BE SKIPPED ...");
+				}
 				System.setOut(originalOut);
 				System.out.println("\t\t\t\tDescent performance calculation :: COMPLETE");
 				System.setOut(filterStream);
@@ -3280,13 +3359,20 @@ public class ACPerformanceManager {
 				//-----------------------------------------------------------------------------------------------
 				// DESCENT PERFORMANCE PLOT
 				if(_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getPlotPerformance() == true) {
-					System.setOut(originalOut);
-					System.out.println("\t\t\t\tDescent performance plot :: START");
-					System.setOut(filterStream);
-					calcDescent.plotDescentPerformance(descentFolderPath, _thePerformanceInterface.getXcgPositionList().get(i));
-					System.setOut(originalOut);
-					System.out.println("\t\t\t\tDescent performance plot :: COMPLETE");
-					System.setOut(filterStream);
+					if(descentPerformanceErrorFlag == false) {
+						try {
+							System.setOut(originalOut);
+							System.out.println("\t\t\t\tDescent performance plot :: START");
+							System.setOut(filterStream);
+							calcDescent.plotDescentPerformance(descentFolderPath, _thePerformanceInterface.getXcgPositionList().get(i));
+							System.setOut(originalOut);
+							System.out.println("\t\t\t\tDescent performance plot :: COMPLETE");
+							System.setOut(filterStream);
+						}
+						catch (Exception e) {
+							System.err.println("ERROR: (PERFORMANCE - DESCENT) PLOT WILL BE SKIPPED ...");
+						}
+					}
 				}
 
 				System.setOut(originalOut);
@@ -3314,10 +3400,16 @@ public class ACPerformanceManager {
 				System.setOut(originalOut);
 				System.out.println("\t\t\t\tLanding simulation :: START");
 				System.setOut(filterStream);
-				calcLanding.performLandingSimulation(
-						_thePerformanceInterface.getMaximumTakeOffMass().times(_thePerformanceInterface.getKLandingWeight()),
-						_thePerformanceInterface.getXcgPositionList().get(i)
-						);
+				try {
+					calcLanding.performLandingSimulation(
+							_thePerformanceInterface.getMaximumTakeOffMass().times(_thePerformanceInterface.getKLandingWeight()),
+							_thePerformanceInterface.getXcgPositionList().get(i)
+							);
+				}
+				catch (Exception e) {
+					landingErrorFlag = true;
+					System.err.println("ERROR: (PERFORMANCE - LANDING SIMULATION) CALCULATION WILL BE SKIPPED ...");
+				}
 				System.setOut(originalOut);
 				System.out.println("\t\t\t\tLanding simulation :: COMPLETE");
 				System.setOut(filterStream);
@@ -3325,13 +3417,20 @@ public class ACPerformanceManager {
 				//-----------------------------------------------------------------------------------------------
 				// LANDING PLOT
 				if(_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getPlotPerformance() == true) {
-					System.setOut(originalOut);
-					System.out.println("\t\t\t\tLanding plot :: START");
-					System.setOut(filterStream);
-					calcLanding.plotLandingPerformance(landingFolderPath, _thePerformanceInterface.getXcgPositionList().get(i));
-					System.setOut(originalOut);
-					System.out.println("\t\t\t\tLanding plot :: COMPLETE");
-					System.setOut(filterStream);
+					if(landingErrorFlag == false) {
+						try {
+							System.setOut(originalOut);
+							System.out.println("\t\t\t\tLanding plot :: START");
+							System.setOut(filterStream);
+							calcLanding.plotLandingPerformance(landingFolderPath, _thePerformanceInterface.getXcgPositionList().get(i));
+							System.setOut(originalOut);
+							System.out.println("\t\t\t\tLanding plot :: COMPLETE");
+							System.setOut(filterStream);
+						}
+						catch (Exception e) {
+							System.err.println("ERROR: (PERFORMANCE - LANDING SIMULATION) PLOT WILL BE SKIPPED ...");
+						}
+					}
 				}
 				
 				System.setOut(originalOut);
@@ -3358,8 +3457,13 @@ public class ACPerformanceManager {
 				// PAYLOAD-RANGE CALCULATION
 				System.setOut(originalOut);
 				System.out.println("\t\t\t\tPayload-Range points calculation :: START");
-				System.setOut(filterStream);
-				calcPayloadRange.fromMissionProfile(_thePerformanceInterface.getXcgPositionList().get(i));
+				try {
+					calcPayloadRange.fromMissionProfile(_thePerformanceInterface.getXcgPositionList().get(i));
+				}
+				catch (Exception e) {
+					payloadRangeErrorFlag = true;
+					System.err.println("ERROR: (PERFORMANCE - PAYLOAD-RANGE) CALCULATION WILL BE SKIPPED ...");
+				}
 				System.setOut(originalOut);
 				System.out.println("\t\t\t\tPayload-Range points calculation :: COMPLETE");
 				System.setOut(filterStream);
@@ -3367,13 +3471,20 @@ public class ACPerformanceManager {
 				//-----------------------------------------------------------------------------------------------
 				// PAYLOAD-RANGE PLOT
 				if(_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getPlotPerformance() == true) {
-					System.setOut(originalOut);
-					System.out.println("\t\t\t\tPayload-Range plot :: START");
-					System.setOut(filterStream);
-					calcPayloadRange.plotPayloadRange(payloadRangeFolderPath, _thePerformanceInterface.getXcgPositionList().get(i));
-					System.setOut(originalOut);
-					System.out.println("\t\t\t\tPayload-Range plot :: COMPLETE");
-					System.setOut(filterStream);
+					if(payloadRangeErrorFlag == false) {
+						try {
+							System.setOut(originalOut);
+							System.out.println("\t\t\t\tPayload-Range plot :: START");
+							System.setOut(filterStream);
+							calcPayloadRange.plotPayloadRange(payloadRangeFolderPath, _thePerformanceInterface.getXcgPositionList().get(i));
+							System.setOut(originalOut);
+							System.out.println("\t\t\t\tPayload-Range plot :: COMPLETE");
+							System.setOut(filterStream);
+						}
+						catch (Exception e) {
+							System.err.println("ERROR: (PERFORMANCE - PAYLOAD-RANGE) PLOT WILL BE SKIPPED ...");
+						}
+					}
 				}
 
 				System.setOut(originalOut);
@@ -3401,7 +3512,13 @@ public class ACPerformanceManager {
 				System.setOut(originalOut);
 				System.out.println("\t\t\t\tFlight Maneuver and Gust Envelope calculation :: START");
 				System.setOut(filterStream);
+				try {
 				calcEnvelope.fromRegulations(_thePerformanceInterface.getXcgPositionList().get(i));
+				}
+				catch (Exception e) {
+					vNDiagramErrorFlag = true;
+					System.err.println("ERROR: (PERFORMANCE - V-n DIAGRAM) CALCULATION WILL BE SKIPPED ...");
+				}
 				System.setOut(originalOut);
 				System.out.println("\t\t\t\tFlight Maneuver and Gust Envelope calculation :: COMPLETE");
 				System.setOut(filterStream);
@@ -3409,13 +3526,20 @@ public class ACPerformanceManager {
 				//-----------------------------------------------------------------------------------------------
 				// V-n DIAGRAM PLOT
 				if(_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getPlotPerformance() == true) {
-					System.setOut(originalOut);
-					System.out.println("\t\t\t\tFlight Maneuver and Gust Envelope plot :: START");
-					System.setOut(filterStream);
-					calcEnvelope.plotVnDiagram(maneuveringFlightAndGustEnvelopeFolderPath, _thePerformanceInterface.getXcgPositionList().get(i));
-					System.setOut(originalOut);
-					System.out.println("\t\t\t\tFlight Maneuver and Gust Envelope plot :: COMPLETE");
-					System.setOut(filterStream);
+					if(vNDiagramErrorFlag == false) {
+						try {
+							System.setOut(originalOut);
+							System.out.println("\t\t\t\tFlight Maneuver and Gust Envelope plot :: START");
+							System.setOut(filterStream);
+							calcEnvelope.plotVnDiagram(maneuveringFlightAndGustEnvelopeFolderPath, _thePerformanceInterface.getXcgPositionList().get(i));
+							System.setOut(originalOut);
+							System.out.println("\t\t\t\tFlight Maneuver and Gust Envelope plot :: COMPLETE");
+							System.setOut(filterStream);
+						}
+						catch (Exception e) {
+							System.err.println("ERROR: (PERFORMANCE - V-n DIAGRAM) PLOT WILL BE SKIPPED ...");
+						}
+					}
 				}
 
 				System.setOut(originalOut);
@@ -3429,7 +3553,7 @@ public class ACPerformanceManager {
 				System.setOut(originalOut);
 				System.out.println("\t\t\tNoise Trajectories Analysis :: START");
 				System.setOut(filterStream);
-				
+
 				String noiseTrajectoriesFolderPath = JPADStaticWriteUtils.createNewFolder(
 						xcgFolderPath 
 						+ "NOISE_TRAJECTORIES"
@@ -3446,14 +3570,6 @@ public class ACPerformanceManager {
 						+ File.separator
 						);
 
-				CalcNoiseTrajectories calcNoiseTrajectories =  new CalcNoiseTrajectories();
-				
-				System.setOut(originalOut);
-				calcNoiseTrajectories.calculateTakeOffNoiseTrajectory(_thePerformanceInterface.getXcgPositionList().get(i), takeOffNoiseTrajectoriesFolderPath);
-				System.setOut(originalOut);
-				calcNoiseTrajectories.calculateLandingNoiseTrajectory(_thePerformanceInterface.getXcgPositionList().get(i), landingNoiseTrajectoriesFolderPath);
-				System.setOut(filterStream);
-				
 				List<Amount<Length>> groundDistanceList = new ArrayList<>();
 				List<Amount<Length>> altitudeList = new ArrayList<>();
 				List<Amount<Velocity>> speedTASList = new ArrayList<>();
@@ -3462,50 +3578,117 @@ public class ACPerformanceManager {
 				List<Amount<Angle>> gammaList = new ArrayList<>();
 				List<Amount<Angle>> thetaList = new ArrayList<>();
 				List<Amount<Force>> thrustList = new ArrayList<>();
-				
-				//---------------------------------------------------------------------------------------------------------------------------------------------------
-				// SIDELINE VALUES - index (0)
-				groundDistanceList.add(_theTakeOffNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsGroundDistanceMap().get(1.0));
-				altitudeList.add(_theTakeOffNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsAltitudeMap().get(1.0));
-				speedTASList.add(_theTakeOffNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsSpeedTASMap().get(1.0));
-				speedCASList.add(_theTakeOffNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsSpeedCASMap().get(1.0));
-				alphaList.add(_theTakeOffNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsAlphaMap().get(1.0));
-				gammaList.add(_theTakeOffNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsGammaMap().get(1.0));
-				thetaList.add(_theTakeOffNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsThetaMap().get(1.0));
-				thrustList.add(_theTakeOffNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsThrustMap().get(1.0).divide(_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineNumber()));
-				
-				//---------------------------------------------------------------------------------------------------------------------------------------------------
-				// FLYOVER VALUES with CUTBACK - index (1)
-				double phiCutback = _theTakeOffNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getPhiCutback();
-				
-				groundDistanceList.add(_theTakeOffNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsGroundDistanceMap().get(phiCutback));
-				altitudeList.add(_theTakeOffNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsAltitudeMap().get(phiCutback));
-				speedTASList.add(_theTakeOffNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsSpeedTASMap().get(phiCutback));
-				speedCASList.add(_theTakeOffNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsSpeedCASMap().get(phiCutback));
-				alphaList.add(_theTakeOffNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsAlphaMap().get(phiCutback));
-				gammaList.add(_theTakeOffNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsGammaMap().get(phiCutback));
-				thetaList.add(_theTakeOffNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsThetaMap().get(phiCutback));
-				thrustList.add(_theTakeOffNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsThrustMap().get(phiCutback).divide(_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineNumber()));
-				
-				//---------------------------------------------------------------------------------------------------------------------------------------------------
-				// APPROACH VALUES - index (2)
-				groundDistanceList.add(_theLandingNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsGroundDistance());
-				altitudeList.add(_theLandingNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsAltitude());
-				speedTASList.add(_theLandingNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsSpeedTAS());
-				speedCASList.add(_theLandingNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsSpeedCAS());
-				alphaList.add(_theLandingNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsAlpha());
-				gammaList.add(_theLandingNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsGamma());
-				thetaList.add(_theLandingNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsTheta());
-				thrustList.add(_theLandingNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsThrust().divide(_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineNumber()));
-				
-				_certificationPointsLongitudinalDistanceMap.put(_thePerformanceInterface.getXcgPositionList().get(i), groundDistanceList);
-				_certificationPointsAltitudeMap.put(_thePerformanceInterface.getXcgPositionList().get(i), altitudeList);
-				_certificationPointsSpeedTASMap.put(_thePerformanceInterface.getXcgPositionList().get(i), speedTASList);
-				_certificationPointsSpeedCASMap.put(_thePerformanceInterface.getXcgPositionList().get(i), speedCASList);
-				_certificationPointsAlphaMap.put(_thePerformanceInterface.getXcgPositionList().get(i), alphaList);
-				_certificationPointsGammaMap.put(_thePerformanceInterface.getXcgPositionList().get(i), gammaList);
-				_certificationPointsThetaMap.put(_thePerformanceInterface.getXcgPositionList().get(i), thetaList);
-				_certificationPointsThrustMap.put(_thePerformanceInterface.getXcgPositionList().get(i), thrustList);
+
+				CalcNoiseTrajectories calcNoiseTrajectories =  new CalcNoiseTrajectories();
+
+				try {
+					System.setOut(originalOut);
+					calcNoiseTrajectories.calculateTakeOffNoiseTrajectory(_thePerformanceInterface.getXcgPositionList().get(i), takeOffNoiseTrajectoriesFolderPath);
+				}
+				catch (Exception e) {
+					takeOffNoiseTrajectoryErrorFlag = true;
+					System.err.println("ERROR: (PERFORMANCE - TAKE-OFF NOISE TRAJECTORY) CALCULATION WILL BE SKIPPED ...");
+				}
+
+				if(takeOffNoiseTrajectoryErrorFlag == false) {
+					
+					//---------------------------------------------------------------------------------------------------------------------------------------------------
+					// SIDELINE VALUES - index (0)
+					groundDistanceList.add(0, _theTakeOffNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsGroundDistanceMap().get(1.0));
+					altitudeList.add(0, _theTakeOffNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsAltitudeMap().get(1.0));
+					speedTASList.add(0, _theTakeOffNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsSpeedTASMap().get(1.0));
+					speedCASList.add(0, _theTakeOffNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsSpeedCASMap().get(1.0));
+					alphaList.add(0, _theTakeOffNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsAlphaMap().get(1.0));
+					gammaList.add(0, _theTakeOffNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsGammaMap().get(1.0));
+					thetaList.add(0, _theTakeOffNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsThetaMap().get(1.0));
+					thrustList.add(0, _theTakeOffNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsThrustMap().get(1.0).divide(_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineNumber()));
+
+					//---------------------------------------------------------------------------------------------------------------------------------------------------
+					// FLYOVER VALUES with CUTBACK - index (1)
+					double phiCutback = _theTakeOffNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getPhiCutback();
+
+					groundDistanceList.add(1, _theTakeOffNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsGroundDistanceMap().get(phiCutback));
+					altitudeList.add(1, _theTakeOffNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsAltitudeMap().get(phiCutback));
+					speedTASList.add(1, _theTakeOffNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsSpeedTASMap().get(phiCutback));
+					speedCASList.add(1, _theTakeOffNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsSpeedCASMap().get(phiCutback));
+					alphaList.add(1, _theTakeOffNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsAlphaMap().get(phiCutback));
+					gammaList.add(1, _theTakeOffNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsGammaMap().get(phiCutback));
+					thetaList.add(1, _theTakeOffNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsThetaMap().get(phiCutback));
+					thrustList.add(1, _theTakeOffNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsThrustMap().get(phiCutback).divide(_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineNumber()));
+				}
+				else {
+					
+					//---------------------------------------------------------------------------------------------------------------------------------------------------
+					// SIDELINE VALUES - index (0)
+					groundDistanceList.add(0, Amount.valueOf(0.0, SI.METER));
+					altitudeList.add(0, Amount.valueOf(0.0, SI.METER));
+					speedTASList.add(0, Amount.valueOf(0.0, SI.METERS_PER_SECOND));
+					speedCASList.add(0, Amount.valueOf(0.0, SI.METERS_PER_SECOND));
+					alphaList.add(0, Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
+					gammaList.add(0, Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
+					thetaList.add(0, Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
+					thrustList.add(0, Amount.valueOf(0.0, SI.NEWTON));
+
+					//---------------------------------------------------------------------------------------------------------------------------------------------------
+					// FLYOVER VALUES with CUTBACK - index (1)
+					groundDistanceList.add(1, Amount.valueOf(0.0, SI.METER));
+					altitudeList.add(1, Amount.valueOf(0.0, SI.METER));
+					speedTASList.add(1, Amount.valueOf(0.0, SI.METERS_PER_SECOND));
+					speedCASList.add(1, Amount.valueOf(0.0, SI.METERS_PER_SECOND));
+					alphaList.add(1, Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
+					gammaList.add(1, Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
+					thetaList.add(1, Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
+					thrustList.add(1, Amount.valueOf(0.0, SI.NEWTON));
+				}
+					
+
+				try {
+					System.setOut(originalOut);
+					calcNoiseTrajectories.calculateLandingNoiseTrajectory(_thePerformanceInterface.getXcgPositionList().get(i), landingNoiseTrajectoriesFolderPath);
+					System.setOut(filterStream);
+				}
+				catch (Exception e) {
+					landingNoiseTrajectoryErrorFlag = true;
+					System.err.println("ERROR: (PERFORMANCE - LANDING NOISE TRAJECTORY) CALCULATION WILL BE SKIPPED ...");
+				}
+
+				if(landingNoiseTrajectoryErrorFlag == false) {
+					
+					//---------------------------------------------------------------------------------------------------------------------------------------------------
+					// APPROACH VALUES - index (2)
+					groundDistanceList.add(2, _theLandingNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsGroundDistance());
+					altitudeList.add(2, _theLandingNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsAltitude());
+					speedTASList.add(2, _theLandingNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsSpeedTAS());
+					speedCASList.add(2, _theLandingNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsSpeedCAS());
+					alphaList.add(2, _theLandingNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsAlpha());
+					gammaList.add(2, _theLandingNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsGamma());
+					thetaList.add(2, _theLandingNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsTheta());
+					thrustList.add(2, _theLandingNoiseTrajectoryCalculatorMap.get(_thePerformanceInterface.getXcgPositionList().get(i)).getCertificationPointsThrust().divide(_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineNumber()));
+				}
+				else {
+					
+					//---------------------------------------------------------------------------------------------------------------------------------------------------
+					// APPROACH VALUES - index (2)
+					groundDistanceList.add(2, Amount.valueOf(0.0, SI.METER));
+					altitudeList.add(2, Amount.valueOf(0.0, SI.METER));
+					speedTASList.add(2, Amount.valueOf(0.0, SI.METERS_PER_SECOND));
+					speedCASList.add(2, Amount.valueOf(0.0, SI.METERS_PER_SECOND));
+					alphaList.add(2, Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
+					gammaList.add(2, Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
+					thetaList.add(2, Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
+					thrustList.add(2, Amount.valueOf(0.0, SI.NEWTON));					
+				}
+
+				if(takeOffNoiseTrajectoryErrorFlag == false  || landingNoiseTrajectoryErrorFlag == false) {
+					_certificationPointsLongitudinalDistanceMap.put(_thePerformanceInterface.getXcgPositionList().get(i), groundDistanceList);
+					_certificationPointsAltitudeMap.put(_thePerformanceInterface.getXcgPositionList().get(i), altitudeList);
+					_certificationPointsSpeedTASMap.put(_thePerformanceInterface.getXcgPositionList().get(i), speedTASList);
+					_certificationPointsSpeedCASMap.put(_thePerformanceInterface.getXcgPositionList().get(i), speedCASList);
+					_certificationPointsAlphaMap.put(_thePerformanceInterface.getXcgPositionList().get(i), alphaList);
+					_certificationPointsGammaMap.put(_thePerformanceInterface.getXcgPositionList().get(i), gammaList);
+					_certificationPointsThetaMap.put(_thePerformanceInterface.getXcgPositionList().get(i), thetaList);
+					_certificationPointsThrustMap.put(_thePerformanceInterface.getXcgPositionList().get(i), thrustList);
+				}
 
 				System.setOut(originalOut);
 				System.out.println("\t\t\tNoise Trajectories Analysis :: COMPLETE");
@@ -3532,19 +3715,33 @@ public class ACPerformanceManager {
 				System.setOut(originalOut);
 				System.out.println("\t\t\t\tMission profile simulation :: START");
 				System.setOut(filterStream);
-				calcMissionProfile.calculateMissionProfileIterative(_thePerformanceInterface.getXcgPositionList().get(i));
+				try {
+					calcMissionProfile.calculateMissionProfileIterative(_thePerformanceInterface.getXcgPositionList().get(i));
+				}
+				catch (Exception e) {
+					missionProfileErrorFlag = true;
+					System.err.println("ERROR: (PERFORMANCE - MISSION PROFILE) CALCULATION WILL BE SKIPPED ...");
+				}
+
 				System.setOut(originalOut);
 				System.out.println("\t\t\t\tMission profile simulation :: COMPLETE");
 				System.setOut(filterStream);
-				
+
 				if(_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getPlotPerformance() == true) {
-					System.setOut(originalOut);
-					System.out.println("\t\t\t\tMission profile plot :: START");
-					System.setOut(filterStream);
-					calcMissionProfile.plotProfiles(missionProfilesFolderPath, _thePerformanceInterface.getXcgPositionList().get(i));
-					System.setOut(originalOut);
-					System.out.println("\t\t\t\tMission profile plot :: COMPLETE");
-					System.setOut(filterStream);
+					if(missionProfileErrorFlag == false) {
+						try {
+							System.setOut(originalOut);
+							System.out.println("\t\t\t\tMission profile plot :: START");
+							System.setOut(filterStream);
+							calcMissionProfile.plotProfiles(missionProfilesFolderPath, _thePerformanceInterface.getXcgPositionList().get(i));
+							System.setOut(originalOut);
+							System.out.println("\t\t\t\tMission profile plot :: COMPLETE");
+							System.setOut(filterStream);
+						}
+						catch (Exception e) {
+							System.err.println("ERROR: (PERFORMANCE - MISSION PROFILE) PLOT WILL BE SKIPPED ...");
+						}
+					}
 				}
 
 				System.setOut(originalOut);
@@ -3604,51 +3801,77 @@ public class ACPerformanceManager {
         	List<Object[]> dataListTakeOff = new ArrayList<>();
 
         	dataListTakeOff.add(new Object[] {"Description","Unit","Value"});
-        	dataListTakeOff.add(new Object[] {"Ground roll distance","m", _groundRollDistanceTakeOffMap.get(xcg).doubleValue(SI.METER)});
-        	dataListTakeOff.add(new Object[] {"Rotation distance","m", _rotationDistanceTakeOffMap.get(xcg).doubleValue(SI.METER)});
-        	dataListTakeOff.add(new Object[] {"Airborne distance","m", _airborneDistanceTakeOffMap.get(xcg).doubleValue(SI.METER)});
-        	dataListTakeOff.add(new Object[] {"AEO take-off distance","m", _takeOffDistanceAEOMap.get(xcg).doubleValue(SI.METER)});
-        	dataListTakeOff.add(new Object[] {"FAR-25 take-off field length","m", _takeOffDistanceFAR25Map.get(xcg).doubleValue(SI.METER)});
-        	dataListTakeOff.add(new Object[] {"Balanced field length","m", _balancedFieldLengthMap.get(xcg).doubleValue(SI.METER)});
-        	dataListTakeOff.add(new Object[] {" "});
-           	dataListTakeOff.add(new Object[] {"Ground roll distance","ft", _groundRollDistanceTakeOffMap.get(xcg).doubleValue(NonSI.FOOT)});
-        	dataListTakeOff.add(new Object[] {"Rotation distance","ft", _rotationDistanceTakeOffMap.get(xcg).doubleValue(NonSI.FOOT)});
-        	dataListTakeOff.add(new Object[] {"Airborne distance","ft", _airborneDistanceTakeOffMap.get(xcg).doubleValue(NonSI.FOOT)});
-        	dataListTakeOff.add(new Object[] {"AEO take-off distance","ft", _takeOffDistanceAEOMap.get(xcg).doubleValue(NonSI.FOOT)});
-        	dataListTakeOff.add(new Object[] {"FAR-25 take-off field length","ft", _takeOffDistanceFAR25Map.get(xcg).doubleValue(NonSI.FOOT)});
-        	dataListTakeOff.add(new Object[] {"Balanced field length","ft", _balancedFieldLengthMap.get(xcg).doubleValue(NonSI.FOOT)});
-        	dataListTakeOff.add(new Object[] {" "});
-        	dataListTakeOff.add(new Object[] {"Stall speed take-off (VsTO)","m/s", _vStallTakeOffMap.get(xcg).doubleValue(SI.METERS_PER_SECOND)});
-        	dataListTakeOff.add(new Object[] {"Decision speed (V1)","m/s", _v1Map.get(xcg).doubleValue(SI.METERS_PER_SECOND)});
-        	dataListTakeOff.add(new Object[] {"Rotation speed (V_Rot)","m/s", _vRotationMap.get(xcg).doubleValue(SI.METERS_PER_SECOND)});
-        	dataListTakeOff.add(new Object[] {"Minimum control speed (VMC)","m/s", _vMCMap.get(xcg).doubleValue(SI.METERS_PER_SECOND)});
-        	dataListTakeOff.add(new Object[] {"Lift-off speed (V_LO)","m/s", _vLiftOffMap.get(xcg).doubleValue(SI.METERS_PER_SECOND)});
-        	dataListTakeOff.add(new Object[] {"Take-off safety speed (V2)","m/s", _v2Map.get(xcg).doubleValue(SI.METERS_PER_SECOND)});
-        	dataListTakeOff.add(new Object[] {" "});
-        	dataListTakeOff.add(new Object[] {"Stall speed take-off (VsTO)","kn", _vStallTakeOffMap.get(xcg).doubleValue(NonSI.KNOT)});
-        	dataListTakeOff.add(new Object[] {"Decision speed (V1)","kn", _v1Map.get(xcg).doubleValue(NonSI.KNOT)});
-        	dataListTakeOff.add(new Object[] {"Rotation speed (V_Rot)","kn", _vRotationMap.get(xcg).doubleValue(NonSI.KNOT)});
-        	dataListTakeOff.add(new Object[] {"Minimum control speed (VMC)","kn", _vMCMap.get(xcg).doubleValue(NonSI.KNOT)});
-        	dataListTakeOff.add(new Object[] {"Lift-off speed (V_LO)","kn", _vLiftOffMap.get(xcg).doubleValue(NonSI.KNOT)});
-        	dataListTakeOff.add(new Object[] {"Take-off safety speed (V2)","kn", _v2Map.get(xcg).doubleValue(NonSI.KNOT)});
-        	dataListTakeOff.add(new Object[] {" "});
-        	dataListTakeOff.add(new Object[] {"V1/VsTO","", _v1Map.get(xcg).divide(_vStallTakeOffMap.get(xcg)).getEstimatedValue()});
-        	dataListTakeOff.add(new Object[] {"V_Rot/VsTO","", _vRotationMap.get(xcg).divide(_vStallTakeOffMap.get(xcg)).getEstimatedValue()});
-        	dataListTakeOff.add(new Object[] {"VMC/VsTO"," ", _vMCMap.get(xcg).divide(_vStallTakeOffMap.get(xcg)).getEstimatedValue()});
-        	dataListTakeOff.add(new Object[] {"V_LO/VsTO","", _vLiftOffMap.get(xcg).divide(_vStallTakeOffMap.get(xcg)).getEstimatedValue()});
-        	dataListTakeOff.add(new Object[] {"V2/VsTO","", _v2Map.get(xcg).divide(_vStallTakeOffMap.get(xcg)).getEstimatedValue()});
-        	dataListTakeOff.add(new Object[] {" "});
-        	dataListTakeOff.add(new Object[] {"Take-off duration","s", _takeOffDurationMap.get(xcg).doubleValue(SI.SECOND)});
-        	dataListTakeOff.add(new Object[] {" "});
-        	dataListTakeOff.add(new Object[] {"Take-off fuel used","kg", _takeOffFuelMap.get(xcg).doubleValue(SI.KILOGRAM)});
-        	dataListTakeOff.add(new Object[] {" "});
-        	dataListTakeOff.add(new Object[] {"Take-off NOx emissions","g", _takeOffNOxEmissionsMap.get(xcg).doubleValue(SI.GRAM)});
-        	dataListTakeOff.add(new Object[] {"Take-off CO emissions","g", _takeOffCOEmissionsMap.get(xcg).doubleValue(SI.GRAM)});
-        	dataListTakeOff.add(new Object[] {"Take-off HC emissions","g", _takeOffHCEmissionsMap.get(xcg).doubleValue(SI.GRAM)});
-        	dataListTakeOff.add(new Object[] {"Take-off Soot emissions","g", _takeOffSootEmissionsMap.get(xcg).doubleValue(SI.GRAM)});
-        	dataListTakeOff.add(new Object[] {"Take-off CO2 emissions","g", _takeOffCO2EmissionsMap.get(xcg).doubleValue(SI.GRAM)});
-        	dataListTakeOff.add(new Object[] {"Take-off SOx emissions","g", _takeOffSOxEmissionsMap.get(xcg).doubleValue(SI.GRAM)});
-        	dataListTakeOff.add(new Object[] {"Take-off H2O emissions","g", _takeOffH2OEmissionsMap.get(xcg).doubleValue(SI.GRAM)});
+        	if(takeOffSimulationErrorFlag == false) {
+        		dataListTakeOff.add(new Object[] {"Ground roll distance","m", _groundRollDistanceTakeOffMap.get(xcg).doubleValue(SI.METER)});
+        		dataListTakeOff.add(new Object[] {"Rotation distance","m", _rotationDistanceTakeOffMap.get(xcg).doubleValue(SI.METER)});
+        		dataListTakeOff.add(new Object[] {"Airborne distance","m", _airborneDistanceTakeOffMap.get(xcg).doubleValue(SI.METER)});
+        		dataListTakeOff.add(new Object[] {"AEO take-off distance","m", _takeOffDistanceAEOMap.get(xcg).doubleValue(SI.METER)});
+        		dataListTakeOff.add(new Object[] {"FAR-25 take-off field length","m", _takeOffDistanceFAR25Map.get(xcg).doubleValue(SI.METER)});
+        	}
+        	if(balancedFieldLengthSimulationErrorFlag == false) 
+        		dataListTakeOff.add(new Object[] {"Balanced field length","m", _balancedFieldLengthMap.get(xcg).doubleValue(SI.METER)});
+        	if(takeOffSimulationErrorFlag == false) {
+        		dataListTakeOff.add(new Object[] {" "});
+        		dataListTakeOff.add(new Object[] {"Ground roll distance","ft", _groundRollDistanceTakeOffMap.get(xcg).doubleValue(NonSI.FOOT)});
+        		dataListTakeOff.add(new Object[] {"Rotation distance","ft", _rotationDistanceTakeOffMap.get(xcg).doubleValue(NonSI.FOOT)});
+        		dataListTakeOff.add(new Object[] {"Airborne distance","ft", _airborneDistanceTakeOffMap.get(xcg).doubleValue(NonSI.FOOT)});
+        		dataListTakeOff.add(new Object[] {"AEO take-off distance","ft", _takeOffDistanceAEOMap.get(xcg).doubleValue(NonSI.FOOT)});
+        		dataListTakeOff.add(new Object[] {"FAR-25 take-off field length","ft", _takeOffDistanceFAR25Map.get(xcg).doubleValue(NonSI.FOOT)});
+        	}
+        	if(balancedFieldLengthSimulationErrorFlag == false)
+        		dataListTakeOff.add(new Object[] {"Balanced field length","ft", _balancedFieldLengthMap.get(xcg).doubleValue(NonSI.FOOT)});
+        	if(takeOffSimulationErrorFlag == false) {
+        		dataListTakeOff.add(new Object[] {" "});
+        		dataListTakeOff.add(new Object[] {"Stall speed take-off (VsTO)","m/s", _vStallTakeOffMap.get(xcg).doubleValue(SI.METERS_PER_SECOND)});
+        	}
+        	if(balancedFieldLengthSimulationErrorFlag == false)
+        		dataListTakeOff.add(new Object[] {"Decision speed (V1)","m/s", _v1Map.get(xcg).doubleValue(SI.METERS_PER_SECOND)});
+        	if(takeOffSimulationErrorFlag == false) {
+        		dataListTakeOff.add(new Object[] {"Rotation speed (V_Rot)","m/s", _vRotationMap.get(xcg).doubleValue(SI.METERS_PER_SECOND)});
+        	}
+        	if(vMCErrorFlag == false)
+        		dataListTakeOff.add(new Object[] {"Minimum control speed (VMC)","m/s", _vMCMap.get(xcg).doubleValue(SI.METERS_PER_SECOND)});
+        	if(takeOffSimulationErrorFlag == false) {
+        		dataListTakeOff.add(new Object[] {"Lift-off speed (V_LO)","m/s", _vLiftOffMap.get(xcg).doubleValue(SI.METERS_PER_SECOND)});
+        		dataListTakeOff.add(new Object[] {"Take-off safety speed (V2)","m/s", _v2Map.get(xcg).doubleValue(SI.METERS_PER_SECOND)});
+        		dataListTakeOff.add(new Object[] {" "});
+        		dataListTakeOff.add(new Object[] {"Stall speed take-off (VsTO)","kn", _vStallTakeOffMap.get(xcg).doubleValue(NonSI.KNOT)});
+        	}
+        	if(balancedFieldLengthSimulationErrorFlag == false)
+        		dataListTakeOff.add(new Object[] {"Decision speed (V1)","kn", _v1Map.get(xcg).doubleValue(NonSI.KNOT)});
+        	if(takeOffSimulationErrorFlag == false) {
+        		dataListTakeOff.add(new Object[] {"Rotation speed (V_Rot)","kn", _vRotationMap.get(xcg).doubleValue(NonSI.KNOT)});
+        	}
+        	if(vMCErrorFlag == false)
+        		dataListTakeOff.add(new Object[] {"Minimum control speed (VMC)","kn", _vMCMap.get(xcg).doubleValue(NonSI.KNOT)});
+        	if(takeOffSimulationErrorFlag == false) {
+        		dataListTakeOff.add(new Object[] {"Lift-off speed (V_LO)","kn", _vLiftOffMap.get(xcg).doubleValue(NonSI.KNOT)});
+        		dataListTakeOff.add(new Object[] {"Take-off safety speed (V2)","kn", _v2Map.get(xcg).doubleValue(NonSI.KNOT)});
+        		dataListTakeOff.add(new Object[] {" "});
+        	}
+        	if(balancedFieldLengthSimulationErrorFlag == false)
+        		dataListTakeOff.add(new Object[] {"V1/VsTO","", _v1Map.get(xcg).divide(_vStallTakeOffMap.get(xcg)).getEstimatedValue()});
+        	if(takeOffSimulationErrorFlag == false) {
+        		dataListTakeOff.add(new Object[] {"V_Rot/VsTO","", _vRotationMap.get(xcg).divide(_vStallTakeOffMap.get(xcg)).getEstimatedValue()});
+        	}
+        	if(vMCErrorFlag == false)
+        		dataListTakeOff.add(new Object[] {"VMC/VsTO"," ", _vMCMap.get(xcg).divide(_vStallTakeOffMap.get(xcg)).getEstimatedValue()});
+        	if(takeOffSimulationErrorFlag == false) {
+        		dataListTakeOff.add(new Object[] {"V_LO/VsTO","", _vLiftOffMap.get(xcg).divide(_vStallTakeOffMap.get(xcg)).getEstimatedValue()});
+        		dataListTakeOff.add(new Object[] {"V2/VsTO","", _v2Map.get(xcg).divide(_vStallTakeOffMap.get(xcg)).getEstimatedValue()});
+        		dataListTakeOff.add(new Object[] {" "});
+        		dataListTakeOff.add(new Object[] {"Take-off duration","s", _takeOffDurationMap.get(xcg).doubleValue(SI.SECOND)});
+        		dataListTakeOff.add(new Object[] {" "});
+        		dataListTakeOff.add(new Object[] {"Take-off fuel used","kg", _takeOffFuelMap.get(xcg).doubleValue(SI.KILOGRAM)});
+        		dataListTakeOff.add(new Object[] {" "});
+        		dataListTakeOff.add(new Object[] {"Take-off NOx emissions","g", _takeOffNOxEmissionsMap.get(xcg).doubleValue(SI.GRAM)});
+        		dataListTakeOff.add(new Object[] {"Take-off CO emissions","g", _takeOffCOEmissionsMap.get(xcg).doubleValue(SI.GRAM)});
+        		dataListTakeOff.add(new Object[] {"Take-off HC emissions","g", _takeOffHCEmissionsMap.get(xcg).doubleValue(SI.GRAM)});
+        		dataListTakeOff.add(new Object[] {"Take-off Soot emissions","g", _takeOffSootEmissionsMap.get(xcg).doubleValue(SI.GRAM)});
+        		dataListTakeOff.add(new Object[] {"Take-off CO2 emissions","g", _takeOffCO2EmissionsMap.get(xcg).doubleValue(SI.GRAM)});
+        		dataListTakeOff.add(new Object[] {"Take-off SOx emissions","g", _takeOffSOxEmissionsMap.get(xcg).doubleValue(SI.GRAM)});
+        		dataListTakeOff.add(new Object[] {"Take-off H2O emissions","g", _takeOffH2OEmissionsMap.get(xcg).doubleValue(SI.GRAM)});
+        	}
 
         	Row rowTakeOff = sheet.createRow(0);
         	Object[] objArrTakeOff = dataListTakeOff.get(0);
@@ -3697,26 +3920,28 @@ public class ACPerformanceManager {
         	List<Object[]> dataListClimb = new ArrayList<>();
 
         	dataListClimb.add(new Object[] {"Description","Unit","Value"});
-        	dataListClimb.add(new Object[] {"Absolute ceiling AEO","m", _absoluteCeilingAEOMap.get(xcg).doubleValue(SI.METER)});
-        	dataListClimb.add(new Object[] {"Absolute ceiling AEO","ft", _absoluteCeilingAEOMap.get(xcg).doubleValue(NonSI.FOOT)});
-        	dataListClimb.add(new Object[] {"Service ceiling AEO","m", _serviceCeilingAEOMap.get(xcg).doubleValue(SI.METER)});
-        	dataListClimb.add(new Object[] {"Service ceiling AEO","ft", _serviceCeilingAEOMap.get(xcg).doubleValue(NonSI.FOOT)});
-        	dataListClimb.add(new Object[] {"Minimum time to climb AEO","min", _minimumClimbTimeAEOMap.get(xcg).doubleValue(NonSI.MINUTE)});
-        	if(_climbTimeAtSpecificClimbSpeedAEOMap.get(xcg) != null)
-        		dataListClimb.add(new Object[] {"Time to climb at given climb speed AEO","min", _climbTimeAtSpecificClimbSpeedAEOMap.get(xcg).doubleValue(NonSI.MINUTE)});
-        	dataListClimb.add(new Object[] {"Fuel used during climb AEO","kg", _fuelUsedDuringClimbMap.get(xcg).doubleValue(SI.KILOGRAM)});
-        	dataListClimb.add(new Object[] {"Total NOx emissions during climb AEO","g", _emissionsNOxDuringClimbMap.get(xcg).doubleValue(SI.GRAM)});
-        	dataListClimb.add(new Object[] {"Total CO emissions during climb AEO","g", _emissionsCODuringClimbMap.get(xcg).doubleValue(SI.GRAM)});
-        	dataListClimb.add(new Object[] {"Total HC emissions during climb AEO","g", _emissionsHCDuringClimbMap.get(xcg).doubleValue(SI.GRAM)});
-        	dataListClimb.add(new Object[] {"Total Soot emissions during climb AEO","g", _emissionsSootDuringClimbMap.get(xcg).doubleValue(SI.GRAM)});
-        	dataListClimb.add(new Object[] {"Total CO2 emissions during climb AEO","g", _emissionsCO2DuringClimbMap.get(xcg).doubleValue(SI.GRAM)});
-        	dataListClimb.add(new Object[] {"Total SOx emissions during climb AEO","g", _emissionsSOxDuringClimbMap.get(xcg).doubleValue(SI.GRAM)});
-        	dataListClimb.add(new Object[] {"Total H2O emissions during climb AEO","g", _emissionsH2ODuringClimbMap.get(xcg).doubleValue(SI.GRAM)});
-        	dataListClimb.add(new Object[] {" "});
-        	dataListClimb.add(new Object[] {"Absolute ceiling OEI","m", _absoluteCeilingOEIMap.get(xcg).doubleValue(SI.METER)});
-        	dataListClimb.add(new Object[] {"Absolute ceiling OEI","ft", _absoluteCeilingOEIMap.get(xcg).doubleValue(NonSI.FOOT)});
-        	dataListClimb.add(new Object[] {"Service ceiling OEI","m", _serviceCeilingOEIMap.get(xcg).doubleValue(SI.METER)});
-        	dataListClimb.add(new Object[] {"Service ceiling OEI","ft", _serviceCeilingOEIMap.get(xcg).doubleValue(NonSI.FOOT)});
+        	if(climbPerformanceErrorFlag == false) {
+        		dataListClimb.add(new Object[] {"Absolute ceiling AEO","m", _absoluteCeilingAEOMap.get(xcg).doubleValue(SI.METER)});
+        		dataListClimb.add(new Object[] {"Absolute ceiling AEO","ft", _absoluteCeilingAEOMap.get(xcg).doubleValue(NonSI.FOOT)});
+        		dataListClimb.add(new Object[] {"Service ceiling AEO","m", _serviceCeilingAEOMap.get(xcg).doubleValue(SI.METER)});
+        		dataListClimb.add(new Object[] {"Service ceiling AEO","ft", _serviceCeilingAEOMap.get(xcg).doubleValue(NonSI.FOOT)});
+        		dataListClimb.add(new Object[] {"Minimum time to climb AEO","min", _minimumClimbTimeAEOMap.get(xcg).doubleValue(NonSI.MINUTE)});
+        		if(_climbTimeAtSpecificClimbSpeedAEOMap.get(xcg) != null)
+        			dataListClimb.add(new Object[] {"Time to climb at given climb speed AEO","min", _climbTimeAtSpecificClimbSpeedAEOMap.get(xcg).doubleValue(NonSI.MINUTE)});
+        		dataListClimb.add(new Object[] {"Fuel used during climb AEO","kg", _fuelUsedDuringClimbMap.get(xcg).doubleValue(SI.KILOGRAM)});
+        		dataListClimb.add(new Object[] {"Total NOx emissions during climb AEO","g", _emissionsNOxDuringClimbMap.get(xcg).doubleValue(SI.GRAM)});
+        		dataListClimb.add(new Object[] {"Total CO emissions during climb AEO","g", _emissionsCODuringClimbMap.get(xcg).doubleValue(SI.GRAM)});
+        		dataListClimb.add(new Object[] {"Total HC emissions during climb AEO","g", _emissionsHCDuringClimbMap.get(xcg).doubleValue(SI.GRAM)});
+        		dataListClimb.add(new Object[] {"Total Soot emissions during climb AEO","g", _emissionsSootDuringClimbMap.get(xcg).doubleValue(SI.GRAM)});
+        		dataListClimb.add(new Object[] {"Total CO2 emissions during climb AEO","g", _emissionsCO2DuringClimbMap.get(xcg).doubleValue(SI.GRAM)});
+        		dataListClimb.add(new Object[] {"Total SOx emissions during climb AEO","g", _emissionsSOxDuringClimbMap.get(xcg).doubleValue(SI.GRAM)});
+        		dataListClimb.add(new Object[] {"Total H2O emissions during climb AEO","g", _emissionsH2ODuringClimbMap.get(xcg).doubleValue(SI.GRAM)});
+        		dataListClimb.add(new Object[] {" "});
+        		dataListClimb.add(new Object[] {"Absolute ceiling OEI","m", _absoluteCeilingOEIMap.get(xcg).doubleValue(SI.METER)});
+        		dataListClimb.add(new Object[] {"Absolute ceiling OEI","ft", _absoluteCeilingOEIMap.get(xcg).doubleValue(NonSI.FOOT)});
+        		dataListClimb.add(new Object[] {"Service ceiling OEI","m", _serviceCeilingOEIMap.get(xcg).doubleValue(SI.METER)});
+        		dataListClimb.add(new Object[] {"Service ceiling OEI","ft", _serviceCeilingOEIMap.get(xcg).doubleValue(NonSI.FOOT)});
+        	}
 
         	Row rowClimb = sheetClimb.createRow(0);
         	Object[] objArrClimb = dataListClimb.get(0);
@@ -3765,31 +3990,37 @@ public class ACPerformanceManager {
         	List<Object[]> dataListCruise = new ArrayList<>();
         	
         	dataListCruise.add(new Object[] {"Description","Unit","Value"});
-        	dataListCruise.add(new Object[] {"Thrust at cruise altitude and Mach","N", _thrustAtCruiseAltitudeAndMachMap.get(xcg).doubleValue(SI.NEWTON)});
-        	dataListCruise.add(new Object[] {"Thrust at cruise altitude and Mach","lb", _thrustAtCruiseAltitudeAndMachMap.get(xcg).doubleValue(NonSI.POUND_FORCE)});
-        	dataListCruise.add(new Object[] {"Drag at cruise altitude and Mach","N", _dragAtCruiseAltitudeAndMachMap.get(xcg).doubleValue(SI.NEWTON)});
-        	dataListCruise.add(new Object[] {"Drag at cruise altitude and Mach","lb", _dragAtCruiseAltitudeAndMachMap.get(xcg).doubleValue(NonSI.POUND_FORCE)});
-        	dataListCruise.add(new Object[] {" "});
-        	dataListCruise.add(new Object[] {"Power available at cruise altitude and Mach","W", _powerAvailableAtCruiseAltitudeAndMachMap.get(xcg).doubleValue(SI.WATT)});
-        	dataListCruise.add(new Object[] {"Power available at cruise altitude and Mach","hp", _powerAvailableAtCruiseAltitudeAndMachMap.get(xcg).doubleValue(NonSI.HORSEPOWER)});
-        	dataListCruise.add(new Object[] {"Power needed at cruise altitude and Mach","W", _powerNeededAtCruiseAltitudeAndMachMap.get(xcg).doubleValue(SI.WATT)});
-        	dataListCruise.add(new Object[] {"Power needed at cruise altitude and Mach","hp", _powerNeededAtCruiseAltitudeAndMachMap.get(xcg).doubleValue(NonSI.HORSEPOWER)});
-        	dataListCruise.add(new Object[] {" "});
-        	dataListCruise.add(new Object[] {"Min speed at cruise altitude (CAS)","m/s", _minSpeesCASAtCruiseAltitudeMap.get(xcg).doubleValue(SI.METERS_PER_SECOND)});
-        	dataListCruise.add(new Object[] {"Max speed at cruise altitude (CAS)","m/s", _maxSpeesCASAtCruiseAltitudeMap.get(xcg).doubleValue(SI.METERS_PER_SECOND)});
-        	dataListCruise.add(new Object[] {"Min speed at cruise altitude (CAS)","kn", _minSpeesCASAtCruiseAltitudeMap.get(xcg).doubleValue(NonSI.KNOT)});
-        	dataListCruise.add(new Object[] {"Max speed at cruise altitude (CAS)","kn", _maxSpeesCASAtCruiseAltitudeMap.get(xcg).doubleValue(NonSI.KNOT)});
-        	dataListCruise.add(new Object[] {" "});
-        	dataListCruise.add(new Object[] {"Min speed at cruise altitude (TAS)","m/s", _minSpeesTASAtCruiseAltitudeMap.get(xcg).doubleValue(SI.METERS_PER_SECOND)});
-        	dataListCruise.add(new Object[] {"Max speed at cruise altitude (TAS)","m/s", _maxSpeesTASAtCruiseAltitudeMap.get(xcg).doubleValue(SI.METERS_PER_SECOND)});
-        	dataListCruise.add(new Object[] {"Min speed at cruise altitude (TAS)","kn", _minSpeesTASAtCruiseAltitudeMap.get(xcg).doubleValue(NonSI.KNOT)});
-        	dataListCruise.add(new Object[] {"Max speed at cruise altitude (TAS)","kn", _maxSpeesTASAtCruiseAltitudeMap.get(xcg).doubleValue(NonSI.KNOT)});
-        	dataListCruise.add(new Object[] {" "});
-        	dataListCruise.add(new Object[] {"Min Mach number at cruise altitude","", _minMachAtCruiseAltitudeMap.get(xcg)});
-        	dataListCruise.add(new Object[] {"Max Mach number at cruise altitude","", _maxMachAtCruiseAltitudeMap.get(xcg)});
-        	dataListCruise.add(new Object[] {" "});
-        	dataListCruise.add(new Object[] {"Efficiency at cruise altitude and Mach","", _efficiencyAtCruiseAltitudeAndMachMap.get(xcg)});
-        	dataListCruise.add(new Object[] {" "});
+        	if(cruiseThrustDragErrorFlag == false) {
+        		dataListCruise.add(new Object[] {"Thrust at cruise altitude and Mach","N", _thrustAtCruiseAltitudeAndMachMap.get(xcg).doubleValue(SI.NEWTON)});
+        		dataListCruise.add(new Object[] {"Thrust at cruise altitude and Mach","lb", _thrustAtCruiseAltitudeAndMachMap.get(xcg).doubleValue(NonSI.POUND_FORCE)});
+        		dataListCruise.add(new Object[] {"Drag at cruise altitude and Mach","N", _dragAtCruiseAltitudeAndMachMap.get(xcg).doubleValue(SI.NEWTON)});
+        		dataListCruise.add(new Object[] {"Drag at cruise altitude and Mach","lb", _dragAtCruiseAltitudeAndMachMap.get(xcg).doubleValue(NonSI.POUND_FORCE)});
+        		dataListCruise.add(new Object[] {" "});
+        		dataListCruise.add(new Object[] {"Power available at cruise altitude and Mach","W", _powerAvailableAtCruiseAltitudeAndMachMap.get(xcg).doubleValue(SI.WATT)});
+        		dataListCruise.add(new Object[] {"Power available at cruise altitude and Mach","hp", _powerAvailableAtCruiseAltitudeAndMachMap.get(xcg).doubleValue(NonSI.HORSEPOWER)});
+        		dataListCruise.add(new Object[] {"Power needed at cruise altitude and Mach","W", _powerNeededAtCruiseAltitudeAndMachMap.get(xcg).doubleValue(SI.WATT)});
+        		dataListCruise.add(new Object[] {"Power needed at cruise altitude and Mach","hp", _powerNeededAtCruiseAltitudeAndMachMap.get(xcg).doubleValue(NonSI.HORSEPOWER)});
+        		dataListCruise.add(new Object[] {" "});
+        	}
+        	if(cruiseFlightEnvelopeErrorFlag == false) {
+        		dataListCruise.add(new Object[] {"Min speed at cruise altitude (CAS)","m/s", _minSpeesCASAtCruiseAltitudeMap.get(xcg).doubleValue(SI.METERS_PER_SECOND)});
+        		dataListCruise.add(new Object[] {"Max speed at cruise altitude (CAS)","m/s", _maxSpeesCASAtCruiseAltitudeMap.get(xcg).doubleValue(SI.METERS_PER_SECOND)});
+        		dataListCruise.add(new Object[] {"Min speed at cruise altitude (CAS)","kn", _minSpeesCASAtCruiseAltitudeMap.get(xcg).doubleValue(NonSI.KNOT)});
+        		dataListCruise.add(new Object[] {"Max speed at cruise altitude (CAS)","kn", _maxSpeesCASAtCruiseAltitudeMap.get(xcg).doubleValue(NonSI.KNOT)});
+        		dataListCruise.add(new Object[] {" "});
+        		dataListCruise.add(new Object[] {"Min speed at cruise altitude (TAS)","m/s", _minSpeesTASAtCruiseAltitudeMap.get(xcg).doubleValue(SI.METERS_PER_SECOND)});
+        		dataListCruise.add(new Object[] {"Max speed at cruise altitude (TAS)","m/s", _maxSpeesTASAtCruiseAltitudeMap.get(xcg).doubleValue(SI.METERS_PER_SECOND)});
+        		dataListCruise.add(new Object[] {"Min speed at cruise altitude (TAS)","kn", _minSpeesTASAtCruiseAltitudeMap.get(xcg).doubleValue(NonSI.KNOT)});
+        		dataListCruise.add(new Object[] {"Max speed at cruise altitude (TAS)","kn", _maxSpeesTASAtCruiseAltitudeMap.get(xcg).doubleValue(NonSI.KNOT)});
+        		dataListCruise.add(new Object[] {" "});
+        		dataListCruise.add(new Object[] {"Min Mach number at cruise altitude","", _minMachAtCruiseAltitudeMap.get(xcg)});
+        		dataListCruise.add(new Object[] {"Max Mach number at cruise altitude","", _maxMachAtCruiseAltitudeMap.get(xcg)});
+        		dataListCruise.add(new Object[] {" "});
+        	}
+        	if(cruiseEfficiencyErrorFlag == false) {
+        		dataListCruise.add(new Object[] {"Efficiency at cruise altitude and Mach","", _efficiencyAtCruiseAltitudeAndMachMap.get(xcg)});
+        		dataListCruise.add(new Object[] {" "});
+        	}
 
         	Row rowCruise = sheetCruise.createRow(0);
         	Object[] objArrCruise = dataListCruise.get(0);
@@ -3838,17 +4069,19 @@ public class ACPerformanceManager {
         	List<Object[]> dataListDescent = new ArrayList<>();
 
         	dataListDescent.add(new Object[] {"Description","Unit","Value"});
-        	dataListDescent.add(new Object[] {"Descent length","nmi", _totalDescentLengthMap.get(xcg).doubleValue(NonSI.NAUTICAL_MILE)});
-        	dataListDescent.add(new Object[] {"Descent length","km", _totalDescentLengthMap.get(xcg).doubleValue(SI.KILOMETER)});
-        	dataListDescent.add(new Object[] {"Descent duration","min", _totalDescentTimeMap.get(xcg).doubleValue(NonSI.MINUTE)});
-        	dataListDescent.add(new Object[] {"Fuel used during descent","kg", _totalDescentFuelUsedMap.get(xcg).doubleValue(SI.KILOGRAM)});
-        	dataListDescent.add(new Object[] {"NOx emissions during descent","g", _totalDescentEmissionsNOxMap.get(xcg).doubleValue(SI.GRAM)});
-        	dataListDescent.add(new Object[] {"CO emissions during descent","g", _totalDescentEmissionsCOMap.get(xcg).doubleValue(SI.GRAM)});
-        	dataListDescent.add(new Object[] {"HC emissions during descent","g", _totalDescentEmissionsHCMap.get(xcg).doubleValue(SI.GRAM)});
-        	dataListDescent.add(new Object[] {"Soot emissions during descent","g", _totalDescentEmissionsSootMap.get(xcg).doubleValue(SI.GRAM)});
-        	dataListDescent.add(new Object[] {"CO2 emissions during descent","g", _totalDescentEmissionsCO2Map.get(xcg).doubleValue(SI.GRAM)});
-        	dataListDescent.add(new Object[] {"SOx emissions during descent","g", _totalDescentEmissionsSOxMap.get(xcg).doubleValue(SI.GRAM)});
-        	dataListDescent.add(new Object[] {"H2O emissions during descent","g", _totalDescentEmissionsH2OMap.get(xcg).doubleValue(SI.GRAM)});
+        	if(descentPerformanceErrorFlag == false) {
+        		dataListDescent.add(new Object[] {"Descent length","nmi", _totalDescentLengthMap.get(xcg).doubleValue(NonSI.NAUTICAL_MILE)});
+        		dataListDescent.add(new Object[] {"Descent length","km", _totalDescentLengthMap.get(xcg).doubleValue(SI.KILOMETER)});
+        		dataListDescent.add(new Object[] {"Descent duration","min", _totalDescentTimeMap.get(xcg).doubleValue(NonSI.MINUTE)});
+        		dataListDescent.add(new Object[] {"Fuel used during descent","kg", _totalDescentFuelUsedMap.get(xcg).doubleValue(SI.KILOGRAM)});
+        		dataListDescent.add(new Object[] {"NOx emissions during descent","g", _totalDescentEmissionsNOxMap.get(xcg).doubleValue(SI.GRAM)});
+        		dataListDescent.add(new Object[] {"CO emissions during descent","g", _totalDescentEmissionsCOMap.get(xcg).doubleValue(SI.GRAM)});
+        		dataListDescent.add(new Object[] {"HC emissions during descent","g", _totalDescentEmissionsHCMap.get(xcg).doubleValue(SI.GRAM)});
+        		dataListDescent.add(new Object[] {"Soot emissions during descent","g", _totalDescentEmissionsSootMap.get(xcg).doubleValue(SI.GRAM)});
+        		dataListDescent.add(new Object[] {"CO2 emissions during descent","g", _totalDescentEmissionsCO2Map.get(xcg).doubleValue(SI.GRAM)});
+        		dataListDescent.add(new Object[] {"SOx emissions during descent","g", _totalDescentEmissionsSOxMap.get(xcg).doubleValue(SI.GRAM)});
+        		dataListDescent.add(new Object[] {"H2O emissions during descent","g", _totalDescentEmissionsH2OMap.get(xcg).doubleValue(SI.GRAM)});
+        	}
 
         	Row rowDescent = sheetDescent.createRow(0);
         	Object[] objArrDescent = dataListDescent.get(0);
@@ -3897,49 +4130,51 @@ public class ACPerformanceManager {
         	List<Object[]> dataListLanding = new ArrayList<>();
 
         	dataListLanding.add(new Object[] {"Description","Unit","Value"});
-        	dataListLanding.add(new Object[] {"Ground roll distance","m", _groundRollDistanceLandingMap.get(xcg).doubleValue(SI.METER)});
-        	dataListLanding.add(new Object[] {"Flare distance","m", _flareDistanceLandingMap.get(xcg).doubleValue(SI.METER)});
-        	dataListLanding.add(new Object[] {"Airborne distance","m", _airborneDistanceLandingMap.get(xcg).doubleValue(SI.METER)});
-        	dataListLanding.add(new Object[] {"Landing distance","m", _landingDistanceMap.get(xcg).doubleValue(SI.METER)});
-        	dataListLanding.add(new Object[] {"FAR-25 landing field length","m", _landingDistanceFAR25Map.get(xcg).doubleValue(SI.METER)});
-        	dataListLanding.add(new Object[] {"Total distance","m", _totalDistanceMap.get(xcg).doubleValue(SI.METER)});
-        	dataListLanding.add(new Object[] {" "});
-        	dataListLanding.add(new Object[] {"Ground roll distance","ft", _groundRollDistanceLandingMap.get(xcg).doubleValue(NonSI.FOOT)});
-        	dataListLanding.add(new Object[] {"Flare distance","ft", _flareDistanceLandingMap.get(xcg).doubleValue(NonSI.FOOT)});
-        	dataListLanding.add(new Object[] {"Airborne distance","ft", _airborneDistanceLandingMap.get(xcg).doubleValue(NonSI.FOOT)});
-        	dataListLanding.add(new Object[] {"Landing distance","ft", _landingDistanceMap.get(xcg).doubleValue(NonSI.FOOT)});
-        	dataListLanding.add(new Object[] {"FAR-25 landing field length","ft", _landingDistanceFAR25Map.get(xcg).doubleValue(NonSI.FOOT)});
-        	dataListLanding.add(new Object[] {"Total distance","ft", _totalDistanceMap.get(xcg).doubleValue(NonSI.FOOT)});
-        	dataListLanding.add(new Object[] {" "});
-        	dataListLanding.add(new Object[] {"Rate of descent at touch-down","ft/min", _rateOfDescentAtFlareEndingMap.get(xcg).doubleValue(MyUnits.FOOT_PER_MINUTE)});
-        	dataListLanding.add(new Object[] {" "});
-        	dataListLanding.add(new Object[] {"Stall speed landing (VsLND)","m/s", _vStallLandingMap.get(xcg).doubleValue(SI.METERS_PER_SECOND)});
-        	dataListLanding.add(new Object[] {"Touchdown speed (V_TD)","m/s", _vTouchDownMap.get(xcg).doubleValue(SI.METERS_PER_SECOND)});
-        	dataListLanding.add(new Object[] {"Flare speed (V_Flare)","m/s", _vFlareMap.get(xcg).doubleValue(SI.METERS_PER_SECOND)});
-        	dataListLanding.add(new Object[] {"Approach speed (V_A)","m/s", _vApproachMap.get(xcg).doubleValue(SI.METERS_PER_SECOND)});
-        	dataListLanding.add(new Object[] {" "});
-        	dataListLanding.add(new Object[] {"Stall speed landing (VsLND)","kn", _vStallLandingMap.get(xcg).doubleValue(NonSI.KNOT)});
-        	dataListLanding.add(new Object[] {"Touchdown speed (V_TD)","kn", _vTouchDownMap.get(xcg).doubleValue(NonSI.KNOT)});
-        	dataListLanding.add(new Object[] {"Flare speed (V_Flare)","kn", _vFlareMap.get(xcg).doubleValue(NonSI.KNOT)});
-        	dataListLanding.add(new Object[] {"Approach speed (V_A)","kn", _vApproachMap.get(xcg).doubleValue(NonSI.KNOT)});
-        	dataListLanding.add(new Object[] {" "});
-        	dataListLanding.add(new Object[] {"V_TD/VsLND","", _vTouchDownMap.get(xcg).divide(_vStallLandingMap.get(xcg)).getEstimatedValue()});
-        	dataListLanding.add(new Object[] {"V_Flare/VsLND","", _vFlareMap.get(xcg).divide(_vStallLandingMap.get(xcg)).getEstimatedValue()});
-        	dataListLanding.add(new Object[] {"V_A/VsLND","", _vApproachMap.get(xcg).divide(_vStallLandingMap.get(xcg)).getEstimatedValue()});
-        	dataListLanding.add(new Object[] {" "});
-        	dataListLanding.add(new Object[] {"Total duration","s", _totalDurationMap.get(xcg).doubleValue(SI.SECOND)});
-        	dataListLanding.add(new Object[] {"Landing duration","s", _landingDurationMap.get(xcg).doubleValue(SI.SECOND)});
-        	dataListLanding.add(new Object[] {" "});
-        	dataListLanding.add(new Object[] {"Total fuel used","kg", _totalFuelMap.get(xcg).doubleValue(SI.KILOGRAM)});
-        	dataListLanding.add(new Object[] {" "});
-        	dataListLanding.add(new Object[] {"Total NOx emissions","g", _totalNOxEmissionsMap.get(xcg).doubleValue(SI.GRAM)});
-        	dataListLanding.add(new Object[] {"Total CO emissions","g", _totalCOEmissionsMap.get(xcg).doubleValue(SI.GRAM)});
-        	dataListLanding.add(new Object[] {"Total HC emissions","g", _totalHCEmissionsMap.get(xcg).doubleValue(SI.GRAM)});
-        	dataListLanding.add(new Object[] {"Total Soot emissions","g", _totalSootEmissionsMap.get(xcg).doubleValue(SI.GRAM)});
-        	dataListLanding.add(new Object[] {"Total CO2 emissions","g", _totalCO2EmissionsMap.get(xcg).doubleValue(SI.GRAM)});
-        	dataListLanding.add(new Object[] {"Total SOx emissions","g", _totalSOxEmissionsMap.get(xcg).doubleValue(SI.GRAM)});
-        	dataListLanding.add(new Object[] {"Total H2O emissions","g", _totalH2OEmissionsMap.get(xcg).doubleValue(SI.GRAM)});
-        	
+        	if(landingErrorFlag == false) {
+        		dataListLanding.add(new Object[] {"Ground roll distance","m", _groundRollDistanceLandingMap.get(xcg).doubleValue(SI.METER)});
+        		dataListLanding.add(new Object[] {"Flare distance","m", _flareDistanceLandingMap.get(xcg).doubleValue(SI.METER)});
+        		dataListLanding.add(new Object[] {"Airborne distance","m", _airborneDistanceLandingMap.get(xcg).doubleValue(SI.METER)});
+        		dataListLanding.add(new Object[] {"Landing distance","m", _landingDistanceMap.get(xcg).doubleValue(SI.METER)});
+        		dataListLanding.add(new Object[] {"FAR-25 landing field length","m", _landingDistanceFAR25Map.get(xcg).doubleValue(SI.METER)});
+        		dataListLanding.add(new Object[] {"Total distance","m", _totalDistanceMap.get(xcg).doubleValue(SI.METER)});
+        		dataListLanding.add(new Object[] {" "});
+        		dataListLanding.add(new Object[] {"Ground roll distance","ft", _groundRollDistanceLandingMap.get(xcg).doubleValue(NonSI.FOOT)});
+        		dataListLanding.add(new Object[] {"Flare distance","ft", _flareDistanceLandingMap.get(xcg).doubleValue(NonSI.FOOT)});
+        		dataListLanding.add(new Object[] {"Airborne distance","ft", _airborneDistanceLandingMap.get(xcg).doubleValue(NonSI.FOOT)});
+        		dataListLanding.add(new Object[] {"Landing distance","ft", _landingDistanceMap.get(xcg).doubleValue(NonSI.FOOT)});
+        		dataListLanding.add(new Object[] {"FAR-25 landing field length","ft", _landingDistanceFAR25Map.get(xcg).doubleValue(NonSI.FOOT)});
+        		dataListLanding.add(new Object[] {"Total distance","ft", _totalDistanceMap.get(xcg).doubleValue(NonSI.FOOT)});
+        		dataListLanding.add(new Object[] {" "});
+        		dataListLanding.add(new Object[] {"Rate of descent at touch-down","ft/min", _rateOfDescentAtFlareEndingMap.get(xcg).doubleValue(MyUnits.FOOT_PER_MINUTE)});
+        		dataListLanding.add(new Object[] {" "});
+        		dataListLanding.add(new Object[] {"Stall speed landing (VsLND)","m/s", _vStallLandingMap.get(xcg).doubleValue(SI.METERS_PER_SECOND)});
+        		dataListLanding.add(new Object[] {"Touchdown speed (V_TD)","m/s", _vTouchDownMap.get(xcg).doubleValue(SI.METERS_PER_SECOND)});
+        		dataListLanding.add(new Object[] {"Flare speed (V_Flare)","m/s", _vFlareMap.get(xcg).doubleValue(SI.METERS_PER_SECOND)});
+        		dataListLanding.add(new Object[] {"Approach speed (V_A)","m/s", _vApproachMap.get(xcg).doubleValue(SI.METERS_PER_SECOND)});
+        		dataListLanding.add(new Object[] {" "});
+        		dataListLanding.add(new Object[] {"Stall speed landing (VsLND)","kn", _vStallLandingMap.get(xcg).doubleValue(NonSI.KNOT)});
+        		dataListLanding.add(new Object[] {"Touchdown speed (V_TD)","kn", _vTouchDownMap.get(xcg).doubleValue(NonSI.KNOT)});
+        		dataListLanding.add(new Object[] {"Flare speed (V_Flare)","kn", _vFlareMap.get(xcg).doubleValue(NonSI.KNOT)});
+        		dataListLanding.add(new Object[] {"Approach speed (V_A)","kn", _vApproachMap.get(xcg).doubleValue(NonSI.KNOT)});
+        		dataListLanding.add(new Object[] {" "});
+        		dataListLanding.add(new Object[] {"V_TD/VsLND","", _vTouchDownMap.get(xcg).divide(_vStallLandingMap.get(xcg)).getEstimatedValue()});
+        		dataListLanding.add(new Object[] {"V_Flare/VsLND","", _vFlareMap.get(xcg).divide(_vStallLandingMap.get(xcg)).getEstimatedValue()});
+        		dataListLanding.add(new Object[] {"V_A/VsLND","", _vApproachMap.get(xcg).divide(_vStallLandingMap.get(xcg)).getEstimatedValue()});
+        		dataListLanding.add(new Object[] {" "});
+        		dataListLanding.add(new Object[] {"Total duration","s", _totalDurationMap.get(xcg).doubleValue(SI.SECOND)});
+        		dataListLanding.add(new Object[] {"Landing duration","s", _landingDurationMap.get(xcg).doubleValue(SI.SECOND)});
+        		dataListLanding.add(new Object[] {" "});
+        		dataListLanding.add(new Object[] {"Total fuel used","kg", _totalFuelMap.get(xcg).doubleValue(SI.KILOGRAM)});
+        		dataListLanding.add(new Object[] {" "});
+        		dataListLanding.add(new Object[] {"Total NOx emissions","g", _totalNOxEmissionsMap.get(xcg).doubleValue(SI.GRAM)});
+        		dataListLanding.add(new Object[] {"Total CO emissions","g", _totalCOEmissionsMap.get(xcg).doubleValue(SI.GRAM)});
+        		dataListLanding.add(new Object[] {"Total HC emissions","g", _totalHCEmissionsMap.get(xcg).doubleValue(SI.GRAM)});
+        		dataListLanding.add(new Object[] {"Total Soot emissions","g", _totalSootEmissionsMap.get(xcg).doubleValue(SI.GRAM)});
+        		dataListLanding.add(new Object[] {"Total CO2 emissions","g", _totalCO2EmissionsMap.get(xcg).doubleValue(SI.GRAM)});
+        		dataListLanding.add(new Object[] {"Total SOx emissions","g", _totalSOxEmissionsMap.get(xcg).doubleValue(SI.GRAM)});
+        		dataListLanding.add(new Object[] {"Total H2O emissions","g", _totalH2OEmissionsMap.get(xcg).doubleValue(SI.GRAM)});
+        	}
+
         	Row rowLanding = sheetLanding.createRow(0);
         	Object[] objArrLanding = dataListLanding.get(0);
         	int cellnumLanding = 0;
@@ -3986,515 +4221,516 @@ public class ACPerformanceManager {
         	Sheet sheetMissionProfile = wb.createSheet("MISSION PROFILE");
         	List<Object[]> dataListMissionProfile = new ArrayList<>();
 
-        	if(_theMissionProfileCalculatorMap.get(xcg).getMissionProfileStopped().equals(Boolean.FALSE)) {
-
-        		dataListMissionProfile.add(new Object[] {"Description","Unit","Value"});
-        		dataListMissionProfile.add(new Object[] {"Mission distance","nmi", _thePerformanceInterface.getMissionRange().doubleValue(NonSI.NAUTICAL_MILE)});
-        		dataListMissionProfile.add(new Object[] {"Total mission distance (plus reserves)","nmi", _totalMissionRangeMap.get(xcg).doubleValue(NonSI.NAUTICAL_MILE)});
-        		dataListMissionProfile.add(new Object[] {"Block time","min", _blockTimeMap.get(xcg).doubleValue(NonSI.MINUTE)});
-        		dataListMissionProfile.add(new Object[] {"Total mission duration","min", _totalMissionTimeMap.get(xcg).doubleValue(NonSI.MINUTE)});
-        		dataListMissionProfile.add(new Object[] {"Aircraft mass at mission start","kg", _initialMissionMassMap.get(xcg).doubleValue(SI.KILOGRAM)});
-        		dataListMissionProfile.add(new Object[] {"Aircraft mass at mission end","kg", _endMissionMassMap.get(xcg).doubleValue(SI.KILOGRAM)});
-        		dataListMissionProfile.add(new Object[] {"Initial fuel mass for the assigned mission","kg", _initialFuelMassMap.get(xcg).doubleValue(SI.KILOGRAM)});
-        		dataListMissionProfile.add(new Object[] {"Block fuel","kg", _blockFuelMap.get(xcg).doubleValue(SI.KILOGRAM)});
-        		dataListMissionProfile.add(new Object[] {"Total fuel used","kg", _totalFuelUsedMap.get(xcg).doubleValue(SI.KILOGRAM)});
-        		dataListMissionProfile.add(new Object[] {"Fuel reserve","%", _thePerformanceInterface.getFuelReserve()*100});
-        		dataListMissionProfile.add(new Object[] {"Max thermic power requirement","kW", _totalFuelPowerMap.get(xcg).doubleValue(SI.KILO(SI.WATT))});
-        		dataListMissionProfile.add(new Object[] {"Max alternative source power requirement","kW", _totalAlternativeSourcePowerMap.get(xcg).doubleValue(SI.KILO(SI.WATT))});
-        		dataListMissionProfile.add(new Object[] {"Total fuel energy","kWh", _totalFuelEnergyMap.get(xcg).doubleValue(MyUnits.KILOWATT_HOUR)});
-        		dataListMissionProfile.add(new Object[] {"Total alternative source energy","kWh", _totalAlternativeSourceEnergyMap.get(xcg).doubleValue(MyUnits.KILOWATT_HOUR)});
-        		dataListMissionProfile.add(new Object[] {"Design passengers number","", Integer.valueOf(_thePerformanceInterface.getTheAircraft().getCabinConfiguration().getDesignPassengerNumber()).doubleValue()});
-        		dataListMissionProfile.add(new Object[] {"Passengers number for this mission","", Integer.valueOf(_theMissionProfileCalculatorMap.get(xcg).getDeisngPassengersNumber()).doubleValue()});
-        		dataListMissionProfile.add(new Object[] {" "});
-        		dataListMissionProfile.add(new Object[] {" "});
-        		dataListMissionProfile.add(new Object[] {"TAKE-OFF overall data"});
-        		dataListMissionProfile.add(new Object[] {"Range","nm", _rangeMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(_rangeMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).size()-1).doubleValue(NonSI.NAUTICAL_MILE)});        		
-        		dataListMissionProfile.add(new Object[] {"Time","min", _timeMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(_timeMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).size()-1).doubleValue(NonSI.MINUTE)});
-        		dataListMissionProfile.add(new Object[] {"Fuel","kg", _fuelUsedMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(_fuelUsedMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).size()-1).doubleValue(SI.KILOGRAM)});
-        		dataListMissionProfile.add(new Object[] {"NOx emissions","g", _emissionNOxMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(_emissionNOxMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).size()-1).doubleValue(SI.GRAM)});        		
-        		dataListMissionProfile.add(new Object[] {"CO emissions","g", _emissionCOMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(_emissionCOMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).size()-1).doubleValue(SI.GRAM)});
-        		dataListMissionProfile.add(new Object[] {"HC emissions","g", _emissionHCMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(_emissionHCMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).size()-1).doubleValue(SI.GRAM)});
-        		dataListMissionProfile.add(new Object[] {"Soot emissions","g", _emissionSootMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(_emissionSootMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).size()-1).doubleValue(SI.GRAM)});
-        		dataListMissionProfile.add(new Object[] {"CO2 emissions","g", _emissionCO2Map.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(_emissionCO2Map.get(xcg).get(MissionPhasesEnum.TAKE_OFF).size()-1).doubleValue(SI.GRAM)});
-        		dataListMissionProfile.add(new Object[] {"SOx emissions","g", _emissionSOxMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(_emissionSOxMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).size()-1).doubleValue(SI.GRAM)});
-        		dataListMissionProfile.add(new Object[] {"H2O emissions","g", _emissionH2OMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(_emissionH2OMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).size()-1).doubleValue(SI.GRAM)});
-        		dataListMissionProfile.add(new Object[] {"Max Thermic Power","kW", _fuelPowerMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble()});
-        		dataListMissionProfile.add(new Object[] {"Max Alternative Source Power","kW", _alternativeSourcePowerMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble()});
-        		dataListMissionProfile.add(new Object[] {"Thermic Energy","kWh", _fuelEnergyMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});        		
-        		dataListMissionProfile.add(new Object[] {"Alternative Source Energy","kWh", _alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(_alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});
-        		dataListMissionProfile.add(new Object[] {" "});
-        		dataListMissionProfile.add(new Object[] {"CLIMB overall data"});
-        		dataListMissionProfile.add(new Object[] {"Range","nm", _rangeMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(_rangeMap.get(xcg).get(MissionPhasesEnum.CLIMB).size()-1).doubleValue(NonSI.NAUTICAL_MILE)});        		
-        		dataListMissionProfile.add(new Object[] {"Time","min", _timeMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(_timeMap.get(xcg).get(MissionPhasesEnum.CLIMB).size()-1).doubleValue(NonSI.MINUTE)});
-        		dataListMissionProfile.add(new Object[] {"Fuel","kg", _fuelUsedMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(_fuelUsedMap.get(xcg).get(MissionPhasesEnum.CLIMB).size()-1).doubleValue(SI.KILOGRAM)});
-        		dataListMissionProfile.add(new Object[] {"NOx emissions","g", _emissionNOxMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(_emissionNOxMap.get(xcg).get(MissionPhasesEnum.CLIMB).size()-1).doubleValue(SI.GRAM)});        		
-        		dataListMissionProfile.add(new Object[] {"CO emissions","g", _emissionCOMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(_emissionCOMap.get(xcg).get(MissionPhasesEnum.CLIMB).size()-1).doubleValue(SI.GRAM)});
-        		dataListMissionProfile.add(new Object[] {"HC emissions","g", _emissionHCMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(_emissionHCMap.get(xcg).get(MissionPhasesEnum.CLIMB).size()-1).doubleValue(SI.GRAM)});
-        		dataListMissionProfile.add(new Object[] {"Soot emissions","g", _emissionSootMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(_emissionSootMap.get(xcg).get(MissionPhasesEnum.CLIMB).size()-1).doubleValue(SI.GRAM)});
-        		dataListMissionProfile.add(new Object[] {"CO2 emissions","g", _emissionCO2Map.get(xcg).get(MissionPhasesEnum.CLIMB).get(_emissionCO2Map.get(xcg).get(MissionPhasesEnum.CLIMB).size()-1).doubleValue(SI.GRAM)});
-        		dataListMissionProfile.add(new Object[] {"SOx emissions","g", _emissionSOxMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(_emissionSOxMap.get(xcg).get(MissionPhasesEnum.CLIMB).size()-1).doubleValue(SI.GRAM)});
-        		dataListMissionProfile.add(new Object[] {"H2O emissions","g", _emissionH2OMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(_emissionH2OMap.get(xcg).get(MissionPhasesEnum.CLIMB).size()-1).doubleValue(SI.GRAM)});
-        		dataListMissionProfile.add(new Object[] {"Max Thermic Power","kW", _fuelPowerMap.get(xcg).get(MissionPhasesEnum.CLIMB).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble()});
-        		dataListMissionProfile.add(new Object[] {"Max Alternative Source Power","kW", _alternativeSourcePowerMap.get(xcg).get(MissionPhasesEnum.CLIMB).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble()});
-        		dataListMissionProfile.add(new Object[] {"Thermic Energy","kWh", _fuelEnergyMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.CLIMB).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});        		
-        		dataListMissionProfile.add(new Object[] {"Alternative Source Energy","kWh", _alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(_alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.CLIMB).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});
-        		dataListMissionProfile.add(new Object[] {" "});
-        		dataListMissionProfile.add(new Object[] {"CRUISE overall data"});
-        		dataListMissionProfile.add(new Object[] {"Range","nm", _rangeMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(_rangeMap.get(xcg).get(MissionPhasesEnum.CRUISE).size()-1).doubleValue(NonSI.NAUTICAL_MILE)});        		
-        		dataListMissionProfile.add(new Object[] {"Time","min", _timeMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(_timeMap.get(xcg).get(MissionPhasesEnum.CRUISE).size()-1).doubleValue(NonSI.MINUTE)});
-        		dataListMissionProfile.add(new Object[] {"Fuel","kg", _fuelUsedMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(_fuelUsedMap.get(xcg).get(MissionPhasesEnum.CRUISE).size()-1).doubleValue(SI.KILOGRAM)});
-        		dataListMissionProfile.add(new Object[] {"NOx emissions","g", _emissionNOxMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(_emissionNOxMap.get(xcg).get(MissionPhasesEnum.CRUISE).size()-1).doubleValue(SI.GRAM)});        		
-        		dataListMissionProfile.add(new Object[] {"CO emissions","g", _emissionCOMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(_emissionCOMap.get(xcg).get(MissionPhasesEnum.CRUISE).size()-1).doubleValue(SI.GRAM)});
-        		dataListMissionProfile.add(new Object[] {"HC emissions","g", _emissionHCMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(_emissionHCMap.get(xcg).get(MissionPhasesEnum.CRUISE).size()-1).doubleValue(SI.GRAM)});
-        		dataListMissionProfile.add(new Object[] {"Soot emissions","g", _emissionSootMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(_emissionSootMap.get(xcg).get(MissionPhasesEnum.CRUISE).size()-1).doubleValue(SI.GRAM)});
-        		dataListMissionProfile.add(new Object[] {"CO2 emissions","g", _emissionCO2Map.get(xcg).get(MissionPhasesEnum.CRUISE).get(_emissionCO2Map.get(xcg).get(MissionPhasesEnum.CRUISE).size()-1).doubleValue(SI.GRAM)});
-        		dataListMissionProfile.add(new Object[] {"SOx emissions","g", _emissionSOxMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(_emissionSOxMap.get(xcg).get(MissionPhasesEnum.CRUISE).size()-1).doubleValue(SI.GRAM)});
-        		dataListMissionProfile.add(new Object[] {"H2O emissions","g", _emissionH2OMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(_emissionH2OMap.get(xcg).get(MissionPhasesEnum.CRUISE).size()-1).doubleValue(SI.GRAM)});
-        		dataListMissionProfile.add(new Object[] {"Max Thermic Power","kW", _fuelPowerMap.get(xcg).get(MissionPhasesEnum.CRUISE).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble()});
-        		dataListMissionProfile.add(new Object[] {"Max Alternative Source Power","kW", _alternativeSourcePowerMap.get(xcg).get(MissionPhasesEnum.CRUISE).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble()});
-        		dataListMissionProfile.add(new Object[] {"Thermic Energy","kWh", _fuelEnergyMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.CRUISE).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});        		
-        		dataListMissionProfile.add(new Object[] {"Alternative Source Energy","kWh", _alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(_alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.CRUISE).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});
-        		dataListMissionProfile.add(new Object[] {" "});
-        		dataListMissionProfile.add(new Object[] {"FIRST DESCENT overall data"});
-        		dataListMissionProfile.add(new Object[] {"Range","nm", _rangeMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(_rangeMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).size()-1).doubleValue(NonSI.NAUTICAL_MILE)});        		
-        		dataListMissionProfile.add(new Object[] {"Time","min", _timeMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(_timeMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).size()-1).doubleValue(NonSI.MINUTE)});
-        		dataListMissionProfile.add(new Object[] {"Fuel","kg", _fuelUsedMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(_fuelUsedMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).size()-1).doubleValue(SI.KILOGRAM)});
-        		dataListMissionProfile.add(new Object[] {"NOx emissions","g", _emissionNOxMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(_emissionNOxMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).size()-1).doubleValue(SI.GRAM)});        		
-        		dataListMissionProfile.add(new Object[] {"CO emissions","g", _emissionCOMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(_emissionCOMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).size()-1).doubleValue(SI.GRAM)});
-        		dataListMissionProfile.add(new Object[] {"HC emissions","g", _emissionHCMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(_emissionHCMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).size()-1).doubleValue(SI.GRAM)});
-        		dataListMissionProfile.add(new Object[] {"Soot emissions","g", _emissionSootMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(_emissionSootMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).size()-1).doubleValue(SI.GRAM)});
-        		dataListMissionProfile.add(new Object[] {"CO2 emissions","g", _emissionCO2Map.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(_emissionCO2Map.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).size()-1).doubleValue(SI.GRAM)});
-        		dataListMissionProfile.add(new Object[] {"SOx emissions","g", _emissionSOxMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(_emissionSOxMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).size()-1).doubleValue(SI.GRAM)});
-        		dataListMissionProfile.add(new Object[] {"H2O emissions","g", _emissionH2OMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(_emissionH2OMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).size()-1).doubleValue(SI.GRAM)});
-        		dataListMissionProfile.add(new Object[] {"Max Thermic Power","kW", _fuelPowerMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble()});
-        		dataListMissionProfile.add(new Object[] {"Max Alternative Source Power","kW", _alternativeSourcePowerMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble()});
-        		dataListMissionProfile.add(new Object[] {"Thermic Energy","kWh", _fuelEnergyMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});        		
-        		dataListMissionProfile.add(new Object[] {"Alternative Source Energy","kWh", _alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(_alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});
-        		dataListMissionProfile.add(new Object[] {" "});
-        		if(_thePerformanceInterface.getAlternateCruiseAltitude().doubleValue(SI.METER) != Amount.valueOf(15.24, SI.METER).getEstimatedValue()) {
-        			dataListMissionProfile.add(new Object[] {"SECOND CLIMB overall data"});
-        			dataListMissionProfile.add(new Object[] {"Range","nm", _rangeMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(_rangeMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).size()-1).doubleValue(NonSI.NAUTICAL_MILE)});        		
-        			dataListMissionProfile.add(new Object[] {"Time","min", _timeMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(_timeMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).size()-1).doubleValue(NonSI.MINUTE)});
-        			dataListMissionProfile.add(new Object[] {"Fuel","kg", _fuelUsedMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(_fuelUsedMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).size()-1).doubleValue(SI.KILOGRAM)});
-        			dataListMissionProfile.add(new Object[] {"NOx emissions","g", _emissionNOxMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(_emissionNOxMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).size()-1).doubleValue(SI.GRAM)});        		
-        			dataListMissionProfile.add(new Object[] {"CO emissions","g", _emissionCOMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(_emissionCOMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).size()-1).doubleValue(SI.GRAM)});
-        			dataListMissionProfile.add(new Object[] {"HC emissions","g", _emissionHCMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(_emissionHCMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).size()-1).doubleValue(SI.GRAM)});
-        			dataListMissionProfile.add(new Object[] {"Soot emissions","g", _emissionSootMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(_emissionSootMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).size()-1).doubleValue(SI.GRAM)});
-        			dataListMissionProfile.add(new Object[] {"CO2 emissions","g", _emissionCO2Map.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(_emissionCO2Map.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).size()-1).doubleValue(SI.GRAM)});
-        			dataListMissionProfile.add(new Object[] {"SOx emissions","g", _emissionSOxMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(_emissionSOxMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).size()-1).doubleValue(SI.GRAM)});
-        			dataListMissionProfile.add(new Object[] {"H2O emissions","g", _emissionH2OMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(_emissionH2OMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).size()-1).doubleValue(SI.GRAM)});
-        			dataListMissionProfile.add(new Object[] {"Max Thermic Power","kW", _fuelPowerMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble()});
-        			dataListMissionProfile.add(new Object[] {"Max Alternative Source Power","kW", _alternativeSourcePowerMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble()});
-        			dataListMissionProfile.add(new Object[] {"Thermic Energy","kWh", _fuelEnergyMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});        		
-        			dataListMissionProfile.add(new Object[] {"AlternativeSource Energy","kWh", _alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(_alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});
+        	dataListMissionProfile.add(new Object[] {"Description","Unit","Value"});
+        	if(missionProfileErrorFlag == false) {
+        		if(_theMissionProfileCalculatorMap.get(xcg).getMissionProfileStopped().equals(Boolean.FALSE)) {
+        			dataListMissionProfile.add(new Object[] {"Mission distance","nmi", _thePerformanceInterface.getMissionRange().doubleValue(NonSI.NAUTICAL_MILE)});
+        			dataListMissionProfile.add(new Object[] {"Total mission distance (plus reserves)","nmi", _totalMissionRangeMap.get(xcg).doubleValue(NonSI.NAUTICAL_MILE)});
+        			dataListMissionProfile.add(new Object[] {"Block time","min", _blockTimeMap.get(xcg).doubleValue(NonSI.MINUTE)});
+        			dataListMissionProfile.add(new Object[] {"Total mission duration","min", _totalMissionTimeMap.get(xcg).doubleValue(NonSI.MINUTE)});
+        			dataListMissionProfile.add(new Object[] {"Aircraft mass at mission start","kg", _initialMissionMassMap.get(xcg).doubleValue(SI.KILOGRAM)});
+        			dataListMissionProfile.add(new Object[] {"Aircraft mass at mission end","kg", _endMissionMassMap.get(xcg).doubleValue(SI.KILOGRAM)});
+        			dataListMissionProfile.add(new Object[] {"Initial fuel mass for the assigned mission","kg", _initialFuelMassMap.get(xcg).doubleValue(SI.KILOGRAM)});
+        			dataListMissionProfile.add(new Object[] {"Block fuel","kg", _blockFuelMap.get(xcg).doubleValue(SI.KILOGRAM)});
+        			dataListMissionProfile.add(new Object[] {"Total fuel used","kg", _totalFuelUsedMap.get(xcg).doubleValue(SI.KILOGRAM)});
+        			dataListMissionProfile.add(new Object[] {"Fuel reserve","%", _thePerformanceInterface.getFuelReserve()*100});
+        			dataListMissionProfile.add(new Object[] {"Max thermic power requirement","kW", _totalFuelPowerMap.get(xcg).doubleValue(SI.KILO(SI.WATT))});
+        			dataListMissionProfile.add(new Object[] {"Max alternative source power requirement","kW", _totalAlternativeSourcePowerMap.get(xcg).doubleValue(SI.KILO(SI.WATT))});
+        			dataListMissionProfile.add(new Object[] {"Total fuel energy","kWh", _totalFuelEnergyMap.get(xcg).doubleValue(MyUnits.KILOWATT_HOUR)});
+        			dataListMissionProfile.add(new Object[] {"Total alternative source energy","kWh", _totalAlternativeSourceEnergyMap.get(xcg).doubleValue(MyUnits.KILOWATT_HOUR)});
+        			dataListMissionProfile.add(new Object[] {"Design passengers number","", Integer.valueOf(_thePerformanceInterface.getTheAircraft().getCabinConfiguration().getDesignPassengerNumber()).doubleValue()});
+        			dataListMissionProfile.add(new Object[] {"Passengers number for this mission","", Integer.valueOf(_theMissionProfileCalculatorMap.get(xcg).getDeisngPassengersNumber()).doubleValue()});
         			dataListMissionProfile.add(new Object[] {" "});
-        			dataListMissionProfile.add(new Object[] {"ALTERNATE CRUISE overall data"});
-        			dataListMissionProfile.add(new Object[] {"Range","nm", _rangeMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(_rangeMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).size()-1).doubleValue(NonSI.NAUTICAL_MILE)});        		
-        			dataListMissionProfile.add(new Object[] {"Time","min", _timeMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(_timeMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).size()-1).doubleValue(NonSI.MINUTE)});
-        			dataListMissionProfile.add(new Object[] {"Fuel","kg", _fuelUsedMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(_fuelUsedMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).size()-1).doubleValue(SI.KILOGRAM)});
-        			dataListMissionProfile.add(new Object[] {"NOx emissions","g", _emissionNOxMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(_emissionNOxMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).size()-1).doubleValue(SI.GRAM)});        		
-        			dataListMissionProfile.add(new Object[] {"CO emissions","g", _emissionCOMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(_emissionCOMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).size()-1).doubleValue(SI.GRAM)});
-        			dataListMissionProfile.add(new Object[] {"HC emissions","g", _emissionHCMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(_emissionHCMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).size()-1).doubleValue(SI.GRAM)});
-        			dataListMissionProfile.add(new Object[] {"Soot emissions","g", _emissionSootMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(_emissionSootMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).size()-1).doubleValue(SI.GRAM)});
-        			dataListMissionProfile.add(new Object[] {"CO2 emissions","g", _emissionCO2Map.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(_emissionCO2Map.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).size()-1).doubleValue(SI.GRAM)});
-        			dataListMissionProfile.add(new Object[] {"SOx emissions","g", _emissionSOxMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(_emissionSOxMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).size()-1).doubleValue(SI.GRAM)});
-        			dataListMissionProfile.add(new Object[] {"H2O emissions","g", _emissionH2OMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(_emissionH2OMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).size()-1).doubleValue(SI.GRAM)});
-        			dataListMissionProfile.add(new Object[] {"Max Thermic Power","kW", _fuelPowerMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble()});
-        			dataListMissionProfile.add(new Object[] {"Max Alternative Source Power","kW", _alternativeSourcePowerMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble()});
-        			dataListMissionProfile.add(new Object[] {"Thermic Energy","kWh", _fuelEnergyMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});        		
-        			dataListMissionProfile.add(new Object[] {"AlternativeSource Energy","kWh", _alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(_alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});
         			dataListMissionProfile.add(new Object[] {" "});
-        			dataListMissionProfile.add(new Object[] {"SECOND DESCENT overall data"});
-        			dataListMissionProfile.add(new Object[] {"Range","nm", _rangeMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(_rangeMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).size()-1).doubleValue(NonSI.NAUTICAL_MILE)});        		
-        			dataListMissionProfile.add(new Object[] {"Time","min", _timeMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(_timeMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).size()-1).doubleValue(NonSI.MINUTE)});
-        			dataListMissionProfile.add(new Object[] {"Fuel","kg", _fuelUsedMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(_fuelUsedMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).size()-1).doubleValue(SI.KILOGRAM)});
-        			dataListMissionProfile.add(new Object[] {"NOx emissions","g", _emissionNOxMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(_emissionNOxMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).size()-1).doubleValue(SI.GRAM)});        		
-        			dataListMissionProfile.add(new Object[] {"CO emissions","g", _emissionCOMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(_emissionCOMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).size()-1).doubleValue(SI.GRAM)});
-        			dataListMissionProfile.add(new Object[] {"HC emissions","g", _emissionHCMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(_emissionHCMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).size()-1).doubleValue(SI.GRAM)});
-        			dataListMissionProfile.add(new Object[] {"Soot emissions","g", _emissionSootMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(_emissionSootMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).size()-1).doubleValue(SI.GRAM)});
-        			dataListMissionProfile.add(new Object[] {"CO2 emissions","g", _emissionCO2Map.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(_emissionCO2Map.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).size()-1).doubleValue(SI.GRAM)});
-        			dataListMissionProfile.add(new Object[] {"SOx emissions","g", _emissionSOxMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(_emissionSOxMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).size()-1).doubleValue(SI.GRAM)});
-        			dataListMissionProfile.add(new Object[] {"H2O emissions","g", _emissionH2OMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(_emissionH2OMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).size()-1).doubleValue(SI.GRAM)});
-        			dataListMissionProfile.add(new Object[] {"Max Thermic Power","kW", _fuelPowerMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble()});
-        			dataListMissionProfile.add(new Object[] {"Max Alternative Source Power","kW", _alternativeSourcePowerMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble()});
-        			dataListMissionProfile.add(new Object[] {"Thermic Energy","kWh", _fuelEnergyMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});        		
-        			dataListMissionProfile.add(new Object[] {"AlternativeSource Energy","kWh", _alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(_alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});
+        			dataListMissionProfile.add(new Object[] {"TAKE-OFF overall data"});
+        			dataListMissionProfile.add(new Object[] {"Range","nm", _rangeMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(_rangeMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).size()-1).doubleValue(NonSI.NAUTICAL_MILE)});        		
+        			dataListMissionProfile.add(new Object[] {"Time","min", _timeMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(_timeMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).size()-1).doubleValue(NonSI.MINUTE)});
+        			dataListMissionProfile.add(new Object[] {"Fuel","kg", _fuelUsedMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(_fuelUsedMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).size()-1).doubleValue(SI.KILOGRAM)});
+        			dataListMissionProfile.add(new Object[] {"NOx emissions","g", _emissionNOxMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(_emissionNOxMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).size()-1).doubleValue(SI.GRAM)});        		
+        			dataListMissionProfile.add(new Object[] {"CO emissions","g", _emissionCOMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(_emissionCOMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).size()-1).doubleValue(SI.GRAM)});
+        			dataListMissionProfile.add(new Object[] {"HC emissions","g", _emissionHCMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(_emissionHCMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).size()-1).doubleValue(SI.GRAM)});
+        			dataListMissionProfile.add(new Object[] {"Soot emissions","g", _emissionSootMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(_emissionSootMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).size()-1).doubleValue(SI.GRAM)});
+        			dataListMissionProfile.add(new Object[] {"CO2 emissions","g", _emissionCO2Map.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(_emissionCO2Map.get(xcg).get(MissionPhasesEnum.TAKE_OFF).size()-1).doubleValue(SI.GRAM)});
+        			dataListMissionProfile.add(new Object[] {"SOx emissions","g", _emissionSOxMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(_emissionSOxMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).size()-1).doubleValue(SI.GRAM)});
+        			dataListMissionProfile.add(new Object[] {"H2O emissions","g", _emissionH2OMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(_emissionH2OMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).size()-1).doubleValue(SI.GRAM)});
+        			dataListMissionProfile.add(new Object[] {"Max Thermic Power","kW", _fuelPowerMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble()});
+        			dataListMissionProfile.add(new Object[] {"Max Alternative Source Power","kW", _alternativeSourcePowerMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble()});
+        			dataListMissionProfile.add(new Object[] {"Thermic Energy","kWh", _fuelEnergyMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});        		
+        			dataListMissionProfile.add(new Object[] {"Alternative Source Energy","kWh", _alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(_alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});
         			dataListMissionProfile.add(new Object[] {" "});
-        		}
-        		if(_thePerformanceInterface.getHoldingDuration().doubleValue(NonSI.MINUTE) != 0.0) {
-        			dataListMissionProfile.add(new Object[] {"HOLDING overall data"});
-        			dataListMissionProfile.add(new Object[] {"Range","nm", _rangeMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(_rangeMap.get(xcg).get(MissionPhasesEnum.HOLDING).size()-1).doubleValue(NonSI.NAUTICAL_MILE)});        		
-        			dataListMissionProfile.add(new Object[] {"Time","min", _timeMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(_timeMap.get(xcg).get(MissionPhasesEnum.HOLDING).size()-1).doubleValue(NonSI.MINUTE)});
-        			dataListMissionProfile.add(new Object[] {"Fuel","kg", _fuelUsedMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(_fuelUsedMap.get(xcg).get(MissionPhasesEnum.HOLDING).size()-1).doubleValue(SI.KILOGRAM)});
-        			dataListMissionProfile.add(new Object[] {"NOx emissions","g", _emissionNOxMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(_emissionNOxMap.get(xcg).get(MissionPhasesEnum.HOLDING).size()-1).doubleValue(SI.GRAM)});        		
-        			dataListMissionProfile.add(new Object[] {"CO emissions","g", _emissionCOMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(_emissionCOMap.get(xcg).get(MissionPhasesEnum.HOLDING).size()-1).doubleValue(SI.GRAM)});
-        			dataListMissionProfile.add(new Object[] {"HC emissions","g", _emissionHCMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(_emissionHCMap.get(xcg).get(MissionPhasesEnum.HOLDING).size()-1).doubleValue(SI.GRAM)});
-        			dataListMissionProfile.add(new Object[] {"Soot emissions","g", _emissionSootMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(_emissionSootMap.get(xcg).get(MissionPhasesEnum.HOLDING).size()-1).doubleValue(SI.GRAM)});
-        			dataListMissionProfile.add(new Object[] {"CO2 emissions","g", _emissionCO2Map.get(xcg).get(MissionPhasesEnum.HOLDING).get(_emissionCO2Map.get(xcg).get(MissionPhasesEnum.HOLDING).size()-1).doubleValue(SI.GRAM)});
-        			dataListMissionProfile.add(new Object[] {"SOx emissions","g", _emissionSOxMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(_emissionSOxMap.get(xcg).get(MissionPhasesEnum.HOLDING).size()-1).doubleValue(SI.GRAM)});
-        			dataListMissionProfile.add(new Object[] {"H2O emissions","g", _emissionH2OMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(_emissionH2OMap.get(xcg).get(MissionPhasesEnum.HOLDING).size()-1).doubleValue(SI.GRAM)});
-        			dataListMissionProfile.add(new Object[] {"Max Thermic Power","kW", _fuelPowerMap.get(xcg).get(MissionPhasesEnum.HOLDING).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble()});
-        			dataListMissionProfile.add(new Object[] {"Max Alternative Source Power","kW", _alternativeSourcePowerMap.get(xcg).get(MissionPhasesEnum.HOLDING).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble()});
-        			dataListMissionProfile.add(new Object[] {"Thermic Energy","kWh", _fuelEnergyMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.HOLDING).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});        		
-        			dataListMissionProfile.add(new Object[] {"AlternativeSource Energy","kWh", _alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(_alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.HOLDING).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});
+        			dataListMissionProfile.add(new Object[] {"CLIMB overall data"});
+        			dataListMissionProfile.add(new Object[] {"Range","nm", _rangeMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(_rangeMap.get(xcg).get(MissionPhasesEnum.CLIMB).size()-1).doubleValue(NonSI.NAUTICAL_MILE)});        		
+        			dataListMissionProfile.add(new Object[] {"Time","min", _timeMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(_timeMap.get(xcg).get(MissionPhasesEnum.CLIMB).size()-1).doubleValue(NonSI.MINUTE)});
+        			dataListMissionProfile.add(new Object[] {"Fuel","kg", _fuelUsedMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(_fuelUsedMap.get(xcg).get(MissionPhasesEnum.CLIMB).size()-1).doubleValue(SI.KILOGRAM)});
+        			dataListMissionProfile.add(new Object[] {"NOx emissions","g", _emissionNOxMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(_emissionNOxMap.get(xcg).get(MissionPhasesEnum.CLIMB).size()-1).doubleValue(SI.GRAM)});        		
+        			dataListMissionProfile.add(new Object[] {"CO emissions","g", _emissionCOMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(_emissionCOMap.get(xcg).get(MissionPhasesEnum.CLIMB).size()-1).doubleValue(SI.GRAM)});
+        			dataListMissionProfile.add(new Object[] {"HC emissions","g", _emissionHCMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(_emissionHCMap.get(xcg).get(MissionPhasesEnum.CLIMB).size()-1).doubleValue(SI.GRAM)});
+        			dataListMissionProfile.add(new Object[] {"Soot emissions","g", _emissionSootMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(_emissionSootMap.get(xcg).get(MissionPhasesEnum.CLIMB).size()-1).doubleValue(SI.GRAM)});
+        			dataListMissionProfile.add(new Object[] {"CO2 emissions","g", _emissionCO2Map.get(xcg).get(MissionPhasesEnum.CLIMB).get(_emissionCO2Map.get(xcg).get(MissionPhasesEnum.CLIMB).size()-1).doubleValue(SI.GRAM)});
+        			dataListMissionProfile.add(new Object[] {"SOx emissions","g", _emissionSOxMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(_emissionSOxMap.get(xcg).get(MissionPhasesEnum.CLIMB).size()-1).doubleValue(SI.GRAM)});
+        			dataListMissionProfile.add(new Object[] {"H2O emissions","g", _emissionH2OMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(_emissionH2OMap.get(xcg).get(MissionPhasesEnum.CLIMB).size()-1).doubleValue(SI.GRAM)});
+        			dataListMissionProfile.add(new Object[] {"Max Thermic Power","kW", _fuelPowerMap.get(xcg).get(MissionPhasesEnum.CLIMB).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble()});
+        			dataListMissionProfile.add(new Object[] {"Max Alternative Source Power","kW", _alternativeSourcePowerMap.get(xcg).get(MissionPhasesEnum.CLIMB).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble()});
+        			dataListMissionProfile.add(new Object[] {"Thermic Energy","kWh", _fuelEnergyMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.CLIMB).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});        		
+        			dataListMissionProfile.add(new Object[] {"Alternative Source Energy","kWh", _alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(_alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.CLIMB).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});
         			dataListMissionProfile.add(new Object[] {" "});
-        		}
-        		dataListMissionProfile.add(new Object[] {"APPROACH and LANDING overall data"});
-        		dataListMissionProfile.add(new Object[] {"Range","nm", _rangeMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(_rangeMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).size()-1).doubleValue(NonSI.NAUTICAL_MILE)});        		
-        		dataListMissionProfile.add(new Object[] {"Time","min", _timeMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(_timeMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).size()-1).doubleValue(NonSI.MINUTE)});
-        		dataListMissionProfile.add(new Object[] {"Fuel","kg", _fuelUsedMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(_fuelUsedMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).size()-1).doubleValue(SI.KILOGRAM)});
-        		dataListMissionProfile.add(new Object[] {"NOx emissions","g", _emissionNOxMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(_emissionNOxMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).size()-1).doubleValue(SI.GRAM)});        		
-        		dataListMissionProfile.add(new Object[] {"CO emissions","g", _emissionCOMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(_emissionCOMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).size()-1).doubleValue(SI.GRAM)});
-        		dataListMissionProfile.add(new Object[] {"HC emissions","g", _emissionHCMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(_emissionHCMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).size()-1).doubleValue(SI.GRAM)});
-        		dataListMissionProfile.add(new Object[] {"Soot emissions","g", _emissionSootMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(_emissionSootMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).size()-1).doubleValue(SI.GRAM)});
-        		dataListMissionProfile.add(new Object[] {"CO2 emissions","g", _emissionCO2Map.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(_emissionCO2Map.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).size()-1).doubleValue(SI.GRAM)});
-        		dataListMissionProfile.add(new Object[] {"SOx emissions","g", _emissionSOxMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(_emissionSOxMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).size()-1).doubleValue(SI.GRAM)});
-        		dataListMissionProfile.add(new Object[] {"H2O emissions","g", _emissionH2OMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(_emissionH2OMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).size()-1).doubleValue(SI.GRAM)});
-        		dataListMissionProfile.add(new Object[] {"Max Thermic Power","kW", _fuelPowerMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble()});
-        		dataListMissionProfile.add(new Object[] {"Max Alternative Source Power","kW", _alternativeSourcePowerMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble()});
-        		dataListMissionProfile.add(new Object[] {"Thermic Energy","kWh", _fuelEnergyMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});        		
-        		dataListMissionProfile.add(new Object[] {"AlternativeSource Energy","kWh", _alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(_alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});
-        		dataListMissionProfile.add(new Object[] {" "});
-        		dataListMissionProfile.add(new Object[] {" "});
-        		dataListMissionProfile.add(new Object[] {"Phase","Time","Range","Altitude","Fuel","Mass","NOx","CO","HC","Soot","CO2","SOx","H2O","Speed TAS","Speed CAS","Mach","CL","CD","Efficiency","Drag","Total Thrust","Thermic Thrust", "Electric Thrust", "Fuel Flow", "SFC", "Rate of Climb", "Climb Gradient", "Climb Angle", "Thermic Power","Alternative Source Power","Thermic Energy","Alternative Source Energy"});
-        		dataListMissionProfile.add(new Object[] {"","min","nm","ft","kg","kg","g","g","g","g","g","g","g","kts","kts","","","","","lbf","lbf","lbf", "lbf", "kg/min", "lb/lb*hr", "ft/min", "%", "deg", "kW","kW","kWh","kWh"});
-        		for(int i=0; i<_timeMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).size(); i++) {
-        			dataListMissionProfile.add(new Object[] {
-        					MissionPhasesEnum.TAKE_OFF.toString(),
-        					_timeMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(NonSI.MINUTE),
-        					_rangeMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(NonSI.NAUTICAL_MILE),
-        					_altitudeMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(NonSI.FOOT),
-        					_fuelUsedMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(SI.KILOGRAM),
-        					_massMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(SI.KILOGRAM),
-        					_emissionNOxMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(SI.GRAM),       					
-        					_emissionCOMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(SI.GRAM),
-        					_emissionHCMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(SI.GRAM),
-        					_emissionSootMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(SI.GRAM),
-        					_emissionCO2Map.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(SI.GRAM),
-        					_emissionSOxMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(SI.GRAM),
-        					_emissionH2OMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(SI.GRAM),
-        					_speedTASMissionMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(NonSI.KNOT),
-        					_speedCASMissionMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(NonSI.KNOT),
-        					_machMissionMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(),
-        					_liftingCoefficientMissionMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(),
-        					_dragCoefficientMissionMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(),
-        					_efficiencyMissionMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(),
-        					_dragMissionMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(NonSI.POUND_FORCE),
-        					_totalThrustMissionMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(NonSI.POUND_FORCE),
-        					_thermicThrustMissionMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(NonSI.POUND_FORCE),
-        					_electricThrustMissionMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(NonSI.POUND_FORCE), 
-        					_fuelFlowMissionMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(), 
-        					_sfcMissionMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(),
-        					_rateOfClimbMissionMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(MyUnits.FOOT_PER_MINUTE),
-        					_climbAngleMissionMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(SI.RADIAN)*100,
-        					_climbAngleMissionMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(NonSI.DEGREE_ANGLE),
-        					_fuelPowerMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(SI.KILO(SI.WATT)),
-        					_alternativeSourcePowerMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(SI.KILO(SI.WATT)),
-        					_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
-        					_alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
-        					});
-        		}
-        		dataListMissionProfile.add(new Object[] {" "});
-        		for(int i=0; i<_timeMap.get(xcg).get(MissionPhasesEnum.CLIMB).size(); i++) {
-        			dataListMissionProfile.add(new Object[] {
-        					MissionPhasesEnum.CLIMB.toString(),
-        					_timeMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(NonSI.MINUTE),
-        					_rangeMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(NonSI.NAUTICAL_MILE),
-        					_altitudeMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(NonSI.FOOT),
-        					_fuelUsedMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(SI.KILOGRAM),
-        					_massMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(SI.KILOGRAM),
-        					_emissionNOxMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(SI.GRAM),       					
-        					_emissionCOMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(SI.GRAM),
-        					_emissionHCMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(SI.GRAM),
-        					_emissionSootMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(SI.GRAM),
-        					_emissionCO2Map.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(SI.GRAM),
-        					_emissionSOxMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(SI.GRAM),
-        					_emissionH2OMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(SI.GRAM),
-        					_speedTASMissionMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(NonSI.KNOT),
-        					_speedCASMissionMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(NonSI.KNOT),
-        					_machMissionMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(),
-        					_liftingCoefficientMissionMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(),
-        					_dragCoefficientMissionMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(),
-        					_efficiencyMissionMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(),
-        					_dragMissionMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(NonSI.POUND_FORCE),
-        					_totalThrustMissionMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(NonSI.POUND_FORCE),
-        					_thermicThrustMissionMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(NonSI.POUND_FORCE),
-        					_electricThrustMissionMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(NonSI.POUND_FORCE), 
-        					_fuelFlowMissionMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(), 
-        					_sfcMissionMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(),
-        					_rateOfClimbMissionMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(MyUnits.FOOT_PER_MINUTE),
-        					_climbAngleMissionMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(SI.RADIAN)*100,
-        					_climbAngleMissionMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(NonSI.DEGREE_ANGLE),
-        					_fuelPowerMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(SI.KILO(SI.WATT)),
-        					_alternativeSourcePowerMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(SI.KILO(SI.WATT)),
-        					_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
-        					_alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
-        					});
-        		}
-        		dataListMissionProfile.add(new Object[] {" "});
-        		for(int i=0; i<_timeMap.get(xcg).get(MissionPhasesEnum.CRUISE).size(); i++) {
-        			dataListMissionProfile.add(new Object[] {
-        					MissionPhasesEnum.CRUISE.toString(),
-        					_timeMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(NonSI.MINUTE),
-        					_rangeMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(NonSI.NAUTICAL_MILE),
-        					_altitudeMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(NonSI.FOOT),
-        					_fuelUsedMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(SI.KILOGRAM),
-        					_massMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(SI.KILOGRAM),
-        					_emissionNOxMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(SI.GRAM),       					
-        					_emissionCOMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(SI.GRAM),
-        					_emissionHCMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(SI.GRAM),
-        					_emissionSootMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(SI.GRAM),
-        					_emissionCO2Map.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(SI.GRAM),
-        					_emissionSOxMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(SI.GRAM),
-        					_emissionH2OMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(SI.GRAM),
-        					_speedTASMissionMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(NonSI.KNOT),
-        					_speedCASMissionMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(NonSI.KNOT),
-        					_machMissionMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(),
-        					_liftingCoefficientMissionMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(),
-        					_dragCoefficientMissionMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(),
-        					_efficiencyMissionMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(),
-        					_dragMissionMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(NonSI.POUND_FORCE),
-        					_totalThrustMissionMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(NonSI.POUND_FORCE),
-        					_thermicThrustMissionMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(NonSI.POUND_FORCE),
-        					_electricThrustMissionMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(NonSI.POUND_FORCE), 
-        					_fuelFlowMissionMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(), 
-        					_sfcMissionMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(),
-        					_rateOfClimbMissionMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(MyUnits.FOOT_PER_MINUTE),
-        					_climbAngleMissionMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(SI.RADIAN)*100,
-        					_climbAngleMissionMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(NonSI.DEGREE_ANGLE),
-        					_fuelPowerMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(SI.KILO(SI.WATT)),
-        					_alternativeSourcePowerMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(SI.KILO(SI.WATT)),
-        					_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
-        					_alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
-        					});
-        		}
-        		dataListMissionProfile.add(new Object[] {" "});
-        		for(int i=0; i<_timeMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).size(); i++) {
-        			dataListMissionProfile.add(new Object[] {
-        					MissionPhasesEnum.FIRST_DESCENT.toString(),
-        					_timeMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(NonSI.MINUTE),
-        					_rangeMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(NonSI.NAUTICAL_MILE),
-        					_altitudeMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(NonSI.FOOT),
-        					_fuelUsedMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(SI.KILOGRAM),
-        					_massMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(SI.KILOGRAM),
-        					_emissionNOxMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(SI.GRAM),       					
-        					_emissionCOMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(SI.GRAM),
-        					_emissionHCMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(SI.GRAM),
-        					_emissionSootMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(SI.GRAM),
-        					_emissionCO2Map.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(SI.GRAM),
-        					_emissionSOxMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(SI.GRAM),
-        					_emissionH2OMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(SI.GRAM),
-        					_speedTASMissionMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(NonSI.KNOT),
-        					_speedCASMissionMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(NonSI.KNOT),
-        					_machMissionMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(),
-        					_liftingCoefficientMissionMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(),
-        					_dragCoefficientMissionMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(),
-        					_efficiencyMissionMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(),
-        					_dragMissionMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(NonSI.POUND_FORCE),
-        					_totalThrustMissionMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(NonSI.POUND_FORCE),
-        					_thermicThrustMissionMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(NonSI.POUND_FORCE),
-        					_electricThrustMissionMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(NonSI.POUND_FORCE), 
-        					_fuelFlowMissionMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(), 
-        					_sfcMissionMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(),
-        					_rateOfClimbMissionMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(MyUnits.FOOT_PER_MINUTE),
-        					_climbAngleMissionMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(SI.RADIAN)*100,
-        					_climbAngleMissionMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(NonSI.DEGREE_ANGLE),
-        					_fuelPowerMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(SI.KILO(SI.WATT)),
-        					_alternativeSourcePowerMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(SI.KILO(SI.WATT)),
-        					_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
-        					_alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
-        					});
-        		}
-        		dataListMissionProfile.add(new Object[] {" "});
-        		if(_thePerformanceInterface.getAlternateCruiseAltitude().doubleValue(SI.METER) != Amount.valueOf(15.24, SI.METER).getEstimatedValue()) {
-        			for(int i=0; i<_timeMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).size(); i++) {
+        			dataListMissionProfile.add(new Object[] {"CRUISE overall data"});
+        			dataListMissionProfile.add(new Object[] {"Range","nm", _rangeMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(_rangeMap.get(xcg).get(MissionPhasesEnum.CRUISE).size()-1).doubleValue(NonSI.NAUTICAL_MILE)});        		
+        			dataListMissionProfile.add(new Object[] {"Time","min", _timeMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(_timeMap.get(xcg).get(MissionPhasesEnum.CRUISE).size()-1).doubleValue(NonSI.MINUTE)});
+        			dataListMissionProfile.add(new Object[] {"Fuel","kg", _fuelUsedMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(_fuelUsedMap.get(xcg).get(MissionPhasesEnum.CRUISE).size()-1).doubleValue(SI.KILOGRAM)});
+        			dataListMissionProfile.add(new Object[] {"NOx emissions","g", _emissionNOxMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(_emissionNOxMap.get(xcg).get(MissionPhasesEnum.CRUISE).size()-1).doubleValue(SI.GRAM)});        		
+        			dataListMissionProfile.add(new Object[] {"CO emissions","g", _emissionCOMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(_emissionCOMap.get(xcg).get(MissionPhasesEnum.CRUISE).size()-1).doubleValue(SI.GRAM)});
+        			dataListMissionProfile.add(new Object[] {"HC emissions","g", _emissionHCMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(_emissionHCMap.get(xcg).get(MissionPhasesEnum.CRUISE).size()-1).doubleValue(SI.GRAM)});
+        			dataListMissionProfile.add(new Object[] {"Soot emissions","g", _emissionSootMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(_emissionSootMap.get(xcg).get(MissionPhasesEnum.CRUISE).size()-1).doubleValue(SI.GRAM)});
+        			dataListMissionProfile.add(new Object[] {"CO2 emissions","g", _emissionCO2Map.get(xcg).get(MissionPhasesEnum.CRUISE).get(_emissionCO2Map.get(xcg).get(MissionPhasesEnum.CRUISE).size()-1).doubleValue(SI.GRAM)});
+        			dataListMissionProfile.add(new Object[] {"SOx emissions","g", _emissionSOxMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(_emissionSOxMap.get(xcg).get(MissionPhasesEnum.CRUISE).size()-1).doubleValue(SI.GRAM)});
+        			dataListMissionProfile.add(new Object[] {"H2O emissions","g", _emissionH2OMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(_emissionH2OMap.get(xcg).get(MissionPhasesEnum.CRUISE).size()-1).doubleValue(SI.GRAM)});
+        			dataListMissionProfile.add(new Object[] {"Max Thermic Power","kW", _fuelPowerMap.get(xcg).get(MissionPhasesEnum.CRUISE).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble()});
+        			dataListMissionProfile.add(new Object[] {"Max Alternative Source Power","kW", _alternativeSourcePowerMap.get(xcg).get(MissionPhasesEnum.CRUISE).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble()});
+        			dataListMissionProfile.add(new Object[] {"Thermic Energy","kWh", _fuelEnergyMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.CRUISE).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});        		
+        			dataListMissionProfile.add(new Object[] {"Alternative Source Energy","kWh", _alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(_alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.CRUISE).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});
+        			dataListMissionProfile.add(new Object[] {" "});
+        			dataListMissionProfile.add(new Object[] {"FIRST DESCENT overall data"});
+        			dataListMissionProfile.add(new Object[] {"Range","nm", _rangeMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(_rangeMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).size()-1).doubleValue(NonSI.NAUTICAL_MILE)});        		
+        			dataListMissionProfile.add(new Object[] {"Time","min", _timeMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(_timeMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).size()-1).doubleValue(NonSI.MINUTE)});
+        			dataListMissionProfile.add(new Object[] {"Fuel","kg", _fuelUsedMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(_fuelUsedMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).size()-1).doubleValue(SI.KILOGRAM)});
+        			dataListMissionProfile.add(new Object[] {"NOx emissions","g", _emissionNOxMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(_emissionNOxMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).size()-1).doubleValue(SI.GRAM)});        		
+        			dataListMissionProfile.add(new Object[] {"CO emissions","g", _emissionCOMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(_emissionCOMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).size()-1).doubleValue(SI.GRAM)});
+        			dataListMissionProfile.add(new Object[] {"HC emissions","g", _emissionHCMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(_emissionHCMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).size()-1).doubleValue(SI.GRAM)});
+        			dataListMissionProfile.add(new Object[] {"Soot emissions","g", _emissionSootMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(_emissionSootMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).size()-1).doubleValue(SI.GRAM)});
+        			dataListMissionProfile.add(new Object[] {"CO2 emissions","g", _emissionCO2Map.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(_emissionCO2Map.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).size()-1).doubleValue(SI.GRAM)});
+        			dataListMissionProfile.add(new Object[] {"SOx emissions","g", _emissionSOxMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(_emissionSOxMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).size()-1).doubleValue(SI.GRAM)});
+        			dataListMissionProfile.add(new Object[] {"H2O emissions","g", _emissionH2OMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(_emissionH2OMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).size()-1).doubleValue(SI.GRAM)});
+        			dataListMissionProfile.add(new Object[] {"Max Thermic Power","kW", _fuelPowerMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble()});
+        			dataListMissionProfile.add(new Object[] {"Max Alternative Source Power","kW", _alternativeSourcePowerMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble()});
+        			dataListMissionProfile.add(new Object[] {"Thermic Energy","kWh", _fuelEnergyMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});        		
+        			dataListMissionProfile.add(new Object[] {"Alternative Source Energy","kWh", _alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(_alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});
+        			dataListMissionProfile.add(new Object[] {" "});
+        			if(_thePerformanceInterface.getAlternateCruiseAltitude().doubleValue(SI.METER) != Amount.valueOf(15.24, SI.METER).getEstimatedValue()) {
+        				dataListMissionProfile.add(new Object[] {"SECOND CLIMB overall data"});
+        				dataListMissionProfile.add(new Object[] {"Range","nm", _rangeMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(_rangeMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).size()-1).doubleValue(NonSI.NAUTICAL_MILE)});        		
+        				dataListMissionProfile.add(new Object[] {"Time","min", _timeMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(_timeMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).size()-1).doubleValue(NonSI.MINUTE)});
+        				dataListMissionProfile.add(new Object[] {"Fuel","kg", _fuelUsedMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(_fuelUsedMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).size()-1).doubleValue(SI.KILOGRAM)});
+        				dataListMissionProfile.add(new Object[] {"NOx emissions","g", _emissionNOxMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(_emissionNOxMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).size()-1).doubleValue(SI.GRAM)});        		
+        				dataListMissionProfile.add(new Object[] {"CO emissions","g", _emissionCOMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(_emissionCOMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).size()-1).doubleValue(SI.GRAM)});
+        				dataListMissionProfile.add(new Object[] {"HC emissions","g", _emissionHCMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(_emissionHCMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).size()-1).doubleValue(SI.GRAM)});
+        				dataListMissionProfile.add(new Object[] {"Soot emissions","g", _emissionSootMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(_emissionSootMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).size()-1).doubleValue(SI.GRAM)});
+        				dataListMissionProfile.add(new Object[] {"CO2 emissions","g", _emissionCO2Map.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(_emissionCO2Map.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).size()-1).doubleValue(SI.GRAM)});
+        				dataListMissionProfile.add(new Object[] {"SOx emissions","g", _emissionSOxMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(_emissionSOxMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).size()-1).doubleValue(SI.GRAM)});
+        				dataListMissionProfile.add(new Object[] {"H2O emissions","g", _emissionH2OMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(_emissionH2OMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).size()-1).doubleValue(SI.GRAM)});
+        				dataListMissionProfile.add(new Object[] {"Max Thermic Power","kW", _fuelPowerMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble()});
+        				dataListMissionProfile.add(new Object[] {"Max Alternative Source Power","kW", _alternativeSourcePowerMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble()});
+        				dataListMissionProfile.add(new Object[] {"Thermic Energy","kWh", _fuelEnergyMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});        		
+        				dataListMissionProfile.add(new Object[] {"AlternativeSource Energy","kWh", _alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(_alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});
+        				dataListMissionProfile.add(new Object[] {" "});
+        				dataListMissionProfile.add(new Object[] {"ALTERNATE CRUISE overall data"});
+        				dataListMissionProfile.add(new Object[] {"Range","nm", _rangeMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(_rangeMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).size()-1).doubleValue(NonSI.NAUTICAL_MILE)});        		
+        				dataListMissionProfile.add(new Object[] {"Time","min", _timeMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(_timeMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).size()-1).doubleValue(NonSI.MINUTE)});
+        				dataListMissionProfile.add(new Object[] {"Fuel","kg", _fuelUsedMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(_fuelUsedMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).size()-1).doubleValue(SI.KILOGRAM)});
+        				dataListMissionProfile.add(new Object[] {"NOx emissions","g", _emissionNOxMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(_emissionNOxMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).size()-1).doubleValue(SI.GRAM)});        		
+        				dataListMissionProfile.add(new Object[] {"CO emissions","g", _emissionCOMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(_emissionCOMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).size()-1).doubleValue(SI.GRAM)});
+        				dataListMissionProfile.add(new Object[] {"HC emissions","g", _emissionHCMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(_emissionHCMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).size()-1).doubleValue(SI.GRAM)});
+        				dataListMissionProfile.add(new Object[] {"Soot emissions","g", _emissionSootMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(_emissionSootMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).size()-1).doubleValue(SI.GRAM)});
+        				dataListMissionProfile.add(new Object[] {"CO2 emissions","g", _emissionCO2Map.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(_emissionCO2Map.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).size()-1).doubleValue(SI.GRAM)});
+        				dataListMissionProfile.add(new Object[] {"SOx emissions","g", _emissionSOxMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(_emissionSOxMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).size()-1).doubleValue(SI.GRAM)});
+        				dataListMissionProfile.add(new Object[] {"H2O emissions","g", _emissionH2OMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(_emissionH2OMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).size()-1).doubleValue(SI.GRAM)});
+        				dataListMissionProfile.add(new Object[] {"Max Thermic Power","kW", _fuelPowerMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble()});
+        				dataListMissionProfile.add(new Object[] {"Max Alternative Source Power","kW", _alternativeSourcePowerMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble()});
+        				dataListMissionProfile.add(new Object[] {"Thermic Energy","kWh", _fuelEnergyMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});        		
+        				dataListMissionProfile.add(new Object[] {"AlternativeSource Energy","kWh", _alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(_alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});
+        				dataListMissionProfile.add(new Object[] {" "});
+        				dataListMissionProfile.add(new Object[] {"SECOND DESCENT overall data"});
+        				dataListMissionProfile.add(new Object[] {"Range","nm", _rangeMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(_rangeMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).size()-1).doubleValue(NonSI.NAUTICAL_MILE)});        		
+        				dataListMissionProfile.add(new Object[] {"Time","min", _timeMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(_timeMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).size()-1).doubleValue(NonSI.MINUTE)});
+        				dataListMissionProfile.add(new Object[] {"Fuel","kg", _fuelUsedMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(_fuelUsedMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).size()-1).doubleValue(SI.KILOGRAM)});
+        				dataListMissionProfile.add(new Object[] {"NOx emissions","g", _emissionNOxMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(_emissionNOxMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).size()-1).doubleValue(SI.GRAM)});        		
+        				dataListMissionProfile.add(new Object[] {"CO emissions","g", _emissionCOMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(_emissionCOMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).size()-1).doubleValue(SI.GRAM)});
+        				dataListMissionProfile.add(new Object[] {"HC emissions","g", _emissionHCMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(_emissionHCMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).size()-1).doubleValue(SI.GRAM)});
+        				dataListMissionProfile.add(new Object[] {"Soot emissions","g", _emissionSootMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(_emissionSootMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).size()-1).doubleValue(SI.GRAM)});
+        				dataListMissionProfile.add(new Object[] {"CO2 emissions","g", _emissionCO2Map.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(_emissionCO2Map.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).size()-1).doubleValue(SI.GRAM)});
+        				dataListMissionProfile.add(new Object[] {"SOx emissions","g", _emissionSOxMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(_emissionSOxMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).size()-1).doubleValue(SI.GRAM)});
+        				dataListMissionProfile.add(new Object[] {"H2O emissions","g", _emissionH2OMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(_emissionH2OMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).size()-1).doubleValue(SI.GRAM)});
+        				dataListMissionProfile.add(new Object[] {"Max Thermic Power","kW", _fuelPowerMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble()});
+        				dataListMissionProfile.add(new Object[] {"Max Alternative Source Power","kW", _alternativeSourcePowerMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble()});
+        				dataListMissionProfile.add(new Object[] {"Thermic Energy","kWh", _fuelEnergyMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});        		
+        				dataListMissionProfile.add(new Object[] {"AlternativeSource Energy","kWh", _alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(_alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});
+        				dataListMissionProfile.add(new Object[] {" "});
+        			}
+        			if(_thePerformanceInterface.getHoldingDuration().doubleValue(NonSI.MINUTE) != 0.0) {
+        				dataListMissionProfile.add(new Object[] {"HOLDING overall data"});
+        				dataListMissionProfile.add(new Object[] {"Range","nm", _rangeMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(_rangeMap.get(xcg).get(MissionPhasesEnum.HOLDING).size()-1).doubleValue(NonSI.NAUTICAL_MILE)});        		
+        				dataListMissionProfile.add(new Object[] {"Time","min", _timeMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(_timeMap.get(xcg).get(MissionPhasesEnum.HOLDING).size()-1).doubleValue(NonSI.MINUTE)});
+        				dataListMissionProfile.add(new Object[] {"Fuel","kg", _fuelUsedMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(_fuelUsedMap.get(xcg).get(MissionPhasesEnum.HOLDING).size()-1).doubleValue(SI.KILOGRAM)});
+        				dataListMissionProfile.add(new Object[] {"NOx emissions","g", _emissionNOxMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(_emissionNOxMap.get(xcg).get(MissionPhasesEnum.HOLDING).size()-1).doubleValue(SI.GRAM)});        		
+        				dataListMissionProfile.add(new Object[] {"CO emissions","g", _emissionCOMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(_emissionCOMap.get(xcg).get(MissionPhasesEnum.HOLDING).size()-1).doubleValue(SI.GRAM)});
+        				dataListMissionProfile.add(new Object[] {"HC emissions","g", _emissionHCMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(_emissionHCMap.get(xcg).get(MissionPhasesEnum.HOLDING).size()-1).doubleValue(SI.GRAM)});
+        				dataListMissionProfile.add(new Object[] {"Soot emissions","g", _emissionSootMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(_emissionSootMap.get(xcg).get(MissionPhasesEnum.HOLDING).size()-1).doubleValue(SI.GRAM)});
+        				dataListMissionProfile.add(new Object[] {"CO2 emissions","g", _emissionCO2Map.get(xcg).get(MissionPhasesEnum.HOLDING).get(_emissionCO2Map.get(xcg).get(MissionPhasesEnum.HOLDING).size()-1).doubleValue(SI.GRAM)});
+        				dataListMissionProfile.add(new Object[] {"SOx emissions","g", _emissionSOxMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(_emissionSOxMap.get(xcg).get(MissionPhasesEnum.HOLDING).size()-1).doubleValue(SI.GRAM)});
+        				dataListMissionProfile.add(new Object[] {"H2O emissions","g", _emissionH2OMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(_emissionH2OMap.get(xcg).get(MissionPhasesEnum.HOLDING).size()-1).doubleValue(SI.GRAM)});
+        				dataListMissionProfile.add(new Object[] {"Max Thermic Power","kW", _fuelPowerMap.get(xcg).get(MissionPhasesEnum.HOLDING).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble()});
+        				dataListMissionProfile.add(new Object[] {"Max Alternative Source Power","kW", _alternativeSourcePowerMap.get(xcg).get(MissionPhasesEnum.HOLDING).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble()});
+        				dataListMissionProfile.add(new Object[] {"Thermic Energy","kWh", _fuelEnergyMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.HOLDING).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});        		
+        				dataListMissionProfile.add(new Object[] {"AlternativeSource Energy","kWh", _alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(_alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.HOLDING).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});
+        				dataListMissionProfile.add(new Object[] {" "});
+        			}
+        			dataListMissionProfile.add(new Object[] {"APPROACH and LANDING overall data"});
+        			dataListMissionProfile.add(new Object[] {"Range","nm", _rangeMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(_rangeMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).size()-1).doubleValue(NonSI.NAUTICAL_MILE)});        		
+        			dataListMissionProfile.add(new Object[] {"Time","min", _timeMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(_timeMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).size()-1).doubleValue(NonSI.MINUTE)});
+        			dataListMissionProfile.add(new Object[] {"Fuel","kg", _fuelUsedMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(_fuelUsedMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).size()-1).doubleValue(SI.KILOGRAM)});
+        			dataListMissionProfile.add(new Object[] {"NOx emissions","g", _emissionNOxMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(_emissionNOxMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).size()-1).doubleValue(SI.GRAM)});        		
+        			dataListMissionProfile.add(new Object[] {"CO emissions","g", _emissionCOMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(_emissionCOMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).size()-1).doubleValue(SI.GRAM)});
+        			dataListMissionProfile.add(new Object[] {"HC emissions","g", _emissionHCMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(_emissionHCMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).size()-1).doubleValue(SI.GRAM)});
+        			dataListMissionProfile.add(new Object[] {"Soot emissions","g", _emissionSootMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(_emissionSootMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).size()-1).doubleValue(SI.GRAM)});
+        			dataListMissionProfile.add(new Object[] {"CO2 emissions","g", _emissionCO2Map.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(_emissionCO2Map.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).size()-1).doubleValue(SI.GRAM)});
+        			dataListMissionProfile.add(new Object[] {"SOx emissions","g", _emissionSOxMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(_emissionSOxMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).size()-1).doubleValue(SI.GRAM)});
+        			dataListMissionProfile.add(new Object[] {"H2O emissions","g", _emissionH2OMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(_emissionH2OMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).size()-1).doubleValue(SI.GRAM)});
+        			dataListMissionProfile.add(new Object[] {"Max Thermic Power","kW", _fuelPowerMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble()});
+        			dataListMissionProfile.add(new Object[] {"Max Alternative Source Power","kW", _alternativeSourcePowerMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).stream().mapToDouble(pow -> pow.doubleValue(SI.KILO(SI.WATT))).max().getAsDouble()});
+        			dataListMissionProfile.add(new Object[] {"Thermic Energy","kWh", _fuelEnergyMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});        		
+        			dataListMissionProfile.add(new Object[] {"AlternativeSource Energy","kWh", _alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(_alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).size()-1).doubleValue(MyUnits.KILOWATT_HOUR)});
+        			dataListMissionProfile.add(new Object[] {" "});
+        			dataListMissionProfile.add(new Object[] {" "});
+        			dataListMissionProfile.add(new Object[] {"Phase","Time","Range","Altitude","Fuel","Mass","NOx","CO","HC","Soot","CO2","SOx","H2O","Speed TAS","Speed CAS","Mach","CL","CD","Efficiency","Drag","Total Thrust","Thermic Thrust", "Electric Thrust", "Fuel Flow", "SFC", "Rate of Climb", "Climb Gradient", "Climb Angle", "Thermic Power","Alternative Source Power","Thermic Energy","Alternative Source Energy"});
+        			dataListMissionProfile.add(new Object[] {"","min","nm","ft","kg","kg","g","g","g","g","g","g","g","kts","kts","","","","","lbf","lbf","lbf", "lbf", "kg/min", "lb/lb*hr", "ft/min", "%", "deg", "kW","kW","kWh","kWh"});
+        			for(int i=0; i<_timeMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).size(); i++) {
         				dataListMissionProfile.add(new Object[] {
-            					MissionPhasesEnum.SECOND_CLIMB.toString(),
-            					_timeMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(NonSI.MINUTE),
-            					_rangeMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(NonSI.NAUTICAL_MILE),
-            					_altitudeMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(NonSI.FOOT),
-            					_fuelUsedMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(SI.KILOGRAM),
-            					_massMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(SI.KILOGRAM),
-            					_emissionNOxMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(SI.GRAM),       					
-            					_emissionCOMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(SI.GRAM),
-            					_emissionHCMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(SI.GRAM),
-            					_emissionSootMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(SI.GRAM),
-            					_emissionCO2Map.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(SI.GRAM),
-            					_emissionSOxMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(SI.GRAM),
-            					_emissionH2OMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(SI.GRAM),
-            					_speedTASMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(NonSI.KNOT),
-            					_speedCASMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(NonSI.KNOT),
-            					_machMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(),
-            					_liftingCoefficientMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(),
-            					_dragCoefficientMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(),
-            					_efficiencyMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(),
-            					_dragMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(NonSI.POUND_FORCE),
-            					_totalThrustMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(NonSI.POUND_FORCE),
-            					_thermicThrustMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(NonSI.POUND_FORCE),
-            					_electricThrustMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(NonSI.POUND_FORCE), 
-            					_fuelFlowMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(), 
-            					_sfcMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(),
-            					_rateOfClimbMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(MyUnits.FOOT_PER_MINUTE),
-            					_climbAngleMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(SI.RADIAN)*100,
-            					_climbAngleMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(NonSI.DEGREE_ANGLE),
-            					_fuelPowerMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(SI.KILO(SI.WATT)),
-            					_alternativeSourcePowerMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(SI.KILO(SI.WATT)),
-            					_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
-            					_alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
-            					});
-            		}
+        						MissionPhasesEnum.TAKE_OFF.toString(),
+        						_timeMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(NonSI.MINUTE),
+        						_rangeMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(NonSI.NAUTICAL_MILE),
+        						_altitudeMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(NonSI.FOOT),
+        						_fuelUsedMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(SI.KILOGRAM),
+        						_massMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(SI.KILOGRAM),
+        						_emissionNOxMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(SI.GRAM),       					
+        						_emissionCOMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(SI.GRAM),
+        						_emissionHCMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(SI.GRAM),
+        						_emissionSootMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(SI.GRAM),
+        						_emissionCO2Map.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(SI.GRAM),
+        						_emissionSOxMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(SI.GRAM),
+        						_emissionH2OMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(SI.GRAM),
+        						_speedTASMissionMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(NonSI.KNOT),
+        						_speedCASMissionMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(NonSI.KNOT),
+        						_machMissionMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(),
+        						_liftingCoefficientMissionMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(),
+        						_dragCoefficientMissionMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(),
+        						_efficiencyMissionMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(),
+        						_dragMissionMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(NonSI.POUND_FORCE),
+        						_totalThrustMissionMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(NonSI.POUND_FORCE),
+        						_thermicThrustMissionMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(NonSI.POUND_FORCE),
+        						_electricThrustMissionMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(NonSI.POUND_FORCE), 
+        						_fuelFlowMissionMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(), 
+        						_sfcMissionMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(),
+        						_rateOfClimbMissionMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(MyUnits.FOOT_PER_MINUTE),
+        						_climbAngleMissionMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(SI.RADIAN)*100,
+        						_climbAngleMissionMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(NonSI.DEGREE_ANGLE),
+        						_fuelPowerMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(SI.KILO(SI.WATT)),
+        						_alternativeSourcePowerMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(SI.KILO(SI.WATT)),
+        						_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
+        						_alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.TAKE_OFF).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
+        				});
+        			}
         			dataListMissionProfile.add(new Object[] {" "});
-        			for(int i=0; i<_timeMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).size(); i++) {
+        			for(int i=0; i<_timeMap.get(xcg).get(MissionPhasesEnum.CLIMB).size(); i++) {
         				dataListMissionProfile.add(new Object[] {
-            					MissionPhasesEnum.ALTERNATE_CRUISE.toString(),
-            					_timeMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(NonSI.MINUTE),
-            					_rangeMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(NonSI.NAUTICAL_MILE),
-            					_altitudeMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(NonSI.FOOT),
-            					_fuelUsedMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(SI.KILOGRAM),
-            					_massMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(SI.KILOGRAM),
-            					_emissionNOxMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(SI.GRAM),       					
-            					_emissionCOMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(SI.GRAM),
-            					_emissionHCMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(SI.GRAM),
-            					_emissionSootMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(SI.GRAM),
-            					_emissionCO2Map.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(SI.GRAM),
-            					_emissionSOxMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(SI.GRAM),
-            					_emissionH2OMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(SI.GRAM),
-            					_speedTASMissionMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(NonSI.KNOT),
-            					_speedCASMissionMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(NonSI.KNOT),
-            					_machMissionMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(),
-            					_liftingCoefficientMissionMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(),
-            					_dragCoefficientMissionMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(),
-            					_efficiencyMissionMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(),
-            					_dragMissionMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(NonSI.POUND_FORCE),
-            					_totalThrustMissionMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(NonSI.POUND_FORCE),
-            					_thermicThrustMissionMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(NonSI.POUND_FORCE),
-            					_electricThrustMissionMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(NonSI.POUND_FORCE), 
-            					_fuelFlowMissionMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(), 
-            					_sfcMissionMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(),
-            					_rateOfClimbMissionMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(MyUnits.FOOT_PER_MINUTE),
-            					_climbAngleMissionMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(SI.RADIAN)*100,
-            					_climbAngleMissionMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(NonSI.DEGREE_ANGLE),
-            					_fuelPowerMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(SI.KILO(SI.WATT)),
-            					_alternativeSourcePowerMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(SI.KILO(SI.WATT)),
-            					_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
-            					_alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
-            					});
-            		}
+        						MissionPhasesEnum.CLIMB.toString(),
+        						_timeMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(NonSI.MINUTE),
+        						_rangeMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(NonSI.NAUTICAL_MILE),
+        						_altitudeMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(NonSI.FOOT),
+        						_fuelUsedMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(SI.KILOGRAM),
+        						_massMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(SI.KILOGRAM),
+        						_emissionNOxMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(SI.GRAM),       					
+        						_emissionCOMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(SI.GRAM),
+        						_emissionHCMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(SI.GRAM),
+        						_emissionSootMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(SI.GRAM),
+        						_emissionCO2Map.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(SI.GRAM),
+        						_emissionSOxMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(SI.GRAM),
+        						_emissionH2OMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(SI.GRAM),
+        						_speedTASMissionMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(NonSI.KNOT),
+        						_speedCASMissionMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(NonSI.KNOT),
+        						_machMissionMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(),
+        						_liftingCoefficientMissionMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(),
+        						_dragCoefficientMissionMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(),
+        						_efficiencyMissionMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(),
+        						_dragMissionMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(NonSI.POUND_FORCE),
+        						_totalThrustMissionMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(NonSI.POUND_FORCE),
+        						_thermicThrustMissionMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(NonSI.POUND_FORCE),
+        						_electricThrustMissionMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(NonSI.POUND_FORCE), 
+        						_fuelFlowMissionMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(), 
+        						_sfcMissionMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(),
+        						_rateOfClimbMissionMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(MyUnits.FOOT_PER_MINUTE),
+        						_climbAngleMissionMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(SI.RADIAN)*100,
+        						_climbAngleMissionMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(NonSI.DEGREE_ANGLE),
+        						_fuelPowerMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(SI.KILO(SI.WATT)),
+        						_alternativeSourcePowerMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(SI.KILO(SI.WATT)),
+        						_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
+        						_alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.CLIMB).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
+        				});
+        			}
         			dataListMissionProfile.add(new Object[] {" "});
-        			for(int i=0; i<_timeMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).size(); i++) {
+        			for(int i=0; i<_timeMap.get(xcg).get(MissionPhasesEnum.CRUISE).size(); i++) {
         				dataListMissionProfile.add(new Object[] {
-            					MissionPhasesEnum.SECOND_DESCENT.toString(),
-            					_timeMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(NonSI.MINUTE),
-            					_rangeMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(NonSI.NAUTICAL_MILE),
-            					_altitudeMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(NonSI.FOOT),
-            					_fuelUsedMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(SI.KILOGRAM),
-            					_massMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(SI.KILOGRAM),
-            					_emissionNOxMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(SI.GRAM),       					
-            					_emissionCOMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(SI.GRAM),
-            					_emissionHCMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(SI.GRAM),
-            					_emissionSootMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(SI.GRAM),
-            					_emissionCO2Map.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(SI.GRAM),
-            					_emissionSOxMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(SI.GRAM),
-            					_emissionH2OMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(SI.GRAM),
-            					_speedTASMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(NonSI.KNOT),
-            					_speedCASMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(NonSI.KNOT),
-            					_machMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(),
-            					_liftingCoefficientMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(),
-            					_dragCoefficientMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(),
-            					_efficiencyMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(),
-            					_dragMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(NonSI.POUND_FORCE),
-            					_totalThrustMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(NonSI.POUND_FORCE),
-            					_thermicThrustMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(NonSI.POUND_FORCE),
-            					_electricThrustMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(NonSI.POUND_FORCE), 
-            					_fuelFlowMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(), 
-            					_sfcMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(),
-            					_rateOfClimbMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(MyUnits.FOOT_PER_MINUTE),
-            					_climbAngleMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(SI.RADIAN)*100,
-            					_climbAngleMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(NonSI.DEGREE_ANGLE),
-            					_fuelPowerMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(SI.KILO(SI.WATT)),
-            					_alternativeSourcePowerMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(SI.KILO(SI.WATT)),
-            					_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
-            					_alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
-            					});
-            		}
+        						MissionPhasesEnum.CRUISE.toString(),
+        						_timeMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(NonSI.MINUTE),
+        						_rangeMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(NonSI.NAUTICAL_MILE),
+        						_altitudeMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(NonSI.FOOT),
+        						_fuelUsedMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(SI.KILOGRAM),
+        						_massMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(SI.KILOGRAM),
+        						_emissionNOxMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(SI.GRAM),       					
+        						_emissionCOMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(SI.GRAM),
+        						_emissionHCMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(SI.GRAM),
+        						_emissionSootMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(SI.GRAM),
+        						_emissionCO2Map.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(SI.GRAM),
+        						_emissionSOxMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(SI.GRAM),
+        						_emissionH2OMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(SI.GRAM),
+        						_speedTASMissionMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(NonSI.KNOT),
+        						_speedCASMissionMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(NonSI.KNOT),
+        						_machMissionMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(),
+        						_liftingCoefficientMissionMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(),
+        						_dragCoefficientMissionMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(),
+        						_efficiencyMissionMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(),
+        						_dragMissionMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(NonSI.POUND_FORCE),
+        						_totalThrustMissionMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(NonSI.POUND_FORCE),
+        						_thermicThrustMissionMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(NonSI.POUND_FORCE),
+        						_electricThrustMissionMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(NonSI.POUND_FORCE), 
+        						_fuelFlowMissionMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(), 
+        						_sfcMissionMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(),
+        						_rateOfClimbMissionMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(MyUnits.FOOT_PER_MINUTE),
+        						_climbAngleMissionMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(SI.RADIAN)*100,
+        						_climbAngleMissionMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(NonSI.DEGREE_ANGLE),
+        						_fuelPowerMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(SI.KILO(SI.WATT)),
+        						_alternativeSourcePowerMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(SI.KILO(SI.WATT)),
+        						_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
+        						_alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.CRUISE).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
+        				});
+        			}
         			dataListMissionProfile.add(new Object[] {" "});
-        		}
-        		if(_thePerformanceInterface.getHoldingDuration().doubleValue(NonSI.MINUTE) != 0.0) {
-        			for(int i=0; i<_timeMap.get(xcg).get(MissionPhasesEnum.HOLDING).size(); i++) {
+        			for(int i=0; i<_timeMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).size(); i++) {
         				dataListMissionProfile.add(new Object[] {
-            					MissionPhasesEnum.HOLDING.toString(),
-            					_timeMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(NonSI.MINUTE),
-            					_rangeMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(NonSI.NAUTICAL_MILE),
-            					_altitudeMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(NonSI.FOOT),
-            					_fuelUsedMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(SI.KILOGRAM),
-            					_massMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(SI.KILOGRAM),
-            					_emissionNOxMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(SI.GRAM),       					
-            					_emissionCOMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(SI.GRAM),
-            					_emissionHCMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(SI.GRAM),
-            					_emissionSootMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(SI.GRAM),
-            					_emissionCO2Map.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(SI.GRAM),
-            					_emissionSOxMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(SI.GRAM),
-            					_emissionH2OMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(SI.GRAM),
-            					_speedTASMissionMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(NonSI.KNOT),
-            					_speedCASMissionMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(NonSI.KNOT),
-            					_machMissionMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(),
-            					_liftingCoefficientMissionMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(),
-            					_dragCoefficientMissionMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(),
-            					_efficiencyMissionMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(),
-            					_dragMissionMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(NonSI.POUND_FORCE),
-            					_totalThrustMissionMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(NonSI.POUND_FORCE),
-            					_thermicThrustMissionMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(NonSI.POUND_FORCE),
-            					_electricThrustMissionMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(NonSI.POUND_FORCE), 
-            					_fuelFlowMissionMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(), 
-            					_sfcMissionMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(),
-            					_rateOfClimbMissionMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(MyUnits.FOOT_PER_MINUTE),
-            					_climbAngleMissionMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(SI.RADIAN)*100,
-            					_climbAngleMissionMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(NonSI.DEGREE_ANGLE),
-            					_fuelPowerMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(SI.KILO(SI.WATT)),
-            					_alternativeSourcePowerMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(SI.KILO(SI.WATT)),
-            					_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
-            					_alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
-            					});
-            		}
+        						MissionPhasesEnum.FIRST_DESCENT.toString(),
+        						_timeMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(NonSI.MINUTE),
+        						_rangeMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(NonSI.NAUTICAL_MILE),
+        						_altitudeMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(NonSI.FOOT),
+        						_fuelUsedMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(SI.KILOGRAM),
+        						_massMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(SI.KILOGRAM),
+        						_emissionNOxMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(SI.GRAM),       					
+        						_emissionCOMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(SI.GRAM),
+        						_emissionHCMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(SI.GRAM),
+        						_emissionSootMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(SI.GRAM),
+        						_emissionCO2Map.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(SI.GRAM),
+        						_emissionSOxMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(SI.GRAM),
+        						_emissionH2OMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(SI.GRAM),
+        						_speedTASMissionMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(NonSI.KNOT),
+        						_speedCASMissionMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(NonSI.KNOT),
+        						_machMissionMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(),
+        						_liftingCoefficientMissionMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(),
+        						_dragCoefficientMissionMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(),
+        						_efficiencyMissionMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(),
+        						_dragMissionMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(NonSI.POUND_FORCE),
+        						_totalThrustMissionMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(NonSI.POUND_FORCE),
+        						_thermicThrustMissionMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(NonSI.POUND_FORCE),
+        						_electricThrustMissionMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(NonSI.POUND_FORCE), 
+        						_fuelFlowMissionMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(), 
+        						_sfcMissionMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(),
+        						_rateOfClimbMissionMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(MyUnits.FOOT_PER_MINUTE),
+        						_climbAngleMissionMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(SI.RADIAN)*100,
+        						_climbAngleMissionMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(NonSI.DEGREE_ANGLE),
+        						_fuelPowerMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(SI.KILO(SI.WATT)),
+        						_alternativeSourcePowerMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(SI.KILO(SI.WATT)),
+        						_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
+        						_alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.FIRST_DESCENT).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
+        				});
+        			}
         			dataListMissionProfile.add(new Object[] {" "});
-        		}
-        		for(int i=0; i<_timeMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).size(); i++) {
-        			dataListMissionProfile.add(new Object[] {
-        					MissionPhasesEnum.APPROACH_AND_LANDING.toString(),
-        					_timeMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(NonSI.MINUTE),
-        					_rangeMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(NonSI.NAUTICAL_MILE),
-        					_altitudeMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(NonSI.FOOT),
-        					_fuelUsedMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(SI.KILOGRAM),
-        					_massMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(SI.KILOGRAM),
-        					_emissionNOxMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(SI.GRAM),       					
-        					_emissionCOMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(SI.GRAM),
-        					_emissionHCMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(SI.GRAM),
-        					_emissionSootMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(SI.GRAM),
-        					_emissionCO2Map.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(SI.GRAM),
-        					_emissionSOxMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(SI.GRAM),
-        					_emissionH2OMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(SI.GRAM),
-        					_speedTASMissionMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(NonSI.KNOT),
-        					_speedCASMissionMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(NonSI.KNOT),
-        					_machMissionMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(),
-        					_liftingCoefficientMissionMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(),
-        					_dragCoefficientMissionMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(),
-        					_efficiencyMissionMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(),
-        					_dragMissionMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(NonSI.POUND_FORCE),
-        					_totalThrustMissionMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(NonSI.POUND_FORCE),
-        					_thermicThrustMissionMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(NonSI.POUND_FORCE),
-        					_electricThrustMissionMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(NonSI.POUND_FORCE), 
-        					_fuelFlowMissionMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(), 
-        					_sfcMissionMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(),
-        					_rateOfClimbMissionMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(MyUnits.FOOT_PER_MINUTE),
-        					_climbAngleMissionMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(SI.RADIAN)*100,
-        					_climbAngleMissionMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(NonSI.DEGREE_ANGLE),
-        					_fuelPowerMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(SI.KILO(SI.WATT)),
-        					_alternativeSourcePowerMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(SI.KILO(SI.WATT)),
-        					_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
-        					_alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
+        			if(_thePerformanceInterface.getAlternateCruiseAltitude().doubleValue(SI.METER) != Amount.valueOf(15.24, SI.METER).getEstimatedValue()) {
+        				for(int i=0; i<_timeMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).size(); i++) {
+        					dataListMissionProfile.add(new Object[] {
+        							MissionPhasesEnum.SECOND_CLIMB.toString(),
+        							_timeMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(NonSI.MINUTE),
+        							_rangeMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(NonSI.NAUTICAL_MILE),
+        							_altitudeMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(NonSI.FOOT),
+        							_fuelUsedMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(SI.KILOGRAM),
+        							_massMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(SI.KILOGRAM),
+        							_emissionNOxMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(SI.GRAM),       					
+        							_emissionCOMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(SI.GRAM),
+        							_emissionHCMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(SI.GRAM),
+        							_emissionSootMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(SI.GRAM),
+        							_emissionCO2Map.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(SI.GRAM),
+        							_emissionSOxMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(SI.GRAM),
+        							_emissionH2OMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(SI.GRAM),
+        							_speedTASMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(NonSI.KNOT),
+        							_speedCASMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(NonSI.KNOT),
+        							_machMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(),
+        							_liftingCoefficientMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(),
+        							_dragCoefficientMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(),
+        							_efficiencyMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(),
+        							_dragMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(NonSI.POUND_FORCE),
+        							_totalThrustMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(NonSI.POUND_FORCE),
+        							_thermicThrustMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(NonSI.POUND_FORCE),
+        							_electricThrustMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(NonSI.POUND_FORCE), 
+        							_fuelFlowMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(), 
+        							_sfcMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(),
+        							_rateOfClimbMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(MyUnits.FOOT_PER_MINUTE),
+        							_climbAngleMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(SI.RADIAN)*100,
+        							_climbAngleMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(NonSI.DEGREE_ANGLE),
+        							_fuelPowerMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(SI.KILO(SI.WATT)),
+        							_alternativeSourcePowerMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(SI.KILO(SI.WATT)),
+        							_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
+        							_alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.SECOND_CLIMB).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
         					});
+        				}
+        				dataListMissionProfile.add(new Object[] {" "});
+        				for(int i=0; i<_timeMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).size(); i++) {
+        					dataListMissionProfile.add(new Object[] {
+        							MissionPhasesEnum.ALTERNATE_CRUISE.toString(),
+        							_timeMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(NonSI.MINUTE),
+        							_rangeMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(NonSI.NAUTICAL_MILE),
+        							_altitudeMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(NonSI.FOOT),
+        							_fuelUsedMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(SI.KILOGRAM),
+        							_massMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(SI.KILOGRAM),
+        							_emissionNOxMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(SI.GRAM),       					
+        							_emissionCOMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(SI.GRAM),
+        							_emissionHCMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(SI.GRAM),
+        							_emissionSootMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(SI.GRAM),
+        							_emissionCO2Map.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(SI.GRAM),
+        							_emissionSOxMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(SI.GRAM),
+        							_emissionH2OMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(SI.GRAM),
+        							_speedTASMissionMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(NonSI.KNOT),
+        							_speedCASMissionMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(NonSI.KNOT),
+        							_machMissionMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(),
+        							_liftingCoefficientMissionMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(),
+        							_dragCoefficientMissionMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(),
+        							_efficiencyMissionMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(),
+        							_dragMissionMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(NonSI.POUND_FORCE),
+        							_totalThrustMissionMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(NonSI.POUND_FORCE),
+        							_thermicThrustMissionMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(NonSI.POUND_FORCE),
+        							_electricThrustMissionMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(NonSI.POUND_FORCE), 
+        							_fuelFlowMissionMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(), 
+        							_sfcMissionMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(),
+        							_rateOfClimbMissionMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(MyUnits.FOOT_PER_MINUTE),
+        							_climbAngleMissionMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(SI.RADIAN)*100,
+        							_climbAngleMissionMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(NonSI.DEGREE_ANGLE),
+        							_fuelPowerMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(SI.KILO(SI.WATT)),
+        							_alternativeSourcePowerMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(SI.KILO(SI.WATT)),
+        							_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
+        							_alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.ALTERNATE_CRUISE).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
+        					});
+        				}
+        				dataListMissionProfile.add(new Object[] {" "});
+        				for(int i=0; i<_timeMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).size(); i++) {
+        					dataListMissionProfile.add(new Object[] {
+        							MissionPhasesEnum.SECOND_DESCENT.toString(),
+        							_timeMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(NonSI.MINUTE),
+        							_rangeMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(NonSI.NAUTICAL_MILE),
+        							_altitudeMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(NonSI.FOOT),
+        							_fuelUsedMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(SI.KILOGRAM),
+        							_massMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(SI.KILOGRAM),
+        							_emissionNOxMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(SI.GRAM),       					
+        							_emissionCOMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(SI.GRAM),
+        							_emissionHCMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(SI.GRAM),
+        							_emissionSootMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(SI.GRAM),
+        							_emissionCO2Map.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(SI.GRAM),
+        							_emissionSOxMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(SI.GRAM),
+        							_emissionH2OMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(SI.GRAM),
+        							_speedTASMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(NonSI.KNOT),
+        							_speedCASMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(NonSI.KNOT),
+        							_machMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(),
+        							_liftingCoefficientMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(),
+        							_dragCoefficientMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(),
+        							_efficiencyMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(),
+        							_dragMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(NonSI.POUND_FORCE),
+        							_totalThrustMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(NonSI.POUND_FORCE),
+        							_thermicThrustMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(NonSI.POUND_FORCE),
+        							_electricThrustMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(NonSI.POUND_FORCE), 
+        							_fuelFlowMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(), 
+        							_sfcMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(),
+        							_rateOfClimbMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(MyUnits.FOOT_PER_MINUTE),
+        							_climbAngleMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(SI.RADIAN)*100,
+        							_climbAngleMissionMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(NonSI.DEGREE_ANGLE),
+        							_fuelPowerMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(SI.KILO(SI.WATT)),
+        							_alternativeSourcePowerMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(SI.KILO(SI.WATT)),
+        							_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
+        							_alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.SECOND_DESCENT).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
+        					});
+        				}
+        				dataListMissionProfile.add(new Object[] {" "});
+        			}
+        			if(_thePerformanceInterface.getHoldingDuration().doubleValue(NonSI.MINUTE) != 0.0) {
+        				for(int i=0; i<_timeMap.get(xcg).get(MissionPhasesEnum.HOLDING).size(); i++) {
+        					dataListMissionProfile.add(new Object[] {
+        							MissionPhasesEnum.HOLDING.toString(),
+        							_timeMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(NonSI.MINUTE),
+        							_rangeMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(NonSI.NAUTICAL_MILE),
+        							_altitudeMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(NonSI.FOOT),
+        							_fuelUsedMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(SI.KILOGRAM),
+        							_massMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(SI.KILOGRAM),
+        							_emissionNOxMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(SI.GRAM),       					
+        							_emissionCOMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(SI.GRAM),
+        							_emissionHCMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(SI.GRAM),
+        							_emissionSootMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(SI.GRAM),
+        							_emissionCO2Map.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(SI.GRAM),
+        							_emissionSOxMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(SI.GRAM),
+        							_emissionH2OMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(SI.GRAM),
+        							_speedTASMissionMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(NonSI.KNOT),
+        							_speedCASMissionMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(NonSI.KNOT),
+        							_machMissionMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(),
+        							_liftingCoefficientMissionMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(),
+        							_dragCoefficientMissionMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(),
+        							_efficiencyMissionMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(),
+        							_dragMissionMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(NonSI.POUND_FORCE),
+        							_totalThrustMissionMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(NonSI.POUND_FORCE),
+        							_thermicThrustMissionMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(NonSI.POUND_FORCE),
+        							_electricThrustMissionMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(NonSI.POUND_FORCE), 
+        							_fuelFlowMissionMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(), 
+        							_sfcMissionMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(),
+        							_rateOfClimbMissionMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(MyUnits.FOOT_PER_MINUTE),
+        							_climbAngleMissionMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(SI.RADIAN)*100,
+        							_climbAngleMissionMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(NonSI.DEGREE_ANGLE),
+        							_fuelPowerMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(SI.KILO(SI.WATT)),
+        							_alternativeSourcePowerMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(SI.KILO(SI.WATT)),
+        							_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
+        							_alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.HOLDING).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
+        					});
+        				}
+        				dataListMissionProfile.add(new Object[] {" "});
+        			}
+        			for(int i=0; i<_timeMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).size(); i++) {
+        				dataListMissionProfile.add(new Object[] {
+        						MissionPhasesEnum.APPROACH_AND_LANDING.toString(),
+        						_timeMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(NonSI.MINUTE),
+        						_rangeMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(NonSI.NAUTICAL_MILE),
+        						_altitudeMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(NonSI.FOOT),
+        						_fuelUsedMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(SI.KILOGRAM),
+        						_massMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(SI.KILOGRAM),
+        						_emissionNOxMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(SI.GRAM),       					
+        						_emissionCOMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(SI.GRAM),
+        						_emissionHCMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(SI.GRAM),
+        						_emissionSootMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(SI.GRAM),
+        						_emissionCO2Map.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(SI.GRAM),
+        						_emissionSOxMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(SI.GRAM),
+        						_emissionH2OMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(SI.GRAM),
+        						_speedTASMissionMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(NonSI.KNOT),
+        						_speedCASMissionMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(NonSI.KNOT),
+        						_machMissionMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(),
+        						_liftingCoefficientMissionMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(),
+        						_dragCoefficientMissionMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(),
+        						_efficiencyMissionMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(),
+        						_dragMissionMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(NonSI.POUND_FORCE),
+        						_totalThrustMissionMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(NonSI.POUND_FORCE),
+        						_thermicThrustMissionMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(NonSI.POUND_FORCE),
+        						_electricThrustMissionMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(NonSI.POUND_FORCE), 
+        						_fuelFlowMissionMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(), 
+        						_sfcMissionMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(),
+        						_rateOfClimbMissionMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(MyUnits.FOOT_PER_MINUTE),
+        						_climbAngleMissionMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(SI.RADIAN)*100,
+        						_climbAngleMissionMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(NonSI.DEGREE_ANGLE),
+        						_fuelPowerMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(SI.KILO(SI.WATT)),
+        						_alternativeSourcePowerMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(SI.KILO(SI.WATT)),
+        						_fuelEnergyMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
+        						_alternativeSourceEnergyMap.get(xcg).get(MissionPhasesEnum.APPROACH_AND_LANDING).get(i).doubleValue(MyUnits.KILOWATT_HOUR),
+        				});
+        			}
         		}
-
+        		
         		int indexOfPhaseDetailsHeaderStart = 164;
         		if(_thePerformanceInterface.getAlternateCruiseAltitude().doubleValue(SI.METER) == Amount.valueOf(15.24, SI.METER).getEstimatedValue()) {
         			indexOfPhaseDetailsHeaderStart = 164 
@@ -4589,49 +4825,72 @@ public class ACPerformanceManager {
         	Sheet sheetPayloadRange = wb.createSheet("PAYLOAD-RANGE");
         	List<Object[]> dataListPayloadRange = new ArrayList<>();
 
-        	if(_thePayloadRangeCalculatorMap.get(xcg).getRangeAtMaxPayload().doubleValue(NonSI.NAUTICAL_MILE) != 0.0
-        			&& _thePayloadRangeCalculatorMap.get(xcg).getRangeAtDesignPayload().doubleValue(NonSI.NAUTICAL_MILE) != 0.0
-        			&& _thePayloadRangeCalculatorMap.get(xcg).getRangeAtMaxFuel().doubleValue(NonSI.NAUTICAL_MILE) != 0.0
-        			&& _thePayloadRangeCalculatorMap.get(xcg).getRangeAtZeroPayload().doubleValue(NonSI.NAUTICAL_MILE) != 0.0
-        			) {
+        	dataListPayloadRange.add(new Object[] {"Description","Unit","Value"});
+        	if(payloadRangeErrorFlag == false) {
+        		if(_thePayloadRangeCalculatorMap.get(xcg).getRangeAtMaxPayload().doubleValue(NonSI.NAUTICAL_MILE) != 0.0
+        				&& _thePayloadRangeCalculatorMap.get(xcg).getRangeAtDesignPayload().doubleValue(NonSI.NAUTICAL_MILE) != 0.0
+        				&& _thePayloadRangeCalculatorMap.get(xcg).getRangeAtMaxFuel().doubleValue(NonSI.NAUTICAL_MILE) != 0.0
+        				&& _thePayloadRangeCalculatorMap.get(xcg).getRangeAtZeroPayload().doubleValue(NonSI.NAUTICAL_MILE) != 0.0
+        				) {
 
-        		dataListPayloadRange.add(new Object[] {"Description","Unit","Value"});
-        		dataListPayloadRange.add(new Object[] {"ALTITUDE","ft",_thePerformanceInterface.getTheOperatingConditions().getAltitudeCruise().doubleValue(NonSI.FOOT)});
-        		dataListPayloadRange.add(new Object[] {"MACH"," ",_thePerformanceInterface.getTheOperatingConditions().getMachCruise()});
-        		dataListPayloadRange.add(new Object[] {" "});
-        		dataListPayloadRange.add(new Object[] {"RANGE AT MAX PAYLOAD"});
-        		dataListPayloadRange.add(new Object[] {"Range","nmi", _rangeAtMaxPayloadMap.get(xcg).doubleValue(NonSI.NAUTICAL_MILE)});
-        		dataListPayloadRange.add(new Object[] {"Aircraft mass","kg", _thePerformanceInterface.getMaximumTakeOffMass().doubleValue(SI.KILOGRAM)});
-        		dataListPayloadRange.add(new Object[] {"Payload mass","kg", _maxPayloadMap.get(xcg).doubleValue(SI.KILOGRAM)});
-        		dataListPayloadRange.add(new Object[] {"Passengers number","", _passengersNumberAtMaxPayloadMap.get(xcg).doubleValue()});
-        		dataListPayloadRange.add(new Object[] {"Fuel mass","kg", _requiredMassAtMaxPayloadMap.get(xcg).doubleValue(SI.KILOGRAM)});
-        		dataListPayloadRange.add(new Object[] {""});
-        		dataListPayloadRange.add(new Object[] {"RANGE AT DESIGN PAYLOAD"});
-        		dataListPayloadRange.add(new Object[] {"Range","nmi", _rangeAtDesignPayloadMap.get(xcg).doubleValue(NonSI.NAUTICAL_MILE)});
-        		dataListPayloadRange.add(new Object[] {"Aircraft mass","kg", _thePerformanceInterface.getMaximumTakeOffMass().doubleValue(SI.KILOGRAM)});
-        		dataListPayloadRange.add(new Object[] {"Payload mass","kg", _designPayloadMap.get(xcg).doubleValue(SI.KILOGRAM)});
-        		dataListPayloadRange.add(new Object[] {"Passengers number","", _passengersNumberAtDesignPayloadMap.get(xcg).doubleValue()});
-        		dataListPayloadRange.add(new Object[] {"Fuel mass","kg", _requiredMassAtDesignPayloadMap.get(xcg).doubleValue(SI.KILOGRAM)});
-        		dataListPayloadRange.add(new Object[] {""});
-        		dataListPayloadRange.add(new Object[] {"RANGE AT MAX FUEL"});
-        		dataListPayloadRange.add(new Object[] {"Range","nmi", _rangeAtMaxFuelMap.get(xcg).doubleValue(NonSI.NAUTICAL_MILE)});
-        		dataListPayloadRange.add(new Object[] {"Aircraft mass","kg", _thePerformanceInterface.getMaximumTakeOffMass().doubleValue(SI.KILOGRAM)});
-        		dataListPayloadRange.add(new Object[] {"Payload mass","kg", _payloadAtMaxFuelMap.get(xcg).doubleValue(SI.KILOGRAM)});
-        		dataListPayloadRange.add(new Object[] {"Passengers number","", _passengersNumberAtMaxFuelMap.get(xcg).doubleValue()});
-        		dataListPayloadRange.add(new Object[] {"Fuel mass","kg", _thePerformanceInterface.getMaximumFuelMass().doubleValue(SI.KILOGRAM)});
-        		dataListPayloadRange.add(new Object[] {"RANGE AT ZERO PAYLOAD"});
-        		dataListPayloadRange.add(new Object[] {"Range","nmi", _rangeAtZeroPayloadMap.get(xcg).doubleValue(NonSI.NAUTICAL_MILE)});
-        		dataListPayloadRange.add(new Object[] {"Aircraft mass","kg", _takeOffMassAtZeroPayloadMap.get(xcg).doubleValue(SI.KILOGRAM)});
-        		dataListPayloadRange.add(new Object[] {"Payload mass","kg", 0.0});
-        		dataListPayloadRange.add(new Object[] {"Passengers number","", 0.0});
-        		dataListPayloadRange.add(new Object[] {"Fuel mass","kg", _thePerformanceInterface.getMaximumFuelMass().doubleValue(SI.KILOGRAM)});
+        			dataListPayloadRange.add(new Object[] {"ALTITUDE","ft",_thePerformanceInterface.getTheOperatingConditions().getAltitudeCruise().doubleValue(NonSI.FOOT)});
+        			dataListPayloadRange.add(new Object[] {"MACH"," ",_thePerformanceInterface.getTheOperatingConditions().getMachCruise()});
+        			dataListPayloadRange.add(new Object[] {" "});
+        			dataListPayloadRange.add(new Object[] {"RANGE AT MAX PAYLOAD"});
+        			dataListPayloadRange.add(new Object[] {"Range","nmi", _rangeAtMaxPayloadMap.get(xcg).doubleValue(NonSI.NAUTICAL_MILE)});
+        			dataListPayloadRange.add(new Object[] {"Aircraft mass","kg", _thePerformanceInterface.getMaximumTakeOffMass().doubleValue(SI.KILOGRAM)});
+        			dataListPayloadRange.add(new Object[] {"Payload mass","kg", _maxPayloadMap.get(xcg).doubleValue(SI.KILOGRAM)});
+        			dataListPayloadRange.add(new Object[] {"Passengers number","", _passengersNumberAtMaxPayloadMap.get(xcg).doubleValue()});
+        			dataListPayloadRange.add(new Object[] {"Fuel mass","kg", _requiredMassAtMaxPayloadMap.get(xcg).doubleValue(SI.KILOGRAM)});
+        			dataListPayloadRange.add(new Object[] {""});
+        			dataListPayloadRange.add(new Object[] {"RANGE AT DESIGN PAYLOAD"});
+        			dataListPayloadRange.add(new Object[] {"Range","nmi", _rangeAtDesignPayloadMap.get(xcg).doubleValue(NonSI.NAUTICAL_MILE)});
+        			dataListPayloadRange.add(new Object[] {"Aircraft mass","kg", _thePerformanceInterface.getMaximumTakeOffMass().doubleValue(SI.KILOGRAM)});
+        			dataListPayloadRange.add(new Object[] {"Payload mass","kg", _designPayloadMap.get(xcg).doubleValue(SI.KILOGRAM)});
+        			dataListPayloadRange.add(new Object[] {"Passengers number","", _passengersNumberAtDesignPayloadMap.get(xcg).doubleValue()});
+        			dataListPayloadRange.add(new Object[] {"Fuel mass","kg", _requiredMassAtDesignPayloadMap.get(xcg).doubleValue(SI.KILOGRAM)});
+        			dataListPayloadRange.add(new Object[] {""});
+        			dataListPayloadRange.add(new Object[] {"RANGE AT MAX FUEL"});
+        			dataListPayloadRange.add(new Object[] {"Range","nmi", _rangeAtMaxFuelMap.get(xcg).doubleValue(NonSI.NAUTICAL_MILE)});
+        			dataListPayloadRange.add(new Object[] {"Aircraft mass","kg", _thePerformanceInterface.getMaximumTakeOffMass().doubleValue(SI.KILOGRAM)});
+        			dataListPayloadRange.add(new Object[] {"Payload mass","kg", _payloadAtMaxFuelMap.get(xcg).doubleValue(SI.KILOGRAM)});
+        			dataListPayloadRange.add(new Object[] {"Passengers number","", _passengersNumberAtMaxFuelMap.get(xcg).doubleValue()});
+        			dataListPayloadRange.add(new Object[] {"Fuel mass","kg", _thePerformanceInterface.getMaximumFuelMass().doubleValue(SI.KILOGRAM)});
+        			dataListPayloadRange.add(new Object[] {"RANGE AT ZERO PAYLOAD"});
+        			dataListPayloadRange.add(new Object[] {"Range","nmi", _rangeAtZeroPayloadMap.get(xcg).doubleValue(NonSI.NAUTICAL_MILE)});
+        			dataListPayloadRange.add(new Object[] {"Aircraft mass","kg", _takeOffMassAtZeroPayloadMap.get(xcg).doubleValue(SI.KILOGRAM)});
+        			dataListPayloadRange.add(new Object[] {"Payload mass","kg", 0.0});
+        			dataListPayloadRange.add(new Object[] {"Passengers number","", 0.0});
+        			dataListPayloadRange.add(new Object[] {"Fuel mass","kg", _thePerformanceInterface.getMaximumFuelMass().doubleValue(SI.KILOGRAM)});
+        		}
+        	}
+        	Row rowPayloadRange = sheetPayloadRange.createRow(0);
+        	Object[] objArrPayloadRange = dataListPayloadRange.get(0);
+        	int cellnumPayloadRange = 0;
+        	for (Object obj : objArrPayloadRange) {
+        		Cell cell = rowPayloadRange.createCell(cellnumPayloadRange++);
+        		cell.setCellStyle(styleHead);
+        		if (obj instanceof Date) {
+        			cell.setCellValue((Date) obj);
+        		} else if (obj instanceof Boolean) {
+        			cell.setCellValue((Boolean) obj);
+        		} else if (obj instanceof String) {
+        			cell.setCellValue((String) obj);
+        		} else if (obj instanceof Double) {
+        			cell.setCellValue((Double) obj);
+        		}
+        		sheetPayloadRange.setDefaultColumnWidth(35);
+        		sheetPayloadRange.setColumnWidth(1, 2048);
+        		sheetPayloadRange.setColumnWidth(2, 3840);
+        	}
 
-        		Row rowPayloadRange = sheetPayloadRange.createRow(0);
-        		Object[] objArrPayloadRange = dataListPayloadRange.get(0);
-        		int cellnumPayloadRange = 0;
+        	int rownumPayloadRange = 1;
+        	for (int i = 1; i < dataListPayloadRange.size(); i++) {
+        		objArrPayloadRange = dataListPayloadRange.get(i);
+        		rowPayloadRange = sheetPayloadRange.createRow(rownumPayloadRange++);
+        		cellnumPayloadRange = 0;
         		for (Object obj : objArrPayloadRange) {
         			Cell cell = rowPayloadRange.createCell(cellnumPayloadRange++);
-        			cell.setCellStyle(styleHead);
         			if (obj instanceof Date) {
         				cell.setCellValue((Date) obj);
         			} else if (obj instanceof Boolean) {
@@ -4641,31 +4900,10 @@ public class ACPerformanceManager {
         			} else if (obj instanceof Double) {
         				cell.setCellValue((Double) obj);
         			}
-        			sheetPayloadRange.setDefaultColumnWidth(35);
-        			sheetPayloadRange.setColumnWidth(1, 2048);
-        			sheetPayloadRange.setColumnWidth(2, 3840);
-        		}
-
-        		int rownumPayloadRange = 1;
-        		for (int i = 1; i < dataListPayloadRange.size(); i++) {
-        			objArrPayloadRange = dataListPayloadRange.get(i);
-        			rowPayloadRange = sheetPayloadRange.createRow(rownumPayloadRange++);
-        			cellnumPayloadRange = 0;
-        			for (Object obj : objArrPayloadRange) {
-        				Cell cell = rowPayloadRange.createCell(cellnumPayloadRange++);
-        				if (obj instanceof Date) {
-        					cell.setCellValue((Date) obj);
-        				} else if (obj instanceof Boolean) {
-        					cell.setCellValue((Boolean) obj);
-        				} else if (obj instanceof String) {
-        					cell.setCellValue((String) obj);
-        				} else if (obj instanceof Double) {
-        					cell.setCellValue((Double) obj);
-        				}
-        			}
         		}
         	}
         }
+        
         //--------------------------------------------------------------------------------
         // NOISE TRAJECTORIES RESULTS:
         //--------------------------------------------------------------------------------
@@ -4674,51 +4912,55 @@ public class ACPerformanceManager {
         	List<Object[]> dataListNoiseTrajectories = new ArrayList<>();
 
         	dataListNoiseTrajectories.add(new Object[] {"Description","Unit","Value"});
-        	dataListNoiseTrajectories.add(new Object[] {"SIDELINE ( 100% MAX-TO )"});
-        	dataListNoiseTrajectories.add(new Object[] {"Ground distance","m", _certificationPointsLongitudinalDistanceMap.get(xcg).get(0).doubleValue(SI.METER)});
-        	dataListNoiseTrajectories.add(new Object[] {"Ground distance","ft", _certificationPointsLongitudinalDistanceMap.get(xcg).get(0).doubleValue(NonSI.FOOT)});
-        	dataListNoiseTrajectories.add(new Object[] {"Altitude","m", _certificationPointsAltitudeMap.get(xcg).get(0).doubleValue(SI.METER)});
-        	dataListNoiseTrajectories.add(new Object[] {"Altitude","ft", _certificationPointsAltitudeMap.get(xcg).get(0).doubleValue(NonSI.FOOT)});
-        	dataListNoiseTrajectories.add(new Object[] {"Speed (TAS)","m/s", _certificationPointsSpeedTASMap.get(xcg).get(0).doubleValue(SI.METERS_PER_SECOND)});
-        	dataListNoiseTrajectories.add(new Object[] {"Speed (TAS)","kts", _certificationPointsSpeedTASMap.get(xcg).get(0).doubleValue(NonSI.KNOT)});
-        	dataListNoiseTrajectories.add(new Object[] {"Speed (CAS)","m/s", _certificationPointsSpeedCASMap.get(xcg).get(0).doubleValue(SI.METERS_PER_SECOND)});
-        	dataListNoiseTrajectories.add(new Object[] {"Speed (CAS)","kts", _certificationPointsSpeedCASMap.get(xcg).get(0).doubleValue(NonSI.KNOT)});
-        	dataListNoiseTrajectories.add(new Object[] {"Alpha","deg", _certificationPointsAlphaMap.get(xcg).get(0).doubleValue(NonSI.DEGREE_ANGLE)});
-        	dataListNoiseTrajectories.add(new Object[] {"Gamma","deg", _certificationPointsGammaMap.get(xcg).get(0).doubleValue(NonSI.DEGREE_ANGLE)});
-        	dataListNoiseTrajectories.add(new Object[] {"Theta","deg", _certificationPointsThetaMap.get(xcg).get(0).doubleValue(NonSI.DEGREE_ANGLE)});
-        	dataListNoiseTrajectories.add(new Object[] {"Thrust (x1 eng.)","N", _certificationPointsThrustMap.get(xcg).get(0).doubleValue(SI.NEWTON)});
-        	dataListNoiseTrajectories.add(new Object[] {"Thrust (x1 eng.)","lbf", _certificationPointsThrustMap.get(xcg).get(0).doubleValue(NonSI.POUND_FORCE)});
-        	dataListNoiseTrajectories.add(new Object[] {" "});
-        	dataListNoiseTrajectories.add(new Object[] {"FLYOVER - CUTBACK ( " + _theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).getCutbackAltitude().doubleValue(NonSI.FOOT) + "ft, " + Math.round((_theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).getPhiCutback()*100)) + "% MAX-TO )"});
-        	dataListNoiseTrajectories.add(new Object[] {"Ground distance","m", _certificationPointsLongitudinalDistanceMap.get(xcg).get(1).doubleValue(SI.METER)});
-        	dataListNoiseTrajectories.add(new Object[] {"Ground distance","ft", _certificationPointsLongitudinalDistanceMap.get(xcg).get(1).doubleValue(NonSI.FOOT)});
-        	dataListNoiseTrajectories.add(new Object[] {"Altitude","m", _certificationPointsAltitudeMap.get(xcg).get(1).doubleValue(SI.METER)});
-        	dataListNoiseTrajectories.add(new Object[] {"Altitude","ft", _certificationPointsAltitudeMap.get(xcg).get(1).doubleValue(NonSI.FOOT)});
-        	dataListNoiseTrajectories.add(new Object[] {"Speed (TAS)","m/s", _certificationPointsSpeedTASMap.get(xcg).get(1).doubleValue(SI.METERS_PER_SECOND)});
-        	dataListNoiseTrajectories.add(new Object[] {"Speed (TAS)","kts", _certificationPointsSpeedTASMap.get(xcg).get(1).doubleValue(NonSI.KNOT)});
-        	dataListNoiseTrajectories.add(new Object[] {"Speed (CAS)","m/s", _certificationPointsSpeedCASMap.get(xcg).get(1).doubleValue(SI.METERS_PER_SECOND)});
-        	dataListNoiseTrajectories.add(new Object[] {"Speed (CAS)","kts", _certificationPointsSpeedCASMap.get(xcg).get(1).doubleValue(NonSI.KNOT)});
-        	dataListNoiseTrajectories.add(new Object[] {"Alpha","deg", _certificationPointsAlphaMap.get(xcg).get(1).doubleValue(NonSI.DEGREE_ANGLE)});
-        	dataListNoiseTrajectories.add(new Object[] {"Gamma","deg", _certificationPointsGammaMap.get(xcg).get(1).doubleValue(NonSI.DEGREE_ANGLE)});
-        	dataListNoiseTrajectories.add(new Object[] {"Theta","deg", _certificationPointsThetaMap.get(xcg).get(1).doubleValue(NonSI.DEGREE_ANGLE)});
-        	dataListNoiseTrajectories.add(new Object[] {"Thrust (x1 eng.)","N", _certificationPointsThrustMap.get(xcg).get(1).doubleValue(SI.NEWTON)});
-        	dataListNoiseTrajectories.add(new Object[] {"Thrust (x1 eng.)","lbf", _certificationPointsThrustMap.get(xcg).get(1).doubleValue(NonSI.POUND_FORCE)});
-        	dataListNoiseTrajectories.add(new Object[] {" "});
-        	dataListNoiseTrajectories.add(new Object[] {"APPROACH"});
-        	dataListNoiseTrajectories.add(new Object[] {"Ground distance (from touch-down)","m", _certificationPointsLongitudinalDistanceMap.get(xcg).get(2).doubleValue(SI.METER)});
-        	dataListNoiseTrajectories.add(new Object[] {"Ground distance (from touch-down)","ft", _certificationPointsLongitudinalDistanceMap.get(xcg).get(2).doubleValue(NonSI.FOOT)});
-        	dataListNoiseTrajectories.add(new Object[] {"Altitude","m", _certificationPointsAltitudeMap.get(xcg).get(2).doubleValue(SI.METER)});
-        	dataListNoiseTrajectories.add(new Object[] {"Altitude","ft", _certificationPointsAltitudeMap.get(xcg).get(2).doubleValue(NonSI.FOOT)});
-        	dataListNoiseTrajectories.add(new Object[] {"Speed (TAS)","m/s", _certificationPointsSpeedTASMap.get(xcg).get(2).doubleValue(SI.METERS_PER_SECOND)});
-        	dataListNoiseTrajectories.add(new Object[] {"Speed (TAS)","kts", _certificationPointsSpeedTASMap.get(xcg).get(2).doubleValue(NonSI.KNOT)});
-        	dataListNoiseTrajectories.add(new Object[] {"Speed (CAS)","m/s", _certificationPointsSpeedCASMap.get(xcg).get(2).doubleValue(SI.METERS_PER_SECOND)});
-        	dataListNoiseTrajectories.add(new Object[] {"Speed (CAS)","kts", _certificationPointsSpeedCASMap.get(xcg).get(2).doubleValue(NonSI.KNOT)});
-        	dataListNoiseTrajectories.add(new Object[] {"Alpha","deg", _certificationPointsAlphaMap.get(xcg).get(2).doubleValue(NonSI.DEGREE_ANGLE)});
-        	dataListNoiseTrajectories.add(new Object[] {"Gamma","deg", _certificationPointsGammaMap.get(xcg).get(2).doubleValue(NonSI.DEGREE_ANGLE)});
-        	dataListNoiseTrajectories.add(new Object[] {"Theta","deg", _certificationPointsThetaMap.get(xcg).get(2).doubleValue(NonSI.DEGREE_ANGLE)});
-        	dataListNoiseTrajectories.add(new Object[] {"Thrust (x1 eng.)","N", _certificationPointsThrustMap.get(xcg).get(2).doubleValue(SI.NEWTON)});
-        	dataListNoiseTrajectories.add(new Object[] {"Thrust (x1 eng.)","lbf", _certificationPointsThrustMap.get(xcg).get(2).doubleValue(NonSI.POUND_FORCE)});
-
+        	if(takeOffNoiseTrajectoryErrorFlag == false) {
+        		dataListNoiseTrajectories.add(new Object[] {"SIDELINE ( 100% MAX-TO )"});
+        		dataListNoiseTrajectories.add(new Object[] {"Ground distance","m", _certificationPointsLongitudinalDistanceMap.get(xcg).get(0).doubleValue(SI.METER)});
+        		dataListNoiseTrajectories.add(new Object[] {"Ground distance","ft", _certificationPointsLongitudinalDistanceMap.get(xcg).get(0).doubleValue(NonSI.FOOT)});
+        		dataListNoiseTrajectories.add(new Object[] {"Altitude","m", _certificationPointsAltitudeMap.get(xcg).get(0).doubleValue(SI.METER)});
+        		dataListNoiseTrajectories.add(new Object[] {"Altitude","ft", _certificationPointsAltitudeMap.get(xcg).get(0).doubleValue(NonSI.FOOT)});
+        		dataListNoiseTrajectories.add(new Object[] {"Speed (TAS)","m/s", _certificationPointsSpeedTASMap.get(xcg).get(0).doubleValue(SI.METERS_PER_SECOND)});
+        		dataListNoiseTrajectories.add(new Object[] {"Speed (TAS)","kts", _certificationPointsSpeedTASMap.get(xcg).get(0).doubleValue(NonSI.KNOT)});
+        		dataListNoiseTrajectories.add(new Object[] {"Speed (CAS)","m/s", _certificationPointsSpeedCASMap.get(xcg).get(0).doubleValue(SI.METERS_PER_SECOND)});
+        		dataListNoiseTrajectories.add(new Object[] {"Speed (CAS)","kts", _certificationPointsSpeedCASMap.get(xcg).get(0).doubleValue(NonSI.KNOT)});
+        		dataListNoiseTrajectories.add(new Object[] {"Alpha","deg", _certificationPointsAlphaMap.get(xcg).get(0).doubleValue(NonSI.DEGREE_ANGLE)});
+        		dataListNoiseTrajectories.add(new Object[] {"Gamma","deg", _certificationPointsGammaMap.get(xcg).get(0).doubleValue(NonSI.DEGREE_ANGLE)});
+        		dataListNoiseTrajectories.add(new Object[] {"Theta","deg", _certificationPointsThetaMap.get(xcg).get(0).doubleValue(NonSI.DEGREE_ANGLE)});
+        		dataListNoiseTrajectories.add(new Object[] {"Thrust (x1 eng.)","N", _certificationPointsThrustMap.get(xcg).get(0).doubleValue(SI.NEWTON)});
+        		dataListNoiseTrajectories.add(new Object[] {"Thrust (x1 eng.)","lbf", _certificationPointsThrustMap.get(xcg).get(0).doubleValue(NonSI.POUND_FORCE)});
+        		dataListNoiseTrajectories.add(new Object[] {" "});
+        		dataListNoiseTrajectories.add(new Object[] {"FLYOVER - CUTBACK ( " + _theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).getCutbackAltitude().doubleValue(NonSI.FOOT) + "ft, " + Math.round((_theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).getPhiCutback()*100)) + "% MAX-TO )"});
+        		dataListNoiseTrajectories.add(new Object[] {"Ground distance","m", _certificationPointsLongitudinalDistanceMap.get(xcg).get(1).doubleValue(SI.METER)});
+        		dataListNoiseTrajectories.add(new Object[] {"Ground distance","ft", _certificationPointsLongitudinalDistanceMap.get(xcg).get(1).doubleValue(NonSI.FOOT)});
+        		dataListNoiseTrajectories.add(new Object[] {"Altitude","m", _certificationPointsAltitudeMap.get(xcg).get(1).doubleValue(SI.METER)});
+        		dataListNoiseTrajectories.add(new Object[] {"Altitude","ft", _certificationPointsAltitudeMap.get(xcg).get(1).doubleValue(NonSI.FOOT)});
+        		dataListNoiseTrajectories.add(new Object[] {"Speed (TAS)","m/s", _certificationPointsSpeedTASMap.get(xcg).get(1).doubleValue(SI.METERS_PER_SECOND)});
+        		dataListNoiseTrajectories.add(new Object[] {"Speed (TAS)","kts", _certificationPointsSpeedTASMap.get(xcg).get(1).doubleValue(NonSI.KNOT)});
+        		dataListNoiseTrajectories.add(new Object[] {"Speed (CAS)","m/s", _certificationPointsSpeedCASMap.get(xcg).get(1).doubleValue(SI.METERS_PER_SECOND)});
+        		dataListNoiseTrajectories.add(new Object[] {"Speed (CAS)","kts", _certificationPointsSpeedCASMap.get(xcg).get(1).doubleValue(NonSI.KNOT)});
+        		dataListNoiseTrajectories.add(new Object[] {"Alpha","deg", _certificationPointsAlphaMap.get(xcg).get(1).doubleValue(NonSI.DEGREE_ANGLE)});
+        		dataListNoiseTrajectories.add(new Object[] {"Gamma","deg", _certificationPointsGammaMap.get(xcg).get(1).doubleValue(NonSI.DEGREE_ANGLE)});
+        		dataListNoiseTrajectories.add(new Object[] {"Theta","deg", _certificationPointsThetaMap.get(xcg).get(1).doubleValue(NonSI.DEGREE_ANGLE)});
+        		dataListNoiseTrajectories.add(new Object[] {"Thrust (x1 eng.)","N", _certificationPointsThrustMap.get(xcg).get(1).doubleValue(SI.NEWTON)});
+        		dataListNoiseTrajectories.add(new Object[] {"Thrust (x1 eng.)","lbf", _certificationPointsThrustMap.get(xcg).get(1).doubleValue(NonSI.POUND_FORCE)});
+        		dataListNoiseTrajectories.add(new Object[] {" "});
+        	}
+        	if(landingNoiseTrajectoryErrorFlag == false) {
+        		dataListNoiseTrajectories.add(new Object[] {"APPROACH"});
+        		dataListNoiseTrajectories.add(new Object[] {"Ground distance (from touch-down)","m", _certificationPointsLongitudinalDistanceMap.get(xcg).get(2).doubleValue(SI.METER)});
+        		dataListNoiseTrajectories.add(new Object[] {"Ground distance (from touch-down)","ft", _certificationPointsLongitudinalDistanceMap.get(xcg).get(2).doubleValue(NonSI.FOOT)});
+        		dataListNoiseTrajectories.add(new Object[] {"Altitude","m", _certificationPointsAltitudeMap.get(xcg).get(2).doubleValue(SI.METER)});
+        		dataListNoiseTrajectories.add(new Object[] {"Altitude","ft", _certificationPointsAltitudeMap.get(xcg).get(2).doubleValue(NonSI.FOOT)});
+        		dataListNoiseTrajectories.add(new Object[] {"Speed (TAS)","m/s", _certificationPointsSpeedTASMap.get(xcg).get(2).doubleValue(SI.METERS_PER_SECOND)});
+        		dataListNoiseTrajectories.add(new Object[] {"Speed (TAS)","kts", _certificationPointsSpeedTASMap.get(xcg).get(2).doubleValue(NonSI.KNOT)});
+        		dataListNoiseTrajectories.add(new Object[] {"Speed (CAS)","m/s", _certificationPointsSpeedCASMap.get(xcg).get(2).doubleValue(SI.METERS_PER_SECOND)});
+        		dataListNoiseTrajectories.add(new Object[] {"Speed (CAS)","kts", _certificationPointsSpeedCASMap.get(xcg).get(2).doubleValue(NonSI.KNOT)});
+        		dataListNoiseTrajectories.add(new Object[] {"Alpha","deg", _certificationPointsAlphaMap.get(xcg).get(2).doubleValue(NonSI.DEGREE_ANGLE)});
+        		dataListNoiseTrajectories.add(new Object[] {"Gamma","deg", _certificationPointsGammaMap.get(xcg).get(2).doubleValue(NonSI.DEGREE_ANGLE)});
+        		dataListNoiseTrajectories.add(new Object[] {"Theta","deg", _certificationPointsThetaMap.get(xcg).get(2).doubleValue(NonSI.DEGREE_ANGLE)});
+        		dataListNoiseTrajectories.add(new Object[] {"Thrust (x1 eng.)","N", _certificationPointsThrustMap.get(xcg).get(2).doubleValue(SI.NEWTON)});
+        		dataListNoiseTrajectories.add(new Object[] {"Thrust (x1 eng.)","lbf", _certificationPointsThrustMap.get(xcg).get(2).doubleValue(NonSI.POUND_FORCE)});
+        	}
+        	
         	Row rowNoiseTrajectories = sheetNoiseTrajectories.createRow(0);
         	Object[] objArrNoiseTrajectories = dataListNoiseTrajectories.get(0);
         	int cellnumNoiseTrajectories = 0;
@@ -4766,89 +5008,91 @@ public class ACPerformanceManager {
         	List<Object[]> dataListVnDiagram = new ArrayList<>();
 
         	dataListVnDiagram.add(new Object[] {"Description","Unit","Value"});
-        	dataListVnDiagram.add(new Object[] {"REGULATION"," ",_thePerformanceInterface.getTheAircraft().getRegulations().toString()});
-        	dataListVnDiagram.add(new Object[] {"AIRCRAFT TYPE"," ",_thePerformanceInterface.getTheAircraft().getTypeVehicle().toString()});
-        	dataListVnDiagram.add(new Object[] {" "});
-        	dataListVnDiagram.add(new Object[] {" "});
-        	dataListVnDiagram.add(new Object[] {"BASIC MANEUVERING DIAGRAM"});
-        	dataListVnDiagram.add(new Object[] {"Stall speed clean","m/s", _theEnvelopeCalculatorMap.get(xcg).getStallSpeedClean().doubleValue(SI.METERS_PER_SECOND)});
-        	dataListVnDiagram.add(new Object[] {"Stall speed clean","kn", _theEnvelopeCalculatorMap.get(xcg).getStallSpeedClean().doubleValue(NonSI.KNOT)});
-        	dataListVnDiagram.add(new Object[] {"Stall speed inverted","m/s", _theEnvelopeCalculatorMap.get(xcg).getStallSpeedInverted().doubleValue(SI.METERS_PER_SECOND)});
-        	dataListVnDiagram.add(new Object[] {"Stall speed inverted","kn", _theEnvelopeCalculatorMap.get(xcg).getStallSpeedInverted().doubleValue(NonSI.KNOT)});
-        	dataListVnDiagram.add(new Object[] {"Point A"});
-        	dataListVnDiagram.add(new Object[] {"Maneuvering speed","m/s", _theEnvelopeCalculatorMap.get(xcg).getManeuveringSpeed().doubleValue(SI.METERS_PER_SECOND)});
-        	dataListVnDiagram.add(new Object[] {"Maneuvering speed","kn", _theEnvelopeCalculatorMap.get(xcg).getManeuveringSpeed().doubleValue(NonSI.KNOT)});
-        	dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculatorMap.get(xcg).getPositiveLoadFactorManeuveringSpeed()});
-        	dataListVnDiagram.add(new Object[] {"Point C"});
-        	dataListVnDiagram.add(new Object[] {"Cruising speed","m/s", _theEnvelopeCalculatorMap.get(xcg).getCruisingSpeed().doubleValue(SI.METERS_PER_SECOND)});
-        	dataListVnDiagram.add(new Object[] {"Cruising speed","kn", _theEnvelopeCalculatorMap.get(xcg).getCruisingSpeed().doubleValue(NonSI.KNOT)});
-        	dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculatorMap.get(xcg).getPositiveLoadFactorCruisingSpeed()});
-        	dataListVnDiagram.add(new Object[] {"Point D"});
-        	dataListVnDiagram.add(new Object[] {"Dive speed","m/s", _theEnvelopeCalculatorMap.get(xcg).getDiveSpeed().doubleValue(SI.METERS_PER_SECOND)});
-        	dataListVnDiagram.add(new Object[] {"Dive speed","kn", _theEnvelopeCalculatorMap.get(xcg).getDiveSpeed().doubleValue(NonSI.KNOT)});
-        	dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculatorMap.get(xcg).getPositiveLoadFactorDiveSpeed()});
-        	dataListVnDiagram.add(new Object[] {"Point E"});
-        	dataListVnDiagram.add(new Object[] {"Dive speed","m/s", _theEnvelopeCalculatorMap.get(xcg).getDiveSpeed().doubleValue(SI.METERS_PER_SECOND)});
-        	dataListVnDiagram.add(new Object[] {"Dive speed","kn", _theEnvelopeCalculatorMap.get(xcg).getDiveSpeed().doubleValue(NonSI.KNOT)});
-        	dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculatorMap.get(xcg).getNegativeLoadFactorDiveSpeed()});
-        	dataListVnDiagram.add(new Object[] {"Point F"});
-        	dataListVnDiagram.add(new Object[] {"Cruising speed","m/s", _theEnvelopeCalculatorMap.get(xcg).getCruisingSpeed().doubleValue(SI.METERS_PER_SECOND)});
-        	dataListVnDiagram.add(new Object[] {"Cruising speed","kn", _theEnvelopeCalculatorMap.get(xcg).getCruisingSpeed().doubleValue(NonSI.KNOT)});
-        	dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculatorMap.get(xcg).getNegativeLoadFactorCruisingSpeed()});
-        	dataListVnDiagram.add(new Object[] {"Point H"});
-        	dataListVnDiagram.add(new Object[] {"Maneuvering speed (inverted)","m/s", _theEnvelopeCalculatorMap.get(xcg).getManeuveringSpeedInverted().doubleValue(SI.METERS_PER_SECOND)});
-        	dataListVnDiagram.add(new Object[] {"Maneuvering speed (inverted)","kn", _theEnvelopeCalculatorMap.get(xcg).getManeuveringSpeedInverted().doubleValue(NonSI.KNOT)});
-        	dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculatorMap.get(xcg).getNegativeLoadFactorManeuveringSpeedInverted()});
-        	dataListVnDiagram.add(new Object[] {" "});
-        	dataListVnDiagram.add(new Object[] {"GUST ENVELOPE"});
-        	dataListVnDiagram.add(new Object[] {"Point A'"});
-        	dataListVnDiagram.add(new Object[] {"Maneuvering speed","m/s", _theEnvelopeCalculatorMap.get(xcg).getManeuveringSpeed().doubleValue(SI.METERS_PER_SECOND)});
-        	dataListVnDiagram.add(new Object[] {"Maneuvering speed","kn", _theEnvelopeCalculatorMap.get(xcg).getManeuveringSpeed().doubleValue(NonSI.KNOT)});
-        	dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculatorMap.get(xcg).getPositiveLoadFactorManeuveringSpeedWithGust()});
-        	dataListVnDiagram.add(new Object[] {"Point C'"});
-        	dataListVnDiagram.add(new Object[] {"Cruising speed","m/s", _theEnvelopeCalculatorMap.get(xcg).getCruisingSpeed().doubleValue(SI.METERS_PER_SECOND)});
-        	dataListVnDiagram.add(new Object[] {"Cruising speed","kn", _theEnvelopeCalculatorMap.get(xcg).getCruisingSpeed().doubleValue(NonSI.KNOT)});
-        	dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculatorMap.get(xcg).getPositiveLoadFactorCruisingSpeedWithGust()});
-        	dataListVnDiagram.add(new Object[] {"Point D'"});
-        	dataListVnDiagram.add(new Object[] {"Dive speed","m/s", _theEnvelopeCalculatorMap.get(xcg).getDiveSpeed().doubleValue(SI.METERS_PER_SECOND)});
-        	dataListVnDiagram.add(new Object[] {"Dive speed","kn", _theEnvelopeCalculatorMap.get(xcg).getDiveSpeed().doubleValue(NonSI.KNOT)});
-        	dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculatorMap.get(xcg).getPositiveLoadFactorDiveSpeedWithGust()});
-        	dataListVnDiagram.add(new Object[] {"Point E'"});
-        	dataListVnDiagram.add(new Object[] {"Dive speed","m/s", _theEnvelopeCalculatorMap.get(xcg).getDiveSpeed().doubleValue(SI.METERS_PER_SECOND)});
-        	dataListVnDiagram.add(new Object[] {"Dive speed","kn", _theEnvelopeCalculatorMap.get(xcg).getDiveSpeed().doubleValue(NonSI.KNOT)});
-        	dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculatorMap.get(xcg).getNegativeLoadFactorDiveSpeedWithGust()});
-        	dataListVnDiagram.add(new Object[] {"Point F'"});
-        	dataListVnDiagram.add(new Object[] {"Cruising speed","m/s", _theEnvelopeCalculatorMap.get(xcg).getCruisingSpeed().doubleValue(SI.METERS_PER_SECOND)});
-        	dataListVnDiagram.add(new Object[] {"Cruising speed","kn", _theEnvelopeCalculatorMap.get(xcg).getCruisingSpeed().doubleValue(NonSI.KNOT)});
-        	dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculatorMap.get(xcg).getNegativeLoadFactorCruisingSpeedWithGust()});
-        	dataListVnDiagram.add(new Object[] {"Point H'"});
-        	dataListVnDiagram.add(new Object[] {"Maneuvering speed (inverted)","m/s", _theEnvelopeCalculatorMap.get(xcg).getManeuveringSpeedInverted().doubleValue(SI.METERS_PER_SECOND)});
-        	dataListVnDiagram.add(new Object[] {"Maneuvering speed (inverted)","kn", _theEnvelopeCalculatorMap.get(xcg).getManeuveringSpeedInverted().doubleValue(NonSI.KNOT)});
-        	dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculatorMap.get(xcg).getNegativeLoadFactorManeuveringSpeedInvertedWithGust()});
-        	dataListVnDiagram.add(new Object[] {" "});
-        	dataListVnDiagram.add(new Object[] {" "});
-        	dataListVnDiagram.add(new Object[] {"FLAP MANEUVERING DIAGRAM"});
-        	dataListVnDiagram.add(new Object[] {"Stall speed full flap","m/s", _theEnvelopeCalculatorMap.get(xcg).getStallSpeedFullFlap().doubleValue(SI.METERS_PER_SECOND)});
-        	dataListVnDiagram.add(new Object[] {"Stall speed full flap","kn", _theEnvelopeCalculatorMap.get(xcg).getStallSpeedFullFlap().doubleValue(NonSI.KNOT)});
-        	dataListVnDiagram.add(new Object[] {"Point A_flap"});
-        	dataListVnDiagram.add(new Object[] {"Maneuvering speed full flap","m/s", _theEnvelopeCalculatorMap.get(xcg).getManeuveringFlapSpeed().doubleValue(SI.METERS_PER_SECOND)});
-        	dataListVnDiagram.add(new Object[] {"Maneuvering speed full flap","kn", _theEnvelopeCalculatorMap.get(xcg).getManeuveringFlapSpeed().doubleValue(NonSI.KNOT)});
-        	dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculatorMap.get(xcg).getPositiveLoadFactorDesignFlapSpeed()});
-        	dataListVnDiagram.add(new Object[] {"Point I"});
-        	dataListVnDiagram.add(new Object[] {"Maneuvering speed","m/s", _theEnvelopeCalculatorMap.get(xcg).getDesignFlapSpeed().doubleValue(SI.METERS_PER_SECOND)});
-        	dataListVnDiagram.add(new Object[] {"Maneuvering speed","kn", _theEnvelopeCalculatorMap.get(xcg).getDesignFlapSpeed().doubleValue(NonSI.KNOT)});
-        	dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculatorMap.get(xcg).getPositiveLoadFactorDesignFlapSpeed()});
-        	dataListVnDiagram.add(new Object[] {" "});
-        	dataListVnDiagram.add(new Object[] {"GUST ENVELOPE (with flaps)"});
-        	dataListVnDiagram.add(new Object[] {"Point A'_flap"});
-        	dataListVnDiagram.add(new Object[] {"Maneuvering speed full flap","m/s", _theEnvelopeCalculatorMap.get(xcg).getManeuveringFlapSpeed().doubleValue(SI.METERS_PER_SECOND)});
-        	dataListVnDiagram.add(new Object[] {"Maneuvering speed full flap","kn", _theEnvelopeCalculatorMap.get(xcg).getManeuveringFlapSpeed().doubleValue(NonSI.KNOT)});
-        	dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculatorMap.get(xcg).getPositiveLoadFactorDesignFlapSpeedWithGust()});
-        	dataListVnDiagram.add(new Object[] {"Point I'"});
-        	dataListVnDiagram.add(new Object[] {"Maneuvering speed","m/s", _theEnvelopeCalculatorMap.get(xcg).getDesignFlapSpeed().doubleValue(SI.METERS_PER_SECOND)});
-        	dataListVnDiagram.add(new Object[] {"Maneuvering speed","kn", _theEnvelopeCalculatorMap.get(xcg).getDesignFlapSpeed().doubleValue(NonSI.KNOT)});
-        	dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculatorMap.get(xcg).getPositiveLoadFactorDesignFlapSpeedWithGust()});
-
+        	if(vNDiagramErrorFlag == false) {
+        		dataListVnDiagram.add(new Object[] {"REGULATION"," ",_thePerformanceInterface.getTheAircraft().getRegulations().toString()});
+        		dataListVnDiagram.add(new Object[] {"AIRCRAFT TYPE"," ",_thePerformanceInterface.getTheAircraft().getTypeVehicle().toString()});
+        		dataListVnDiagram.add(new Object[] {" "});
+        		dataListVnDiagram.add(new Object[] {" "});
+        		dataListVnDiagram.add(new Object[] {"BASIC MANEUVERING DIAGRAM"});
+        		dataListVnDiagram.add(new Object[] {"Stall speed clean","m/s", _theEnvelopeCalculatorMap.get(xcg).getStallSpeedClean().doubleValue(SI.METERS_PER_SECOND)});
+        		dataListVnDiagram.add(new Object[] {"Stall speed clean","kn", _theEnvelopeCalculatorMap.get(xcg).getStallSpeedClean().doubleValue(NonSI.KNOT)});
+        		dataListVnDiagram.add(new Object[] {"Stall speed inverted","m/s", _theEnvelopeCalculatorMap.get(xcg).getStallSpeedInverted().doubleValue(SI.METERS_PER_SECOND)});
+        		dataListVnDiagram.add(new Object[] {"Stall speed inverted","kn", _theEnvelopeCalculatorMap.get(xcg).getStallSpeedInverted().doubleValue(NonSI.KNOT)});
+        		dataListVnDiagram.add(new Object[] {"Point A"});
+        		dataListVnDiagram.add(new Object[] {"Maneuvering speed","m/s", _theEnvelopeCalculatorMap.get(xcg).getManeuveringSpeed().doubleValue(SI.METERS_PER_SECOND)});
+        		dataListVnDiagram.add(new Object[] {"Maneuvering speed","kn", _theEnvelopeCalculatorMap.get(xcg).getManeuveringSpeed().doubleValue(NonSI.KNOT)});
+        		dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculatorMap.get(xcg).getPositiveLoadFactorManeuveringSpeed()});
+        		dataListVnDiagram.add(new Object[] {"Point C"});
+        		dataListVnDiagram.add(new Object[] {"Cruising speed","m/s", _theEnvelopeCalculatorMap.get(xcg).getCruisingSpeed().doubleValue(SI.METERS_PER_SECOND)});
+        		dataListVnDiagram.add(new Object[] {"Cruising speed","kn", _theEnvelopeCalculatorMap.get(xcg).getCruisingSpeed().doubleValue(NonSI.KNOT)});
+        		dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculatorMap.get(xcg).getPositiveLoadFactorCruisingSpeed()});
+        		dataListVnDiagram.add(new Object[] {"Point D"});
+        		dataListVnDiagram.add(new Object[] {"Dive speed","m/s", _theEnvelopeCalculatorMap.get(xcg).getDiveSpeed().doubleValue(SI.METERS_PER_SECOND)});
+        		dataListVnDiagram.add(new Object[] {"Dive speed","kn", _theEnvelopeCalculatorMap.get(xcg).getDiveSpeed().doubleValue(NonSI.KNOT)});
+        		dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculatorMap.get(xcg).getPositiveLoadFactorDiveSpeed()});
+        		dataListVnDiagram.add(new Object[] {"Point E"});
+        		dataListVnDiagram.add(new Object[] {"Dive speed","m/s", _theEnvelopeCalculatorMap.get(xcg).getDiveSpeed().doubleValue(SI.METERS_PER_SECOND)});
+        		dataListVnDiagram.add(new Object[] {"Dive speed","kn", _theEnvelopeCalculatorMap.get(xcg).getDiveSpeed().doubleValue(NonSI.KNOT)});
+        		dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculatorMap.get(xcg).getNegativeLoadFactorDiveSpeed()});
+        		dataListVnDiagram.add(new Object[] {"Point F"});
+        		dataListVnDiagram.add(new Object[] {"Cruising speed","m/s", _theEnvelopeCalculatorMap.get(xcg).getCruisingSpeed().doubleValue(SI.METERS_PER_SECOND)});
+        		dataListVnDiagram.add(new Object[] {"Cruising speed","kn", _theEnvelopeCalculatorMap.get(xcg).getCruisingSpeed().doubleValue(NonSI.KNOT)});
+        		dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculatorMap.get(xcg).getNegativeLoadFactorCruisingSpeed()});
+        		dataListVnDiagram.add(new Object[] {"Point H"});
+        		dataListVnDiagram.add(new Object[] {"Maneuvering speed (inverted)","m/s", _theEnvelopeCalculatorMap.get(xcg).getManeuveringSpeedInverted().doubleValue(SI.METERS_PER_SECOND)});
+        		dataListVnDiagram.add(new Object[] {"Maneuvering speed (inverted)","kn", _theEnvelopeCalculatorMap.get(xcg).getManeuveringSpeedInverted().doubleValue(NonSI.KNOT)});
+        		dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculatorMap.get(xcg).getNegativeLoadFactorManeuveringSpeedInverted()});
+        		dataListVnDiagram.add(new Object[] {" "});
+        		dataListVnDiagram.add(new Object[] {"GUST ENVELOPE"});
+        		dataListVnDiagram.add(new Object[] {"Point A'"});
+        		dataListVnDiagram.add(new Object[] {"Maneuvering speed","m/s", _theEnvelopeCalculatorMap.get(xcg).getManeuveringSpeed().doubleValue(SI.METERS_PER_SECOND)});
+        		dataListVnDiagram.add(new Object[] {"Maneuvering speed","kn", _theEnvelopeCalculatorMap.get(xcg).getManeuveringSpeed().doubleValue(NonSI.KNOT)});
+        		dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculatorMap.get(xcg).getPositiveLoadFactorManeuveringSpeedWithGust()});
+        		dataListVnDiagram.add(new Object[] {"Point C'"});
+        		dataListVnDiagram.add(new Object[] {"Cruising speed","m/s", _theEnvelopeCalculatorMap.get(xcg).getCruisingSpeed().doubleValue(SI.METERS_PER_SECOND)});
+        		dataListVnDiagram.add(new Object[] {"Cruising speed","kn", _theEnvelopeCalculatorMap.get(xcg).getCruisingSpeed().doubleValue(NonSI.KNOT)});
+        		dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculatorMap.get(xcg).getPositiveLoadFactorCruisingSpeedWithGust()});
+        		dataListVnDiagram.add(new Object[] {"Point D'"});
+        		dataListVnDiagram.add(new Object[] {"Dive speed","m/s", _theEnvelopeCalculatorMap.get(xcg).getDiveSpeed().doubleValue(SI.METERS_PER_SECOND)});
+        		dataListVnDiagram.add(new Object[] {"Dive speed","kn", _theEnvelopeCalculatorMap.get(xcg).getDiveSpeed().doubleValue(NonSI.KNOT)});
+        		dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculatorMap.get(xcg).getPositiveLoadFactorDiveSpeedWithGust()});
+        		dataListVnDiagram.add(new Object[] {"Point E'"});
+        		dataListVnDiagram.add(new Object[] {"Dive speed","m/s", _theEnvelopeCalculatorMap.get(xcg).getDiveSpeed().doubleValue(SI.METERS_PER_SECOND)});
+        		dataListVnDiagram.add(new Object[] {"Dive speed","kn", _theEnvelopeCalculatorMap.get(xcg).getDiveSpeed().doubleValue(NonSI.KNOT)});
+        		dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculatorMap.get(xcg).getNegativeLoadFactorDiveSpeedWithGust()});
+        		dataListVnDiagram.add(new Object[] {"Point F'"});
+        		dataListVnDiagram.add(new Object[] {"Cruising speed","m/s", _theEnvelopeCalculatorMap.get(xcg).getCruisingSpeed().doubleValue(SI.METERS_PER_SECOND)});
+        		dataListVnDiagram.add(new Object[] {"Cruising speed","kn", _theEnvelopeCalculatorMap.get(xcg).getCruisingSpeed().doubleValue(NonSI.KNOT)});
+        		dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculatorMap.get(xcg).getNegativeLoadFactorCruisingSpeedWithGust()});
+        		dataListVnDiagram.add(new Object[] {"Point H'"});
+        		dataListVnDiagram.add(new Object[] {"Maneuvering speed (inverted)","m/s", _theEnvelopeCalculatorMap.get(xcg).getManeuveringSpeedInverted().doubleValue(SI.METERS_PER_SECOND)});
+        		dataListVnDiagram.add(new Object[] {"Maneuvering speed (inverted)","kn", _theEnvelopeCalculatorMap.get(xcg).getManeuveringSpeedInverted().doubleValue(NonSI.KNOT)});
+        		dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculatorMap.get(xcg).getNegativeLoadFactorManeuveringSpeedInvertedWithGust()});
+        		dataListVnDiagram.add(new Object[] {" "});
+        		dataListVnDiagram.add(new Object[] {" "});
+        		dataListVnDiagram.add(new Object[] {"FLAP MANEUVERING DIAGRAM"});
+        		dataListVnDiagram.add(new Object[] {"Stall speed full flap","m/s", _theEnvelopeCalculatorMap.get(xcg).getStallSpeedFullFlap().doubleValue(SI.METERS_PER_SECOND)});
+        		dataListVnDiagram.add(new Object[] {"Stall speed full flap","kn", _theEnvelopeCalculatorMap.get(xcg).getStallSpeedFullFlap().doubleValue(NonSI.KNOT)});
+        		dataListVnDiagram.add(new Object[] {"Point A_flap"});
+        		dataListVnDiagram.add(new Object[] {"Maneuvering speed full flap","m/s", _theEnvelopeCalculatorMap.get(xcg).getManeuveringFlapSpeed().doubleValue(SI.METERS_PER_SECOND)});
+        		dataListVnDiagram.add(new Object[] {"Maneuvering speed full flap","kn", _theEnvelopeCalculatorMap.get(xcg).getManeuveringFlapSpeed().doubleValue(NonSI.KNOT)});
+        		dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculatorMap.get(xcg).getPositiveLoadFactorDesignFlapSpeed()});
+        		dataListVnDiagram.add(new Object[] {"Point I"});
+        		dataListVnDiagram.add(new Object[] {"Maneuvering speed","m/s", _theEnvelopeCalculatorMap.get(xcg).getDesignFlapSpeed().doubleValue(SI.METERS_PER_SECOND)});
+        		dataListVnDiagram.add(new Object[] {"Maneuvering speed","kn", _theEnvelopeCalculatorMap.get(xcg).getDesignFlapSpeed().doubleValue(NonSI.KNOT)});
+        		dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculatorMap.get(xcg).getPositiveLoadFactorDesignFlapSpeed()});
+        		dataListVnDiagram.add(new Object[] {" "});
+        		dataListVnDiagram.add(new Object[] {"GUST ENVELOPE (with flaps)"});
+        		dataListVnDiagram.add(new Object[] {"Point A'_flap"});
+        		dataListVnDiagram.add(new Object[] {"Maneuvering speed full flap","m/s", _theEnvelopeCalculatorMap.get(xcg).getManeuveringFlapSpeed().doubleValue(SI.METERS_PER_SECOND)});
+        		dataListVnDiagram.add(new Object[] {"Maneuvering speed full flap","kn", _theEnvelopeCalculatorMap.get(xcg).getManeuveringFlapSpeed().doubleValue(NonSI.KNOT)});
+        		dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculatorMap.get(xcg).getPositiveLoadFactorDesignFlapSpeedWithGust()});
+        		dataListVnDiagram.add(new Object[] {"Point I'"});
+        		dataListVnDiagram.add(new Object[] {"Maneuvering speed","m/s", _theEnvelopeCalculatorMap.get(xcg).getDesignFlapSpeed().doubleValue(SI.METERS_PER_SECOND)});
+        		dataListVnDiagram.add(new Object[] {"Maneuvering speed","kn", _theEnvelopeCalculatorMap.get(xcg).getDesignFlapSpeed().doubleValue(NonSI.KNOT)});
+        		dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculatorMap.get(xcg).getPositiveLoadFactorDesignFlapSpeedWithGust()});
+        	}
+        	
         	Row rowVnDiagram = sheetVnDiagram.createRow(0);
         	Object[] objArrVnDiagram = dataListVnDiagram.get(0);
         	int cellnumVnDiagram = 0;
@@ -4920,79 +5164,106 @@ public class ACPerformanceManager {
 			if(_thePerformanceInterface.getTaskList().contains(PerformanceEnum.TAKE_OFF)) {
 
 				sb.append("\tTAKE-OFF\n")
-				.append("\t-------------------------------------\n")
-				.append("\t\tGround roll distance = " + _groundRollDistanceTakeOffMap.get(xcg).to(SI.METER) + "\n")
-				.append("\t\tRotation distance = " + _rotationDistanceTakeOffMap.get(xcg).to(SI.METER) + "\n")
-				.append("\t\tAirborne distance = " + _airborneDistanceTakeOffMap.get(xcg).to(SI.METER) + "\n")
-				.append("\t\tAEO take-off distance = " + _takeOffDistanceAEOMap.get(xcg).to(SI.METER) + "\n")
-				.append("\t\tFAR-25 take-off field length = " + _takeOffDistanceFAR25Map.get(xcg).to(SI.METER) + "\n")
-				.append("\t\tBalanced field length = " + _balancedFieldLengthMap.get(xcg).to(SI.METER) + "\n")
-				.append("\t\t.....................................\n")
-				.append("\t\tGround roll distance = " + _groundRollDistanceTakeOffMap.get(xcg).to(NonSI.FOOT) + "\n")
-				.append("\t\tRotation distance = " + _rotationDistanceTakeOffMap.get(xcg).to(NonSI.FOOT) + "\n")
-				.append("\t\tAirborne distance = " + _airborneDistanceTakeOffMap.get(xcg).to(NonSI.FOOT) + "\n")
-				.append("\t\tAEO take-off distance = " + _takeOffDistanceAEOMap.get(xcg).to(NonSI.FOOT) + "\n")
-				.append("\t\tFAR-25 take-off field length = " + _takeOffDistanceFAR25Map.get(xcg).to(NonSI.FOOT) + "\n")
-				.append("\t\tBalanced field length = " + _balancedFieldLengthMap.get(xcg).to(NonSI.FOOT) + "\n")
-				.append("\t\t.....................................\n")
-				.append("\t\tStall speed take-off (VsTO)= " + _vStallTakeOffMap.get(xcg).to(SI.METERS_PER_SECOND) + "\n")
-				.append("\t\tDecision speed (V1) = " + _v1Map.get(xcg).to(SI.METERS_PER_SECOND) + "\n")
-				.append("\t\tRotation speed (V_Rot) = " + _vRotationMap.get(xcg).to(SI.METERS_PER_SECOND) + "\n")
-				.append("\t\tMiminum control speed (VMC) = " + _vMCMap.get(xcg).to(SI.METERS_PER_SECOND) + "\n")
-				.append("\t\tLift-off speed (V_LO) = " + _vLiftOffMap.get(xcg).to(SI.METERS_PER_SECOND) + "\n")
-				.append("\t\tTake-off safety speed (V2) = " + _v2Map.get(xcg).to(SI.METERS_PER_SECOND) + "\n")
-				.append("\t\t.....................................\n")
-				.append("\t\tStall speed take-off (VsTO)= " + _vStallTakeOffMap.get(xcg).to(NonSI.KNOT) + "\n")
-				.append("\t\tDecision speed (V1) = " + _v1Map.get(xcg).to(NonSI.KNOT) + "\n")
-				.append("\t\tRotation speed (V_Rot) = " + _vRotationMap.get(xcg).to(NonSI.KNOT) + "\n")
-				.append("\t\tMiminum control speed (VMC) = " + _vMCMap.get(xcg).to(NonSI.KNOT) + "\n")
-				.append("\t\tLift-off speed (V_LO) = " + _vLiftOffMap.get(xcg).to(NonSI.KNOT) + "\n")
+				.append("\t-------------------------------------\n");
+				if(takeOffSimulationErrorFlag == false) {
+					sb.append("\t\tGround roll distance = " + _groundRollDistanceTakeOffMap.get(xcg).to(SI.METER) + "\n")
+					.append("\t\tRotation distance = " + _rotationDistanceTakeOffMap.get(xcg).to(SI.METER) + "\n")
+					.append("\t\tAirborne distance = " + _airborneDistanceTakeOffMap.get(xcg).to(SI.METER) + "\n")
+					.append("\t\tAEO take-off distance = " + _takeOffDistanceAEOMap.get(xcg).to(SI.METER) + "\n")
+					.append("\t\tFAR-25 take-off field length = " + _takeOffDistanceFAR25Map.get(xcg).to(SI.METER) + "\n");
+				}
+				if(balancedFieldLengthSimulationErrorFlag == false) 
+					sb.append("\t\tBalanced field length = " + _balancedFieldLengthMap.get(xcg).to(SI.METER) + "\n");
+				if(takeOffSimulationErrorFlag == false) {
+					sb.append("\t\t.....................................\n")
+					.append("\t\tGround roll distance = " + _groundRollDistanceTakeOffMap.get(xcg).to(NonSI.FOOT) + "\n")
+					.append("\t\tRotation distance = " + _rotationDistanceTakeOffMap.get(xcg).to(NonSI.FOOT) + "\n")
+					.append("\t\tAirborne distance = " + _airborneDistanceTakeOffMap.get(xcg).to(NonSI.FOOT) + "\n")
+					.append("\t\tAEO take-off distance = " + _takeOffDistanceAEOMap.get(xcg).to(NonSI.FOOT) + "\n")
+					.append("\t\tFAR-25 take-off field length = " + _takeOffDistanceFAR25Map.get(xcg).to(NonSI.FOOT) + "\n");
+				}
+				if(balancedFieldLengthSimulationErrorFlag == false)
+					sb.append("\t\tBalanced field length = " + _balancedFieldLengthMap.get(xcg).to(NonSI.FOOT) + "\n");
+				if(takeOffSimulationErrorFlag == false) {
+					sb.append("\t\t.....................................\n")
+					.append("\t\tStall speed take-off (VsTO)= " + _vStallTakeOffMap.get(xcg).to(SI.METERS_PER_SECOND) + "\n");
+				}
+				if(balancedFieldLengthSimulationErrorFlag == false)
+					sb.append("\t\tDecision speed (V1) = " + _v1Map.get(xcg).to(SI.METERS_PER_SECOND) + "\n");
+				if(takeOffSimulationErrorFlag == false) {
+					sb.append("\t\tRotation speed (V_Rot) = " + _vRotationMap.get(xcg).to(SI.METERS_PER_SECOND) + "\n");
+				}
+				if(vMCErrorFlag == false) 
+					sb.append("\t\tMiminum control speed (VMC) = " + _vMCMap.get(xcg).to(SI.METERS_PER_SECOND) + "\n");
+				if(takeOffSimulationErrorFlag == false) {
+					sb.append("\t\tLift-off speed (V_LO) = " + _vLiftOffMap.get(xcg).to(SI.METERS_PER_SECOND) + "\n")
+					.append("\t\tTake-off safety speed (V2) = " + _v2Map.get(xcg).to(SI.METERS_PER_SECOND) + "\n")
+					.append("\t\t.....................................\n")
+					.append("\t\tStall speed take-off (VsTO)= " + _vStallTakeOffMap.get(xcg).to(NonSI.KNOT) + "\n");
+				}
+				if(balancedFieldLengthSimulationErrorFlag == false)
+					sb.append("\t\tDecision speed (V1) = " + _v1Map.get(xcg).to(NonSI.KNOT) + "\n");
+				if(takeOffSimulationErrorFlag == false) {
+					sb.append("\t\tRotation speed (V_Rot) = " + _vRotationMap.get(xcg).to(NonSI.KNOT) + "\n");
+				}
+				if(vMCErrorFlag == false)
+					sb.append("\t\tMiminum control speed (VMC) = " + _vMCMap.get(xcg).to(NonSI.KNOT) + "\n");
+				if(takeOffSimulationErrorFlag == false) {
+				sb.append("\t\tLift-off speed (V_LO) = " + _vLiftOffMap.get(xcg).to(NonSI.KNOT) + "\n")
 				.append("\t\tTake-off safety speed (V2) = " + _v2Map.get(xcg).to(NonSI.KNOT) + "\n")
-				.append("\t\t.....................................\n")
-				.append("\t\tV1/VsTO = " + _v1Map.get(xcg).to(SI.METERS_PER_SECOND).divide(_vStallTakeOffMap.get(xcg).to(SI.METERS_PER_SECOND)) + "\n")
-				.append("\t\tV_Rot/VsTO = " + _vRotationMap.get(xcg).to(SI.METERS_PER_SECOND).divide(_vStallTakeOffMap.get(xcg).to(SI.METERS_PER_SECOND)) + "\n")
-				.append("\t\tVMC/VsTO = " + _vMCMap.get(xcg).to(SI.METERS_PER_SECOND).divide(_vStallTakeOffMap.get(xcg).to(SI.METERS_PER_SECOND)) + "\n")
-				.append("\t\tV_LO/VsTO = " + _vLiftOffMap.get(xcg).to(SI.METERS_PER_SECOND).divide(_vStallTakeOffMap.get(xcg).to(SI.METERS_PER_SECOND)) + "\n")
-				.append("\t\tV2/VsTO = " + _v2Map.get(xcg).to(SI.METERS_PER_SECOND).divide(_vStallTakeOffMap.get(xcg).to(SI.METERS_PER_SECOND)) + "\n")
-				.append("\t\t.....................................\n")
-				.append("\t\tTake-off duration = " + _takeOffDurationMap.get(xcg) + "\n")
-				.append("\t\t.....................................\n")
-				.append("\t\tTake-off fuel used = " + _takeOffFuelMap.get(xcg) + "\n")
-				.append("\t\t.....................................\n")
-				.append("\t\tTake-off NOx emissions = " + _takeOffNOxEmissionsMap.get(xcg) + "\n")
-				.append("\t\tTake-off CO emissions = " + _takeOffCOEmissionsMap.get(xcg) + "\n")
-				.append("\t\tTake-off HC emissions = " + _takeOffHCEmissionsMap.get(xcg) + "\n")
-				.append("\t\tTake-off Soot emissions = " + _takeOffSootEmissionsMap.get(xcg) + "\n")
-				.append("\t\tTake-off CO2 emissions = " + _takeOffCO2EmissionsMap.get(xcg) + "\n")
-				.append("\t\tTake-off SOx emissions = " + _takeOffSOxEmissionsMap.get(xcg) + "\n")
-				.append("\t\tTake-off H2O emissions = " + _takeOffH2OEmissionsMap.get(xcg) + "\n")
-				.append("\t-------------------------------------\n")
-				;
+				.append("\t\t.....................................\n");
+				}
+				if(balancedFieldLengthSimulationErrorFlag == false)
+					sb.append("\t\tV1/VsTO = " + _v1Map.get(xcg).to(SI.METERS_PER_SECOND).divide(_vStallTakeOffMap.get(xcg).to(SI.METERS_PER_SECOND)) + "\n");
+				if(takeOffSimulationErrorFlag == false) {
+					sb.append("\t\tV_Rot/VsTO = " + _vRotationMap.get(xcg).to(SI.METERS_PER_SECOND).divide(_vStallTakeOffMap.get(xcg).to(SI.METERS_PER_SECOND)) + "\n");
+				}
+				if(vMCErrorFlag == false)
+					sb.append("\t\tVMC/VsTO = " + _vMCMap.get(xcg).to(SI.METERS_PER_SECOND).divide(_vStallTakeOffMap.get(xcg).to(SI.METERS_PER_SECOND)) + "\n");
+				if(takeOffSimulationErrorFlag == false) {
+					sb.append("\t\tV_LO/VsTO = " + _vLiftOffMap.get(xcg).to(SI.METERS_PER_SECOND).divide(_vStallTakeOffMap.get(xcg).to(SI.METERS_PER_SECOND)) + "\n")
+					.append("\t\tV2/VsTO = " + _v2Map.get(xcg).to(SI.METERS_PER_SECOND).divide(_vStallTakeOffMap.get(xcg).to(SI.METERS_PER_SECOND)) + "\n")
+					.append("\t\t.....................................\n")
+					.append("\t\tTake-off duration = " + _takeOffDurationMap.get(xcg) + "\n")
+					.append("\t\t.....................................\n")
+					.append("\t\tTake-off fuel used = " + _takeOffFuelMap.get(xcg) + "\n")
+					.append("\t\t.....................................\n")
+					.append("\t\tTake-off NOx emissions = " + _takeOffNOxEmissionsMap.get(xcg) + "\n")
+					.append("\t\tTake-off CO emissions = " + _takeOffCOEmissionsMap.get(xcg) + "\n")
+					.append("\t\tTake-off HC emissions = " + _takeOffHCEmissionsMap.get(xcg) + "\n")
+					.append("\t\tTake-off Soot emissions = " + _takeOffSootEmissionsMap.get(xcg) + "\n")
+					.append("\t\tTake-off CO2 emissions = " + _takeOffCO2EmissionsMap.get(xcg) + "\n")
+					.append("\t\tTake-off SOx emissions = " + _takeOffSOxEmissionsMap.get(xcg) + "\n")
+					.append("\t\tTake-off H2O emissions = " + _takeOffH2OEmissionsMap.get(xcg) + "\n")
+					.append("\t-------------------------------------\n");
+				}
 			}
 			if(_thePerformanceInterface.getTaskList().contains(PerformanceEnum.CLIMB)) {
 
 				sb.append("\tCLIMB\n")
-				.append("\t-------------------------------------\n")
-				.append("\t\tAbsolute ceiling AEO = " + _absoluteCeilingAEOMap.get(xcg).to(SI.METER) + "\n")
-				.append("\t\tAbsolute ceiling AEO = " + _absoluteCeilingAEOMap.get(xcg).to(NonSI.FOOT) + "\n")
-				.append("\t\tService ceiling AEO = " + _serviceCeilingAEOMap.get(xcg).to(SI.METER) + "\n")
-				.append("\t\tService ceiling AEO = " + _serviceCeilingAEOMap.get(xcg).to(NonSI.FOOT) + "\n")
-				.append("\t\tMinimum time to climb AEO = " + _minimumClimbTimeAEOMap.get(xcg).to(NonSI.MINUTE) + "\n");
-				if(_climbTimeAtSpecificClimbSpeedAEOMap.get(xcg) != null)
-					sb.append("\t\tTime to climb at given climb speed AEO = " + _climbTimeAtSpecificClimbSpeedAEOMap.get(xcg).to(NonSI.MINUTE) + "\n");
-				sb.append("\t\tFuel used durign climb AEO = " + _fuelUsedDuringClimbMap.get(xcg).to(SI.KILOGRAM) + "\n")
-				.append("\t\tTotal NOx Emissions AEO = " + _emissionsNOxDuringClimbMap.get(xcg).to(SI.GRAM) + "\n")
-				.append("\t\tTotal CO Emissions AEO = " + _emissionsCODuringClimbMap.get(xcg).to(SI.GRAM) + "\n")
-				.append("\t\tTotal HC Emissions AEO = " + _emissionsHCDuringClimbMap.get(xcg).to(SI.GRAM) + "\n")
-				.append("\t\tTotal Soot Emissions AEO = " + _emissionsSootDuringClimbMap.get(xcg).to(SI.GRAM) + "\n")
-				.append("\t\tTotal CO2 Emissions AEO = " + _emissionsCO2DuringClimbMap.get(xcg).to(SI.GRAM) + "\n")
-				.append("\t\tTotal SOx Emissions AEO = " + _emissionsSOxDuringClimbMap.get(xcg).to(SI.GRAM) + "\n")
-				.append("\t\tTotal H2O Emissions AEO = " + _emissionsH2ODuringClimbMap.get(xcg).to(SI.GRAM) + "\n")
-				.append("\t\t.....................................\n")
-				.append("\t\tAbsolute ceiling OEI = " + _absoluteCeilingOEIMap.get(xcg).to(SI.METER) + "\n")
-				.append("\t\tAbsolute ceiling OEI = " + _absoluteCeilingOEIMap.get(xcg).to(NonSI.FOOT) + "\n")
-				.append("\t\tService ceiling OEI = " + _serviceCeilingOEIMap.get(xcg).to(SI.METER) + "\n")
-				.append("\t\tService ceiling OEI = " + _serviceCeilingOEIMap.get(xcg).to(NonSI.FOOT) + "\n");
+				.append("\t-------------------------------------\n");
+				if(climbPerformanceErrorFlag == false) {
+					sb.append("\t\tAbsolute ceiling AEO = " + _absoluteCeilingAEOMap.get(xcg).to(SI.METER) + "\n")
+					.append("\t\tAbsolute ceiling AEO = " + _absoluteCeilingAEOMap.get(xcg).to(NonSI.FOOT) + "\n")
+					.append("\t\tService ceiling AEO = " + _serviceCeilingAEOMap.get(xcg).to(SI.METER) + "\n")
+					.append("\t\tService ceiling AEO = " + _serviceCeilingAEOMap.get(xcg).to(NonSI.FOOT) + "\n")
+					.append("\t\tMinimum time to climb AEO = " + _minimumClimbTimeAEOMap.get(xcg).to(NonSI.MINUTE) + "\n");
+					if(_climbTimeAtSpecificClimbSpeedAEOMap.get(xcg) != null)
+						sb.append("\t\tTime to climb at given climb speed AEO = " + _climbTimeAtSpecificClimbSpeedAEOMap.get(xcg).to(NonSI.MINUTE) + "\n");
+					sb.append("\t\tFuel used durign climb AEO = " + _fuelUsedDuringClimbMap.get(xcg).to(SI.KILOGRAM) + "\n")
+					.append("\t\tTotal NOx Emissions AEO = " + _emissionsNOxDuringClimbMap.get(xcg).to(SI.GRAM) + "\n")
+					.append("\t\tTotal CO Emissions AEO = " + _emissionsCODuringClimbMap.get(xcg).to(SI.GRAM) + "\n")
+					.append("\t\tTotal HC Emissions AEO = " + _emissionsHCDuringClimbMap.get(xcg).to(SI.GRAM) + "\n")
+					.append("\t\tTotal Soot Emissions AEO = " + _emissionsSootDuringClimbMap.get(xcg).to(SI.GRAM) + "\n")
+					.append("\t\tTotal CO2 Emissions AEO = " + _emissionsCO2DuringClimbMap.get(xcg).to(SI.GRAM) + "\n")
+					.append("\t\tTotal SOx Emissions AEO = " + _emissionsSOxDuringClimbMap.get(xcg).to(SI.GRAM) + "\n")
+					.append("\t\tTotal H2O Emissions AEO = " + _emissionsH2ODuringClimbMap.get(xcg).to(SI.GRAM) + "\n")
+					.append("\t\t.....................................\n")
+					.append("\t\tAbsolute ceiling OEI = " + _absoluteCeilingOEIMap.get(xcg).to(SI.METER) + "\n")
+					.append("\t\tAbsolute ceiling OEI = " + _absoluteCeilingOEIMap.get(xcg).to(NonSI.FOOT) + "\n")
+					.append("\t\tService ceiling OEI = " + _serviceCeilingOEIMap.get(xcg).to(SI.METER) + "\n")
+					.append("\t\tService ceiling OEI = " + _serviceCeilingOEIMap.get(xcg).to(NonSI.FOOT) + "\n");
+				}
 
 				sb.append("\t-------------------------------------\n");
 
@@ -5000,140 +5271,157 @@ public class ACPerformanceManager {
 			if(_thePerformanceInterface.getTaskList().contains(PerformanceEnum.CRUISE)) {
 
 				sb.append("\tCRUISE\n")
-				.append("\t-------------------------------------\n")
-				.append("\t\tThrust at cruise altitude and Mach = " + _thrustAtCruiseAltitudeAndMachMap.get(xcg).to(SI.NEWTON) + "\n")
-				.append("\t\tThrust at cruise altitude and Mach = " + _thrustAtCruiseAltitudeAndMachMap.get(xcg).to(NonSI.POUND_FORCE) + "\n")
-				.append("\t\tDrag at cruise altitude and Mach = " + _dragAtCruiseAltitudeAndMachMap.get(xcg).to(SI.NEWTON) + "\n")
-				.append("\t\tDrag at cruise altitude and Mach = " + _dragAtCruiseAltitudeAndMachMap.get(xcg).to(NonSI.POUND_FORCE) + "\n")
-				.append("\t\t.....................................\n")
-				.append("\t\tPower available at cruise altitude and Mach = " + _powerAvailableAtCruiseAltitudeAndMachMap.get(xcg).to(SI.WATT) + "\n")
-				.append("\t\tPower available at cruise altitude and Mach = " + _powerAvailableAtCruiseAltitudeAndMachMap.get(xcg).to(NonSI.HORSEPOWER) + "\n")
-				.append("\t\tPower needed at cruise altitude and Mach = " + _powerNeededAtCruiseAltitudeAndMachMap.get(xcg).to(SI.WATT) + "\n")
-				.append("\t\tPower needed at cruise altitude and Mach = " + _powerNeededAtCruiseAltitudeAndMachMap.get(xcg).to(NonSI.HORSEPOWER) + "\n")
-				.append("\t\t.....................................\n")
-				.append("\t\tMin CAS speed at cruise altitude = " + _minSpeesCASAtCruiseAltitudeMap.get(xcg).to(SI.METERS_PER_SECOND) + "\n")
-				.append("\t\tMax CAS speed at cruise altitude = " + _maxSpeesCASAtCruiseAltitudeMap.get(xcg).to(NonSI.KNOT) + "\n")
-				.append("\t\tMin CAS speed at cruise altitude = " + _minSpeesCASAtCruiseAltitudeMap.get(xcg).to(SI.METERS_PER_SECOND) + "\n")
-				.append("\t\tMax CAS speed at cruise altitude = " + _maxSpeesCASAtCruiseAltitudeMap.get(xcg).to(NonSI.KNOT) + "\n")
-				.append("\t\t.....................................\n")
-				.append("\t\tMin TAS speed at cruise altitude = " + _minSpeesTASAtCruiseAltitudeMap.get(xcg).to(SI.METERS_PER_SECOND) + "\n")
-				.append("\t\tMax TAS speed at cruise altitude = " + _maxSpeesTASAtCruiseAltitudeMap.get(xcg).to(NonSI.KNOT) + "\n")
-				.append("\t\tMin TAS speed at cruise altitude = " + _minSpeesTASAtCruiseAltitudeMap.get(xcg).to(SI.METERS_PER_SECOND) + "\n")
-				.append("\t\tMax TAS speed at cruise altitude = " + _maxSpeesTASAtCruiseAltitudeMap.get(xcg).to(NonSI.KNOT) + "\n")
-				.append("\t\t.....................................\n")
-				.append("\t\tMin Mach at cruise altitude = " + _minMachAtCruiseAltitudeMap.get(xcg) + "\n")
-				.append("\t\tMax Mach at cruise altitude = " + _maxMachAtCruiseAltitudeMap.get(xcg) + "\n")
-				.append("\t\t.....................................\n")
-				.append("\t\tEfficiency at cruise altitude and Mach = " + _efficiencyAtCruiseAltitudeAndMachMap.get(xcg) + "\n")
 				.append("\t-------------------------------------\n");
+				if(cruiseThrustDragErrorFlag == false) {
+					sb.append("\t\tThrust at cruise altitude and Mach = " + _thrustAtCruiseAltitudeAndMachMap.get(xcg).to(SI.NEWTON) + "\n")
+					.append("\t\tThrust at cruise altitude and Mach = " + _thrustAtCruiseAltitudeAndMachMap.get(xcg).to(NonSI.POUND_FORCE) + "\n")
+					.append("\t\tDrag at cruise altitude and Mach = " + _dragAtCruiseAltitudeAndMachMap.get(xcg).to(SI.NEWTON) + "\n")
+					.append("\t\tDrag at cruise altitude and Mach = " + _dragAtCruiseAltitudeAndMachMap.get(xcg).to(NonSI.POUND_FORCE) + "\n")
+					.append("\t\t.....................................\n")
+					.append("\t\tPower available at cruise altitude and Mach = " + _powerAvailableAtCruiseAltitudeAndMachMap.get(xcg).to(SI.WATT) + "\n")
+					.append("\t\tPower available at cruise altitude and Mach = " + _powerAvailableAtCruiseAltitudeAndMachMap.get(xcg).to(NonSI.HORSEPOWER) + "\n")
+					.append("\t\tPower needed at cruise altitude and Mach = " + _powerNeededAtCruiseAltitudeAndMachMap.get(xcg).to(SI.WATT) + "\n")
+					.append("\t\tPower needed at cruise altitude and Mach = " + _powerNeededAtCruiseAltitudeAndMachMap.get(xcg).to(NonSI.HORSEPOWER) + "\n")
+					.append("\t\t.....................................\n");
+				}
+				if(cruiseFlightEnvelopeErrorFlag == false) {
+					sb.append("\t\tMin CAS speed at cruise altitude = " + _minSpeesCASAtCruiseAltitudeMap.get(xcg).to(SI.METERS_PER_SECOND) + "\n")
+					.append("\t\tMax CAS speed at cruise altitude = " + _maxSpeesCASAtCruiseAltitudeMap.get(xcg).to(NonSI.KNOT) + "\n")
+					.append("\t\tMin CAS speed at cruise altitude = " + _minSpeesCASAtCruiseAltitudeMap.get(xcg).to(SI.METERS_PER_SECOND) + "\n")
+					.append("\t\tMax CAS speed at cruise altitude = " + _maxSpeesCASAtCruiseAltitudeMap.get(xcg).to(NonSI.KNOT) + "\n")
+					.append("\t\t.....................................\n")
+					.append("\t\tMin TAS speed at cruise altitude = " + _minSpeesTASAtCruiseAltitudeMap.get(xcg).to(SI.METERS_PER_SECOND) + "\n")
+					.append("\t\tMax TAS speed at cruise altitude = " + _maxSpeesTASAtCruiseAltitudeMap.get(xcg).to(NonSI.KNOT) + "\n")
+					.append("\t\tMin TAS speed at cruise altitude = " + _minSpeesTASAtCruiseAltitudeMap.get(xcg).to(SI.METERS_PER_SECOND) + "\n")
+					.append("\t\tMax TAS speed at cruise altitude = " + _maxSpeesTASAtCruiseAltitudeMap.get(xcg).to(NonSI.KNOT) + "\n")
+					.append("\t\t.....................................\n")
+					.append("\t\tMin Mach at cruise altitude = " + _minMachAtCruiseAltitudeMap.get(xcg) + "\n")
+					.append("\t\tMax Mach at cruise altitude = " + _maxMachAtCruiseAltitudeMap.get(xcg) + "\n")
+					.append("\t\t.....................................\n");
+				}
+				if(cruiseEfficiencyErrorFlag == false) 
+					sb.append("\t\tEfficiency at cruise altitude and Mach = " + _efficiencyAtCruiseAltitudeAndMachMap.get(xcg) + "\n");
+				sb.append("\t-------------------------------------\n");
 
 			}
 			if(_thePerformanceInterface.getTaskList().contains(PerformanceEnum.DESCENT)) {
 
 				sb.append("\tDESCENT\n")
-				.append("\t-------------------------------------\n")
-				.append("\t\tDescent length = " + _totalDescentLengthMap.get(xcg).to(SI.KILOMETER) + "\n")
-				.append("\t\tDescent length = " + _totalDescentLengthMap.get(xcg).to(NonSI.NAUTICAL_MILE) + "\n")
-				.append("\t\tDescent duration = " + _totalDescentTimeMap.get(xcg).to(NonSI.MINUTE) + "\n")
-				.append("\t\tFuel used during descent = " + _totalDescentFuelUsedMap.get(xcg).to(SI.KILOGRAM) + "\n")
-				.append("\t\tNOx emissions during descent = " + _totalDescentEmissionsNOxMap.get(xcg).to(SI.GRAM) + "\n")
-				.append("\t\tCO emissions during descent = " + _totalDescentEmissionsCOMap.get(xcg).to(SI.GRAM) + "\n")
-				.append("\t\tHC emissions during descent = " + _totalDescentEmissionsHCMap.get(xcg).to(SI.GRAM) + "\n")
-				.append("\t\tSoot emissions during descent = " + _totalDescentEmissionsSootMap.get(xcg).to(SI.GRAM) + "\n")
-				.append("\t\tCO2 emissions during descent = " + _totalDescentEmissionsCO2Map.get(xcg).to(SI.GRAM) + "\n")
-				.append("\t\tSOx emissions during descent = " + _totalDescentEmissionsSOxMap.get(xcg).to(SI.GRAM) + "\n")
-				.append("\t\tH2O emissions during descent = " + _totalDescentEmissionsH2OMap.get(xcg).to(SI.GRAM) + "\n")
 				.append("\t-------------------------------------\n");
+				if(descentPerformanceErrorFlag == false) {
+					sb.append("\t\tDescent length = " + _totalDescentLengthMap.get(xcg).to(SI.KILOMETER) + "\n")
+					.append("\t\tDescent length = " + _totalDescentLengthMap.get(xcg).to(NonSI.NAUTICAL_MILE) + "\n")
+					.append("\t\tDescent duration = " + _totalDescentTimeMap.get(xcg).to(NonSI.MINUTE) + "\n")
+					.append("\t\tFuel used during descent = " + _totalDescentFuelUsedMap.get(xcg).to(SI.KILOGRAM) + "\n")
+					.append("\t\tNOx emissions during descent = " + _totalDescentEmissionsNOxMap.get(xcg).to(SI.GRAM) + "\n")
+					.append("\t\tCO emissions during descent = " + _totalDescentEmissionsCOMap.get(xcg).to(SI.GRAM) + "\n")
+					.append("\t\tHC emissions during descent = " + _totalDescentEmissionsHCMap.get(xcg).to(SI.GRAM) + "\n")
+					.append("\t\tSoot emissions during descent = " + _totalDescentEmissionsSootMap.get(xcg).to(SI.GRAM) + "\n")
+					.append("\t\tCO2 emissions during descent = " + _totalDescentEmissionsCO2Map.get(xcg).to(SI.GRAM) + "\n")
+					.append("\t\tSOx emissions during descent = " + _totalDescentEmissionsSOxMap.get(xcg).to(SI.GRAM) + "\n")
+					.append("\t\tH2O emissions during descent = " + _totalDescentEmissionsH2OMap.get(xcg).to(SI.GRAM) + "\n");
+				}
+				sb.append("\t-------------------------------------\n");
 				;
 
 			}
 			if(_thePerformanceInterface.getTaskList().contains(PerformanceEnum.LANDING)) {
 
 				sb.append("\tLANDING\n")
-				.append("\t-------------------------------------\n")
-				.append("\t\tGround roll distance = " + _groundRollDistanceLandingMap.get(xcg).to(SI.METER) + "\n")
-				.append("\t\tFlare distance = " + _flareDistanceLandingMap.get(xcg).to(SI.METER) + "\n")
-				.append("\t\tAirborne distance = " + _airborneDistanceLandingMap.get(xcg).to(SI.METER) + "\n")
-				.append("\t\tLanding distance = " + _landingDistanceMap.get(xcg).to(SI.METER) + "\n")
-				.append("\t\tFAR-25 landing field length = " + _landingDistanceFAR25Map.get(xcg).to(SI.METER) + "\n")
-				.append("\t\tTotal distance = " + _totalDistanceMap.get(xcg).to(SI.METER) + "\n")
-				.append("\t\t.....................................\n")
-				.append("\t\tGround roll distance = " + _groundRollDistanceLandingMap.get(xcg).to(NonSI.FOOT) + "\n")
-				.append("\t\tFlare distance = " + _flareDistanceLandingMap.get(xcg).to(NonSI.FOOT) + "\n")
-				.append("\t\tAirborne distance = " + _airborneDistanceLandingMap.get(xcg).to(NonSI.FOOT) + "\n")
-				.append("\t\tLanding distance = " + _landingDistanceMap.get(xcg).to(NonSI.FOOT) + "\n")
-				.append("\t\tFAR-25 landing field length = " + _landingDistanceFAR25Map.get(xcg).to(NonSI.FOOT) + "\n")
-				.append("\t\tTotal distance = " + _totalDistanceMap.get(xcg).to(NonSI.FOOT) + "\n")
-				.append("\t\t.....................................\n")
-				.append("\t\tRate of descent at touch-down = " + _rateOfDescentAtFlareEndingMap.get(xcg).doubleValue(MyUnits.FOOT_PER_MINUTE) + "ft/min\n")
-				.append("\t\t.....................................\n")
-				.append("\t\tStall speed landing (VsLND)= " + _vStallLandingMap.get(xcg).to(SI.METERS_PER_SECOND) + "\n")
-				.append("\t\tTouchdown speed (V_TD) = " + _vTouchDownMap.get(xcg).to(SI.METERS_PER_SECOND) + "\n")
-				.append("\t\tFlare speed (V_Flare) = " + _vFlareMap.get(xcg).to(SI.METERS_PER_SECOND) + "\n")
-				.append("\t\tApproach speed (V_Approach) = " + _vApproachMap.get(xcg).to(SI.METERS_PER_SECOND) + "\n")
-				.append("\t\t.....................................\n")
-				.append("\t\tStall speed landing (VsLND)= " + _vStallLandingMap.get(xcg).to(NonSI.KNOT) + "\n")
-				.append("\t\tTouchdown speed (V_TD) = " + _vTouchDownMap.get(xcg).to(NonSI.KNOT) + "\n")
-				.append("\t\tFlare speed (V_Flare) = " + _vFlareMap.get(xcg).to(NonSI.KNOT) + "\n")
-				.append("\t\tApproach speed (V_Approach) = " + _vApproachMap.get(xcg).to(NonSI.KNOT) + "\n")
-				.append("\t\t.....................................\n")
-				.append("\t\tV_TD/VsLND = " + _vTouchDownMap.get(xcg).to(SI.METERS_PER_SECOND).divide(_vStallLandingMap.get(xcg).to(SI.METERS_PER_SECOND)).getEstimatedValue() + "\n")
-				.append("\t\tV_Flare/VsLND = " + _vFlareMap.get(xcg).to(SI.METERS_PER_SECOND).divide(_vStallLandingMap.get(xcg).to(SI.METERS_PER_SECOND)).getEstimatedValue() + "\n")
-				.append("\t\tV_Approach/VsLND = " + _vApproachMap.get(xcg).to(SI.METERS_PER_SECOND).divide(_vStallLandingMap.get(xcg).to(SI.METERS_PER_SECOND)).getEstimatedValue() + "\n")
-				.append("\t\t.....................................\n")
-				.append("\t\tLanding duration = " + _landingDurationMap.get(xcg).to(SI.SECOND) + "\n")
-				.append("\t\tTotal duration = " + _totalDurationMap.get(xcg).to(SI.SECOND) + "\n")
-				.append("\t\t.....................................\n")
-				.append("\t\tTotal fuel used = " + _totalFuelMap.get(xcg) + "\n")
-				.append("\t\t.....................................\n")
-				.append("\t\tTotal NOx emissions = " + _totalNOxEmissionsMap.get(xcg) + "\n")
-				.append("\t\tTotal CO emissions = " + _totalCOEmissionsMap.get(xcg) + "\n")
-				.append("\t\tTotal HC emissions = " + _totalHCEmissionsMap.get(xcg) + "\n")
-				.append("\t\tTotal Soot emissions = " + _totalSootEmissionsMap.get(xcg) + "\n")
-				.append("\t\tTotal CO2 emissions = " + _totalCO2EmissionsMap.get(xcg) + "\n")
-				.append("\t\tTotal SOx emissions = " + _totalSOxEmissionsMap.get(xcg) + "\n")
-				.append("\t\tTotal H2O emissions = " + _totalH2OEmissionsMap.get(xcg) + "\n")
-				.append("\t-------------------------------------\n")
-				;
+				.append("\t-------------------------------------\n");
+				if(landingErrorFlag == false) {
+					sb.append("\t\tGround roll distance = " + _groundRollDistanceLandingMap.get(xcg).to(SI.METER) + "\n")
+					.append("\t\tFlare distance = " + _flareDistanceLandingMap.get(xcg).to(SI.METER) + "\n")
+					.append("\t\tAirborne distance = " + _airborneDistanceLandingMap.get(xcg).to(SI.METER) + "\n")
+					.append("\t\tLanding distance = " + _landingDistanceMap.get(xcg).to(SI.METER) + "\n")
+					.append("\t\tFAR-25 landing field length = " + _landingDistanceFAR25Map.get(xcg).to(SI.METER) + "\n")
+					.append("\t\tTotal distance = " + _totalDistanceMap.get(xcg).to(SI.METER) + "\n")
+					.append("\t\t.....................................\n")
+					.append("\t\tGround roll distance = " + _groundRollDistanceLandingMap.get(xcg).to(NonSI.FOOT) + "\n")
+					.append("\t\tFlare distance = " + _flareDistanceLandingMap.get(xcg).to(NonSI.FOOT) + "\n")
+					.append("\t\tAirborne distance = " + _airborneDistanceLandingMap.get(xcg).to(NonSI.FOOT) + "\n")
+					.append("\t\tLanding distance = " + _landingDistanceMap.get(xcg).to(NonSI.FOOT) + "\n")
+					.append("\t\tFAR-25 landing field length = " + _landingDistanceFAR25Map.get(xcg).to(NonSI.FOOT) + "\n")
+					.append("\t\tTotal distance = " + _totalDistanceMap.get(xcg).to(NonSI.FOOT) + "\n")
+					.append("\t\t.....................................\n")
+					.append("\t\tRate of descent at touch-down = " + _rateOfDescentAtFlareEndingMap.get(xcg).doubleValue(MyUnits.FOOT_PER_MINUTE) + "ft/min\n")
+					.append("\t\t.....................................\n")
+					.append("\t\tStall speed landing (VsLND)= " + _vStallLandingMap.get(xcg).to(SI.METERS_PER_SECOND) + "\n")
+					.append("\t\tTouchdown speed (V_TD) = " + _vTouchDownMap.get(xcg).to(SI.METERS_PER_SECOND) + "\n")
+					.append("\t\tFlare speed (V_Flare) = " + _vFlareMap.get(xcg).to(SI.METERS_PER_SECOND) + "\n")
+					.append("\t\tApproach speed (V_Approach) = " + _vApproachMap.get(xcg).to(SI.METERS_PER_SECOND) + "\n")
+					.append("\t\t.....................................\n")
+					.append("\t\tStall speed landing (VsLND)= " + _vStallLandingMap.get(xcg).to(NonSI.KNOT) + "\n")
+					.append("\t\tTouchdown speed (V_TD) = " + _vTouchDownMap.get(xcg).to(NonSI.KNOT) + "\n")
+					.append("\t\tFlare speed (V_Flare) = " + _vFlareMap.get(xcg).to(NonSI.KNOT) + "\n")
+					.append("\t\tApproach speed (V_Approach) = " + _vApproachMap.get(xcg).to(NonSI.KNOT) + "\n")
+					.append("\t\t.....................................\n")
+					.append("\t\tV_TD/VsLND = " + _vTouchDownMap.get(xcg).to(SI.METERS_PER_SECOND).divide(_vStallLandingMap.get(xcg).to(SI.METERS_PER_SECOND)).getEstimatedValue() + "\n")
+					.append("\t\tV_Flare/VsLND = " + _vFlareMap.get(xcg).to(SI.METERS_PER_SECOND).divide(_vStallLandingMap.get(xcg).to(SI.METERS_PER_SECOND)).getEstimatedValue() + "\n")
+					.append("\t\tV_Approach/VsLND = " + _vApproachMap.get(xcg).to(SI.METERS_PER_SECOND).divide(_vStallLandingMap.get(xcg).to(SI.METERS_PER_SECOND)).getEstimatedValue() + "\n")
+					.append("\t\t.....................................\n")
+					.append("\t\tLanding duration = " + _landingDurationMap.get(xcg).to(SI.SECOND) + "\n")
+					.append("\t\tTotal duration = " + _totalDurationMap.get(xcg).to(SI.SECOND) + "\n")
+					.append("\t\t.....................................\n")
+					.append("\t\tTotal fuel used = " + _totalFuelMap.get(xcg) + "\n")
+					.append("\t\t.....................................\n")
+					.append("\t\tTotal NOx emissions = " + _totalNOxEmissionsMap.get(xcg) + "\n")
+					.append("\t\tTotal CO emissions = " + _totalCOEmissionsMap.get(xcg) + "\n")
+					.append("\t\tTotal HC emissions = " + _totalHCEmissionsMap.get(xcg) + "\n")
+					.append("\t\tTotal Soot emissions = " + _totalSootEmissionsMap.get(xcg) + "\n")
+					.append("\t\tTotal CO2 emissions = " + _totalCO2EmissionsMap.get(xcg) + "\n")
+					.append("\t\tTotal SOx emissions = " + _totalSOxEmissionsMap.get(xcg) + "\n")
+					.append("\t\tTotal H2O emissions = " + _totalH2OEmissionsMap.get(xcg) + "\n");
+				}
+				sb.append("\t-------------------------------------\n");
 			}
 			if(_thePerformanceInterface.getTaskList().contains(PerformanceEnum.MISSION_PROFILE)) {
-				sb.append("\tMISSION PROFILE\n");
-				if(_theMissionProfileCalculatorMap.get(xcg).getMissionProfileStopped().equals(Boolean.FALSE))
-					sb.append(_theMissionProfileCalculatorMap.get(xcg).toString());
+				sb.append("\tMISSION PROFILE\n")
+				.append("\t-------------------------------------\n");
+				if(missionProfileErrorFlag == false) 
+					if(_theMissionProfileCalculatorMap.get(xcg).getMissionProfileStopped().equals(Boolean.FALSE))
+						sb.append(_theMissionProfileCalculatorMap.get(xcg).toString());
+				sb.append("\t-------------------------------------\n");
 			}
 			if(_thePerformanceInterface.getTaskList().contains(PerformanceEnum.PAYLOAD_RANGE)) {
-				sb.append("\tPAYLOAD-RANGE\n");
-				if(_thePayloadRangeCalculatorMap.get(xcg).getRangeAtMaxPayload().doubleValue(NonSI.NAUTICAL_MILE) != 0.0
-						&& _thePayloadRangeCalculatorMap.get(xcg).getRangeAtDesignPayload().doubleValue(NonSI.NAUTICAL_MILE) != 0.0
-						&& _thePayloadRangeCalculatorMap.get(xcg).getRangeAtMaxFuel().doubleValue(NonSI.NAUTICAL_MILE) != 0.0
-						&& _thePayloadRangeCalculatorMap.get(xcg).getRangeAtZeroPayload().doubleValue(NonSI.NAUTICAL_MILE) != 0.0
-						)
-				sb.append(_thePayloadRangeCalculatorMap.get(xcg).toString());
+				sb.append("\tPAYLOAD-RANGE\n")
+				.append("\t-------------------------------------\n");
+				if(payloadRangeErrorFlag == false)
+					if(_thePayloadRangeCalculatorMap.get(xcg).getRangeAtMaxPayload().doubleValue(NonSI.NAUTICAL_MILE) != 0.0
+					&& _thePayloadRangeCalculatorMap.get(xcg).getRangeAtDesignPayload().doubleValue(NonSI.NAUTICAL_MILE) != 0.0
+					&& _thePayloadRangeCalculatorMap.get(xcg).getRangeAtMaxFuel().doubleValue(NonSI.NAUTICAL_MILE) != 0.0
+					&& _thePayloadRangeCalculatorMap.get(xcg).getRangeAtZeroPayload().doubleValue(NonSI.NAUTICAL_MILE) != 0.0
+							)
+						sb.append(_thePayloadRangeCalculatorMap.get(xcg).toString());
+				sb.append("\t-------------------------------------\n");
 			}
 			if(_thePerformanceInterface.getTaskList().contains(PerformanceEnum.NOISE_TRAJECTORIES)) {
 				sb.append("\tNOISE TRAJECTORIES\n")
-				.append("\t-------------------------------------\n")
-				.append("\t\tSideline ( 100% MAX-TO )\n")
-				.append("\t\t\tGround Distance = " + _certificationPointsLongitudinalDistanceMap.get(xcg).get(0) + "\n")
-				.append("\t\t\tAltitude = " + _certificationPointsAltitudeMap.get(xcg).get(0) + "\n")
-				.append("\t\t\tSpeed (TAS) = " + _certificationPointsSpeedTASMap.get(xcg).get(0) + "\n")
-				.append("\t\t\tSpeed (CAS) = " + _certificationPointsSpeedCASMap.get(xcg).get(0) + "\n")
-				.append("\t\t\tAlpha = " + _certificationPointsAlphaMap.get(xcg).get(0) + "\n")
-				.append("\t\t\tGamma = " + _certificationPointsGammaMap.get(xcg).get(0) + "\n")
-				.append("\t\t\tTheta = " + _certificationPointsThetaMap.get(xcg).get(0) + "\n")
-				.append("\t\t\tThrust (x1 eng.) = " + _certificationPointsThrustMap.get(xcg).get(0) + "\n")
-				.append("\t\t.....................................\n")
-				.append("\t\tFlyover - Cutback ( " + _theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).getCutbackAltitude() + ", " + Math.round((_theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).getPhiCutback()*100)) + "% MAX-TO )" + "\n")
-				.append("\t\t\tGround Distance = " + _certificationPointsLongitudinalDistanceMap.get(xcg).get(1) + "\n")
-				.append("\t\t\tAltitude = " + _certificationPointsAltitudeMap.get(xcg).get(1) + "\n")
-				.append("\t\t\tSpeed (TAS) = " + _certificationPointsSpeedTASMap.get(xcg).get(1) + "\n")
-				.append("\t\t\tSpeed (CAS) = " + _certificationPointsSpeedCASMap.get(xcg).get(1) + "\n")
-				.append("\t\t\tAlpha = " + _certificationPointsAlphaMap.get(xcg).get(1) + "\n")
-				.append("\t\t\tGamma = " + _certificationPointsGammaMap.get(xcg).get(1) + "\n")
-				.append("\t\t\tTheta = " + _certificationPointsThetaMap.get(xcg).get(1) + "\n")
-				.append("\t\t\tThrust (x1 eng.) = " + _certificationPointsThrustMap.get(xcg).get(1) + "\n")
-				.append("\t\t.....................................\n")
-				.append("\t\tApproach \n")
+				.append("\t-------------------------------------\n");
+				if(takeOffNoiseTrajectoryErrorFlag == false) {
+					sb.append("\t\tSideline ( 100% MAX-TO )\n")
+					.append("\t\t\tGround Distance = " + _certificationPointsLongitudinalDistanceMap.get(xcg).get(0) + "\n")
+					.append("\t\t\tAltitude = " + _certificationPointsAltitudeMap.get(xcg).get(0) + "\n")
+					.append("\t\t\tSpeed (TAS) = " + _certificationPointsSpeedTASMap.get(xcg).get(0) + "\n")
+					.append("\t\t\tSpeed (CAS) = " + _certificationPointsSpeedCASMap.get(xcg).get(0) + "\n")
+					.append("\t\t\tAlpha = " + _certificationPointsAlphaMap.get(xcg).get(0) + "\n")
+					.append("\t\t\tGamma = " + _certificationPointsGammaMap.get(xcg).get(0) + "\n")
+					.append("\t\t\tTheta = " + _certificationPointsThetaMap.get(xcg).get(0) + "\n")
+					.append("\t\t\tThrust (x1 eng.) = " + _certificationPointsThrustMap.get(xcg).get(0) + "\n")
+					.append("\t\t.....................................\n")
+					.append("\t\tFlyover - Cutback ( " + _theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).getCutbackAltitude() + ", " + Math.round((_theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).getPhiCutback()*100)) + "% MAX-TO )" + "\n")
+					.append("\t\t\tGround Distance = " + _certificationPointsLongitudinalDistanceMap.get(xcg).get(1) + "\n")
+					.append("\t\t\tAltitude = " + _certificationPointsAltitudeMap.get(xcg).get(1) + "\n")
+					.append("\t\t\tSpeed (TAS) = " + _certificationPointsSpeedTASMap.get(xcg).get(1) + "\n")
+					.append("\t\t\tSpeed (CAS) = " + _certificationPointsSpeedCASMap.get(xcg).get(1) + "\n")
+					.append("\t\t\tAlpha = " + _certificationPointsAlphaMap.get(xcg).get(1) + "\n")
+					.append("\t\t\tGamma = " + _certificationPointsGammaMap.get(xcg).get(1) + "\n")
+					.append("\t\t\tTheta = " + _certificationPointsThetaMap.get(xcg).get(1) + "\n")
+					.append("\t\t\tThrust (x1 eng.) = " + _certificationPointsThrustMap.get(xcg).get(1) + "\n")
+					.append("\t\t.....................................\n");
+				}
+				if(landingNoiseTrajectoryErrorFlag == false) {
+				sb.append("\t\tApproach \n")
 				.append("\t\t\tGround Distance (from touch-down) = " + _certificationPointsLongitudinalDistanceMap.get(xcg).get(2) + "\n")
 				.append("\t\t\tAltitude = " + _certificationPointsAltitudeMap.get(xcg).get(2) + "\n")
 				.append("\t\t\tSpeed (TAS) = " + _certificationPointsSpeedTASMap.get(xcg).get(2) + "\n")
@@ -5141,13 +5429,16 @@ public class ACPerformanceManager {
 				.append("\t\t\tAlpha = " + _certificationPointsAlphaMap.get(xcg).get(2) + "\n")
 				.append("\t\t\tGamma = " + _certificationPointsGammaMap.get(xcg).get(2) + "\n")
 				.append("\t\t\tTheta = " + _certificationPointsThetaMap.get(xcg).get(2) + "\n")
-				.append("\t\t\tThrust (x1 eng.) = " + _certificationPointsThrustMap.get(xcg).get(2) + "\n")
-				.append("\t-------------------------------------\n")
-				;
+				.append("\t\t\tThrust (x1 eng.) = " + _certificationPointsThrustMap.get(xcg).get(2) + "\n");
+				}
+				sb.append("\t-------------------------------------\n");
 			}
 			if(_thePerformanceInterface.getTaskList().contains(PerformanceEnum.V_n_DIAGRAM)) {
 				sb.append("\tV-n DIAGRAM\n")
-				.append(_theEnvelopeCalculatorMap.get(xcg).toString());
+				.append("\t-------------------------------------\n");
+				if(vNDiagramErrorFlag == false)
+					sb.append(_theEnvelopeCalculatorMap.get(xcg).toString());
+				sb.append("\t-------------------------------------\n");
 			}
 		}
 
@@ -5161,9 +5452,138 @@ public class ACPerformanceManager {
 	public class CalcTakeOff {
 		
 		public void performTakeOffSimulation(
+				double xcg,
+				Amount<Velocity> vMC
+				) {
+			
+			//------------------------------------------------------------
+			// SIMULATION
+			_theTakeOffCalculatorMap.get(xcg).calculateTakeOffDistanceODE(null, false, true, vMC, true);
+			
+			if(_theTakeOffCalculatorMap.get(xcg).isRotationSpeedWarningFlag() == true)
+				System.err.println("WARNING: (SIMULATION - TAKE-OFF) THE CHOSEN VRot IS LESS THAN 1.05*VMC. THIS LATTER WILL BE USED ...");
+			if(_theTakeOffCalculatorMap.get(xcg).isTailStrike() == true)
+				System.err.println("WARNING: (SIMULATION - TAKE-OFF) TAIL STRIKE !! ");
+			
+			// Distances:
+			_groundRollDistanceTakeOffMap.put(
+					xcg, 
+					_theTakeOffCalculatorMap.get(xcg).getTakeOffResults().getGroundDistance().get(0).to(NonSI.FOOT)
+					);
+			_rotationDistanceTakeOffMap.put(
+					xcg,
+					_theTakeOffCalculatorMap.get(xcg).getTakeOffResults().getGroundDistance().get(1)
+					.minus(_groundRollDistanceTakeOffMap.get(xcg)).to(NonSI.FOOT)
+					);
+			_airborneDistanceTakeOffMap.put(
+					xcg,
+					_theTakeOffCalculatorMap.get(xcg).getTakeOffResults().getGroundDistance().get(2)
+					.minus(_rotationDistanceTakeOffMap.get(xcg))
+					.minus(_groundRollDistanceTakeOffMap.get(xcg)).to(NonSI.FOOT));
+			_takeOffDistanceAEOMap.put(
+					xcg, 
+					_groundRollDistanceTakeOffMap.get(xcg)
+					.plus(_rotationDistanceTakeOffMap.get(xcg))
+					.plus(_airborneDistanceTakeOffMap.get(xcg)).to(NonSI.FOOT));
+			_takeOffDistanceFAR25Map.put(
+					xcg, 
+					_takeOffDistanceAEOMap.get(xcg).times(1.15).to(NonSI.FOOT)
+					);
+			
+			// Velocities:
+			_vStallTakeOffMap.put(
+					xcg,
+					_theTakeOffCalculatorMap.get(xcg).getvSTakeOff().to(NonSI.KNOT)
+					);
+			_vRotationMap.put(
+					xcg, 
+					_theTakeOffCalculatorMap.get(xcg).getvRot().to(NonSI.KNOT)
+					);
+			_vLiftOffMap.put(
+					xcg, 
+					_theTakeOffCalculatorMap.get(xcg).getvLO().to(NonSI.KNOT)
+					);
+			_v2Map.put(
+					xcg, 
+					_theTakeOffCalculatorMap.get(xcg).getV2().to(NonSI.KNOT)
+					);
+			
+			// Duration:
+			_takeOffDurationMap.put(
+					xcg,
+					_theTakeOffCalculatorMap.get(xcg).getTakeOffResults().getTime().get(2)
+					);
+			
+			// Fuel used:
+			_takeOffFuelMap.put(
+					xcg,
+					_theTakeOffCalculatorMap.get(xcg).getFuelUsed().get(
+							_theTakeOffCalculatorMap.get(xcg).getFuelUsed().size()-1
+							)
+					);
+			
+			// Emission NOx:
+			_takeOffNOxEmissionsMap.put(
+					xcg,
+					_theTakeOffCalculatorMap.get(xcg).getEmissionsNOx().get(
+							_theTakeOffCalculatorMap.get(xcg).getEmissionsNOx().size()-1
+							)
+					);
+			
+			// Emission CO:
+			_takeOffCOEmissionsMap.put(
+					xcg,
+					_theTakeOffCalculatorMap.get(xcg).getEmissionsCO().get(
+							_theTakeOffCalculatorMap.get(xcg).getEmissionsCO().size()-1
+							)
+					);
+			
+			// Emission HC:
+			_takeOffHCEmissionsMap.put(
+					xcg,
+					_theTakeOffCalculatorMap.get(xcg).getEmissionsHC().get(
+							_theTakeOffCalculatorMap.get(xcg).getEmissionsHC().size()-1
+							)
+					);
+			
+			// Emission Soot:
+			_takeOffSootEmissionsMap.put(
+					xcg,
+					_theTakeOffCalculatorMap.get(xcg).getEmissionsSoot().get(
+							_theTakeOffCalculatorMap.get(xcg).getEmissionsSoot().size()-1
+							)
+					);
+			
+			// Emission CO2:
+			_takeOffCO2EmissionsMap.put(
+					xcg,
+					_theTakeOffCalculatorMap.get(xcg).getEmissionsCO2().get(
+							_theTakeOffCalculatorMap.get(xcg).getEmissionsCO2().size()-1
+							)
+					);
+			
+			// Emission SOx:
+			_takeOffSOxEmissionsMap.put(
+					xcg,
+					_theTakeOffCalculatorMap.get(xcg).getEmissionsSOx().get(
+							_theTakeOffCalculatorMap.get(xcg).getEmissionsSOx().size()-1
+							)
+					);
+
+			// Emission H2O:
+			_takeOffH2OEmissionsMap.put(
+					xcg,
+					_theTakeOffCalculatorMap.get(xcg).getEmissionsH2O().get(
+							_theTakeOffCalculatorMap.get(xcg).getEmissionsH2O().size()-1
+							)
+					);
+			
+		}
+		
+		public void calculateBalancedFieldLength(
 				Amount<Mass> takeOffMass,
 				Amount<Length> altitude,
-				double xcg,
+				Double xcg, 
 				Amount<Velocity> vMC
 				) {
 			
@@ -5240,165 +5660,17 @@ public class ACPerformanceManager {
 							)
 					);
 			
-			//------------------------------------------------------------
-			// SIMULATION
-			_theTakeOffCalculatorMap.get(xcg).calculateTakeOffDistanceODE(null, false, false, vMC);
-			
-			if(_theTakeOffCalculatorMap.get(xcg).isRotationSpeedWarningFlag() == true)
-				System.err.println("WARNING: (SIMULATION - TAKE-OFF) THE CHOSEN VRot IS LESS THAN 1.05*VMC. THIS LATTER WILL BE USED ...");
-			if(_theTakeOffCalculatorMap.get(xcg).isTailStrike() == true)
-				System.err.println("WARNING: (SIMULATION - TAKE-OFF) TAIL STRIKE !! ");
-			
-			// Distances:
-			_groundRollDistanceTakeOffMap.put(
-					xcg, 
-					_theTakeOffCalculatorMap.get(xcg).getTakeOffResults().getGroundDistance().get(0).to(NonSI.FOOT)
-					);
-			_rotationDistanceTakeOffMap.put(
-					xcg,
-					_theTakeOffCalculatorMap.get(xcg).getTakeOffResults().getGroundDistance().get(1)
-					.minus(_groundRollDistanceTakeOffMap.get(xcg)).to(NonSI.FOOT)
-					);
-			_airborneDistanceTakeOffMap.put(
-					xcg,
-					_theTakeOffCalculatorMap.get(xcg).getTakeOffResults().getGroundDistance().get(2)
-					.minus(_rotationDistanceTakeOffMap.get(xcg))
-					.minus(_groundRollDistanceTakeOffMap.get(xcg)).to(NonSI.FOOT));
-			_takeOffDistanceAEOMap.put(
-					xcg, 
-					_groundRollDistanceTakeOffMap.get(xcg)
-					.plus(_rotationDistanceTakeOffMap.get(xcg))
-					.plus(_airborneDistanceTakeOffMap.get(xcg)).to(NonSI.FOOT));
-			_takeOffDistanceFAR25Map.put(
-					xcg, 
-					_takeOffDistanceAEOMap.get(xcg).times(1.15).to(NonSI.FOOT)
-					);
-			
-			// Velocities:
-			_vStallTakeOffMap.put(
-					xcg,
-					_theTakeOffCalculatorMap.get(xcg).getvSTakeOff().to(NonSI.KNOT)
-					);
-			_vRotationMap.put(
-					xcg, 
-					_theTakeOffCalculatorMap.get(xcg).getvRot().to(NonSI.KNOT)
-					);
-			_vLiftOffMap.put(
-					xcg, 
-					_theTakeOffCalculatorMap.get(xcg).getvLO().to(NonSI.KNOT)
-					);
-			_v2Map.put(
-					xcg, 
-					_theTakeOffCalculatorMap.get(xcg).getV2().to(NonSI.KNOT)
-					);
-			
-			// Duration:
-			_takeOffDurationMap.put(
-					xcg,
-					_theTakeOffCalculatorMap.get(xcg).getTakeOffResults().getTime().get(2)
-					);
-			
-			// Fuel used:
-			_takeOffFuelMap.put(
-					xcg,
-					Amount.valueOf(
-							_theTakeOffCalculatorMap.get(xcg).getFuelUsed().stream()
-							.mapToDouble(f -> f.doubleValue(SI.KILOGRAM))
-							.sum(),
-							SI.KILOGRAM
-							)
-					);
-			
-			// Emission NOx:
-			_takeOffNOxEmissionsMap.put(
-					xcg,
-					Amount.valueOf(
-							_theTakeOffCalculatorMap.get(xcg).getEmissionsNOx().stream()
-							.mapToDouble(e -> e.doubleValue(SI.GRAM))
-							.sum(),
-							SI.GRAM
-							)
-					);
-			
-			// Emission CO:
-			_takeOffCOEmissionsMap.put(
-					xcg,
-					Amount.valueOf(
-							_theTakeOffCalculatorMap.get(xcg).getEmissionsCO().stream()
-							.mapToDouble(e -> e.doubleValue(SI.GRAM))
-							.sum(),
-							SI.GRAM
-							)
-					);
-			
-			// Emission HC:
-			_takeOffHCEmissionsMap.put(
-					xcg,
-					Amount.valueOf(
-							_theTakeOffCalculatorMap.get(xcg).getEmissionsHC().stream()
-							.mapToDouble(e -> e.doubleValue(SI.GRAM))
-							.sum(),
-							SI.GRAM
-							)
-					);
-			
-			// Emission Soot:
-			_takeOffSootEmissionsMap.put(
-					xcg,
-					Amount.valueOf(
-							_theTakeOffCalculatorMap.get(xcg).getEmissionsSoot().stream()
-							.mapToDouble(e -> e.doubleValue(SI.GRAM))
-							.sum(),
-							SI.GRAM
-							)
-					);
-			
-			// Emission CO2:
-			_takeOffCO2EmissionsMap.put(
-					xcg,
-					Amount.valueOf(
-							_theTakeOffCalculatorMap.get(xcg).getEmissionsCO2().stream()
-							.mapToDouble(e -> e.doubleValue(SI.GRAM))
-							.sum(),
-							SI.GRAM
-							)
-					);
-			
-			// Emission SOx:
-			_takeOffSOxEmissionsMap.put(
-					xcg,
-					Amount.valueOf(
-							_theTakeOffCalculatorMap.get(xcg).getEmissionsSOx().stream()
-							.mapToDouble(e -> e.doubleValue(SI.GRAM))
-							.sum(),
-							SI.GRAM
-							)
-					);
-
-			// Emission H2O:
-			_takeOffH2OEmissionsMap.put(
-					xcg,
-					Amount.valueOf(
-							_theTakeOffCalculatorMap.get(xcg).getEmissionsH2O().stream()
-							.mapToDouble(e -> e.doubleValue(SI.GRAM))
-							.sum(),
-							SI.GRAM
-							)
-					);
-			
-		}
-		
-		public void calculateBalancedFieldLength(Double xcg, Amount<Velocity> vMC) {
-			
 			_theTakeOffCalculatorMap.get(xcg).calculateBalancedFieldLength(vMC);
 			
 			_v1Map.put(
 					xcg, 
-					_theTakeOffCalculatorMap.get(xcg).getV1().to(NonSI.KNOT)
+					_theTakeOffCalculatorMap.get(xcg).getV1() == null ? 
+							Amount.valueOf(0.0, NonSI.KNOT) : _theTakeOffCalculatorMap.get(xcg).getV1().to(NonSI.KNOT) 
 					);
 			_balancedFieldLengthMap.put(
 					xcg,
-					_theTakeOffCalculatorMap.get(xcg).getBalancedFieldLength().to(NonSI.FOOT)
+					_theTakeOffCalculatorMap.get(xcg).getBalancedFieldLength() == null ?
+							Amount.valueOf(0.0, NonSI.FOOT) : _theTakeOffCalculatorMap.get(xcg).getBalancedFieldLength().to(NonSI.FOOT)
 					);
 			
 		}
@@ -5888,17 +6160,6 @@ public class ACPerformanceManager {
 			}
 				
 				
-			_thrustAtCruiseAltitudeAndMachMap.put(
-					xcg, 
-					Amount.valueOf(
-							MyMathUtils.getInterpolatedValue1DLinear(
-									MyArrayUtils.convertListOfAmountTodoubleArray(_thePerformanceInterface.getAltitudeListCruise()),
-									MyArrayUtils.convertListOfAmountTodoubleArray(thrustAltitudesAtCruiseMach),
-									_thePerformanceInterface.getTheOperatingConditions().getAltitudeCruise().doubleValue(SI.METER)
-									),
-							SI.NEWTON
-							)
-					);
 			_dragAtCruiseAltitudeAndMachMap.put(
 					xcg, 
 					Amount.valueOf(
@@ -5910,16 +6171,9 @@ public class ACPerformanceManager {
 							SI.NEWTON
 							)
 					);
-			_powerAvailableAtCruiseAltitudeAndMachMap.put(
-					xcg,  
-					Amount.valueOf(
-							MyMathUtils.getInterpolatedValue1DLinear(
-									MyArrayUtils.convertListOfAmountTodoubleArray(_thePerformanceInterface.getAltitudeListCruise()),
-									MyArrayUtils.convertListOfAmountTodoubleArray(powerAvailableAltitudesAtCruiseMach),
-									_thePerformanceInterface.getTheOperatingConditions().getAltitudeCruise().doubleValue(SI.METER)
-									),
-							SI.WATT
-							)
+			_thrustAtCruiseAltitudeAndMachMap.put(
+					xcg, 
+					_dragAtCruiseAltitudeAndMachMap.get(xcg)
 					);
 			_powerNeededAtCruiseAltitudeAndMachMap.put(
 					xcg,  
@@ -5931,8 +6185,11 @@ public class ACPerformanceManager {
 									),
 							SI.WATT
 							)
-					); 
-			
+					);
+			_powerAvailableAtCruiseAltitudeAndMachMap.put(
+					xcg,  
+					_powerNeededAtCruiseAltitudeAndMachMap.get(xcg)
+					);
 
 			//--------------------------------------------------------------------
 			// WEIGHT PARAMETERIZATION AT FIXED ALTITUDE
@@ -6037,7 +6294,7 @@ public class ACPerformanceManager {
 			altitude.add(Amount.valueOf(0.0, SI.METER));
 			Amount<Length> deltaAltitude = Amount.valueOf(100, SI.METER);
 			
-			int nPointSpeed = 5000;
+			int nPointSpeed = 2500;
 			double[] speedArray = new double[nPointSpeed];
 			int i=0;
 			
@@ -6559,7 +6816,7 @@ public class ACPerformanceManager {
 											SI.KILOGRAM
 											),
 									EngineOperatingConditionEnum.CRUISE,
-									specificRange,
+									Arrays.stream(specificRange).map(x -> x != Double.POSITIVE_INFINITY ? x : 0.0).toArray(),
 									machArray,
 									efficiency,
 									sfc
@@ -6568,774 +6825,770 @@ public class ACPerformanceManager {
 				}
 			}
 		}
-				
+
 		public void plotCruiseOutput(String cruiseFolderPath, Double xcg) {
 
 			if(_thePerformanceInterface.getPlotList().contains(PerformancePlotEnum.THRUST_DRAG_CURVES_CRUISE)) {
+				if(cruiseThrustDragErrorFlag == false) {
 
-				//--------------------------------------------------------------------
-				// ALTITUDE PARAMETERIZATION AT FIXED WEIGHT
-				List<Double[]> speedAltitudeParameterization_SI = new ArrayList<>();
-				List<Double[]> speedAltitudeParameterization_Imperial = new ArrayList<>();
-				List<Double[]> dragAndThrustAltitudes_SI = new ArrayList<>();
-				List<Double[]> dragAndThrustAltitudes_Imperial = new ArrayList<>();
-				List<String> legendAltitudes_SI = new ArrayList<String>();
-				List<String> legendAltitudes_Imperial = new ArrayList<String>();
+					//--------------------------------------------------------------------
+					// ALTITUDE PARAMETERIZATION AT FIXED WEIGHT
+					List<Double[]> speedAltitudeParameterization_SI = new ArrayList<>();
+					List<Double[]> speedAltitudeParameterization_Imperial = new ArrayList<>();
+					List<Double[]> dragAndThrustAltitudes_SI = new ArrayList<>();
+					List<Double[]> dragAndThrustAltitudes_Imperial = new ArrayList<>();
+					List<String> legendAltitudes_SI = new ArrayList<String>();
+					List<String> legendAltitudes_Imperial = new ArrayList<String>();
 
-				for (int i=0; i<_thePerformanceInterface.getAltitudeListCruise().size(); i++) {
-					speedAltitudeParameterization_SI.add(
-							MyArrayUtils.convertFromDoubleToPrimitive(
-									_dragListAltitudeParameterizationMap.get(xcg).get(i).getSpeed()
-									.stream().mapToDouble(x -> x.doubleValue(SI.METERS_PER_SECOND)).toArray()
-									)
-							);
-					speedAltitudeParameterization_Imperial.add(
-							MyArrayUtils.convertFromDoubleToPrimitive(
-									_dragListAltitudeParameterizationMap.get(xcg).get(i).getSpeed()
-									.stream().mapToDouble(x -> x.doubleValue(NonSI.KNOT))
-									.toArray()
-									)
-							);
-					dragAndThrustAltitudes_SI.add(
-							MyArrayUtils.convertFromDoubleToPrimitive(
-									_dragListAltitudeParameterizationMap.get(xcg).get(i).getDrag()
-									.stream().mapToDouble(x -> x.doubleValue(SI.NEWTON)).toArray()
-									)
-							);
-					dragAndThrustAltitudes_Imperial.add(
-							MyArrayUtils.convertFromDoubleToPrimitive(
-									_dragListAltitudeParameterizationMap.get(xcg).get(i).getDrag()
-									.stream().mapToDouble(x -> x.doubleValue(NonSI.POUND_FORCE))
-									.toArray()
-									)
-							);
-					legendAltitudes_SI.add("Drag at " + _dragListAltitudeParameterizationMap.get(xcg).get(i).getAltitude().doubleValue(SI.METER) + " m");
-					legendAltitudes_Imperial.add("Drag at " + _dragListAltitudeParameterizationMap.get(xcg).get(i).getAltitude().doubleValue(NonSI.FOOT) + " ft");
-				}
-				for (int i=0; i<_thePerformanceInterface.getAltitudeListCruise().size(); i++) {
-					speedAltitudeParameterization_SI.add(
-							MyArrayUtils.convertFromDoubleToPrimitive(
-									_thrustListAltitudeParameterizationMap.get(xcg).get(i).getSpeed()
-									.stream().mapToDouble(x -> x.doubleValue(SI.METERS_PER_SECOND)).toArray()
-									)
-							);
-					speedAltitudeParameterization_Imperial.add(
-							MyArrayUtils.convertFromDoubleToPrimitive(
-									_thrustListAltitudeParameterizationMap.get(xcg).get(i).getSpeed()
-									.stream().mapToDouble(x -> x.doubleValue(NonSI.KNOT))
-									.toArray()
-									)
-							);
-					dragAndThrustAltitudes_SI.add(
-							MyArrayUtils.convertFromDoubleToPrimitive(
-									_thrustListAltitudeParameterizationMap.get(xcg).get(i).getThrust()
-									.stream().mapToDouble(x -> x.doubleValue(SI.NEWTON)).toArray()
-									)
-							);
-					dragAndThrustAltitudes_Imperial.add(
-							MyArrayUtils.convertFromDoubleToPrimitive(
-									_thrustListAltitudeParameterizationMap.get(xcg).get(i).getThrust()
-									.stream().mapToDouble(x -> x.doubleValue(NonSI.POUND_FORCE))
-									.toArray()
-									)
-							);
-					legendAltitudes_SI.add("Thrust at " + _thrustListAltitudeParameterizationMap.get(xcg).get(i).getAltitude().doubleValue(SI.METER) + " m");
-					legendAltitudes_Imperial.add("Thrust at " + _thrustListAltitudeParameterizationMap.get(xcg).get(i).getAltitude().doubleValue(NonSI.FOOT) + " ft");
-				}
+					for (int i=0; i<_thePerformanceInterface.getAltitudeListCruise().size(); i++) {
+						speedAltitudeParameterization_SI.add(
+								MyArrayUtils.convertFromDoubleToPrimitive(
+										_dragListAltitudeParameterizationMap.get(xcg).get(i).getSpeed()
+										.stream().mapToDouble(x -> x.doubleValue(SI.METERS_PER_SECOND)).toArray()
+										)
+								);
+						speedAltitudeParameterization_Imperial.add(
+								MyArrayUtils.convertFromDoubleToPrimitive(
+										_dragListAltitudeParameterizationMap.get(xcg).get(i).getSpeed()
+										.stream().mapToDouble(x -> x.doubleValue(NonSI.KNOT))
+										.toArray()
+										)
+								);
+						dragAndThrustAltitudes_SI.add(
+								MyArrayUtils.convertFromDoubleToPrimitive(
+										_dragListAltitudeParameterizationMap.get(xcg).get(i).getDrag()
+										.stream().mapToDouble(x -> x.doubleValue(SI.NEWTON)).toArray()
+										)
+								);
+						dragAndThrustAltitudes_Imperial.add(
+								MyArrayUtils.convertFromDoubleToPrimitive(
+										_dragListAltitudeParameterizationMap.get(xcg).get(i).getDrag()
+										.stream().mapToDouble(x -> x.doubleValue(NonSI.POUND_FORCE))
+										.toArray()
+										)
+								);
+						legendAltitudes_SI.add("Drag at " + _dragListAltitudeParameterizationMap.get(xcg).get(i).getAltitude().doubleValue(SI.METER) + " m");
+						legendAltitudes_Imperial.add("Drag at " + _dragListAltitudeParameterizationMap.get(xcg).get(i).getAltitude().doubleValue(NonSI.FOOT) + " ft");
+					}
+					for (int i=0; i<_thePerformanceInterface.getAltitudeListCruise().size(); i++) {
+						speedAltitudeParameterization_SI.add(
+								MyArrayUtils.convertFromDoubleToPrimitive(
+										_thrustListAltitudeParameterizationMap.get(xcg).get(i).getSpeed()
+										.stream().mapToDouble(x -> x.doubleValue(SI.METERS_PER_SECOND)).toArray()
+										)
+								);
+						speedAltitudeParameterization_Imperial.add(
+								MyArrayUtils.convertFromDoubleToPrimitive(
+										_thrustListAltitudeParameterizationMap.get(xcg).get(i).getSpeed()
+										.stream().mapToDouble(x -> x.doubleValue(NonSI.KNOT))
+										.toArray()
+										)
+								);
+						dragAndThrustAltitudes_SI.add(
+								MyArrayUtils.convertFromDoubleToPrimitive(
+										_thrustListAltitudeParameterizationMap.get(xcg).get(i).getThrust()
+										.stream().mapToDouble(x -> x.doubleValue(SI.NEWTON)).toArray()
+										)
+								);
+						dragAndThrustAltitudes_Imperial.add(
+								MyArrayUtils.convertFromDoubleToPrimitive(
+										_thrustListAltitudeParameterizationMap.get(xcg).get(i).getThrust()
+										.stream().mapToDouble(x -> x.doubleValue(NonSI.POUND_FORCE))
+										.toArray()
+										)
+								);
+						legendAltitudes_SI.add("Thrust at " + _thrustListAltitudeParameterizationMap.get(xcg).get(i).getAltitude().doubleValue(SI.METER) + " m");
+						legendAltitudes_Imperial.add("Thrust at " + _thrustListAltitudeParameterizationMap.get(xcg).get(i).getAltitude().doubleValue(NonSI.FOOT) + " ft");
+					}
 
-				try {
-					MyChartToFileUtils.plot(
-							speedAltitudeParameterization_SI, dragAndThrustAltitudes_SI,
-							"Drag and Thrust curves at different altitudes",
-							"Speed", "Forces",
-							null, null, null, null,
-							"m/s", "N",
-							true, legendAltitudes_SI,
-							cruiseFolderPath, "Drag_and_Thrust_curves_altitudes_SI",
-							_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
-							);
-					MyChartToFileUtils.plot(
-							speedAltitudeParameterization_Imperial, dragAndThrustAltitudes_Imperial,
-							"Drag and Thrust curves at different altitudes",
-							"Speed", "Forces",
-							null, null, null, null,
-							"kn", "lb",
-							true, legendAltitudes_Imperial,
-							cruiseFolderPath, "Drag_and_Thrust_curves_altitudes_IMPERIAL",
-							_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
-							);
-				} catch (InstantiationException e) {
-					e.printStackTrace();
-				} catch (IllegalAccessException e) {
-					e.printStackTrace();
-				}
+					try {
+						MyChartToFileUtils.plot(
+								speedAltitudeParameterization_SI, dragAndThrustAltitudes_SI,
+								"Drag and Thrust curves at different altitudes",
+								"Speed", "Forces",
+								null, null, null, null,
+								"m/s", "N",
+								true, legendAltitudes_SI,
+								cruiseFolderPath, "Drag_and_Thrust_curves_altitudes_SI",
+								_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
+								);
 
-				//--------------------------------------------------------------------
-				// WEIGHT PARAMETERIZATION AT FIXED ALTITUDE
-				List<Double[]> speedWeightsParameterization_SI = new ArrayList<Double[]>();
-				List<Double[]> speedWeightsParameterization_Imperial = new ArrayList<Double[]>();
-				List<Double[]> dragAndThrustWeights_SI = new ArrayList<Double[]>();
-				List<Double[]> dragAndThrustWeights_Imperial = new ArrayList<Double[]>();
-				List<String> legendWeights = new ArrayList<String>();
+						MyChartToFileUtils.plot(
+								speedAltitudeParameterization_Imperial, dragAndThrustAltitudes_Imperial,
+								"Drag and Thrust curves at different altitudes",
+								"Speed", "Forces",
+								null, null, null, null,
+								"kn", "lb",
+								true, legendAltitudes_Imperial,
+								cruiseFolderPath, "Drag_and_Thrust_curves_altitudes_IMPERIAL",
+								_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
+								);
+					} catch (InstantiationException | IllegalAccessException e1) {
+						System.err.println("ERROR: (PERFORMANCE - CRUISE THRUST-DRAG) PLOT WILL BE SKIPPED ...");
+					}
 
-				for (int i=0; i<_weightListCruiseMap.get(xcg).size(); i++) {
+					//--------------------------------------------------------------------
+					// WEIGHT PARAMETERIZATION AT FIXED ALTITUDE
+					List<Double[]> speedWeightsParameterization_SI = new ArrayList<Double[]>();
+					List<Double[]> speedWeightsParameterization_Imperial = new ArrayList<Double[]>();
+					List<Double[]> dragAndThrustWeights_SI = new ArrayList<Double[]>();
+					List<Double[]> dragAndThrustWeights_Imperial = new ArrayList<Double[]>();
+					List<String> legendWeights = new ArrayList<String>();
+
+					for (int i=0; i<_weightListCruiseMap.get(xcg).size(); i++) {
+						speedWeightsParameterization_SI.add(
+								MyArrayUtils.convertFromDoubleToPrimitive(
+										_dragListWeightParameterizationMap.get(xcg).get(i).getSpeed()
+										.stream().mapToDouble(x -> x.doubleValue(SI.METERS_PER_SECOND)).toArray()
+										)
+								);
+						speedWeightsParameterization_Imperial.add(
+								MyArrayUtils.convertFromDoubleToPrimitive(
+										_dragListWeightParameterizationMap.get(xcg).get(i).getSpeed()
+										.stream().mapToDouble(x -> x.doubleValue(NonSI.KNOT)).toArray()
+										)
+								);
+						dragAndThrustWeights_SI.add(
+								MyArrayUtils.convertFromDoubleToPrimitive(
+										_dragListWeightParameterizationMap.get(xcg).get(i).getDrag()
+										.stream().mapToDouble(x -> x.doubleValue(SI.NEWTON)).toArray()
+										)
+								);
+						dragAndThrustWeights_Imperial.add(
+								MyArrayUtils.convertFromDoubleToPrimitive(
+										_dragListWeightParameterizationMap.get(xcg).get(i).getDrag()
+										.stream().mapToDouble(x -> x.doubleValue(NonSI.POUND_FORCE)).toArray()
+										)
+								);
+						legendWeights.add("Drag at " + Math.round(_dragListWeightParameterizationMap.get(xcg).get(i).getWeight().doubleValue(SI.KILOGRAM)) + " kg");
+					}
 					speedWeightsParameterization_SI.add(
 							MyArrayUtils.convertFromDoubleToPrimitive(
-									_dragListWeightParameterizationMap.get(xcg).get(i).getSpeed()
+									_thrustListWeightParameterizationMap.get(xcg).get(0).getSpeed()
 									.stream().mapToDouble(x -> x.doubleValue(SI.METERS_PER_SECOND)).toArray()
 									)
 							);
 					speedWeightsParameterization_Imperial.add(
 							MyArrayUtils.convertFromDoubleToPrimitive(
-									_dragListWeightParameterizationMap.get(xcg).get(i).getSpeed()
+									_thrustListWeightParameterizationMap.get(xcg).get(0).getSpeed()
 									.stream().mapToDouble(x -> x.doubleValue(NonSI.KNOT)).toArray()
 									)
 							);
 					dragAndThrustWeights_SI.add(
 							MyArrayUtils.convertFromDoubleToPrimitive(
-									_dragListWeightParameterizationMap.get(xcg).get(i).getDrag()
+									_thrustListWeightParameterizationMap.get(xcg).get(0).getThrust()
 									.stream().mapToDouble(x -> x.doubleValue(SI.NEWTON)).toArray()
 									)
 							);
 					dragAndThrustWeights_Imperial.add(
 							MyArrayUtils.convertFromDoubleToPrimitive(
-									_dragListWeightParameterizationMap.get(xcg).get(i).getDrag()
+									_thrustListWeightParameterizationMap.get(xcg).get(0).getThrust()
 									.stream().mapToDouble(x -> x.doubleValue(NonSI.POUND_FORCE)).toArray()
 									)
-							);
-					legendWeights.add("Drag at " + Math.round(_dragListWeightParameterizationMap.get(xcg).get(i).getWeight().doubleValue(SI.KILOGRAM)) + " kg");
-				}
-				speedWeightsParameterization_SI.add(
-						MyArrayUtils.convertFromDoubleToPrimitive(
-								_thrustListWeightParameterizationMap.get(xcg).get(0).getSpeed()
-								.stream().mapToDouble(x -> x.doubleValue(SI.METERS_PER_SECOND)).toArray()
-								)
-						);
-				speedWeightsParameterization_Imperial.add(
-						MyArrayUtils.convertFromDoubleToPrimitive(
-								_thrustListWeightParameterizationMap.get(xcg).get(0).getSpeed()
-								.stream().mapToDouble(x -> x.doubleValue(NonSI.KNOT)).toArray()
-								)
-						);
-				dragAndThrustWeights_SI.add(
-						MyArrayUtils.convertFromDoubleToPrimitive(
-								_thrustListWeightParameterizationMap.get(xcg).get(0).getThrust()
-								.stream().mapToDouble(x -> x.doubleValue(SI.NEWTON)).toArray()
-								)
-						);
-				dragAndThrustWeights_Imperial.add(
-						MyArrayUtils.convertFromDoubleToPrimitive(
-								_thrustListWeightParameterizationMap.get(xcg).get(0).getThrust()
-								.stream().mapToDouble(x -> x.doubleValue(NonSI.POUND_FORCE)).toArray()
-								)
-						);				
-				legendWeights.add("Thrust");
+							);				
+					legendWeights.add("Thrust");
 
-				try {
-					MyChartToFileUtils.plot(
-							speedWeightsParameterization_SI, dragAndThrustWeights_SI,
-							"Drag and Thrust curves at different weights",
-							"Speed", "Forces",
-							null, null, null, null,
-							"m/s", "N",
-							true, legendWeights,
-							cruiseFolderPath, "Drag_and_Thrust_curves_weights_SI",
-							_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
-							);
-					MyChartToFileUtils.plot(
-							speedWeightsParameterization_Imperial, dragAndThrustWeights_Imperial,
-							"Drag and Thrust curves at different weights",
-							"Speed", "Forces",
-							null, null, null, null,
-							"kn", "lb",
-							true, legendWeights,
-							cruiseFolderPath, "Drag_and_Thrust_curves_weights_IMPERIAL",
-							_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
-							);
-				} catch (InstantiationException e) {
-					e.printStackTrace();
-				} catch (IllegalAccessException e) {
-					e.printStackTrace();
+					try {
+						MyChartToFileUtils.plot(
+								speedWeightsParameterization_SI, dragAndThrustWeights_SI,
+								"Drag and Thrust curves at different weights",
+								"Speed", "Forces",
+								null, null, null, null,
+								"m/s", "N",
+								true, legendWeights,
+								cruiseFolderPath, "Drag_and_Thrust_curves_weights_SI",
+								_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
+								);
+						MyChartToFileUtils.plot(
+								speedWeightsParameterization_Imperial, dragAndThrustWeights_Imperial,
+								"Drag and Thrust curves at different weights",
+								"Speed", "Forces",
+								null, null, null, null,
+								"kn", "lb",
+								true, legendWeights,
+								cruiseFolderPath, "Drag_and_Thrust_curves_weights_IMPERIAL",
+								_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
+								);
+					} catch (InstantiationException | IllegalAccessException e) {
+						System.err.println("ERROR: (PERFORMANCE - CRUISE THRUST-DRAG) CALCULATION WILL BE SKIPPED ...");
+					}
 				}
 
-			}
+				if(_thePerformanceInterface.getPlotList().contains(PerformancePlotEnum.POWER_NEEDED_AND_AVAILABLE_CURVES_CRUISE)) {
 
-			if(_thePerformanceInterface.getPlotList().contains(PerformancePlotEnum.POWER_NEEDED_AND_AVAILABLE_CURVES_CRUISE)) {
+					//--------------------------------------------------------------------
+					// ALTITUDE PARAMETERIZATION AT FIXED WEIGHT
+					List<Double[]> speedAltitudeParameterization_SI = new ArrayList<Double[]>();
+					List<Double[]> speedAltitudeParameterization_Imperial = new ArrayList<Double[]>();
+					List<Double[]> powerNeededAndAvailableAltitudes_SI = new ArrayList<Double[]>();
+					List<Double[]> powerNeededAndAvailableAltitudes_Imperial = new ArrayList<Double[]>();
+					List<String> legendAltitudes_SI = new ArrayList<String>();
+					List<String> legendAltitudes_Imperial = new ArrayList<String>();
 
-				//--------------------------------------------------------------------
-				// ALTITUDE PARAMETERIZATION AT FIXED WEIGHT
-				List<Double[]> speedAltitudeParameterization_SI = new ArrayList<Double[]>();
-				List<Double[]> speedAltitudeParameterization_Imperial = new ArrayList<Double[]>();
-				List<Double[]> powerNeededAndAvailableAltitudes_SI = new ArrayList<Double[]>();
-				List<Double[]> powerNeededAndAvailableAltitudes_Imperial = new ArrayList<Double[]>();
-				List<String> legendAltitudes_SI = new ArrayList<String>();
-				List<String> legendAltitudes_Imperial = new ArrayList<String>();
+					for (int i=0; i<_thePerformanceInterface.getAltitudeListCruise().size(); i++) {
+						speedAltitudeParameterization_SI.add(
+								MyArrayUtils.convertFromDoubleToPrimitive(
+										_dragListAltitudeParameterizationMap.get(xcg).get(i).getSpeed()
+										.stream().mapToDouble(x -> x.doubleValue(SI.METERS_PER_SECOND)).toArray()
+										)
+								);
+						speedAltitudeParameterization_Imperial.add(
+								MyArrayUtils.convertFromDoubleToPrimitive(
+										_dragListAltitudeParameterizationMap.get(xcg).get(i).getSpeed()
+										.stream().mapToDouble(x -> x.doubleValue(NonSI.KNOT)).toArray()
+										)
+								);
+						powerNeededAndAvailableAltitudes_SI.add(
+								MyArrayUtils.convertFromDoubleToPrimitive(
+										_dragListAltitudeParameterizationMap.get(xcg).get(i).getPower()
+										.stream().mapToDouble(x -> x.doubleValue(SI.WATT)).toArray()
+										)
+								);
+						powerNeededAndAvailableAltitudes_Imperial.add(
+								MyArrayUtils.convertFromDoubleToPrimitive(
+										_dragListAltitudeParameterizationMap.get(xcg).get(i).getPower()
+										.stream().mapToDouble(x -> x.doubleValue(NonSI.HORSEPOWER)).toArray()
+										)
+								);
+						legendAltitudes_SI.add("Power needed at " + _dragListAltitudeParameterizationMap.get(xcg).get(i).getAltitude().doubleValue(SI.METER) + " m");
+						legendAltitudes_Imperial.add("Power needed at " + _dragListAltitudeParameterizationMap.get(xcg).get(i).getAltitude().doubleValue(NonSI.FOOT) + " ft");
+					}
+					for (int i=0; i<_thePerformanceInterface.getAltitudeListCruise().size(); i++) {
+						speedAltitudeParameterization_SI.add(
+								MyArrayUtils.convertFromDoubleToPrimitive(
+										_thrustListAltitudeParameterizationMap.get(xcg).get(i).getSpeed()
+										.stream().mapToDouble(x -> x.doubleValue(SI.METERS_PER_SECOND)).toArray()
+										)
+								);
+						speedAltitudeParameterization_Imperial.add(
+								MyArrayUtils.convertFromDoubleToPrimitive(
+										_thrustListAltitudeParameterizationMap.get(xcg).get(i).getSpeed()
+										.stream().mapToDouble(x -> x.doubleValue(NonSI.KNOT)).toArray()
+										)
+								);
+						powerNeededAndAvailableAltitudes_SI.add(
+								MyArrayUtils.convertFromDoubleToPrimitive(
+										_thrustListAltitudeParameterizationMap.get(xcg).get(i).getPower()
+										.stream().mapToDouble(x -> x.doubleValue(SI.WATT)).toArray()
+										)
+								);
+						powerNeededAndAvailableAltitudes_Imperial.add(
+								MyArrayUtils.convertFromDoubleToPrimitive(
+										_thrustListAltitudeParameterizationMap.get(xcg).get(i).getPower()
+										.stream().mapToDouble(x -> x.doubleValue(NonSI.HORSEPOWER)).toArray()
+										)
+								);
+						legendAltitudes_SI.add("Power available at " + _thrustListAltitudeParameterizationMap.get(xcg).get(i).getAltitude().doubleValue(SI.METER) + " m");
+						legendAltitudes_Imperial.add("Power available at " + _thrustListAltitudeParameterizationMap.get(xcg).get(i).getAltitude().doubleValue(NonSI.FOOT) + " ft");
+					}
 
-				for (int i=0; i<_thePerformanceInterface.getAltitudeListCruise().size(); i++) {
-					speedAltitudeParameterization_SI.add(
-							MyArrayUtils.convertFromDoubleToPrimitive(
-									_dragListAltitudeParameterizationMap.get(xcg).get(i).getSpeed()
-									.stream().mapToDouble(x -> x.doubleValue(SI.METERS_PER_SECOND)).toArray()
-									)
-							);
-					speedAltitudeParameterization_Imperial.add(
-							MyArrayUtils.convertFromDoubleToPrimitive(
-									_dragListAltitudeParameterizationMap.get(xcg).get(i).getSpeed()
-									.stream().mapToDouble(x -> x.doubleValue(NonSI.KNOT)).toArray()
-									)
-							);
-					powerNeededAndAvailableAltitudes_SI.add(
-							MyArrayUtils.convertFromDoubleToPrimitive(
-									_dragListAltitudeParameterizationMap.get(xcg).get(i).getPower()
-									.stream().mapToDouble(x -> x.doubleValue(SI.WATT)).toArray()
-									)
-							);
-					powerNeededAndAvailableAltitudes_Imperial.add(
-							MyArrayUtils.convertFromDoubleToPrimitive(
-									_dragListAltitudeParameterizationMap.get(xcg).get(i).getPower()
-									.stream().mapToDouble(x -> x.doubleValue(NonSI.HORSEPOWER)).toArray()
-									)
-							);
-					legendAltitudes_SI.add("Power needed at " + _dragListAltitudeParameterizationMap.get(xcg).get(i).getAltitude().doubleValue(SI.METER) + " m");
-					legendAltitudes_Imperial.add("Power needed at " + _dragListAltitudeParameterizationMap.get(xcg).get(i).getAltitude().doubleValue(NonSI.FOOT) + " ft");
-				}
-				for (int i=0; i<_thePerformanceInterface.getAltitudeListCruise().size(); i++) {
-					speedAltitudeParameterization_SI.add(
-							MyArrayUtils.convertFromDoubleToPrimitive(
-									_thrustListAltitudeParameterizationMap.get(xcg).get(i).getSpeed()
-									.stream().mapToDouble(x -> x.doubleValue(SI.METERS_PER_SECOND)).toArray()
-									)
-							);
-					speedAltitudeParameterization_Imperial.add(
-							MyArrayUtils.convertFromDoubleToPrimitive(
-									_thrustListAltitudeParameterizationMap.get(xcg).get(i).getSpeed()
-									.stream().mapToDouble(x -> x.doubleValue(NonSI.KNOT)).toArray()
-									)
-							);
-					powerNeededAndAvailableAltitudes_SI.add(
-							MyArrayUtils.convertFromDoubleToPrimitive(
-									_thrustListAltitudeParameterizationMap.get(xcg).get(i).getPower()
-									.stream().mapToDouble(x -> x.doubleValue(SI.WATT)).toArray()
-									)
-							);
-					powerNeededAndAvailableAltitudes_Imperial.add(
-							MyArrayUtils.convertFromDoubleToPrimitive(
-									_thrustListAltitudeParameterizationMap.get(xcg).get(i).getPower()
-									.stream().mapToDouble(x -> x.doubleValue(NonSI.HORSEPOWER)).toArray()
-									)
-							);
-					legendAltitudes_SI.add("Power available at " + _thrustListAltitudeParameterizationMap.get(xcg).get(i).getAltitude().doubleValue(SI.METER) + " m");
-					legendAltitudes_Imperial.add("Power available at " + _thrustListAltitudeParameterizationMap.get(xcg).get(i).getAltitude().doubleValue(NonSI.FOOT) + " ft");
-				}
+					try {
+						MyChartToFileUtils.plot(
+								speedAltitudeParameterization_SI, powerNeededAndAvailableAltitudes_SI,
+								"Power needed and available at different altitudes",
+								"Speed", "Powers",
+								null, null, null, null,
+								"m/s", "W",
+								true, legendAltitudes_SI,
+								cruiseFolderPath, "Power_needed_and_available_altitudes_SI",
+								_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
+								);
+						MyChartToFileUtils.plot(
+								speedAltitudeParameterization_Imperial, powerNeededAndAvailableAltitudes_Imperial,
+								"Power needed and available at different altitudes",
+								"Speed", "Powers",
+								null, null, null, null,
+								"kn", "hp",
+								true, legendAltitudes_Imperial,
+								cruiseFolderPath, "Power_needed_and_available_altitudes_IMPERIAL",
+								_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
+								);
+					} catch (InstantiationException | IllegalAccessException e) {
+						System.err.println("ERROR: (PERFORMANCE - CRUISE POWERS) PLOT WILL BE SKIPPED ...");
+					}
 
-				try {
-					MyChartToFileUtils.plot(
-							speedAltitudeParameterization_SI, powerNeededAndAvailableAltitudes_SI,
-							"Power needed and available at different altitudes",
-							"Speed", "Powers",
-							null, null, null, null,
-							"m/s", "W",
-							true, legendAltitudes_SI,
-							cruiseFolderPath, "Power_needed_and_available_altitudes_SI",
-							_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
-							);
-					MyChartToFileUtils.plot(
-							speedAltitudeParameterization_Imperial, powerNeededAndAvailableAltitudes_Imperial,
-							"Power needed and available at different altitudes",
-							"Speed", "Powers",
-							null, null, null, null,
-							"kn", "hp",
-							true, legendAltitudes_Imperial,
-							cruiseFolderPath, "Power_needed_and_available_altitudes_IMPERIAL",
-							_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
-							);
-				} catch (InstantiationException e) {
-					e.printStackTrace();
-				} catch (IllegalAccessException e) {
-					e.printStackTrace();
-				}
+					//--------------------------------------------------------------------
+					// WEIGHT PARAMETERIZATION AT FIXED ALTITUDE
 
-				//--------------------------------------------------------------------
-				// WEIGHT PARAMETERIZATION AT FIXED ALTITUDE
-				
-				List<Double[]> speedWeightsParameterization_SI = new ArrayList<Double[]>();
-				List<Double[]> speedWeightsParameterization_Imperial = new ArrayList<Double[]>();
-				List<Double[]> powerNeededAndAvailableWeights_SI = new ArrayList<Double[]>();
-				List<Double[]> powerNeededAndAvailableWeights_Imperial = new ArrayList<Double[]>();
-				List<String> legendWeights = new ArrayList<String>();
+					List<Double[]> speedWeightsParameterization_SI = new ArrayList<Double[]>();
+					List<Double[]> speedWeightsParameterization_Imperial = new ArrayList<Double[]>();
+					List<Double[]> powerNeededAndAvailableWeights_SI = new ArrayList<Double[]>();
+					List<Double[]> powerNeededAndAvailableWeights_Imperial = new ArrayList<Double[]>();
+					List<String> legendWeights = new ArrayList<String>();
 
-				for (int i=0; i<_weightListCruiseMap.get(xcg).size(); i++) {
+					for (int i=0; i<_weightListCruiseMap.get(xcg).size(); i++) {
+						speedWeightsParameterization_SI.add(
+								MyArrayUtils.convertFromDoubleToPrimitive(
+										_dragListWeightParameterizationMap.get(xcg).get(i).getSpeed()
+										.stream().mapToDouble(x -> x.doubleValue(SI.METERS_PER_SECOND)).toArray()
+										)
+								);
+						speedWeightsParameterization_Imperial.add(
+								MyArrayUtils.convertFromDoubleToPrimitive(
+										_dragListWeightParameterizationMap.get(xcg).get(i).getSpeed()
+										.stream().mapToDouble(x -> x.doubleValue(NonSI.KNOT)).toArray()
+										)
+								);
+						powerNeededAndAvailableWeights_SI.add(
+								MyArrayUtils.convertFromDoubleToPrimitive(
+										_dragListWeightParameterizationMap.get(xcg).get(i).getPower()
+										.stream().mapToDouble(x -> x.doubleValue(SI.WATT)).toArray()
+										)
+								);
+						powerNeededAndAvailableWeights_Imperial.add(
+								MyArrayUtils.convertFromDoubleToPrimitive(
+										_dragListWeightParameterizationMap.get(xcg).get(i).getPower()
+										.stream().mapToDouble(x -> x.doubleValue(NonSI.HORSEPOWER)).toArray()
+										)
+								);
+						legendWeights.add("Power needed at " + Math.round(_dragListWeightParameterizationMap.get(xcg).get(i).getWeight().doubleValue(SI.KILOGRAM)) + " kg");
+					}
 					speedWeightsParameterization_SI.add(
 							MyArrayUtils.convertFromDoubleToPrimitive(
-									_dragListWeightParameterizationMap.get(xcg).get(i).getSpeed()
+									_thrustListWeightParameterizationMap.get(xcg).get(0).getSpeed()
 									.stream().mapToDouble(x -> x.doubleValue(SI.METERS_PER_SECOND)).toArray()
 									)
 							);
 					speedWeightsParameterization_Imperial.add(
 							MyArrayUtils.convertFromDoubleToPrimitive(
-									_dragListWeightParameterizationMap.get(xcg).get(i).getSpeed()
+									_thrustListWeightParameterizationMap.get(xcg).get(0).getSpeed()
 									.stream().mapToDouble(x -> x.doubleValue(NonSI.KNOT)).toArray()
 									)
 							);
 					powerNeededAndAvailableWeights_SI.add(
 							MyArrayUtils.convertFromDoubleToPrimitive(
-									_dragListWeightParameterizationMap.get(xcg).get(i).getPower()
+									_thrustListWeightParameterizationMap.get(xcg).get(0).getPower()
 									.stream().mapToDouble(x -> x.doubleValue(SI.WATT)).toArray()
 									)
 							);
 					powerNeededAndAvailableWeights_Imperial.add(
 							MyArrayUtils.convertFromDoubleToPrimitive(
-									_dragListWeightParameterizationMap.get(xcg).get(i).getPower()
+									_thrustListWeightParameterizationMap.get(xcg).get(0).getPower()
 									.stream().mapToDouble(x -> x.doubleValue(NonSI.HORSEPOWER)).toArray()
 									)
 							);
-					legendWeights.add("Power needed at " + Math.round(_dragListWeightParameterizationMap.get(xcg).get(i).getWeight().doubleValue(SI.KILOGRAM)) + " kg");
-				}
-				speedWeightsParameterization_SI.add(
-						MyArrayUtils.convertFromDoubleToPrimitive(
-								_thrustListWeightParameterizationMap.get(xcg).get(0).getSpeed()
-								.stream().mapToDouble(x -> x.doubleValue(SI.METERS_PER_SECOND)).toArray()
-								)
-						);
-				speedWeightsParameterization_Imperial.add(
-						MyArrayUtils.convertFromDoubleToPrimitive(
-								_thrustListWeightParameterizationMap.get(xcg).get(0).getSpeed()
-								.stream().mapToDouble(x -> x.doubleValue(NonSI.KNOT)).toArray()
-								)
-						);
-				powerNeededAndAvailableWeights_SI.add(
-						MyArrayUtils.convertFromDoubleToPrimitive(
-								_thrustListWeightParameterizationMap.get(xcg).get(0).getPower()
-								.stream().mapToDouble(x -> x.doubleValue(SI.WATT)).toArray()
-								)
-						);
-				powerNeededAndAvailableWeights_Imperial.add(
-						MyArrayUtils.convertFromDoubleToPrimitive(
-								_thrustListWeightParameterizationMap.get(xcg).get(0).getPower()
-								.stream().mapToDouble(x -> x.doubleValue(NonSI.HORSEPOWER)).toArray()
-								)
-						);
-				legendWeights.add("Power available");
+					legendWeights.add("Power available");
 
-				try {
-					MyChartToFileUtils.plot(
-							speedWeightsParameterization_SI, powerNeededAndAvailableWeights_SI,
-							"Power needed and available at different weights",
-							"Speed", "Powers",
-							null, null, null, null,
-							"m/s", "W",
-							true, legendWeights,
-							cruiseFolderPath, "Power_needed_and_available_weights_SI",
-							_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
-							);
-					MyChartToFileUtils.plot(
-							speedWeightsParameterization_Imperial, powerNeededAndAvailableWeights_Imperial,
-							"Power needed and available at different weights",
-							"Speed", "Powers",
-							null, null, null, null,
-							"kn", "hp",
-							true, legendWeights,
-							cruiseFolderPath, "Power_needed_and_available_weights_IMPERIAL",
-							_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
-							);
-				} catch (InstantiationException e) {
-					e.printStackTrace();
-				} catch (IllegalAccessException e) {
-					e.printStackTrace();
+					try {
+						MyChartToFileUtils.plot(
+								speedWeightsParameterization_SI, powerNeededAndAvailableWeights_SI,
+								"Power needed and available at different weights",
+								"Speed", "Powers",
+								null, null, null, null,
+								"m/s", "W",
+								true, legendWeights,
+								cruiseFolderPath, "Power_needed_and_available_weights_SI",
+								_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
+								);
+						MyChartToFileUtils.plot(
+								speedWeightsParameterization_Imperial, powerNeededAndAvailableWeights_Imperial,
+								"Power needed and available at different weights",
+								"Speed", "Powers",
+								null, null, null, null,
+								"kn", "hp",
+								true, legendWeights,
+								cruiseFolderPath, "Power_needed_and_available_weights_IMPERIAL",
+								_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
+								);
+					} catch (InstantiationException | IllegalAccessException e) {
+						System.err.println("ERROR: (PERFORMANCE - CRUISE POWERS) PLOT WILL BE SKIPPED ...");
+					}
 				}
 			}
-			
 			if(_thePerformanceInterface.getPlotList().contains(PerformancePlotEnum.CRUISE_FLIGHT_ENVELOPE)) {
-				
-				List<Double> altitudeList_SI = new ArrayList<>();
-				List<Double> altitudeList_Imperial = new ArrayList<>();
-				List<Double> speedTASList_SI = new ArrayList<>();
-				List<Double> speedTASList_Imperial = new ArrayList<>();
-				List<Double> speedCASList_SI = new ArrayList<>();
-				List<Double> speedCASList_Imperial = new ArrayList<>();
-				List<Double> machList = new ArrayList<>();
-			
-				for(int i=0; i<_cruiseEnvelopeListMap.get(xcg).size(); i++) {
-					
-					double sigma = OperatingConditions.getAtmosphere(
-							_cruiseEnvelopeListMap.get(xcg).get(i).getAltitude().doubleValue(SI.METER),
-							_thePerformanceInterface.getTheOperatingConditions().getDeltaTemperatureCruise().doubleValue(SI.CELSIUS)
-							).getDensity()*1000/1.225; 
-					
-					// MIN VALUES
-					if(_cruiseEnvelopeListMap.get(xcg).get(i).getMinSpeed().doubleValue(SI.METERS_PER_SECOND) != 0.0) {
-						altitudeList_SI.add(_cruiseEnvelopeListMap.get(xcg).get(i).getAltitude().doubleValue(SI.METER));
-						altitudeList_Imperial.add(_cruiseEnvelopeListMap.get(xcg).get(i).getAltitude().doubleValue(NonSI.FOOT));
-						speedTASList_SI.add(_cruiseEnvelopeListMap.get(xcg).get(i).getMinSpeed().doubleValue(SI.METERS_PER_SECOND));
-						speedTASList_Imperial.add(_cruiseEnvelopeListMap.get(xcg).get(i).getMinSpeed().doubleValue(NonSI.KNOT));
-						speedCASList_SI.add(_cruiseEnvelopeListMap.get(xcg).get(i).getMinSpeed().times(Math.sqrt(sigma)).doubleValue(SI.METERS_PER_SECOND));
-						speedCASList_Imperial.add(_cruiseEnvelopeListMap.get(xcg).get(i).getMinSpeed().times(Math.sqrt(sigma)).doubleValue(NonSI.KNOT));
-						machList.add(_cruiseEnvelopeListMap.get(xcg).get(i).getMinMach());
+				if(cruiseFlightEnvelopeErrorFlag == false ) {
+
+					List<Double> altitudeList_SI = new ArrayList<>();
+					List<Double> altitudeList_Imperial = new ArrayList<>();
+					List<Double> speedTASList_SI = new ArrayList<>();
+					List<Double> speedTASList_Imperial = new ArrayList<>();
+					List<Double> speedCASList_SI = new ArrayList<>();
+					List<Double> speedCASList_Imperial = new ArrayList<>();
+					List<Double> machList = new ArrayList<>();
+
+					for(int i=0; i<_cruiseEnvelopeListMap.get(xcg).size(); i++) {
+
+						double sigma = OperatingConditions.getAtmosphere(
+								_cruiseEnvelopeListMap.get(xcg).get(i).getAltitude().doubleValue(SI.METER),
+								_thePerformanceInterface.getTheOperatingConditions().getDeltaTemperatureCruise().doubleValue(SI.CELSIUS)
+								).getDensity()*1000/1.225; 
+
+						// MIN VALUES
+						if(_cruiseEnvelopeListMap.get(xcg).get(i).getMinSpeed().doubleValue(SI.METERS_PER_SECOND) != 0.0) {
+							altitudeList_SI.add(_cruiseEnvelopeListMap.get(xcg).get(i).getAltitude().doubleValue(SI.METER));
+							altitudeList_Imperial.add(_cruiseEnvelopeListMap.get(xcg).get(i).getAltitude().doubleValue(NonSI.FOOT));
+							speedTASList_SI.add(_cruiseEnvelopeListMap.get(xcg).get(i).getMinSpeed().doubleValue(SI.METERS_PER_SECOND));
+							speedTASList_Imperial.add(_cruiseEnvelopeListMap.get(xcg).get(i).getMinSpeed().doubleValue(NonSI.KNOT));
+							speedCASList_SI.add(_cruiseEnvelopeListMap.get(xcg).get(i).getMinSpeed().times(Math.sqrt(sigma)).doubleValue(SI.METERS_PER_SECOND));
+							speedCASList_Imperial.add(_cruiseEnvelopeListMap.get(xcg).get(i).getMinSpeed().times(Math.sqrt(sigma)).doubleValue(NonSI.KNOT));
+							machList.add(_cruiseEnvelopeListMap.get(xcg).get(i).getMinMach());
+						}
+					}
+					for(int i=0; i<_cruiseEnvelopeListMap.get(xcg).size(); i++) {
+
+						double sigma = OperatingConditions.getAtmosphere(
+								_cruiseEnvelopeListMap.get(xcg).get(_cruiseEnvelopeListMap.get(xcg).size()-1-i).getAltitude().doubleValue(SI.METER),
+								_thePerformanceInterface.getTheOperatingConditions().getDeltaTemperatureCruise().doubleValue(SI.CELSIUS)
+								).getDensity()*1000/1.225; 
+
+						// MAX VALUES
+						if(_cruiseEnvelopeListMap.get(xcg).get(_cruiseEnvelopeListMap.get(xcg).size()-1-i).getMaxSpeed().doubleValue(SI.METERS_PER_SECOND) != 0.0) {
+							altitudeList_SI.add(_cruiseEnvelopeListMap.get(xcg).get(_cruiseEnvelopeListMap.get(xcg).size()-1-i).getAltitude().doubleValue(SI.METER));
+							altitudeList_Imperial.add(_cruiseEnvelopeListMap.get(xcg).get(_cruiseEnvelopeListMap.get(xcg).size()-1-i).getAltitude().doubleValue(NonSI.FOOT));
+							speedTASList_SI.add(_cruiseEnvelopeListMap.get(xcg).get(_cruiseEnvelopeListMap.get(xcg).size()-1-i).getMaxSpeed().doubleValue(SI.METERS_PER_SECOND));
+							speedTASList_Imperial.add(_cruiseEnvelopeListMap.get(xcg).get(_cruiseEnvelopeListMap.get(xcg).size()-1-i).getMaxSpeed().doubleValue(NonSI.KNOT));
+							speedCASList_SI.add(_cruiseEnvelopeListMap.get(xcg).get(_cruiseEnvelopeListMap.get(xcg).size()-1-i).getMaxSpeed().times(Math.sqrt(sigma)).doubleValue(SI.METERS_PER_SECOND));
+							speedCASList_Imperial.add(_cruiseEnvelopeListMap.get(xcg).get(_cruiseEnvelopeListMap.get(xcg).size()-1-i).getMaxSpeed().times(Math.sqrt(sigma)).doubleValue(NonSI.KNOT));
+							machList.add(_cruiseEnvelopeListMap.get(xcg).get(_cruiseEnvelopeListMap.get(xcg).size()-1-i).getMaxMach());
+						}
+					}
+
+					try {
+						MyChartToFileUtils.plotNoLegend(
+								MyArrayUtils.convertToDoublePrimitive(speedTASList_SI),
+								MyArrayUtils.convertToDoublePrimitive(altitudeList_SI),
+								null, null, 0.0, null,
+								"Speed(TAS)", "Altitude",
+								"m/s", "m",
+								cruiseFolderPath, "Cruise_flight_envelope_TAS_SI",true
+								);
+						MyChartToFileUtils.plotNoLegend(
+								MyArrayUtils.convertToDoublePrimitive(speedCASList_SI),
+								MyArrayUtils.convertToDoublePrimitive(altitudeList_SI),
+								null, null, 0.0, null,
+								"Speed(CAS)", "Altitude",
+								"m/s", "m",
+								cruiseFolderPath, "Cruise_flight_envelope_CAS_SI",true
+								);
+						MyChartToFileUtils.plotNoLegend(
+								MyArrayUtils.convertToDoublePrimitive(machList),
+								MyArrayUtils.convertToDoublePrimitive(altitudeList_SI),
+								null, null, 0.0, null,
+								"Mach", "Altitude",
+								"", "m",
+								cruiseFolderPath, "Cruise_flight_envelope_MACH_SI",true
+								);
+						MyChartToFileUtils.plotNoLegend(
+								MyArrayUtils.convertToDoublePrimitive(speedTASList_Imperial),
+								MyArrayUtils.convertToDoublePrimitive(altitudeList_Imperial),
+								null, null, 0.0, null,
+								"Speed(TAS)", "Altitude",
+								"kn", "ft",
+								cruiseFolderPath, "Cruise_flight_envelope_TAS_IMPERIAL",true
+								);
+						MyChartToFileUtils.plotNoLegend(
+								MyArrayUtils.convertToDoublePrimitive(speedCASList_Imperial),
+								MyArrayUtils.convertToDoublePrimitive(altitudeList_Imperial),
+								null, null, 0.0, null,
+								"Speed(CAS)", "Altitude",
+								"kn", "ft",
+								cruiseFolderPath, "Cruise_flight_envelope_CAS_IMPERIAL",true
+								);
+						MyChartToFileUtils.plotNoLegend(
+								MyArrayUtils.convertToDoublePrimitive(machList),
+								MyArrayUtils.convertToDoublePrimitive(altitudeList_Imperial),
+								null, null, 0.0, null,
+								"Mach", "Altitude",
+								"", "ft",
+								cruiseFolderPath, "Cruise_flight_envelope_MACH_IMPERIAL",true
+								);
+					}
+					catch (Exception e) {
+						System.err.println("ERROR: (PERFORMANCE - CRUISE FLIGHT ENVELOPE) PLOT WILL BE SKIPPED ...");
 					}
 				}
-				for(int i=0; i<_cruiseEnvelopeListMap.get(xcg).size(); i++) {
-					
-					double sigma = OperatingConditions.getAtmosphere(
-							_cruiseEnvelopeListMap.get(xcg).get(_cruiseEnvelopeListMap.get(xcg).size()-1-i).getAltitude().doubleValue(SI.METER),
-							_thePerformanceInterface.getTheOperatingConditions().getDeltaTemperatureCruise().doubleValue(SI.CELSIUS)
-							).getDensity()*1000/1.225; 
-					
-					// MAX VALUES
-					if(_cruiseEnvelopeListMap.get(xcg).get(_cruiseEnvelopeListMap.get(xcg).size()-1-i).getMaxSpeed().doubleValue(SI.METERS_PER_SECOND) != 0.0) {
-						altitudeList_SI.add(_cruiseEnvelopeListMap.get(xcg).get(_cruiseEnvelopeListMap.get(xcg).size()-1-i).getAltitude().doubleValue(SI.METER));
-						altitudeList_Imperial.add(_cruiseEnvelopeListMap.get(xcg).get(_cruiseEnvelopeListMap.get(xcg).size()-1-i).getAltitude().doubleValue(NonSI.FOOT));
-						speedTASList_SI.add(_cruiseEnvelopeListMap.get(xcg).get(_cruiseEnvelopeListMap.get(xcg).size()-1-i).getMaxSpeed().doubleValue(SI.METERS_PER_SECOND));
-						speedTASList_Imperial.add(_cruiseEnvelopeListMap.get(xcg).get(_cruiseEnvelopeListMap.get(xcg).size()-1-i).getMaxSpeed().doubleValue(NonSI.KNOT));
-						speedCASList_SI.add(_cruiseEnvelopeListMap.get(xcg).get(_cruiseEnvelopeListMap.get(xcg).size()-1-i).getMaxSpeed().times(Math.sqrt(sigma)).doubleValue(SI.METERS_PER_SECOND));
-						speedCASList_Imperial.add(_cruiseEnvelopeListMap.get(xcg).get(_cruiseEnvelopeListMap.get(xcg).size()-1-i).getMaxSpeed().times(Math.sqrt(sigma)).doubleValue(NonSI.KNOT));
-						machList.add(_cruiseEnvelopeListMap.get(xcg).get(_cruiseEnvelopeListMap.get(xcg).size()-1-i).getMaxMach());
-					}
-				}
-				
-				MyChartToFileUtils.plotNoLegend(
-						MyArrayUtils.convertToDoublePrimitive(speedTASList_SI),
-						MyArrayUtils.convertToDoublePrimitive(altitudeList_SI),
-						null, null, 0.0, null,
-						"Speed(TAS)", "Altitude",
-						"m/s", "m",
-						cruiseFolderPath, "Cruise_flight_envelope_TAS_SI",true
-						);
-				MyChartToFileUtils.plotNoLegend(
-						MyArrayUtils.convertToDoublePrimitive(speedCASList_SI),
-						MyArrayUtils.convertToDoublePrimitive(altitudeList_SI),
-						null, null, 0.0, null,
-						"Speed(CAS)", "Altitude",
-						"m/s", "m",
-						cruiseFolderPath, "Cruise_flight_envelope_CAS_SI",true
-						);
-				MyChartToFileUtils.plotNoLegend(
-						MyArrayUtils.convertToDoublePrimitive(machList),
-						MyArrayUtils.convertToDoublePrimitive(altitudeList_SI),
-						null, null, 0.0, null,
-						"Mach", "Altitude",
-						"", "m",
-						cruiseFolderPath, "Cruise_flight_envelope_MACH_SI",true
-						);
-				MyChartToFileUtils.plotNoLegend(
-						MyArrayUtils.convertToDoublePrimitive(speedTASList_Imperial),
-						MyArrayUtils.convertToDoublePrimitive(altitudeList_Imperial),
-						null, null, 0.0, null,
-						"Speed(TAS)", "Altitude",
-						"kn", "ft",
-						cruiseFolderPath, "Cruise_flight_envelope_TAS_IMPERIAL",true
-						);
-				MyChartToFileUtils.plotNoLegend(
-						MyArrayUtils.convertToDoublePrimitive(speedCASList_Imperial),
-						MyArrayUtils.convertToDoublePrimitive(altitudeList_Imperial),
-						null, null, 0.0, null,
-						"Speed(CAS)", "Altitude",
-						"kn", "ft",
-						cruiseFolderPath, "Cruise_flight_envelope_CAS_IMPERIAL",true
-						);
-				MyChartToFileUtils.plotNoLegend(
-						MyArrayUtils.convertToDoublePrimitive(machList),
-						MyArrayUtils.convertToDoublePrimitive(altitudeList_Imperial),
-						null, null, 0.0, null,
-						"Mach", "Altitude",
-						"", "ft",
-						cruiseFolderPath, "Cruise_flight_envelope_MACH_IMPERIAL",true
-						);
-				
 			}
-			
+
 			if(_thePerformanceInterface.getPlotList().contains(PerformancePlotEnum.EFFICIENCY_CURVES)) {
-				
-				//--------------------------------------------------------------------
-				// ALTITUDE PARAMETERIZATION AT FIXED WEIGHT
-				List<Double[]> speedListAltitudeParameterization_TAS_SI = new ArrayList<>();
-				List<Double[]> speedListAltitudeParameterization_TAS_Imperial = new ArrayList<>();
-				List<Double[]> speedListAltitudeParameterization_CAS_SI = new ArrayList<>();
-				List<Double[]> speedListAltitudeParameterization_CAS_Imperial = new ArrayList<>();
-				List<Double[]> machListAltitudeParameterization = new ArrayList<>();
-				List<Double[]> efficiencyListAltitudeParameterization = new ArrayList<>();
-				List<String> legendAltitude_SI = new ArrayList<>();
-				List<String> legendAltitude_Imperial = new ArrayList<>();
-				for(int i=0; i<_thePerformanceInterface.getAltitudeListCruise().size(); i++) {
-				
-					double sigma = OperatingConditions.getAtmosphere(
-							_thePerformanceInterface.getAltitudeListCruise().get(i).doubleValue(SI.METER)
-							).getDensity()*1000/1.225; 
-					
-					double speedOfSound = OperatingConditions.getAtmosphere(
-							_thePerformanceInterface.getAltitudeListCruise().get(i).doubleValue(SI.METER)
-							).getSpeedOfSound(); 
-					
-					speedListAltitudeParameterization_TAS_SI.add(
-							MyArrayUtils.convertFromDoubleToPrimitive(
-									_dragListAltitudeParameterizationMap.get(xcg).get(i).getSpeed()
-									.stream().mapToDouble(x -> x.doubleValue(SI.METERS_PER_SECOND)).toArray()
-									)
-							);
-					speedListAltitudeParameterization_TAS_Imperial.add(
-							MyArrayUtils.convertFromDoubleToPrimitive(
-									_dragListAltitudeParameterizationMap.get(xcg).get(i).getSpeed()
-									.stream().mapToDouble(x -> x.doubleValue(NonSI.KNOT)).toArray()
-									)
-							);
-					speedListAltitudeParameterization_CAS_SI.add(
-							MyArrayUtils.convertFromDoubleToPrimitive(
-									_dragListAltitudeParameterizationMap.get(xcg).get(i).getSpeed()
-									.stream().mapToDouble(x -> x.doubleValue(SI.METERS_PER_SECOND)*Math.sqrt(sigma)).toArray()
-									)
-							);
-					speedListAltitudeParameterization_CAS_Imperial.add(
-							MyArrayUtils.convertFromDoubleToPrimitive(
-									_dragListAltitudeParameterizationMap.get(xcg).get(i).getSpeed()
-									.stream()
-									.mapToDouble(x -> x.doubleValue(SI.METERS_PER_SECOND)*Math.sqrt(sigma))
-									.toArray()
-									)
-							);
-					machListAltitudeParameterization.add(
-							MyArrayUtils.convertFromDoubleToPrimitive(
-									_dragListAltitudeParameterizationMap.get(xcg).get(i).getSpeed()
-									.stream().mapToDouble(x -> x.doubleValue(SI.METERS_PER_SECOND)/speedOfSound)
-									.toArray()
-									)
-							);
-					efficiencyListAltitudeParameterization.add(
-							MyArrayUtils.convertFromDoubleToPrimitive(
-									MyArrayUtils.convertToDoublePrimitive(
-											_efficiencyAltitudeMap.get(xcg).get(
-													"Altitude = " + _dragListAltitudeParameterizationMap.get(xcg).get(i).getAltitude()
-													)
-											)
-									)
-							);
-					legendAltitude_SI.add("Altitude = " + _dragListAltitudeParameterizationMap.get(xcg).get(i).getAltitude().doubleValue(SI.METER));
-					legendAltitude_Imperial.add("Altitude = " + _dragListAltitudeParameterizationMap.get(xcg).get(i).getAltitude().doubleValue(NonSI.FOOT));
+				if(cruiseEfficiencyErrorFlag == false) {
+
+					//--------------------------------------------------------------------
+					// ALTITUDE PARAMETERIZATION AT FIXED WEIGHT
+					List<Double[]> speedListAltitudeParameterization_TAS_SI = new ArrayList<>();
+					List<Double[]> speedListAltitudeParameterization_TAS_Imperial = new ArrayList<>();
+					List<Double[]> speedListAltitudeParameterization_CAS_SI = new ArrayList<>();
+					List<Double[]> speedListAltitudeParameterization_CAS_Imperial = new ArrayList<>();
+					List<Double[]> machListAltitudeParameterization = new ArrayList<>();
+					List<Double[]> efficiencyListAltitudeParameterization = new ArrayList<>();
+					List<String> legendAltitude_SI = new ArrayList<>();
+					List<String> legendAltitude_Imperial = new ArrayList<>();
+					for(int i=0; i<_thePerformanceInterface.getAltitudeListCruise().size(); i++) {
+
+						double sigma = OperatingConditions.getAtmosphere(
+								_thePerformanceInterface.getAltitudeListCruise().get(i).doubleValue(SI.METER)
+								).getDensity()*1000/1.225; 
+
+						double speedOfSound = OperatingConditions.getAtmosphere(
+								_thePerformanceInterface.getAltitudeListCruise().get(i).doubleValue(SI.METER)
+								).getSpeedOfSound(); 
+
+						speedListAltitudeParameterization_TAS_SI.add(
+								MyArrayUtils.convertFromDoubleToPrimitive(
+										_dragListAltitudeParameterizationMap.get(xcg).get(i).getSpeed()
+										.stream().mapToDouble(x -> x.doubleValue(SI.METERS_PER_SECOND)).toArray()
+										)
+								);
+						speedListAltitudeParameterization_TAS_Imperial.add(
+								MyArrayUtils.convertFromDoubleToPrimitive(
+										_dragListAltitudeParameterizationMap.get(xcg).get(i).getSpeed()
+										.stream().mapToDouble(x -> x.doubleValue(NonSI.KNOT)).toArray()
+										)
+								);
+						speedListAltitudeParameterization_CAS_SI.add(
+								MyArrayUtils.convertFromDoubleToPrimitive(
+										_dragListAltitudeParameterizationMap.get(xcg).get(i).getSpeed()
+										.stream().mapToDouble(x -> x.doubleValue(SI.METERS_PER_SECOND)*Math.sqrt(sigma)).toArray()
+										)
+								);
+						speedListAltitudeParameterization_CAS_Imperial.add(
+								MyArrayUtils.convertFromDoubleToPrimitive(
+										_dragListAltitudeParameterizationMap.get(xcg).get(i).getSpeed()
+										.stream()
+										.mapToDouble(x -> x.doubleValue(SI.METERS_PER_SECOND)*Math.sqrt(sigma))
+										.toArray()
+										)
+								);
+						machListAltitudeParameterization.add(
+								MyArrayUtils.convertFromDoubleToPrimitive(
+										_dragListAltitudeParameterizationMap.get(xcg).get(i).getSpeed()
+										.stream().mapToDouble(x -> x.doubleValue(SI.METERS_PER_SECOND)/speedOfSound)
+										.toArray()
+										)
+								);
+						efficiencyListAltitudeParameterization.add(
+								MyArrayUtils.convertFromDoubleToPrimitive(
+										MyArrayUtils.convertToDoublePrimitive(
+												_efficiencyAltitudeMap.get(xcg).get(
+														"Altitude = " + _dragListAltitudeParameterizationMap.get(xcg).get(i).getAltitude()
+														)
+												)
+										)
+								);
+						legendAltitude_SI.add("Altitude = " + _dragListAltitudeParameterizationMap.get(xcg).get(i).getAltitude().doubleValue(SI.METER));
+						legendAltitude_Imperial.add("Altitude = " + _dragListAltitudeParameterizationMap.get(xcg).get(i).getAltitude().doubleValue(NonSI.FOOT));
+					}
+
+					try {
+						MyChartToFileUtils.plot(
+								speedListAltitudeParameterization_TAS_SI, efficiencyListAltitudeParameterization,
+								"Efficiency curves at different altitudes",
+								"Speed (TAS)", "Efficiency",
+								null, null, null, null,
+								"m/s", "",
+								true, legendAltitude_SI,
+								cruiseFolderPath, "Efficiency_curves_altitude_TAS_SI",
+								_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
+								);
+						MyChartToFileUtils.plot(
+								speedListAltitudeParameterization_CAS_SI, efficiencyListAltitudeParameterization,
+								"Efficiency curves at different altitudes",
+								"Speed (CAS)", "Efficiency",
+								null, null, null, null,
+								"m/s", "",
+								true, legendAltitude_SI,
+								cruiseFolderPath, "Efficiency_curves_altitude_CAS_SI",
+								_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
+								);
+						MyChartToFileUtils.plot(
+								machListAltitudeParameterization, efficiencyListAltitudeParameterization,
+								"Efficiency curves at different altitudes",
+								"Mach", "Efficiency",
+								null, null, null, null,
+								" ", " ",
+								true, legendAltitude_SI,
+								cruiseFolderPath, "Efficiency_curves_altitude_Mach_SI",
+								_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
+								);
+						MyChartToFileUtils.plot(
+								speedListAltitudeParameterization_TAS_Imperial, efficiencyListAltitudeParameterization,
+								"Efficiency curves at different altitudes",
+								"Speed (TAS)", "Efficiency",
+								null, null, null, null,
+								"kn", "",
+								true, legendAltitude_Imperial,
+								cruiseFolderPath, "Efficiency_curves_altitude_TAS_IMPERIAL",
+								_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
+								);
+						MyChartToFileUtils.plot(
+								speedListAltitudeParameterization_CAS_Imperial, efficiencyListAltitudeParameterization,
+								"Efficiency curves at different altitudes",
+								"Speed (CAS)", "Efficiency",
+								null, null, null, null,
+								"kn", "",
+								true, legendAltitude_Imperial,
+								cruiseFolderPath, "Efficiency_curves_altitude_CAS_IMPERIAL",
+								_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
+								);
+						MyChartToFileUtils.plot(
+								machListAltitudeParameterization, efficiencyListAltitudeParameterization,
+								"Efficiency curves at different altitudes",
+								"Mach", "Efficiency",
+								null, null, null, null,
+								" ", " ",
+								true, legendAltitude_Imperial,
+								cruiseFolderPath, "Efficiency_curves_altitude_Mach_IMPERIAL",
+								_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
+								);
+					} catch (InstantiationException | IllegalAccessException e) {
+						System.err.println("ERROR: (PERFORMANCE - CRUISE EFFICIENCY) PLOT WILL BE SKIPPED ...");
+					}
+
+					//--------------------------------------------------------------------
+					// WEIGHT PARAMETERIZATION AT FIXED ALTITUDE
+					List<Double[]> speedListWeightParameterization_TAS_SI = new ArrayList<>();
+					List<Double[]> speedListWeightParameterization_TAS_Imperial = new ArrayList<>();
+					List<Double[]> speedListWeightParameterization_CAS_SI = new ArrayList<>();
+					List<Double[]> speedListWeightParameterization_CAS_Imperial = new ArrayList<>();
+					List<Double[]> machListWeightParameterization = new ArrayList<>();
+					List<Double[]> efficiencyListWeightParameterization = new ArrayList<>();
+					List<String> legendWeight = new ArrayList<>();
+					for(int i=0; i<_weightListCruiseMap.get(xcg).size(); i++) {
+
+						double sigma = OperatingConditions.getAtmosphere(
+								_thePerformanceInterface.getTheOperatingConditions().getAltitudeCruise().doubleValue(SI.METER)
+								).getDensity()*1000/1.225; 
+
+						double speedOfSound = OperatingConditions.getAtmosphere(
+								_thePerformanceInterface.getTheOperatingConditions().getAltitudeCruise().doubleValue(SI.METER)
+								).getSpeedOfSound(); 
+
+						speedListWeightParameterization_TAS_SI.add(
+								MyArrayUtils.convertFromDoubleToPrimitive(
+										_dragListWeightParameterizationMap.get(xcg).get(i).getSpeed()
+										.stream().mapToDouble(x -> x.doubleValue(SI.METERS_PER_SECOND)).toArray()
+										)
+								);
+						speedListWeightParameterization_TAS_Imperial.add(
+								MyArrayUtils.convertFromDoubleToPrimitive(
+										_dragListWeightParameterizationMap.get(xcg).get(i).getSpeed()
+										.stream().mapToDouble(x -> x.doubleValue(NonSI.KNOT)).toArray()
+										)
+								);
+						speedListWeightParameterization_CAS_SI.add(
+								MyArrayUtils.convertFromDoubleToPrimitive(
+										_dragListWeightParameterizationMap.get(xcg).get(i).getSpeed()
+										.stream().mapToDouble(x -> x.doubleValue(SI.METERS_PER_SECOND)*Math.sqrt(sigma))
+										.toArray()
+										)
+								);
+						speedListWeightParameterization_CAS_Imperial.add(
+								MyArrayUtils.convertFromDoubleToPrimitive(
+										_dragListWeightParameterizationMap.get(xcg).get(i).getSpeed()
+										.stream()
+										.mapToDouble(x -> x.doubleValue(SI.METERS_PER_SECOND)*Math.sqrt(sigma))
+										.toArray()
+										)
+								);
+						machListWeightParameterization.add(
+								MyArrayUtils.convertFromDoubleToPrimitive(
+										_dragListWeightParameterizationMap.get(xcg).get(i).getSpeed()
+										.stream().mapToDouble(x -> x.doubleValue(SI.METERS_PER_SECOND)/speedOfSound).toArray()
+										)
+								);
+						efficiencyListWeightParameterization.add(
+								MyArrayUtils.convertFromDoubleToPrimitive(
+										MyArrayUtils.convertToDoublePrimitive(
+												_efficiencyWeightMap.get(xcg).get(
+														"Weight = " + _dragListWeightParameterizationMap.get(xcg).get(i).getWeight()
+														)
+												)
+										)
+								);
+						legendWeight.add("Weight = " + _dragListWeightParameterizationMap.get(xcg).get(i).getWeight());
+					}
+
+					try {
+						MyChartToFileUtils.plot(
+								speedListWeightParameterization_TAS_SI, efficiencyListWeightParameterization,
+								"Efficiency curves at different weights",
+								"Speed (TAS)", "Efficiency",
+								null, null, null, null,
+								"m/s", "",
+								true, legendWeight,
+								cruiseFolderPath, "Efficiency_curves_weights_TAS_SI",
+								_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
+								);
+						MyChartToFileUtils.plot(
+								speedListWeightParameterization_CAS_SI, efficiencyListWeightParameterization,
+								"Efficiency curves at different weights",
+								"Speed (CAS)", "Efficiency",
+								null, null, null, null,
+								"m/s", "",
+								true, legendWeight,
+								cruiseFolderPath, "Efficiency_curves_weights_CAS_SI",
+								_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
+								);
+						MyChartToFileUtils.plot(
+								speedListWeightParameterization_TAS_Imperial, efficiencyListWeightParameterization,
+								"Efficiency curves at different weights",
+								"Speed (TAS)", "Efficiency",
+								null, null, null, null,
+								"kn", "",
+								true, legendWeight,
+								cruiseFolderPath, "Efficiency_curves_weights_TAS_IMPERIAL",
+								_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
+								);
+						MyChartToFileUtils.plot(
+								speedListWeightParameterization_CAS_Imperial, efficiencyListWeightParameterization,
+								"Efficiency curves at different weights",
+								"Speed (CAS)", "Efficiency",
+								null, null, null, null,
+								"kn", "",
+								true, legendWeight,
+								cruiseFolderPath, "Efficiency_curves_weights_CAS_IMPERIAL",
+								_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
+								);
+						MyChartToFileUtils.plot(
+								machListWeightParameterization, efficiencyListWeightParameterization,
+								"Efficiency curves at different weights",
+								"Mach", "Efficiency",
+								null, null, null, null,
+								" ", " ",
+								true, legendWeight,
+								cruiseFolderPath, "Efficiency_curves_weights_Mach",
+								_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
+								);
+					} catch (InstantiationException | IllegalAccessException e) {
+						System.err.println("ERROR: (PERFORMANCE - CRUISE EFFICIENCY) PLOT WILL BE SKIPPED ...");
+					}
 				}
-				
-				try {
-					MyChartToFileUtils.plot(
-							speedListAltitudeParameterization_TAS_SI, efficiencyListAltitudeParameterization,
-							"Efficiency curves at different altitudes",
-							"Speed (TAS)", "Efficiency",
-							null, null, null, null,
-							"m/s", "",
-							true, legendAltitude_SI,
-							cruiseFolderPath, "Efficiency_curves_altitude_TAS_SI",
-							_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
-							);
-					MyChartToFileUtils.plot(
-							speedListAltitudeParameterization_CAS_SI, efficiencyListAltitudeParameterization,
-							"Efficiency curves at different altitudes",
-							"Speed (CAS)", "Efficiency",
-							null, null, null, null,
-							"m/s", "",
-							true, legendAltitude_SI,
-							cruiseFolderPath, "Efficiency_curves_altitude_CAS_SI",
-							_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
-							);
-					MyChartToFileUtils.plot(
-							machListAltitudeParameterization, efficiencyListAltitudeParameterization,
-							"Efficiency curves at different altitudes",
-							"Mach", "Efficiency",
-							null, null, null, null,
-							" ", " ",
-							true, legendAltitude_SI,
-							cruiseFolderPath, "Efficiency_curves_altitude_Mach_SI",
-							_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
-							);
-					MyChartToFileUtils.plot(
-							speedListAltitudeParameterization_TAS_Imperial, efficiencyListAltitudeParameterization,
-							"Efficiency curves at different altitudes",
-							"Speed (TAS)", "Efficiency",
-							null, null, null, null,
-							"kn", "",
-							true, legendAltitude_Imperial,
-							cruiseFolderPath, "Efficiency_curves_altitude_TAS_IMPERIAL",
-							_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
-							);
-					MyChartToFileUtils.plot(
-							speedListAltitudeParameterization_CAS_Imperial, efficiencyListAltitudeParameterization,
-							"Efficiency curves at different altitudes",
-							"Speed (CAS)", "Efficiency",
-							null, null, null, null,
-							"kn", "",
-							true, legendAltitude_Imperial,
-							cruiseFolderPath, "Efficiency_curves_altitude_CAS_IMPERIAL",
-							_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
-							);
-					MyChartToFileUtils.plot(
-							machListAltitudeParameterization, efficiencyListAltitudeParameterization,
-							"Efficiency curves at different altitudes",
-							"Mach", "Efficiency",
-							null, null, null, null,
-							" ", " ",
-							true, legendAltitude_Imperial,
-							cruiseFolderPath, "Efficiency_curves_altitude_Mach_IMPERIAL",
-							_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
-							);
-				} catch (InstantiationException e) {
-					e.printStackTrace();
-				} catch (IllegalAccessException e) {
-					e.printStackTrace();
-				}
-				
-				//--------------------------------------------------------------------
-				// WEIGHT PARAMETERIZATION AT FIXED ALTITUDE
-				List<Double[]> speedListWeightParameterization_TAS_SI = new ArrayList<>();
-				List<Double[]> speedListWeightParameterization_TAS_Imperial = new ArrayList<>();
-				List<Double[]> speedListWeightParameterization_CAS_SI = new ArrayList<>();
-				List<Double[]> speedListWeightParameterization_CAS_Imperial = new ArrayList<>();
-				List<Double[]> machListWeightParameterization = new ArrayList<>();
-				List<Double[]> efficiencyListWeightParameterization = new ArrayList<>();
-				List<String> legendWeight = new ArrayList<>();
-				for(int i=0; i<_weightListCruiseMap.get(xcg).size(); i++) {
-					
-					double sigma = OperatingConditions.getAtmosphere(
-							_thePerformanceInterface.getTheOperatingConditions().getAltitudeCruise().doubleValue(SI.METER)
-							).getDensity()*1000/1.225; 
-					
-					double speedOfSound = OperatingConditions.getAtmosphere(
-							_thePerformanceInterface.getTheOperatingConditions().getAltitudeCruise().doubleValue(SI.METER)
-							).getSpeedOfSound(); 
-					
-					speedListWeightParameterization_TAS_SI.add(
-							MyArrayUtils.convertFromDoubleToPrimitive(
-									_dragListWeightParameterizationMap.get(xcg).get(i).getSpeed()
-									.stream().mapToDouble(x -> x.doubleValue(SI.METERS_PER_SECOND)).toArray()
-									)
-							);
-					speedListWeightParameterization_TAS_Imperial.add(
-							MyArrayUtils.convertFromDoubleToPrimitive(
-									_dragListWeightParameterizationMap.get(xcg).get(i).getSpeed()
-									.stream().mapToDouble(x -> x.doubleValue(NonSI.KNOT)).toArray()
-									)
-							);
-					speedListWeightParameterization_CAS_SI.add(
-							MyArrayUtils.convertFromDoubleToPrimitive(
-									_dragListWeightParameterizationMap.get(xcg).get(i).getSpeed()
-									.stream().mapToDouble(x -> x.doubleValue(SI.METERS_PER_SECOND)*Math.sqrt(sigma))
-									.toArray()
-									)
-							);
-					speedListWeightParameterization_CAS_Imperial.add(
-							MyArrayUtils.convertFromDoubleToPrimitive(
-									_dragListWeightParameterizationMap.get(xcg).get(i).getSpeed()
-									.stream()
-									.mapToDouble(x -> x.doubleValue(SI.METERS_PER_SECOND)*Math.sqrt(sigma))
-									.toArray()
-									)
-							);
-					machListWeightParameterization.add(
-							MyArrayUtils.convertFromDoubleToPrimitive(
-									_dragListWeightParameterizationMap.get(xcg).get(i).getSpeed()
-									.stream().mapToDouble(x -> x.doubleValue(SI.METERS_PER_SECOND)/speedOfSound).toArray()
-									)
-							);
-					efficiencyListWeightParameterization.add(
-							MyArrayUtils.convertFromDoubleToPrimitive(
-									MyArrayUtils.convertToDoublePrimitive(
-											_efficiencyWeightMap.get(xcg).get(
-													"Weight = " + _dragListWeightParameterizationMap.get(xcg).get(i).getWeight()
-													)
-											)
-									)
-							);
-					legendWeight.add("Weight = " + _dragListWeightParameterizationMap.get(xcg).get(i).getWeight());
-				}
-				
-				try {
-					MyChartToFileUtils.plot(
-							speedListWeightParameterization_TAS_SI, efficiencyListWeightParameterization,
-							"Efficiency curves at different weights",
-							"Speed (TAS)", "Efficiency",
-							null, null, null, null,
-							"m/s", "",
-							true, legendWeight,
-							cruiseFolderPath, "Efficiency_curves_weights_TAS_SI",
-							_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
-							);
-					MyChartToFileUtils.plot(
-							speedListWeightParameterization_CAS_SI, efficiencyListWeightParameterization,
-							"Efficiency curves at different weights",
-							"Speed (CAS)", "Efficiency",
-							null, null, null, null,
-							"m/s", "",
-							true, legendWeight,
-							cruiseFolderPath, "Efficiency_curves_weights_CAS_SI",
-							_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
-							);
-					MyChartToFileUtils.plot(
-							speedListWeightParameterization_TAS_Imperial, efficiencyListWeightParameterization,
-							"Efficiency curves at different weights",
-							"Speed (TAS)", "Efficiency",
-							null, null, null, null,
-							"kn", "",
-							true, legendWeight,
-							cruiseFolderPath, "Efficiency_curves_weights_TAS_IMPERIAL",
-							_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
-							);
-					MyChartToFileUtils.plot(
-							speedListWeightParameterization_CAS_Imperial, efficiencyListWeightParameterization,
-							"Efficiency curves at different weights",
-							"Speed (CAS)", "Efficiency",
-							null, null, null, null,
-							"kn", "",
-							true, legendWeight,
-							cruiseFolderPath, "Efficiency_curves_weights_CAS_IMPERIAL",
-							_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
-							);
-					MyChartToFileUtils.plot(
-							machListWeightParameterization, efficiencyListWeightParameterization,
-							"Efficiency curves at different weights",
-							"Mach", "Efficiency",
-							null, null, null, null,
-							" ", " ",
-							true, legendWeight,
-							cruiseFolderPath, "Efficiency_curves_weights_Mach",
-							_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
-							);
-				} catch (InstantiationException e) {
-					e.printStackTrace();
-				} catch (IllegalAccessException e) {
-					e.printStackTrace();
-				}
-				
 			}
-			
+
 			if(_thePerformanceInterface.getPlotList().contains(PerformancePlotEnum.CRUISE_GRID_CHART)) {
-				
-				List<Double[]> specificRange = new ArrayList<>();
-				List<Double[]> sfc = new ArrayList<>();
-				List<Double[]> mach = new ArrayList<>();
-				List<String> legend = new ArrayList<>();
-				
-				for(int i=0; i<_specificRangeMap.get(xcg).size(); i++) {
-					specificRange.add(MyArrayUtils.convertFromDoubleToPrimitive(_specificRangeMap.get(xcg).get(i).getSpecificRange()));
-					sfc.add(MyArrayUtils.convertFromDoubleToPrimitive(_specificRangeMap.get(xcg).get(i).getSfc()));
-					mach.add(MyArrayUtils.convertFromDoubleToPrimitive(_specificRangeMap.get(xcg).get(i).getMach()));
-					legend.add("Mass = " + _specificRangeMap.get(xcg).get(i).getWeight().doubleValue(SI.KILOGRAM));
+				if(cruiseGridErrorFlag == false) {
+
+					List<Double[]> specificRange = new ArrayList<>();
+					List<Double[]> sfc = new ArrayList<>();
+					List<Double[]> mach = new ArrayList<>();
+					List<String> legend = new ArrayList<>();
+
+					for(int i=0; i<_specificRangeMap.get(xcg).size(); i++) {
+						specificRange.add(MyArrayUtils.convertFromDoubleToPrimitive(_specificRangeMap.get(xcg).get(i).getSpecificRange()));
+						sfc.add(MyArrayUtils.convertFromDoubleToPrimitive(_specificRangeMap.get(xcg).get(i).getSfc()));
+						mach.add(MyArrayUtils.convertFromDoubleToPrimitive(_specificRangeMap.get(xcg).get(i).getMach()));
+						legend.add("Mass = " + _specificRangeMap.get(xcg).get(i).getWeight().doubleValue(SI.KILOGRAM));
+					}
+
+					try {
+						SpecificRangeCalc.createSpecificRangeChart(
+								specificRange,
+								mach,
+								legend,
+								cruiseFolderPath,
+								_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
+								);
+						SpecificRangeCalc.createSfcChart(
+								sfc,
+								mach,
+								legend,
+								cruiseFolderPath,
+								_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
+								);
+					} catch (InstantiationException | IllegalAccessException e) {
+						System.err.println("ERROR: (PERFORMANCE - CRUISE GRID) PLOT WILL BE SKIPPED ...");
+					}
+
 				}
-				
-				try {
-					SpecificRangeCalc.createSpecificRangeChart(
-							specificRange,
-							mach,
-							legend,
-							cruiseFolderPath,
-							_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
-							);
-					SpecificRangeCalc.createSfcChart(
-							sfc,
-							mach,
-							legend,
-							cruiseFolderPath,
-							_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
-							);
-				} catch (InstantiationException e) {
-					e.printStackTrace();
-				} catch (IllegalAccessException e) {
-					e.printStackTrace();
-				}
-				
 			}
 		}
 		
@@ -7445,13 +7698,14 @@ public class ACPerformanceManager {
 							_thePerformanceInterface.getInitialALtitudeLanding(),
 							_thePerformanceInterface.getTheOperatingConditions().getAltitudeLanding(),
 							_thePerformanceInterface.getTheOperatingConditions().getDeltaTemperatureLanding(),
-							_thePerformanceInterface.getApproachAngle(),
+							Amount.valueOf(-3, NonSI.DEGREE_ANGLE),
 							_thePerformanceInterface.getMaximumTakeOffMass().times(_thePerformanceInterface.getKLandingWeight()), 
 							_thePerformanceInterface.getTheAircraft().getPowerPlant(),
 							_thePerformanceInterface.getPolarCLLanding().get(xcg),
 							_thePerformanceInterface.getPolarCDLanding().get(xcg), 
 							_thePerformanceInterface.getTheAircraft().getWing().getAspectRatio(),
-							_thePerformanceInterface.getTheAircraft().getWing().getSurfacePlanform(), 
+							_thePerformanceInterface.getTheAircraft().getWing().getSurfacePlanform(),
+							_thePerformanceInterface.getTheAircraft().getFuselage().getHeightFromGround(),
 							_thePerformanceInterface.getFreeRollDuration(),
 							_thePerformanceInterface.getMuFunction(),
 							_thePerformanceInterface.getMuBrakeFunction(), 
@@ -7461,6 +7715,9 @@ public class ACPerformanceManager {
 							_thePerformanceInterface.getCLZeroLanding().get(xcg),
 							_thePerformanceInterface.getCLAlphaLanding().get(xcg),
 							_thePerformanceInterface.getTheOperatingConditions().getThrottleLanding(),
+							_thePerformanceInterface.getKApproach(),
+							_thePerformanceInterface.getKFlare(),
+							_thePerformanceInterface.getKTouchDown(),
 							_thePerformanceInterface.getCruiseCalibrationFactorThrust(),
 							_thePerformanceInterface.getFlightIdleCalibrationFactorThrust(),
 							_thePerformanceInterface.getGroundIdleCalibrationFactorThrust(),
@@ -7494,7 +7751,7 @@ public class ACPerformanceManager {
 			
 			//------------------------------------------------------------
 			// SIMULATION
-			_theLandingCalculatorMap.get(xcg).calculateLanding(true);
+			_theLandingCalculatorMap.get(xcg).calculateLanding(true, true);
 			
 			// Distances:
 			_groundRollDistanceLandingMap.put(xcg, _theLandingCalculatorMap.get(xcg).getsGround());
@@ -7554,6 +7811,14 @@ public class ACPerformanceManager {
 
 		public void fromMissionProfile(Double xcg) {
 
+			final PrintStream originalOut = System.out;
+			PrintStream filterStream = new PrintStream(new OutputStream() {
+			    public void write(int b) {
+			         // write nothing
+			    }
+			});
+			System.setOut(filterStream);
+			
 			if (_vMCMap.get(xcg) == null) {
 				CalcTakeOff calcTakeOff = new CalcTakeOff();
 				calcTakeOff.calculateVMC(xcg);
@@ -7604,7 +7869,7 @@ public class ACPerformanceManager {
 							_thePerformanceInterface.getKAlphaDot(), 
 							_thePerformanceInterface.getAlphaDotRotation(), 
 							_thePerformanceInterface.getObstacleLanding(), 
-							_thePerformanceInterface.getApproachAngle(), 
+							Amount.valueOf(-3, NonSI.DEGREE_ANGLE), 
 							_thePerformanceInterface.getKCLmaxLanding(), 
 							_thePerformanceInterface.getKApproach(), 
 							_thePerformanceInterface.getKFlare(),
@@ -7629,7 +7894,9 @@ public class ACPerformanceManager {
 			
 			//------------------------------------------------------------
 			// CRUISE MACH AND ALTITUDE
+			System.setOut(originalOut);
 			_thePayloadRangeCalculatorMap.get(xcg).createPayloadRange(_vMCMap.get(xcg).to(SI.METERS_PER_SECOND));
+			System.setOut(filterStream);
 			
 			_rangeAtMaxPayloadMap.put(xcg, _thePayloadRangeCalculatorMap.get(xcg).getRangeAtMaxPayload());
 			_rangeAtDesignPayloadMap.put(xcg, _thePayloadRangeCalculatorMap.get(xcg).getRangeAtDesignPayload());
@@ -7810,14 +8077,13 @@ public class ACPerformanceManager {
 			System.out.println("\t\t\t\tTake-off noise trajectory simulation - 100% MAX-TO :: START");
 			System.setOut(filterStream);
 			_theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).calculateNoiseTakeOffTrajectory(false, null, true, _vMCMap.get(xcg));
-			System.setOut(originalOut);
-			System.out.println("\t\t\t\tTake-off noise trajectory simulation - 100% MAX-TO :: START");
-			System.setOut(filterStream);
-			
 			if(_theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).isRotationSpeedWarningFlag() == true)
-				System.err.println("WARNING: (SIMULATION - TAKE-OFF NOISE TRAJECTORY - 100% MAX-TO) THE CHOSEN VRot IS LESS THAN 1.05*VMC. THIS LATTER WILL BE USED ...");
+				System.err.println("WARNING: (PERFORMANCE - TAKE-OFF NOISE TRAJECTORY - 100% MAX-TO) THE CHOSEN VRot IS LESS THAN 1.05*VMC. THIS LATTER WILL BE USED ...");
 			if(_theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).isTailStrike() == true)
-				System.err.println("WARNING: (SIMULATION - TAKE-OFF NOISE TRAJECTORY - 100% MAX-TO) TAIL STRIKE !! ");
+				System.err.println("WARNING: (PERFORMANCE - TAKE-OFF NOISE TRAJECTORY - 100% MAX-TO) TAIL STRIKE !! ");
+			System.setOut(originalOut);
+			System.out.println("\t\t\t\tTake-off noise trajectory simulation - 100% MAX-TO :: COMPLETE");
+			System.setOut(filterStream);
 			
 			//-----------------------------------------------------------------------------------------------
 			// TAKE-OFF NOISE TRAJECTORY (CUTBACK)
@@ -7825,44 +8091,13 @@ public class ACPerformanceManager {
 			System.out.println("\t\t\t\tTake-off noise trajectory simulation - Lowest Cutback :: START");
 			System.setOut(filterStream);
 			_theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).calculateNoiseTakeOffTrajectory(true, null, true, _vMCMap.get(xcg));
+			if(_theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).isRotationSpeedWarningFlag() == true)
+				System.err.println("WARNING: (PERFORMANCE - TAKE-OFF NOISE TRAJECTORY - LOWEST CUTBACK) THE CHOSEN VRot IS LESS THAN 1.05*VMC. THIS LATTER WILL BE USED ...");
+			if(_theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).isTailStrike() == true)
+				System.err.println("WARNING: (PERFORMANCE - TAKE-OFF NOISE TRAJECTORY - LOWEST CUTBACK) TAIL STRIKE !! ");
 			System.setOut(originalOut);
 			System.out.println("\t\t\t\tTake-off noise trajectory simulation - Lowest Cutback :: COMPLETE");
 			System.setOut(filterStream);
-			
-			if(_theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).isRotationSpeedWarningFlag() == true)
-				System.err.println("WARNING: (SIMULATION - TAKE-OFF NOISE TRAJECTORY - LOWEST CUTBACK) THE CHOSEN VRot IS LESS THAN 1.05*VMC. THIS LATTER WILL BE USED ...");
-			if(_theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).isTailStrike() == true)
-				System.err.println("WARNING: (SIMULATION - TAKE-OFF NOISE TRAJECTORY - LOWEST CUTBACK) TAIL STRIKE !! ");
-			
-			double lowestPhiCutback = _theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).getPhiCutback();
-			if(_thePerformanceInterface.getTakeOffNoiseTrajectoryNumberOfThrustSettingCutback() != 0) {
-				
-				double[] phiArray = MyArrayUtils.linspace( (lowestPhiCutback + 0.1), 0.9, _thePerformanceInterface.getTakeOffNoiseTrajectoryNumberOfThrustSettingCutback());
-
-				//-----------------------------------------------------------------------------------------------
-				// TAKE-OFF NOISE TRAJECTORY (INTERMEDIATE CUTBACKS)
-				Arrays.stream(phiArray).forEach(
-						throttle -> {
-							System.setOut(originalOut);
-							System.out.println("\t\t\t\tTake-off noise trajectory simulation - " + (throttle*100) + "% MAX-TO :: START");
-							System.setOut(filterStream);
-							_theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).calculateNoiseTakeOffTrajectory(
-								true,
-								throttle, 
-								true,
-								_vMCMap.get(xcg)
-								);
-							System.setOut(originalOut);
-							System.out.println("\t\t\t\tTake-off noise trajectory simulation - " + (throttle*100) + "% MAX-TO :: COMPLETE");
-							System.setOut(filterStream);
-							
-							if(_theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).isRotationSpeedWarningFlag() == true)
-								System.err.println("WARNING: (SIMULATION - TAKE-OFF NOISE TRAJECTORY - " + (throttle*100) + "% MAX-TO) THE CHOSEN VRot IS LESS THAN 1.05*VMC. THIS LATTER WILL BE USED ...");
-							if(_theTakeOffNoiseTrajectoryCalculatorMap.get(xcg).isTailStrike() == true)
-								System.err.println("WARNING: (SIMULATION - TAKE-OFF NOISE TRAJECTORY - " + (throttle*100) + "% MAX-TO) TAIL STRIKE !! ");
-						});
-				
-			}
 			
 			//-----------------------------------------------------------------------------------------------
 			// PLOT
@@ -7880,8 +8115,7 @@ public class ACPerformanceManager {
 						e.printStackTrace();
 					}
 				else {
-					System.err.println("TERMINATING ... ");
-					System.exit(1);
+					System.err.println("ERROR: (PERFORMANCE - TAKE-OFF NOISE TRAJECTORY) PLOT WILL BE SKIPPED ...");
 				}
 			}
 		}
@@ -7916,13 +8150,14 @@ public class ACPerformanceManager {
 					xcg,
 					new LandingNoiseTrajectoryCalc(
 							_thePerformanceInterface.getLandingNoiseTrajectoryInitialAltitude(),
-							_thePerformanceInterface.getLandingNoiseTrajectoryTrajectoryAngle(),
+							Amount.valueOf(-3, NonSI.DEGREE_ANGLE),
 							_thePerformanceInterface.getMaximumTakeOffMass().times(_thePerformanceInterface.getKLandingWeight()),
 							_thePerformanceInterface.getTheAircraft().getPowerPlant(),
 							_thePerformanceInterface.getPolarCLLanding().get(xcg),
 							_thePerformanceInterface.getPolarCDLanding().get(xcg),
 							_thePerformanceInterface.getTheAircraft().getWing().getAspectRatio(), 
 							_thePerformanceInterface.getTheAircraft().getWing().getSurfacePlanform(),
+							_thePerformanceInterface.getTheAircraft().getFuselage().getHeightFromGround(),
 							_thePerformanceInterface.getFreeRollDuration(),
 							_thePerformanceInterface.getMuFunction(), 
 							_thePerformanceInterface.getMuBrakeFunction(),
@@ -7932,6 +8167,9 @@ public class ACPerformanceManager {
 							_thePerformanceInterface.getCLZeroLanding().get(xcg),
 							_thePerformanceInterface.getCLAlphaLanding().get(xcg),
 							_thePerformanceInterface.getTheOperatingConditions().getThrottleLanding(),
+							_thePerformanceInterface.getKApproach(),
+							_thePerformanceInterface.getKFlare(),
+							_thePerformanceInterface.getKTouchDown(),
 							_thePerformanceInterface.getCruiseCalibrationFactorThrust(),
 							_thePerformanceInterface.getFlightIdleCalibrationFactorThrust(),
 							_thePerformanceInterface.getGroundIdleCalibrationFactorThrust(),
@@ -7968,8 +8206,7 @@ public class ACPerformanceManager {
 						e.printStackTrace();
 					}
 				else {
-					System.err.println("TERMINATING ... ");
-					System.exit(1);
+					System.err.println("ERROR: (PERFORMANCE - LANDING NOISE TRAJECTORY) PLOT WILL BE SKIPPED ...");
 				}
 			}
 		}
@@ -8033,7 +8270,7 @@ public class ACPerformanceManager {
 							_thePerformanceInterface.getKAlphaDot(), 
 							_thePerformanceInterface.getAlphaDotRotation(), 
 							_thePerformanceInterface.getObstacleLanding(), 
-							_thePerformanceInterface.getApproachAngle(), 
+							Amount.valueOf(-3, NonSI.DEGREE_ANGLE), 
 							_thePerformanceInterface.getKCLmaxLanding(), 
 							_thePerformanceInterface.getKApproach(), 
 							_thePerformanceInterface.getKFlare(),

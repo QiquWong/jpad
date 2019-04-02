@@ -329,38 +329,32 @@ public class MyChartToFileUtils {
 		List<Double> yMinArray = new ArrayList<>();
 		List<Double> yMaxArray = new ArrayList<>();
 		
-		if (xMin != null) 
-			chartFactory.setxMin(xMin);
-		else {
+		if(xMin == null) {
 			for(int i=0; i<xArrays.length; i++)
 				xMinArray.add(MyArrayUtils.getMin(xArrays[i]));
-			chartFactory.setxMin(MyArrayUtils.getMin(xMinArray));
+			xMin = Double.valueOf(MyArrayUtils.getMin(xMinArray)).equals(null) ? xMinArray.get(0) : MyArrayUtils.getMin(xMinArray);
 		}
-		if (xMax != null) 
-			chartFactory.setxMax(xMax);
-		else {
+		if (xMax == null) { 
 			for(int i=0; i<xArrays.length; i++)
 				xMaxArray.add(MyArrayUtils.getMax(xArrays[i]));
-			chartFactory.setxMax(MyArrayUtils.getMax(xMaxArray));
+			xMax = Double.valueOf(MyArrayUtils.getMax(xMaxArray)).equals(null) ? xMaxArray.get(0) : MyArrayUtils.getMax(xMaxArray);
 		}
-		if (yMin != null)
-			chartFactory.setyMin(yMin);
-		else {
+		if (yMin == null) {
 			for(int i=0; i<yArrays.length; i++)
 				yMinArray.add(MyArrayUtils.getMin(yArrays[i]));
-			chartFactory.setyMin(MyArrayUtils.getMin(yMinArray));
+			yMin = Double.valueOf(MyArrayUtils.getMin(yMinArray)).equals(null) ? yMinArray.get(0) : MyArrayUtils.getMin(yMinArray);
 		}
-		if (yMax != null)
-			chartFactory.setyMax(yMax);
-		else {
+		if (yMax == null) {
 			for(int i=0; i<yArrays.length; i++)
 				yMaxArray.add(MyArrayUtils.getMax(yArrays[i]));
-			chartFactory.setyMax(MyArrayUtils.getMax(yMaxArray));
+			yMax = Double.valueOf(MyArrayUtils.getMax(yMaxArray)).equals(null) ? yMaxArray.get(0) : MyArrayUtils.getMax(yMaxArray);
 		}
 		
-		if(xMin==xMax || yMin==yMax) {
-			System.err.println("WARNING (PLOT) - RANGE OR DOMAIN ARE EQUAL TO ZERO! THE CHART WILL NOT BE CREATED!");
-			return;
+		if(xMin.equals(xMax)) {
+			xMax = xMin + 100; // VALUE USED TO SET A DOMAIN DIFFERENT FROM ZERO AVOIDING RUNTIME ERRORS ON ALL ZERO CHARTS
+		}
+		if(yMin.equals(yMax)) {
+			yMax = yMin + 100; // VALUE USED TO SET A RANGE DIFFERENT FROM ZERO AVOIDING RUNTIME ERRORS ON ALL ZERO CHARTS
 		}
 		
 		chartFactory.createMultiTraceScatterPlot(xArrays, yArrays);
@@ -454,39 +448,34 @@ public class MyChartToFileUtils {
 		List<Double> yMinArray = new ArrayList<>();
 		List<Double> yMaxArray = new ArrayList<>();
 		
-		if (xMin != null) 
-			chartFactory.setxMin(xMin);
-		else {
+		if(xMin == null) {
 			for(int i=0; i<xArrays.length; i++)
 				xMinArray.add(MyArrayUtils.getMin(xArrays[i]));
-			chartFactory.setxMin(MyArrayUtils.getMin(xMinArray));
+			xMin = Double.valueOf(MyArrayUtils.getMin(xMinArray)).equals(null) ? xMinArray.get(0) : MyArrayUtils.getMin(xMinArray);
 		}
-		if (xMax != null) 
-			chartFactory.setxMax(xMax);
-		else {
+		if (xMax == null) {
 			for(int i=0; i<xArrays.length; i++)
 				xMaxArray.add(MyArrayUtils.getMax(xArrays[i]));
-			chartFactory.setxMax(MyArrayUtils.getMax(xMaxArray));
+			xMax = Double.valueOf(MyArrayUtils.getMax(xMaxArray)).equals(null) ? xMaxArray.get(0) : MyArrayUtils.getMax(xMaxArray);
 		}
-		if (yMin != null)
-			chartFactory.setyMin(yMin);
-		else {
+		if (yMin == null) {
 			for(int i=0; i<yArrays.length; i++)
 				yMinArray.add(MyArrayUtils.getMin(yArrays[i]));
-			chartFactory.setyMin(MyArrayUtils.getMin(yMinArray));
+			yMin = Double.valueOf(MyArrayUtils.getMin(yMinArray)).equals(null) ? yMinArray.get(0) : MyArrayUtils.getMin(yMinArray);
 		}
-		if (yMax != null)
-			chartFactory.setyMax(yMax);
-		else {
+		if (yMax == null) {
 			for(int i=0; i<yArrays.length; i++)
 				yMaxArray.add(MyArrayUtils.getMax(yArrays[i]));
-			chartFactory.setyMax(MyArrayUtils.getMax(yMaxArray));
+			yMax = Double.valueOf(MyArrayUtils.getMax(yMaxArray)).equals(null) ? yMaxArray.get(0) : MyArrayUtils.getMax(yMaxArray);
 		}
 		
-//		if(xMin==xMax || yMin==yMax) {
-//			System.err.println("WARNING (PLOT) - RANGE OR DOMAIN ARE EQUAL TO ZERO! THE CHART WILL NOT BE CREATED!");
-//			return;
-//		}
+		if(xMin.equals(xMax)) {
+			xMax = xMin + 100; // VALUE USED TO SET A DOMAIN DIFFERENT FROM ZERO AVOIDING RUNTIME ERRORS ON ALL ZERO CHARTS
+		}
+		if(yMin.equals(yMax)) {
+			yMax = yMin + 100; // VALUE USED TO SET A RANGE DIFFERENT FROM ZERO AVOIDING RUNTIME ERRORS ON ALL ZERO CHARTS
+		}
+			
 		
 		chartFactory.createMultiTraceChart();
 		
@@ -557,39 +546,33 @@ public class MyChartToFileUtils {
 		List<Double> yMinArray = new ArrayList<>();
 		List<Double> yMaxArray = new ArrayList<>();
 		
-		if (xMin != null) 
-			chartFactory.setxMin(xMin);
-		else {
+		if(xMin == null) {
 			for(int i=0; i<xArrays.size(); i++)
 				xMinArray.add(MyArrayUtils.getMin(xArrays.get(i)));
-			chartFactory.setxMin(MyArrayUtils.getMin(xMinArray));
+			xMin = Double.valueOf(MyArrayUtils.getMin(xMinArray)).equals(null) ? xMinArray.get(0) : MyArrayUtils.getMin(xMinArray);
 		}
-		if (xMax != null) 
-			chartFactory.setxMax(xMax);
-		else {
+		if (xMax == null) { 
 			for(int i=0; i<xArrays.size(); i++)
 				xMaxArray.add(MyArrayUtils.getMax(xArrays.get(i)));
-			chartFactory.setxMax(MyArrayUtils.getMax(xMaxArray));
+			xMax = Double.valueOf(MyArrayUtils.getMax(xMaxArray)).equals(null) ? xMaxArray.get(0) : MyArrayUtils.getMax(xMaxArray);
 		}
-		if (yMin != null)
-			chartFactory.setyMin(yMin);
-		else {
+		if (yMin == null) {
 			for(int i=0; i<yArrays.size(); i++)
 				yMinArray.add(MyArrayUtils.getMin(yArrays.get(i)));
-			chartFactory.setyMin(MyArrayUtils.getMin(yMinArray));
+			yMin = Double.valueOf(MyArrayUtils.getMin(yMinArray)).equals(null) ? yMinArray.get(0) : MyArrayUtils.getMin(yMinArray);
 		}
-		if (yMax != null)
-			chartFactory.setyMax(yMax);
-		else {
+		if (yMax == null) {
 			for(int i=0; i<yArrays.size(); i++)
 				yMaxArray.add(MyArrayUtils.getMax(yArrays.get(i)));
-			chartFactory.setyMax(MyArrayUtils.getMax(yMaxArray));
+			yMax = Double.valueOf(MyArrayUtils.getMax(yMaxArray)).equals(null) ? yMaxArray.get(0) : MyArrayUtils.getMax(yMaxArray);
 		}
 		
-//		if(xMin==xMax || yMin==yMax) {
-//			System.err.println("WARNING (PLOT) - RANGE OR DOMAIN ARE EQUAL TO ZERO! THE CHART WILL NOT BE CREATED!");
-//			return;
-//		}
+		if(xMin.equals(xMax)) {
+			xMax = xMin + 100; // VALUE USED TO SET A DOMAIN DIFFERENT FROM ZERO AVOIDING RUNTIME ERRORS ON ALL ZERO CHARTS
+		}
+		if(yMin.equals(yMax)) {
+			yMax = yMin + 100; // VALUE USED TO SET A RANGE DIFFERENT FROM ZERO AVOIDING RUNTIME ERRORS ON ALL ZERO CHARTS
+		}
 		
 
 		chartFactory.createMultiTraceChart();
@@ -718,40 +701,33 @@ public class MyChartToFileUtils {
 		List<Double> yMinArray = new ArrayList<>();
 		List<Double> yMaxArray = new ArrayList<>();
 		
-		if (xMin != null) 
-			chartFactory.setxMin(xMin);
-		else {
+		if(xMin == null) {
 			for(int i=0; i<xArrays.length; i++)
 				xMinArray.add(MyArrayUtils.getMin(xArrays[i]));
-			chartFactory.setxMin(MyArrayUtils.getMin(xMinArray));
+			xMin = Double.valueOf(MyArrayUtils.getMin(xMinArray)).equals(null) ? xMinArray.get(0) : MyArrayUtils.getMin(xMinArray);
 		}
-		if (xMax != null) 
-			chartFactory.setxMax(xMax);
-		else {
+		if (xMax == null) { 
 			for(int i=0; i<xArrays.length; i++)
 				xMaxArray.add(MyArrayUtils.getMax(xArrays[i]));
-			chartFactory.setxMax(MyArrayUtils.getMax(xMaxArray));
+			xMax = Double.valueOf(MyArrayUtils.getMax(xMaxArray)).equals(null) ? xMaxArray.get(0) : MyArrayUtils.getMax(xMaxArray);
 		}
-		if (yMin != null)
-			chartFactory.setyMin(yMin);
-		else {
+		if (yMin == null) {
 			for(int i=0; i<yArrays.length; i++)
 				yMinArray.add(MyArrayUtils.getMin(yArrays[i]));
-			chartFactory.setyMin(MyArrayUtils.getMin(yMinArray));
+			yMin = Double.valueOf(MyArrayUtils.getMin(yMinArray)).equals(null) ? yMinArray.get(0) : MyArrayUtils.getMin(yMinArray);
 		}
-		if (yMax != null)
-			chartFactory.setyMax(yMax);
-		else {
+		if (yMax == null) {
 			for(int i=0; i<yArrays.length; i++)
 				yMaxArray.add(MyArrayUtils.getMax(yArrays[i]));
-			chartFactory.setyMax(MyArrayUtils.getMax(yMaxArray));
+			yMax = Double.valueOf(MyArrayUtils.getMax(yMaxArray)).equals(null) ? yMaxArray.get(0) : MyArrayUtils.getMax(yMaxArray);
 		}
 		
-//		if(xMin==xMax || yMin==yMax) {
-//			System.err.println("WARNING (PLOT) - RANGE OR DOMAIN ARE EQUAL TO ZERO! THE CHART WILL NOT BE CREATED!");
-//			return;
-//		}
-		
+		if(xMin.equals(xMax)) {
+			xMax = xMin + 100; // VALUE USED TO SET A DOMAIN DIFFERENT FROM ZERO AVOIDING RUNTIME ERRORS ON ALL ZERO CHARTS
+		}
+		if(yMin.equals(yMax)) {
+			yMax = yMin + 100; // VALUE USED TO SET A RANGE DIFFERENT FROM ZERO AVOIDING RUNTIME ERRORS ON ALL ZERO CHARTS
+		}
 
 		chartFactory.createMultiTraceChart();
 		
@@ -810,68 +786,38 @@ public class MyChartToFileUtils {
 		chartFactory.setXarrays(xArrays);
 		chartFactory.setYarrays(yArrays);
 
-		// minimum and maximum of Lists research
+		List<Double> xMinArray = new ArrayList<>();
+		List<Double> xMaxArray = new ArrayList<>();
+		List<Double> yMinArray = new ArrayList<>();
+		List<Double> yMaxArray = new ArrayList<>();
+		
 		if(xMin == null) {
-			xMin = 0.0;
-			Double[] xMinArray = new Double[xArrays.length];
-			for(int i=0; i<xArrays.length; i++) 
-				xMinArray[i] = MyArrayUtils.getMin(
-						MyArrayUtils.convertDoubleArrayToListDouble(
-								MyArrayUtils.convertFromDoubleToPrimitive(
-										xArrays[i]
-										)
-								)
-						);
-			xMin = MyArrayUtils.getMin(xMinArray);
+			for(int i=0; i<xArrays.length; i++)
+				xMinArray.add(MyArrayUtils.getMin(xArrays[i]));
+			xMin = Double.valueOf(MyArrayUtils.getMin(xMinArray)).equals(null) ? xMinArray.get(0) : MyArrayUtils.getMin(xMinArray);
+		}
+		if (xMax == null) { 
+			for(int i=0; i<xArrays.length; i++)
+				xMaxArray.add(MyArrayUtils.getMax(xArrays[i]));
+			xMax = Double.valueOf(MyArrayUtils.getMax(xMaxArray)).equals(null) ? xMaxArray.get(0) : MyArrayUtils.getMax(xMaxArray);
+		}
+		if (yMin == null) {
+			for(int i=0; i<yArrays.length; i++)
+				yMinArray.add(MyArrayUtils.getMin(yArrays[i]));
+			yMin = Double.valueOf(MyArrayUtils.getMin(yMinArray)).equals(null) ? yMinArray.get(0) : MyArrayUtils.getMin(yMinArray);
+		}
+		if (yMax == null) {
+			for(int i=0; i<yArrays.length; i++)
+				yMaxArray.add(MyArrayUtils.getMax(yArrays[i]));
+			yMax = Double.valueOf(MyArrayUtils.getMax(yMaxArray)).equals(null) ? yMaxArray.get(0) : MyArrayUtils.getMax(yMaxArray);
 		}
 		
-		if(xMax == null) {
-			xMax = 0.0;
-			Double[] xMaxArray = new Double[xArrays.length];
-			for(int i=0; i<xArrays.length; i++) 
-				xMaxArray[i] = MyArrayUtils.getMax(
-						MyArrayUtils.convertDoubleArrayToListDouble(
-								MyArrayUtils.convertFromDoubleToPrimitive(
-										xArrays[i]
-										)
-								)
-						);			
-			xMax = MyArrayUtils.getMax(xMaxArray);
+		if(xMin.equals(xMax)) {
+			xMax = xMin + 100; // VALUE USED TO SET A DOMAIN DIFFERENT FROM ZERO AVOIDING RUNTIME ERRORS ON ALL ZERO CHARTS
 		}
-		
-		if(yMin == null) {
-			yMin = 0.0;
-			Double[] yMinArray = new Double[yArrays.length];
-			for(int i=0; i<yArrays.length; i++) 
-				yMinArray[i] = MyArrayUtils.getMin(
-						MyArrayUtils.convertDoubleArrayToListDouble(
-								MyArrayUtils.convertFromDoubleToPrimitive(
-										yArrays[i]
-										)
-								)
-						);			
-			yMin = MyArrayUtils.getMin(yMinArray);
+		if(yMin.equals(yMax)) {
+			yMax = yMin + 100; // VALUE USED TO SET A RANGE DIFFERENT FROM ZERO AVOIDING RUNTIME ERRORS ON ALL ZERO CHARTS
 		}
-		
-		if(yMax == null) {
-			yMax = 0.0;
-			Double[] yMaxArray = new Double[yArrays.length];
-			for(int i=0; i<yArrays.length; i++) 
-				yMaxArray[i] = MyArrayUtils.getMax(
-						MyArrayUtils.convertDoubleArrayToListDouble(
-								MyArrayUtils.convertFromDoubleToPrimitive(
-										yArrays[i]
-										)
-								)
-						);			
-			yMax = MyArrayUtils.getMax(yMaxArray);
-		}
-		
-//		if(xMin==xMax || yMin==yMax) {
-//			System.err.println("WARNING (PLOT) - RANGE OR DOMAIN ARE EQUAL TO ZERO! THE CHART WILL NOT BE CREATED!");
-//			return;
-//		}
-		
 		
 		chartFactory.setxMin(xMin - Math.abs(0.1*Math.max(Math.abs(xMax), Math.abs(xMin))));
 		chartFactory.setxMax(xMax + Math.abs(0.1*Math.max(Math.abs(xMax), Math.abs(xMin))));
@@ -1018,68 +964,38 @@ public class MyChartToFileUtils {
 		chartFactory.setXarrays(xArrays);
 		chartFactory.setYarrays(yArrays);
 
-		// minimum and maximum of Lists research
+		List<Double> xMinArray = new ArrayList<>();
+		List<Double> xMaxArray = new ArrayList<>();
+		List<Double> yMinArray = new ArrayList<>();
+		List<Double> yMaxArray = new ArrayList<>();
+		
 		if(xMin == null) {
-			xMin = 0.0;
-			Double[] xMinArray = new Double[xArrays.length];
-			for(int i=0; i<xArrays.length; i++) 
-				xMinArray[i] = MyArrayUtils.getMin(
-						MyArrayUtils.convertDoubleArrayToListDouble(
-								MyArrayUtils.convertFromDoubleToPrimitive(
-										xArrays[i]
-										)
-								)
-						);
-			xMin = MyArrayUtils.getMin(xMinArray);
+			for(int i=0; i<xArrays.length; i++)
+				xMinArray.add(MyArrayUtils.getMin(xArrays[i]));
+			xMin = Double.valueOf(MyArrayUtils.getMin(xMinArray)).equals(null) ? xMinArray.get(0) : MyArrayUtils.getMin(xMinArray);
+		}
+		if (xMax == null) { 
+			for(int i=0; i<xArrays.length; i++)
+				xMaxArray.add(MyArrayUtils.getMax(xArrays[i]));
+			xMax = Double.valueOf(MyArrayUtils.getMax(xMaxArray)).equals(null) ? xMaxArray.get(0) : MyArrayUtils.getMax(xMaxArray);
+		}
+		if (yMin == null) {
+			for(int i=0; i<yArrays.length; i++)
+				yMinArray.add(MyArrayUtils.getMin(yArrays[i]));
+			yMin = Double.valueOf(MyArrayUtils.getMin(yMinArray)).equals(null) ? yMinArray.get(0) : MyArrayUtils.getMin(yMinArray);
+		}
+		if (yMax == null) {
+			for(int i=0; i<yArrays.length; i++)
+				yMaxArray.add(MyArrayUtils.getMax(yArrays[i]));
+			yMax = Double.valueOf(MyArrayUtils.getMax(yMaxArray)).equals(null) ? yMaxArray.get(0) : MyArrayUtils.getMax(yMaxArray);
 		}
 		
-		if(xMax == null) {
-			xMax = 0.0;
-			Double[] xMaxArray = new Double[xArrays.length];
-			for(int i=0; i<xArrays.length; i++) 
-				xMaxArray[i] = MyArrayUtils.getMax(
-						MyArrayUtils.convertDoubleArrayToListDouble(
-								MyArrayUtils.convertFromDoubleToPrimitive(
-										xArrays[i]
-										)
-								)
-						);			
-			xMax = MyArrayUtils.getMax(xMaxArray);
+		if(xMin.equals(xMax)) {
+			xMax = xMin + 100; // VALUE USED TO SET A DOMAIN DIFFERENT FROM ZERO AVOIDING RUNTIME ERRORS ON ALL ZERO CHARTS
 		}
-		
-		if(yMin == null) {
-			yMin = 0.0;
-			Double[] yMinArray = new Double[yArrays.length];
-			for(int i=0; i<yArrays.length; i++) 
-				yMinArray[i] = MyArrayUtils.getMin(
-						MyArrayUtils.convertDoubleArrayToListDouble(
-								MyArrayUtils.convertFromDoubleToPrimitive(
-										yArrays[i]
-										)
-								)
-						);			
-			yMin = MyArrayUtils.getMin(yMinArray);
+		if(yMin.equals(yMax)) {
+			yMax = yMin + 100; // VALUE USED TO SET A RANGE DIFFERENT FROM ZERO AVOIDING RUNTIME ERRORS ON ALL ZERO CHARTS
 		}
-		
-		if(yMax == null) {
-			yMax = 0.0;
-			Double[] yMaxArray = new Double[yArrays.length];
-			for(int i=0; i<yArrays.length; i++) 
-				yMaxArray[i] = MyArrayUtils.getMax(
-						MyArrayUtils.convertDoubleArrayToListDouble(
-								MyArrayUtils.convertFromDoubleToPrimitive(
-										yArrays[i]
-										)
-								)
-						);			
-			yMax = MyArrayUtils.getMax(yMaxArray);
-		}
-		
-//		if(xMin==xMax || yMin==yMax) {
-//			System.err.println("WARNING (PLOT) - RANGE OR DOMAIN ARE EQUAL TO ZERO! THE CHART WILL NOT BE CREATED!");
-//			return;
-//		}
-//		
 		
 		chartFactory.setxMin(xMin - Math.abs(0.1*Math.max(Math.abs(xMax), Math.abs(xMin))));
 		chartFactory.setxMax(xMax + Math.abs(0.1*Math.max(Math.abs(xMax), Math.abs(xMin))));
@@ -1230,44 +1146,38 @@ public class MyChartToFileUtils {
 		if (!xUnit.equals("")) xUnit = "(" + xUnit + ")"; 
 		if (!yUnit.equals("")) yUnit = "(" + yUnit + ")";
 		
-		// minimum and maximum of Lists research
+		List<Double> xMinArray = new ArrayList<>();
+		List<Double> xMaxArray = new ArrayList<>();
+		List<Double> yMinArray = new ArrayList<>();
+		List<Double> yMaxArray = new ArrayList<>();
+		
 		if(xMin == null) {
-			xMin = 0.0;
-			Double[] xMinArray = new Double[xList.size()];
-			for(int i=0; i<xList.size(); i++) 
-				xMinArray[i] = MyArrayUtils.getMin(xList.get(i));
-			xMin = MyArrayUtils.getMin(xMinArray);
+			for(int i=0; i<xList.size(); i++)
+				xMinArray.add(MyArrayUtils.getMin(xList.get(i)));
+			xMin = Double.valueOf(MyArrayUtils.getMin(xMinArray)).equals(null) ? xMinArray.get(0) : MyArrayUtils.getMin(xMinArray);
+		}
+		if (xMax == null) { 
+			for(int i=0; i<xList.size(); i++)
+				xMaxArray.add(MyArrayUtils.getMax(xList.get(i)));
+			xMax = Double.valueOf(MyArrayUtils.getMax(xMaxArray)).equals(null) ? xMaxArray.get(0) : MyArrayUtils.getMax(xMaxArray);
+		}
+		if (yMin == null) {
+			for(int i=0; i<yList.size(); i++)
+				yMinArray.add(MyArrayUtils.getMin(yList.get(i)));
+			yMin = Double.valueOf(MyArrayUtils.getMin(yMinArray)).equals(null) ? yMinArray.get(0) : MyArrayUtils.getMin(yMinArray);
+		}
+		if (yMax == null) {
+			for(int i=0; i<yList.size(); i++)
+				yMaxArray.add(MyArrayUtils.getMax(yList.get(i)));
+			yMax = Double.valueOf(MyArrayUtils.getMax(yMaxArray)).equals(null) ? yMaxArray.get(0) : MyArrayUtils.getMax(yMaxArray);
 		}
 		
-		if(xMax == null) {
-			xMax = 0.0;
-			Double[] xMaxArray = new Double[xList.size()];
-			for(int i=0; i<xList.size(); i++) 
-				xMaxArray[i] = MyArrayUtils.getMax(xList.get(i));			
-			xMax = MyArrayUtils.getMax(xMaxArray);
+		if(xMin.equals(xMax)) {
+			xMax = xMin + 100; // VALUE USED TO SET A DOMAIN DIFFERENT FROM ZERO AVOIDING RUNTIME ERRORS ON ALL ZERO CHARTS
 		}
-		
-		if(yMin == null) {
-			yMin = 0.0;
-			Double[] yMinArray = new Double[yList.size()];
-			for(int i=0; i<xList.size(); i++) 
-				yMinArray[i] = MyArrayUtils.getMin(yList.get(i));			
-			yMin = MyArrayUtils.getMin(yMinArray);
+		if(yMin.equals(yMax)) {
+			yMax = yMin + 100; // VALUE USED TO SET A RANGE DIFFERENT FROM ZERO AVOIDING RUNTIME ERRORS ON ALL ZERO CHARTS
 		}
-		
-		if(yMax == null) {
-			yMax = 0.0;
-			Double[] yMaxArray = new Double[yList.size()];
-			for(int i=0; i<xList.size(); i++) 
-				yMaxArray[i] = MyArrayUtils.getMax(yList.get(i));			
-			yMax = MyArrayUtils.getMax(yMaxArray);
-		}
-		
-		if(xMin==xMax || yMin==yMax) {
-			System.err.println("WARNING (PLOT) - RANGE OR DOMAIN ARE EQUAL TO ZERO! THE CHART WILL NOT BE CREATED!");
-			return;
-		}
-		
 		
 		JFreeChart chart = ChartFactory.createXYLineChart(
 				chartName,	 					// Title
@@ -1411,44 +1321,39 @@ public class MyChartToFileUtils {
 		if (!xUnit.equals("")) xUnit = "(" + xUnit + ")"; 
 		if (!yUnit.equals("")) yUnit = "(" + yUnit + ")";
 		
-		// minimum and maximum of Lists research
+		List<Double> xMinArray = new ArrayList<>();
+		List<Double> xMaxArray = new ArrayList<>();
+		List<Double> yMinArray = new ArrayList<>();
+		List<Double> yMaxArray = new ArrayList<>();
+		
 		if(xMin == null) {
-			xMin = 0.0;
-			Double[] xMinArray = new Double[xList.size()];
-			for(int i=0; i<xList.size(); i++) 
-				xMinArray[i] = MyArrayUtils.getMin(xList.get(i));
-			xMin = MyArrayUtils.getMin(xMinArray);
+			for(int i=0; i<xList.size(); i++)
+				xMinArray.add(MyArrayUtils.getMin(xList.get(i)));
+			xMin = Double.valueOf(MyArrayUtils.getMin(xMinArray)).equals(null) ? xMinArray.get(0) : MyArrayUtils.getMin(xMinArray);
 		}
-		
-		if(xMax == null) {
-			xMax = 0.0;
-			Double[] xMaxArray = new Double[xList.size()];
-			for(int i=0; i<xList.size(); i++) 
-				xMaxArray[i] = MyArrayUtils.getMax(xList.get(i));			
-			xMax = MyArrayUtils.getMax(xMaxArray);
+		if (xMax == null) { 
+			for(int i=0; i<xList.size(); i++)
+				xMaxArray.add(MyArrayUtils.getMax(xList.get(i)));
+			xMax = Double.valueOf(MyArrayUtils.getMax(xMaxArray)).equals(null) ? xMaxArray.get(0) : MyArrayUtils.getMax(xMaxArray);
 		}
-		
-		if(yMin == null) {
-			yMin = 0.0;
-			Double[] yMinArray = new Double[yList.size()];
-			for(int i=0; i<xList.size(); i++) 
-				yMinArray[i] = MyArrayUtils.getMin(yList.get(i));			
-			yMin = MyArrayUtils.getMin(yMinArray);
+		if (yMin == null) {
+			for(int i=0; i<yList.size(); i++)
+				yMinArray.add(MyArrayUtils.getMin(yList.get(i)));
+			yMin = Double.valueOf(MyArrayUtils.getMin(yMinArray)).equals(null) ? yMinArray.get(0) : MyArrayUtils.getMin(yMinArray);
 		}
-		
-		if(yMax == null) {
-			yMax = 0.0;
-			Double[] yMaxArray = new Double[yList.size()];
-			for(int i=0; i<xList.size(); i++) 
-				yMaxArray[i] = MyArrayUtils.getMax(yList.get(i));			
-			yMax = MyArrayUtils.getMax(yMaxArray);
+		if (yMax == null) {
+			for(int i=0; i<yList.size(); i++)
+				yMaxArray.add(MyArrayUtils.getMax(yList.get(i)));
+			yMax = Double.valueOf(MyArrayUtils.getMax(yMaxArray)).equals(null) ? yMaxArray.get(0) : MyArrayUtils.getMax(yMaxArray);
 		}
 				
-//		if(xMin==xMax || yMin==yMax) {
-//			System.err.println("WARNING (PLOT) - RANGE OR DOMAIN ARE EQUAL TO ZERO! THE CHART WILL NOT BE CREATED!");
-//			return;
-//		}
-//		
+		if(xMin.equals(xMax)) {
+			xMax = xMin + 100; // VALUE USED TO SET A DOMAIN DIFFERENT FROM ZERO AVOIDING RUNTIME ERRORS ON ALL ZERO CHARTS
+		}
+		if(yMin.equals(yMax)) {
+			yMax = yMin + 100; // VALUE USED TO SET A RANGE DIFFERENT FROM ZERO AVOIDING RUNTIME ERRORS ON ALL ZERO CHARTS
+		}
+				
 		
 		JFreeChart chart = ChartFactory.createXYLineChart(
 				chartName,	 					// Title

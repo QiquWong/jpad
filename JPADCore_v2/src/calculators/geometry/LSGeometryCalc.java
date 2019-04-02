@@ -19,6 +19,7 @@ import aircraft.components.liftingSurface.LiftingSurface;
 import aircraft.components.liftingSurface.LiftingSurface;
 import aircraft.components.liftingSurface.airfoils.Airfoil;
 import aircraft.components.liftingSurface.airfoils.IAirfoil;
+import calculators.aerodynamics.NasaBlackwell;
 import configuration.enumerations.AirfoilFamilyEnum;
 import configuration.enumerations.AirfoilTypeEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
@@ -222,6 +223,143 @@ public class LSGeometryCalc {
 		
 		double xACNapolitano =  mac*k1*(xBarAc-k2);
 		return xACNapolitano;
+	}
+	
+	public static double calcXacPointAtCmConstant(
+			NasaBlackwell theNasaBlackwellCalculator,
+			Amount<Length> liftingSurfaceMAC,
+			Amount<Length> xleMAC,
+			List<Amount<Length>> liftingSurfaceDimensionalY,
+			List<Double> liftingSurfaceCl0Distribution, // all distributions must have the same length!!
+			List<Double> liftingSurfaceCLAlphaDegDistribution,
+			List<Double> liftingSurfaceCmC4Distribution,
+			List<Amount<Length>> liftingSurfaceChordDistribution,
+			List<Amount<Length>> liftingSurfaceXLEDistribution,
+			List<Amount<Length>> liftingSurfaceXACDistribution,
+			Amount<Area> liftingSurfaceArea
+			) {
+		double adimensionalXACwithRespectToMAC = 0.0 ;
+		
+		double xACIterative = 0.25;
+		
+		Double liftingSurfaceMomentCoefficientAlphaOne = 0.0;
+		Double liftingSurfaceMomentCoefficientAlphaTwo = 1.0;
+		double[] distancesArrayAC, clDistributionOne, clDistributionTwo,  cmDistributionFromClOne, cmDistributionFromClTwo,
+		cCmFromClOne, cCmFromClTwo,  cCmFromCM;
+
+		int numberOfPointSemiSpanWise = liftingSurfaceCl0Distribution.size();
+
+			Amount<Angle> alphaOne = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+			Amount<Angle> alphaTwo = Amount.valueOf(6.0, NonSI.DEGREE_ANGLE);
+			Amount<Length> dimensionalMomentumPole = Amount.valueOf(
+					xleMAC.doubleValue(SI.METER) + xACIterative*liftingSurfaceMAC.doubleValue(SI.METER)
+					, SI.METER);
+			
+			while(Math.abs(liftingSurfaceMomentCoefficientAlphaTwo-liftingSurfaceMomentCoefficientAlphaOne) > 0.0005) {
+			clDistributionOne = new double[numberOfPointSemiSpanWise];
+			clDistributionTwo = new double[numberOfPointSemiSpanWise];
+			distancesArrayAC = new double[numberOfPointSemiSpanWise];
+			cmDistributionFromClOne = new double[numberOfPointSemiSpanWise];
+			cmDistributionFromClTwo = new double[numberOfPointSemiSpanWise];
+			cCmFromClOne = new double[numberOfPointSemiSpanWise];
+			cCmFromClTwo = new double[numberOfPointSemiSpanWise];
+			cCmFromCM = new double[numberOfPointSemiSpanWise];
+					
+			theNasaBlackwellCalculator.calculate(alphaOne);
+			clDistributionOne = theNasaBlackwellCalculator.getClTotalDistribution().toArray();
+			
+			theNasaBlackwellCalculator.calculate(alphaTwo);
+			clDistributionTwo = theNasaBlackwellCalculator.getClTotalDistribution().toArray();
+			
+			
+			
+			for (int ii=0; ii<numberOfPointSemiSpanWise; ii++){
+				
+//				if(Double.isNaN(clDistribution[ii]))
+//					clDistribution[ii] = 0.0;
+//				
+//				alphaDistribution [ii] = (clDistribution[ii] - liftingSurfaceCl0Distribution.get(ii))/
+//						liftingSurfaceCLAlphaDegDistribution.get(ii);
+//
+//				if (alphaDistribution[ii]<anglesOfAttack.get(i).doubleValue(NonSI.DEGREE_ANGLE)){
+//					clInducedDistributionAtAlphaNew[ii] =
+//							liftingSurfaceCLAlphaDegDistribution.get(ii)*
+//							alphaDistribution[ii]+
+//							liftingSurfaceCl0Distribution.get(ii);
+//				}
+//				else{
+//					clInducedDistributionAtAlphaNew[ii] = MyMathUtils.getInterpolatedValue1DLinear(
+//							MyArrayUtils.convertListOfAmountTodoubleArray(anglesOfAttackClMatrix),
+//							MyArrayUtils.convertToDoublePrimitive(
+//									MyArrayUtils.convertListOfDoubleToDoubleArray(
+//											airfoilClMatrix.get(ii))),
+//							alphaDistribution[ii]
+//							);
+//				}
+
+				//TODO modify here 
+				distancesArrayAC[ii] =
+						dimensionalMomentumPole.doubleValue(SI.METER) - 
+						(liftingSurfaceXLEDistribution.get(ii).doubleValue(SI.METER) +
+								(liftingSurfaceXACDistribution.get(ii).doubleValue(SI.METER)));
+
+				cmDistributionFromClOne [ii] = clDistributionOne[ii] *  
+						(distancesArrayAC[ii]);
+				
+				cmDistributionFromClTwo [ii] = clDistributionTwo[ii] *  
+						(distancesArrayAC[ii]);
+
+				cCmFromClOne[ii] = cmDistributionFromClOne [ii] * liftingSurfaceChordDistribution.get(ii).doubleValue(SI.METER);
+				cCmFromClTwo[ii] = cmDistributionFromClTwo [ii] * liftingSurfaceChordDistribution.get(ii).doubleValue(SI.METER);
+			
+				cCmFromCM[ii] = liftingSurfaceCmC4Distribution.get(ii) * 
+						liftingSurfaceChordDistribution.get(ii).doubleValue(SI.METER) *
+						liftingSurfaceChordDistribution.get(ii).doubleValue(SI.METER);
+			}
+			
+			cCmFromClOne[numberOfPointSemiSpanWise-1] = 0;
+			cCmFromClTwo[numberOfPointSemiSpanWise-1] = 0;
+			cCmFromCM[numberOfPointSemiSpanWise-1] = 0;
+
+			liftingSurfaceMomentCoefficientAlphaOne =
+					(((2/(liftingSurfaceArea.doubleValue(SI.SQUARE_METRE)*liftingSurfaceMAC.doubleValue(SI.METER))))
+					* 
+					(MyMathUtils.integrate1DSimpsonSpline(
+							MyArrayUtils.convertListOfAmountTodoubleArray(liftingSurfaceDimensionalY),
+							cCmFromClOne)
+					+
+					MyMathUtils.integrate1DSimpsonSpline(
+							MyArrayUtils.convertListOfAmountTodoubleArray(liftingSurfaceDimensionalY),
+							cCmFromCM)));
+			
+			liftingSurfaceMomentCoefficientAlphaTwo =
+					(((2/(liftingSurfaceArea.doubleValue(SI.SQUARE_METRE)*liftingSurfaceMAC.doubleValue(SI.METER))))
+					* 
+					(MyMathUtils.integrate1DSimpsonSpline(
+							MyArrayUtils.convertListOfAmountTodoubleArray(liftingSurfaceDimensionalY),
+							cCmFromClTwo)
+					+
+					MyMathUtils.integrate1DSimpsonSpline(
+							MyArrayUtils.convertListOfAmountTodoubleArray(liftingSurfaceDimensionalY),
+							cCmFromCM)));
+			
+			if(liftingSurfaceMomentCoefficientAlphaTwo < liftingSurfaceMomentCoefficientAlphaOne) {
+			dimensionalMomentumPole = Amount.valueOf(
+	     			xleMAC.doubleValue(SI.METER) + (xACIterative+0.005)*liftingSurfaceMAC.doubleValue(SI.METER)
+	     			, SI.METER);
+			}
+			else {
+				dimensionalMomentumPole = Amount.valueOf(
+		     			xleMAC.doubleValue(SI.METER) + (xACIterative-0.005)*liftingSurfaceMAC.doubleValue(SI.METER)
+		     			, SI.METER);
+			}
+				
+			
+			xACIterative = (dimensionalMomentumPole.doubleValue(SI.METER) - xleMAC.doubleValue(SI.METER))/liftingSurfaceMAC.doubleValue(SI.METER);
+			}
+			adimensionalXACwithRespectToMAC = xACIterative;
+			
+		return adimensionalXACwithRespectToMAC;
 	}
 	
 	public static Amount<Length> calcZacFromIntegral(Amount<Area> liftingSurfaceArea,
