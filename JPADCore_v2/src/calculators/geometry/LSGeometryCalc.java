@@ -380,7 +380,7 @@ public class LSGeometryCalc {
 	}
 	
 	public static Amount<Length> calcYacFromIntegral(Amount<Area> liftingSurfaceArea,
-			List<Amount<Length>> yDimensionalStation, List<Amount<Length>> chordDistribution, List<Amount<Length>> liftingSurfaceDimensionalY) {
+			List<Amount<Length>> yDimensionalStation, List<Amount<Length>> chordDistribution) {
 
 		double [] cY = new double [yDimensionalStation.size()];
 		
@@ -389,7 +389,7 @@ public class LSGeometryCalc {
 		}
 		
 		Amount<Length> yACIntegral =  Amount.valueOf((2/liftingSurfaceArea.doubleValue(SI.SQUARE_METRE))* MyMathUtils.integrate1DSimpsonSpline(
-				MyArrayUtils.convertListOfAmountTodoubleArray(liftingSurfaceDimensionalY),
+				MyArrayUtils.convertListOfAmountTodoubleArray(yDimensionalStation),
 				cY),
 				SI.METER);
 		

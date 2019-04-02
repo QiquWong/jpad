@@ -103,6 +103,13 @@ public class LiftingSurfaceAerodynamicsManager {
 	private Map<MethodEnum, Double> _xacMRF; 
 	private Map<MethodEnum, Amount<Length>> _xacLRF; 
 	
+	// Yac
+	/**
+	 * MRF = Mean aerodynamic chord Reference Frame
+	 * LRF = Local Reference Frame (of the lifting surface)
+	 */
+	private Map<MethodEnum, Amount<Length>> _yacLRF; 
+	
 	// LIFT 
 	private Map <MethodEnum, Amount<Angle>> _alphaZeroLift;
 	private Map <MethodEnum, Amount<Angle>> _alphaStar;
@@ -611,6 +618,8 @@ public class LiftingSurfaceAerodynamicsManager {
 		this._xacMRF = new HashMap<MethodEnum, Double>();
 		this._xacLRF = new HashMap<MethodEnum, Amount<Length>>();
 		
+		this._yacLRF = new HashMap<MethodEnum, Amount<Length>>();
+		
 		this._alphaZeroLift = new HashMap<MethodEnum, Amount<Angle>>();
 		this._alphaStar = new HashMap<MethodEnum, Amount<Angle>>();
 		this._alphaMaxLinear = new HashMap<MethodEnum, Amount<Angle>>();
@@ -875,10 +884,34 @@ public class LiftingSurfaceAerodynamicsManager {
 		}
 
 	}
+	
+	
 	//............................................................................
 	// END OF THE CALC XacCL INNER CLASS
 	//............................................................................
 	
+	//............................................................................
+	// END OF THE CRITICAL MACH INNER CLASS
+	//............................................................................
+
+	//............................................................................
+	// CALC XacCL INNER CLASS
+	//............................................................................
+	/** 
+	 * Evaluate the AC x coordinate relative to MAC
+	 */
+	public class CalcYAC {
+
+		public void withIntegral() {
+			_yacLRF.put(
+					MethodEnum.INTEGRAL_MEAN, 
+					LSGeometryCalc.calcYacFromIntegral(
+							_theLiftingSurface.getSurfacePlanform(),
+							_theLiftingSurface.getDiscretizedYs(),
+							_theLiftingSurface.getDiscretizedChords())
+					);
+		}
+	}
 	//............................................................................
 	// CL AT APLHA INNER CLASS
 	//............................................................................

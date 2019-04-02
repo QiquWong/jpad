@@ -1824,6 +1824,7 @@ public class LiftingSurface {
 			_meanAerodynamicChordLeadingEdgeX = Amount.valueOf(xle,1e-9,SI.METRE);
 		}
 		//======================================================
+		
 		// y_le_mac = (2/S) * int_0^(b/2) yle(y) c(y) dy (if mirrored)
 		// y_le_mac = (1/S) * int_0^(b/2) yle(y) c(y) dy (if not mirrored)
 
@@ -2676,13 +2677,14 @@ public class LiftingSurface {
 			dihedralAtY = null;
 		}
 		
-		for(int i=1; i<_yBreakPoints.size(); i++) {
-			
-			if(yStation <= _yBreakPoints.get(i).doubleValue(SI.METER)
-					&& yStation > _yBreakPoints.get(i-1).doubleValue(SI.METER)
-					)
-				dihedralAtY = _theLiftingSurfaceInterface.getPanels().get(i).getDihedral();
-		}
+		dihedralAtY = Amount.valueOf(
+				MyMathUtils.getInterpolatedValue1DLinear(
+						MyArrayUtils.convertListOfAmountTodoubleArray(_yBreakPoints),
+						MyArrayUtils.convertListOfAmountTodoubleArray(_dihedralsBreakPoints),
+						yStation
+						),
+				NonSI.DEGREE_ANGLE
+				);
 		
 		return dihedralAtY;
 	}

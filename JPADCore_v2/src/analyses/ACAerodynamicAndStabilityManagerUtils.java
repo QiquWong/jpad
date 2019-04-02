@@ -56,6 +56,7 @@ import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcLiftDistrib
 import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcMachCr;
 import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcMomentDistribution;
 import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcXAC;
+import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcYAC;
 import analyses.nacelles.NacelleAerodynamicsManager;
 import calculators.aerodynamics.AerodynamicCalc;
 import calculators.aerodynamics.AlphaEffective;
@@ -163,6 +164,9 @@ public class ACAerodynamicAndStabilityManagerUtils {
 					);
 		}
 //		calcXAC.deYoungHarper();
+		
+		CalcYAC calcYAC = liftingSurfaceAerodynamicManager.new CalcYAC();
+		calcYAC.withIntegral();
 
 		//.........................................................................................................................
 		//	CL_ALPHA
@@ -2086,6 +2090,12 @@ public class ACAerodynamicAndStabilityManagerUtils {
 			IACAerodynamicAndStabilityManager_v2 _theAerodynamicBuilderInterface = aerodynamicAndStabilityManager.getTheAerodynamicBuilderInterface();
 			FuselageAerodynamicsManager fuselageAerodynamicManagers = aerodynamicAndStabilityManager.getFuselageAerodynamicManagers().get(ComponentEnum.FUSELAGE);
 			NacelleAerodynamicsManager nacelleAerodynamicManagers = aerodynamicAndStabilityManager.getNacelleAerodynamicManagers().get(ComponentEnum.NACELLE);
+						
+			Amount.valueOf(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getZApexConstructionAxes().doubleValue(SI.METER) + 
+			_theAerodynamicBuilderInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeY().doubleValue(SI.METER) 
+			* Math.tan(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getDihedralAtYActual(
+					_theAerodynamicBuilderInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeY().doubleValue(SI.METER)).doubleValue(SI.RADIAN))
+					, SI.METER);
 			
 			_theAerodynamicBuilderInterface.getXCGAircraft().stream().forEach(xcg ->{
 				int i = _theAerodynamicBuilderInterface.getXCGAircraft().indexOf(xcg);
@@ -2112,7 +2122,11 @@ public class ACAerodynamicAndStabilityManagerUtils {
 								.get(_theAerodynamicBuilderInterface.getComponentTaskList()
 										.get(ComponentEnum.WING)
 										.get(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER)).plus(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes()), 
-								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getZApexConstructionAxes(), 
+								Amount.valueOf(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getZApexConstructionAxes().doubleValue(SI.METER) + 
+								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeY().doubleValue(SI.METER) 
+								* Math.tan(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getDihedralAtYActual(
+										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeY().doubleValue(SI.METER)).doubleValue(SI.RADIAN))
+										, SI.METER), 
 								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getMeanAerodynamicChord(),
 								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSurfacePlanform(), 
 								aerodynamicAndStabilityManager.getCurrent3DWingLiftCurve(),
