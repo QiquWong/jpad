@@ -2058,11 +2058,12 @@ public class ACAerodynamicAndStabilityManagerUtils {
 			}
 		}
 		
-		for (int i=1; i< temporaryCLCoefficient.size()-1; i++) {
+		for (int i=0; i< temporaryCLCoefficient.size()-1; i++) {
 			if(temporaryCLCoefficient.get(i+1)<temporaryCLCoefficient.get(i)) {
-				temporaryCLCoefficient.set(i+1, temporaryCLCoefficient.get(i) + (Math.abs(temporaryCLCoefficient.get(i+1) - temporaryCLCoefficient.get(i))));
+				temporaryCLCoefficient.set(i+1, temporaryCLCoefficient.get(i) + (Math.abs(temporaryCLCoefficient.get(i+1) - temporaryCLCoefficient.get(i)))+0.01);
 			}
 		}
+		
 		aerodynamicAndStabilityManager.getTotalDragCoefficient().put(
 				de,
 				MyArrayUtils.convertDoubleArrayToListDouble(
@@ -2075,6 +2076,7 @@ public class ACAerodynamicAndStabilityManagerUtils {
 						)
 						)
 				);
+		
 		});
 
 	}

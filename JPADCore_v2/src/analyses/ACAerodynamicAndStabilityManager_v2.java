@@ -2858,8 +2858,8 @@ public class ACAerodynamicAndStabilityManager_v2 {
 			_current3DHorizontalTailLiftCurve.get(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE)).get(i),
 			_current3DHorizontalTailLiftCurve.get(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE)).get(i)
 			*_theAerodynamicBuilderInterface.getHTailDynamicPressureRatio()
-			*_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getTheLiftingSurface().getSurfacePlanform().doubleValue(SI.SQUARE_METRE)/
-			_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getTheLiftingSurface().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
+			*_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getTheLiftingSurface().getSurfacePlanform().doubleValue(SI.SQUARE_METRE)/
+			_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getTheLiftingSurface().getSurfacePlanform().doubleValue(SI.SQUARE_METRE),
 			"",
 			"",
 			_current3DHorizontalTailMomentCurve.get(i),
@@ -2877,11 +2877,11 @@ public class ACAerodynamicAndStabilityManager_v2 {
 					.get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_FUSELAGE))[i],
 			"",
 			_current3DWingLiftCurve.get(i)*Math.cos(_alphaWingList.get(i).doubleValue(SI.RADIAN)),
-			_current3DWingLiftCurve.get(i)*Math.sin(_alphaWingList.get(i).doubleValue(SI.RADIAN)),
+			-_current3DWingLiftCurve.get(i)*Math.sin(_alphaWingList.get(i).doubleValue(SI.RADIAN)),
 			_totalMomentCoefficientBreakDown.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(0)).get(ComponentEnum.WING).get(i),
 			"",
 			_current3DHorizontalTailLiftCurve.get(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE)).get(i)*Math.cos(_alphaHTailList.get(i).doubleValue(SI.RADIAN)),
-			_current3DHorizontalTailLiftCurve.get(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE)).get(i)*Math.sin(_alphaHTailList.get(i).doubleValue(SI.RADIAN)),
+			-_current3DHorizontalTailLiftCurve.get(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE)).get(i)*Math.sin(_alphaHTailList.get(i).doubleValue(SI.RADIAN)),
 			_totalMomentCoefficientBreakDown.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(0)).get(ComponentEnum.HORIZONTAL_TAIL).get(i),
 			"",
 			_fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE)
