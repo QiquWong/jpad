@@ -1341,20 +1341,40 @@ public class Test_01 {
 				System.exit(1);
 			}
 			
+
+			// Inertias
+			double ixx = theAnalysisManager.getTheBalance().getAircraftInertiaMomentIxx().doubleValue(MyUnits.KILOGRAM_METER_SQUARED);
+			double iyy = theAnalysisManager.getTheBalance().getAircraftInertiaMomentIyy().doubleValue(MyUnits.KILOGRAM_METER_SQUARED);
+			double izz = theAnalysisManager.getTheBalance().getAircraftInertiaMomentIzz().doubleValue(MyUnits.KILOGRAM_METER_SQUARED);
+			double ixz = theAnalysisManager.getTheBalance().getAircraftInertiaProductIxz().doubleValue(MyUnits.KILOGRAM_METER_SQUARED);
 			
+			// initial air density (at initial altitude)
+			double rho0 = AtmosphereCalc.getDensity(aircraftPointMassPropagator.getAltitude0(), 0.0); // kg/m^3
+			
+			double speed0 = operatingConditions.getMachCruise()*
+					AtmosphereCalc.getSpeedOfSound(aircraftPointMassPropagator.getAltitude0(), 0.0);
 			
 //			// Adapt P constant
-			double pL_ATR72 = 0.0127;
+			double cm_alpha = -18.697;
+			double pL_ATR72 = // 0.7295;
+					(1./(2.0*Math.PI))*Math.sqrt(
+							(-cm_alpha)*rho0*speed0*speed0
+							*aircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
+							*aircraft.getWing().getMeanAerodynamicChord().doubleValue(SI.METER)
+							/(2.0*iyy)
+							);
+			
+			System.out.println(">>>>>>>>>>> pL_ATR72 = " + pL_ATR72);
+
 			aircraftPointMassPropagator.setpL(
 					Amount.valueOf(pL_ATR72, MyUnits.RADIAN_PER_SECOND)
 					);
 			
-			double pPhi_ATR72 = 3.826;
+			
+			double pPhi_ATR72 =  3.826;
 			aircraftPointMassPropagator.setpL(
 					Amount.valueOf(pPhi_ATR72, MyUnits.RADIAN_PER_SECOND)
 					);
-			
-			
 			
 			
 			//----------------------------------------------------------------------------------------------------
@@ -1362,8 +1382,6 @@ public class Test_01 {
 			// initial mass
 			double mass0 = 53000.0; // kg
 
-			// initial air density (at initial altitude)
-			double rho0 = AtmosphereCalc.getDensity(aircraftPointMassPropagator.getAltitude0(), 0.0); // kg/m^3
 
 			// initial lift
 			double lift0 = mass0*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND)
