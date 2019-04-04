@@ -1011,7 +1011,7 @@ public class Test_01 {
 														2
 														)
 										);
-		double staticMargin = -0.0799;
+		double staticMargin = -0.773;
 		Amount<?> cNpOverCL1AtMachZero = Amount.valueOf(
 				-(
 						aspectRatioWing + 6*(
@@ -1324,6 +1324,7 @@ public class Test_01 {
 
 			}
 
+			
 
 			// CREATION OF THE POINT MASS PROPAGATOR OBJECT. THIS WILL PERFORM THE SIMULATION.
 			AircraftPointMassPropagator aircraftPointMassPropagator = null;
@@ -1339,7 +1340,23 @@ public class Test_01 {
 				System.err.println("Could not import the mission script!");
 				System.exit(1);
 			}
-
+			
+			
+			
+//			// Adapt P constant
+			double pL_ATR72 = 0.0127;
+			aircraftPointMassPropagator.setpL(
+					Amount.valueOf(pL_ATR72, MyUnits.RADIAN_PER_SECOND)
+					);
+			
+			double pPhi_ATR72 = 3.826;
+			aircraftPointMassPropagator.setpL(
+					Amount.valueOf(pPhi_ATR72, MyUnits.RADIAN_PER_SECOND)
+					);
+			
+			
+			
+			
 			//----------------------------------------------------------------------------------------------------
 			// INITIAL DATA (TODO)
 			// initial mass
