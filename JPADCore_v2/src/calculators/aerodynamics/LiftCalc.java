@@ -2219,6 +2219,7 @@ public class LiftCalc {
 		Double horizontalTailDynamicPressureRatio = 0.0;
 		
 		List<Double>  horizontalTailEquilibriumLiftCoefficient = new ArrayList<>();
+		List<Double> outputValues = new ArrayList<>();
 
 		List<Double> canardNormalCoefficient = new ArrayList<>();
 		List<Double> canardHorizontalCoeffient = new ArrayList<>();
@@ -2272,7 +2273,11 @@ public class LiftCalc {
 						.getTheLiftingSurface()
 						.getXApexConstructionAxes());
 		
-		zACWing = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getTheLiftingSurface().getZApexConstructionAxes();
+		zACWing = Amount.valueOf(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getZApexConstructionAxes().doubleValue(SI.METER) + 
+				_theAerodynamicBuilderInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeY().doubleValue(SI.METER) 
+				* Math.tan(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getDihedralAtYActual(
+						_theAerodynamicBuilderInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeY().doubleValue(SI.METER)).doubleValue(SI.RADIAN))
+						, SI.METER);
 		
 		wingMeanAerodynamicChord = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getTheLiftingSurface().getMeanAerodynamicChord();
 		wingSurface = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getTheLiftingSurface().getSurfacePlanform();
@@ -2567,9 +2572,10 @@ public class LiftCalc {
 					);
 		}
 		
-		iValueOfHtailEquilibriumLiftCoefficient += (- landingGearMomentCoefficientWithRespectToCG.get(i));
+		iValueOfHtailEquilibriumLiftCoefficient += ( landingGearMomentCoefficientWithRespectToCG.get(i));
 			}
 
+			
 			
 			horizontalTailEquilibriumLiftCoefficient.add(i,
 					iValueOfHtailEquilibriumLiftCoefficient
