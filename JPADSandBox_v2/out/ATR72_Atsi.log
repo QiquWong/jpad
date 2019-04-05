@@ -1,26 +1,26 @@
 -------------------
 Complete Analysis Test
 -------------------
-AIRCRAFT INPUT ===> D:\agodemar\github\jpad\JPADSandBox_v2\in\Template_Aircraft\aircraft_ATR72_ATsi.xml
-ANALYSES INPUT ===> D:\agodemar\github\jpad\JPADSandBox_v2\in\Template_Analyses\analysis_ATR72_ATsi.xml
-OPERATING CONDITIONS INPUT ===> D:\agodemar\github\jpad\JPADSandBox_v2\in\Template_Analyses\operating_conditions_ATR72.xml
-AIRFOILS ===> D:\agodemar\github\jpad\JPADSandBox_v2\in\Template_Aircraft\lifting_surfaces\airfoils
-FUSELAGES ===> D:\agodemar\github\jpad\JPADSandBox_v2\in\Template_Aircraft\fuselages
-LIFTING SURFACES ===> D:\agodemar\github\jpad\JPADSandBox_v2\in\Template_Aircraft\lifting_surfaces
-ENGINES ===> D:\agodemar\github\jpad\JPADSandBox_v2\in\Template_Aircraft\engines
-NACELLES ===> D:\agodemar\github\jpad\JPADSandBox_v2\in\Template_Aircraft\nacelles
-LANDING GEARS ===> D:\agodemar\github\jpad\JPADSandBox_v2\in\Template_Aircraft\landing_gears
-CABIN CONFIGURATIONS ===> D:\agodemar\github\jpad\JPADSandBox_v2\in\Template_Aircraft\cabin_configurations
+AIRCRAFT INPUT ===> C:\Users\Nancy\JPAD_PROJECT\jpad\JPADSandBox_v2\in\Template_Aircraft\aircraft_ATR72_ATsi.xml
+ANALYSES INPUT ===> C:\Users\Nancy\JPAD_PROJECT\jpad\JPADSandBox_v2\in\Template_Analyses\analysis_ATR72_ATsi.xml
+OPERATING CONDITIONS INPUT ===> C:\Users\Nancy\JPAD_PROJECT\jpad\JPADSandBox_v2\in\Template_Analyses\operating_conditions_ATR72.xml
+AIRFOILS ===> C:\Users\Nancy\JPAD_PROJECT\jpad\JPADSandBox_v2\in\Template_Aircraft\lifting_surfaces\airfoils
+FUSELAGES ===> C:\Users\Nancy\JPAD_PROJECT\jpad\JPADSandBox_v2\in\Template_Aircraft\fuselages
+LIFTING SURFACES ===> C:\Users\Nancy\JPAD_PROJECT\jpad\JPADSandBox_v2\in\Template_Aircraft\lifting_surfaces
+ENGINES ===> C:\Users\Nancy\JPAD_PROJECT\jpad\JPADSandBox_v2\in\Template_Aircraft\engines
+NACELLES ===> C:\Users\Nancy\JPAD_PROJECT\jpad\JPADSandBox_v2\in\Template_Aircraft\nacelles
+LANDING GEARS ===> C:\Users\Nancy\JPAD_PROJECT\jpad\JPADSandBox_v2\in\Template_Aircraft\landing_gears
+CABIN CONFIGURATIONS ===> C:\Users\Nancy\JPAD_PROJECT\jpad\JPADSandBox_v2\in\Template_Aircraft\cabin_configurations
 --------------
-21 [main] INFO ncsa.hdf.hdf5lib.H5 - HDF5 library: jhdf5
-21 [main] INFO ncsa.hdf.hdf5lib.H5 -  successfully loaded from java.library.path
-De-serializing file: D:\agodemar\github\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterAerodynamicDatabase.xml ...
+3128 [main] INFO ncsa.hdf.hdf5lib.H5 - HDF5 library: jhdf5
+3128 [main] INFO ncsa.hdf.hdf5lib.H5 -  successfully loaded from java.library.path
+De-serializing file: C:\Users\Nancy\JPAD_PROJECT\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterAerodynamicDatabase.xml ...
 database.databasefunctions.aerodynamics.AerodynamicDatabaseReader de-serialization complete
-De-serializing file: D:\agodemar\github\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterHighLiftDatabase.xml ...
+De-serializing file: C:\Users\Nancy\JPAD_PROJECT\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterHighLiftDatabase.xml ...
 database.databasefunctions.aerodynamics.HighLiftDatabaseReader de-serialization complete
-De-serializing file: D:\agodemar\github\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterFusDesDatabase.xml ...
+De-serializing file: C:\Users\Nancy\JPAD_PROJECT\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterFusDesDatabase.xml ...
 database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader de-serialization complete
-De-serializing file: D:\agodemar\github\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterVeDSCDatabase.xml ...
+De-serializing file: C:\Users\Nancy\JPAD_PROJECT\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterVeDSCDatabase.xml ...
 database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serialization complete
 
 
@@ -167,8 +167,8 @@ database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serializati
 
 	.....................................
 	                   panel derived data
-	S = 10.854129999999994 mÂ²
-	S_wet = 21.708259999999989 mÂ²
+	S = 10.854129999999994 m²
+	S_wet = 21.708259999999989 m²
 	lambda = 0.9999999999999998
 	AR = 1.5340225563909775
 	c_MAC = 2.6599999999999988 m
@@ -259,8 +259,8 @@ database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serializati
 
 	.....................................
 	                   panel derived data
-	S = 19.64455999999999 mÂ²
-	S_wet = 39.289119999999976 mÂ²
+	S = 19.64455999999999 m²
+	S_wet = 39.289119999999976 m²
 	lambda = 0.5639097744360901
 	AR = 4.540625
 	c_MAC = 2.1339102564102559 m
@@ -354,8 +354,8 @@ database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serializati
 
 	.....................................
 	                   panel derived data
-	S = 30.498689999999975 mÂ²
-	S_wet = 60.99737999999995 mÂ²
+	S = 30.498689999999975 m²
+	S_wet = 60.99737999999995 m²
 	lambda = 0.4983433996857767
 	AR = 5.997819086655852
 	c_MAC = 2.3392446813302676 m
@@ -438,16 +438,16 @@ database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serializati
 	Overall wing derived data
 	Span: 27.04999999999999 m
 	Semi-span: 13.524999999999995 m
-	Surface of planform: 60.997379999999964 mÂ²
-	Surface wetted: 121.99475999999993 mÂ²
+	Surface of planform: 60.997379999999964 m²
+	Surface wetted: 121.99475999999993 m²
 	Aspect-ratio: 11.995638173311704
 	Mean aerodynamic chord: 2.3202352648304085 m
 	(X,Y,Z)_LE of mean aerodynamic chord: [0.20771266480010769 m, 6.1123607460561686 m, 0.0 m]
-	Symmetric Flaps Control surface area: 10.846914749999993 mÂ²
-	Slats Control surface area: 0.0 mÂ²
-	Asymmetric Flaps Control surface area: 4.2740081999999955 mÂ²
-	Spoilers Control surface area: 0.0 mÂ²
-	Total Control surface area: 15.120922949999986 mÂ²
+	Symmetric Flaps Control surface area: 10.846914749999993 m²
+	Slats Control surface area: 0.0 m²
+	Asymmetric Flaps Control surface area: 4.2740081999999955 m²
+	Spoilers Control surface area: 0.0 m²
+	Total Control surface area: 15.120922949999986 m²
 	Transition point upper surface: 0.15
 	Transition point lower surface: 0.12
 	-------------------------------------
@@ -544,8 +544,8 @@ database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serializati
 
 	.....................................
 	                   panel derived data
-	S = 10.854129454910337 mÂ²
-	S_wet = 21.70825890982067 mÂ²
+	S = 10.854129454910337 m²
+	S_wet = 21.70825890982067 m²
 	lambda = 1.0000000000000002
 	AR = 1.5340224793530364
 	c_MAC = 2.6599999999999988 m
@@ -636,8 +636,8 @@ database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serializati
 
 	.....................................
 	                   panel derived data
-	S = 19.64455999999999 mÂ²
-	S_wet = 39.289119999999976 mÂ²
+	S = 19.64455999999999 m²
+	S_wet = 39.289119999999976 m²
 	lambda = 0.5639097744360901
 	AR = 4.540625
 	c_MAC = 2.1339102564102559 m
@@ -731,8 +731,8 @@ database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serializati
 
 	.....................................
 	                   panel derived data
-	S = 30.49868945491032 mÂ²
-	S_wet = 60.99737890982064 mÂ²
+	S = 30.49868945491032 m²
+	S_wet = 60.99737890982064 m²
 	lambda = 0.4983434017177354
 	AR = 5.997819012103083
 	c_MAC = 2.339244674053396 m
@@ -778,16 +778,16 @@ database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serializati
 	Overall wing derived data
 	Span: 27.049999590158144 m
 	Semi-span: 13.524999795079072 m
-	Surface of planform: 60.997378909820654 mÂ²
-	Surface wetted: 121.99475781964128 mÂ²
+	Surface of planform: 60.997378909820654 m²
+	Surface wetted: 121.99475781964128 m²
 	Aspect-ratio: 11.995638024206164
 	Mean aerodynamic chord: 2.3246145816936234 m
 	(X,Y,Z)_LE of mean aerodynamic chord: [0.20638083165970617 m, 6.115971245446962 m, 0.0 m]
-	Symmetric Flaps Control surface area: 0.0 mÂ²
-	Slats Control surface area: 0.0 mÂ²
-	Asymmetric Flaps Control surface area: 0.0 mÂ²
-	Spoilers Control surface area: 0.0 mÂ²
-	Total Control surface area: 0.0 mÂ²
+	Symmetric Flaps Control surface area: 0.0 m²
+	Slats Control surface area: 0.0 m²
+	Asymmetric Flaps Control surface area: 0.0 m²
+	Spoilers Control surface area: 0.0 m²
+	Total Control surface area: 0.0 m²
 	Transition point upper surface: 0.15
 	Transition point lower surface: 0.12
 	-------------------------------------
@@ -884,8 +884,8 @@ database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serializati
 
 	.....................................
 	                   panel derived data
-	S = 5.864492079999998 mÂ²
-	S_wet = 11.728984159999994 mÂ²
+	S = 5.864492079999998 m²
+	S_wet = 11.728984159999994 m²
 	lambda = 0.5700587084148727
 	AR = 2.2777016078773524
 	c_MAC = 1.644708097552868 m
@@ -944,16 +944,16 @@ database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serializati
 	Overall wing derived data
 	Span: 7.3095999999999988 m
 	Semi-span: 3.6547999999999998 m
-	Surface of planform: 11.728984159999996 mÂ²
-	Surface wetted: 23.457968319999985 mÂ²
+	Surface of planform: 11.728984159999996 m²
+	Surface wetted: 23.457968319999985 m²
 	Aspect-ratio: 4.555403215754705
 	Mean aerodynamic chord: 1.6447080942068606 m
 	(X,Y,Z)_LE of mean aerodynamic chord: [0.39683516554913045 m, 1.6605963328320006 m, 0.0 m]
-	Symmetric Flaps Control surface area: 3.3748853759999999 mÂ²
-	Slats Control surface area: 0.0 mÂ²
-	Asymmetric Flaps Control surface area: 0.0 mÂ²
-	Spoilers Control surface area: 0.0 mÂ²
-	Total Control surface area: 3.374885375999999 mÂ²
+	Symmetric Flaps Control surface area: 3.3748853759999999 m²
+	Slats Control surface area: 0.0 m²
+	Asymmetric Flaps Control surface area: 0.0 m²
+	Spoilers Control surface area: 0.0 m²
+	Total Control surface area: 3.374885375999999 m²
 	Transition point upper surface: 0.12
 	Transition point lower surface: 0.12
 	-------------------------------------
@@ -1050,8 +1050,8 @@ database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serializati
 
 	.....................................
 	                   panel derived data
-	S = 14.990199999999996 mÂ²
-	S_wet = 29.980399999999989 mÂ²
+	S = 14.990199999999996 m²
+	S_wet = 29.980399999999989 m²
 	lambda = 0.5746835443037972
 	AR = 1.54983922829582
 	c_MAC = 3.1856270096463004 m
@@ -1110,16 +1110,16 @@ database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serializati
 	Overall wing derived data
 	Span: 4.82 m
 	Semi-span: 4.82 m
-	Surface of planform: 14.990199999999994 mÂ²
-	Surface wetted: 29.980399999999989 mÂ²
+	Surface of planform: 14.990199999999994 m²
+	Surface wetted: 29.980399999999989 m²
 	Aspect-ratio: 1.5498392282958207
 	Mean aerodynamic chord: 3.1856270033371379 m
 	(X,Y,Z)_LE of mean aerodynamic chord: [1.7257385576821953 m, 2.1930225261398739 m, 0.0 m]
-	Symmetric Flaps Control surface area: 11.518289999999997 mÂ²
-	Slats Control surface area: 0.0 mÂ²
-	Asymmetric Flaps Control surface area: 0.0 mÂ²
-	Spoilers Control surface area: 0.0 mÂ²
-	Total Control surface area: 11.518289999999995 mÂ²
+	Symmetric Flaps Control surface area: 11.518289999999997 m²
+	Slats Control surface area: 0.0 m²
+	Asymmetric Flaps Control surface area: 0.0 m²
+	Spoilers Control surface area: 0.0 m²
+	Total Control surface area: 11.518289999999995 m²
 	Transition point upper surface: 0.12
 	Transition point lower surface: 0.12
 	-------------------------------------
@@ -1160,23 +1160,23 @@ database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serializati
 	Fuel tank
 	-------------------------------------
 	ID: 'null'
-	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	·····································
 	Main spar position (% local chord): 0.25
 	Secondary spar position (% local chord): 0.55
-	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	·····································
 	Airfoils thickness at main spar stations: [0.4645783190917968 m, 0.4645783190917968 m, 0.26552048867219336 m]
 	Airfoils thickness at secondary spar stations: [0.40746708352054817 m, 0.40746708352054817 m, 0.23287969904775457 m]
 	Spar distance at each spanwise station: [0.79800000000000026 m, 0.79800000000000026 m, 0.52475303086452429 m]
 	Prismoids length: [4.080499999999998 m, 7.4157499999999965 m]
-	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-	Prismoids spanwise sections areas: [0.34794611564232569 mÂ², 0.34794611564232569 mÂ², 0.1307685045447452 mÂ²]
-	Prismoids volumes: [1.4197941248785089 mÂ³, 1.7106227720064422 mÂ³]
-	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-	Total tank volume: 6.260833793769901 mÂ³
-	Fuel density: 804.0 kg/mÂ³
+	·····································
+	Prismoids spanwise sections areas: [0.34794611564232569 m², 0.34794611564232569 m², 0.1307685045447452 m²]
+	Prismoids volumes: [1.4197941248785089 m³, 1.7106227720064422 m³]
+	·····································
+	Total tank volume: 6.260833793769901 m³
+	Fuel density: 804.0 kg/m³
 	Total fuel mass: 5033.710370191 kg
 	Total fuel weight: 49363.835801833557 N
-	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	·····································
 	-------------------------------------
 	The Power Plant
 	-------------------------------------
@@ -1187,43 +1187,43 @@ database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serializati
 	ID: 'ATR-72 Engine'
 	Type: TURBOPROP
 	Engine database name: EngineDatabaseTP.xlsx
-	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	·····································
 	Length: 2.1299999999999999 m
 	Propeller diameter: 3.9299999999999997 m
 	Number of blades: 6
 	Number of compressor stages: 5
 	Number of shafts: 2
 	Overall pressure ratio: 15.0
-	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	·····································
 	P0: 2750.0 hp
 	T0: 7699.999999999998 lbf
-	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	·····································
 	-------------------------------------
 	Engine nï¿½ 2
 	-------------------------------------
 	ID: 'ATR-72 Engine'
 	Type: TURBOPROP
 	Engine database name: EngineDatabaseTP.xlsx
-	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	·····································
 	Length: 2.1299999999999999 m
 	Propeller diameter: 3.9299999999999997 m
 	Number of blades: 6
 	Number of compressor stages: 5
 	Number of shafts: 2
 	Overall pressure ratio: 15.0
-	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	·····································
 	P0: 2750.0 hp
 	T0: 7699.999999999998 lbf
-	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	·····································
 	-------------------------------------
 	Nacelles
 	-------------------------------------
 	Number of nacelles: 2
 	-------------------------------------
-	Nacelle nï¿½ 1
+	Nacelle n° 1
 	-------------------------------------
 	ID: 'ATR-72 Nacelle'
-	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	·····································
 	Engine ID: 'ATR-72 Engine'
 	Engine type: TURBOPROP
 	Length: 4.371 m
@@ -1236,22 +1236,22 @@ database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serializati
 	X position of the max diameter in LRF: 1.7484 m
 	K_diameter_outlet: 0.0
 	Z position of the outlet diameter in LRF: 0.0 m
-	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	·····································
 	Surface roughness: 0.00000405 m
-	Surface wetted: 19.224662084377375 mÂ²
-	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	Surface wetted: 19.224662084377375 m²
+	·····································
 	Discretization
 	Outline XY - X (m): [0.0, 0.2300526315789474, 0.4601052631578948, 0.6901578947368421, 0.9202105263157896, 1.150263157894737, 1.3803157894736846, 1.6103684210526321, 1.8404210526315796, 2.070473684210527, 2.300526315789474, 2.530578947368422, 2.760631578947369, 2.990684210526317, 3.2207368421052642, 3.450789473684212, 3.6808421052631592, 3.910894736842107, 4.140947368421054, 4.371]
 	Outline XY Left Top View - Y (m): [-0.3898999999999999, -0.44906422401224655, -0.5062874763084997, -0.5596287851727655, -0.6071471788890508, -0.6469016857413616, -0.6769513340137043, -0.6953551519900858, -0.7002066741183519, -0.6909408619656248, -0.6687352383729404, -0.6348837844842943, -0.5906804814436826, -0.5374193103951008, -0.47639425248254463, -0.4088992888500099, -0.3362284006414922, -0.25967556900098754, -0.1805347750724915, -0.10009999999999986]
 	Outline XY Right Top View - Y (m): [0.3898999999999999, 0.44906422401224655, 0.5062874763084997, 0.5596287851727655, 0.6071471788890508, 0.6469016857413616, 0.6769513340137043, 0.6953551519900858, 0.7002066741183519, 0.6909408619656248, 0.6687352383729404, 0.6348837844842943, 0.5906804814436826, 0.5374193103951008, 0.47639425248254463, 0.4088992888500099, 0.3362284006414922, 0.25967556900098754, 0.1805347750724915, 0.10009999999999986]
 	Outline XZ Upper Side View - Z (m): [0.3898999999999999, 0.44906422401224655, 0.5062874763084997, 0.5596287851727655, 0.6071471788890508, 0.6469016857413616, 0.6769513340137043, 0.6953551519900858, 0.7002066741183519, 0.6909408619656248, 0.6687352383729404, 0.6348837844842943, 0.5906804814436826, 0.5374193103951008, 0.47639425248254463, 0.4088992888500099, 0.3362284006414922, 0.25967556900098754, 0.1805347750724915, 0.10009999999999986]
 	Outline XZ Lower Side View - Z (m): [-0.3898999999999999, -0.44906422401224655, -0.5062874763084997, -0.5596287851727655, -0.6071471788890508, -0.6469016857413616, -0.6769513340137043, -0.6953551519900858, -0.7002066741183519, -0.6909408619656248, -0.6687352383729404, -0.6348837844842943, -0.5906804814436826, -0.5374193103951008, -0.47639425248254463, -0.4088992888500099, -0.3362284006414922, -0.25967556900098754, -0.1805347750724915, -0.10009999999999986]
-	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	·····································
 	-------------------------------------
-	Nacelle nï¿½ 2
+	Nacelle n° 2
 	-------------------------------------
 	ID: 'ATR-72 Nacelle'
-	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	·····································
 	Engine ID: 'ATR-72 Engine'
 	Engine type: TURBOPROP
 	Length: 4.371 m
@@ -1264,33 +1264,33 @@ database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serializati
 	X position of the max diameter in LRF: 1.7484 m
 	K_diameter_outlet: 0.0
 	Z position of the outlet diameter in LRF: 0.0 m
-	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	·····································
 	Surface roughness: 0.00000405 m
-	Surface wetted: 19.224662084377375 mÂ²
-	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	Surface wetted: 19.224662084377375 m²
+	·····································
 	Discretization
 	Outline XY - X (m): [0.0, 0.2300526315789474, 0.4601052631578948, 0.6901578947368421, 0.9202105263157896, 1.150263157894737, 1.3803157894736846, 1.6103684210526321, 1.8404210526315796, 2.070473684210527, 2.300526315789474, 2.530578947368422, 2.760631578947369, 2.990684210526317, 3.2207368421052642, 3.450789473684212, 3.6808421052631592, 3.910894736842107, 4.140947368421054, 4.371]
 	Outline XY Left Top View - Y (m): [-0.3898999999999999, -0.44906422401224655, -0.5062874763084997, -0.5596287851727655, -0.6071471788890508, -0.6469016857413616, -0.6769513340137043, -0.6953551519900858, -0.7002066741183519, -0.6909408619656248, -0.6687352383729404, -0.6348837844842943, -0.5906804814436826, -0.5374193103951008, -0.47639425248254463, -0.4088992888500099, -0.3362284006414922, -0.25967556900098754, -0.1805347750724915, -0.10009999999999986]
 	Outline XY Right Top View - Y (m): [0.3898999999999999, 0.44906422401224655, 0.5062874763084997, 0.5596287851727655, 0.6071471788890508, 0.6469016857413616, 0.6769513340137043, 0.6953551519900858, 0.7002066741183519, 0.6909408619656248, 0.6687352383729404, 0.6348837844842943, 0.5906804814436826, 0.5374193103951008, 0.47639425248254463, 0.4088992888500099, 0.3362284006414922, 0.25967556900098754, 0.1805347750724915, 0.10009999999999986]
 	Outline XZ Upper Side View - Z (m): [0.3898999999999999, 0.44906422401224655, 0.5062874763084997, 0.5596287851727655, 0.6071471788890508, 0.6469016857413616, 0.6769513340137043, 0.6953551519900858, 0.7002066741183519, 0.6909408619656248, 0.6687352383729404, 0.6348837844842943, 0.5906804814436826, 0.5374193103951008, 0.47639425248254463, 0.4088992888500099, 0.3362284006414922, 0.25967556900098754, 0.1805347750724915, 0.10009999999999986]
 	Outline XZ Lower Side View - Z (m): [-0.3898999999999999, -0.44906422401224655, -0.5062874763084997, -0.5596287851727655, -0.6071471788890508, -0.6469016857413616, -0.6769513340137043, -0.6953551519900858, -0.7002066741183519, -0.6909408619656248, -0.6687352383729404, -0.6348837844842943, -0.5906804814436826, -0.5374193103951008, -0.47639425248254463, -0.4088992888500099, -0.3362284006414922, -0.25967556900098754, -0.1805347750724915, -0.10009999999999986]
-	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	·····································
 	-------------------------------------
 	Landing gears
 	-------------------------------------
 	ID: 'Landing Gears - ATR72'
-	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	·····································
 	Main gear legs length: 0.6599999999999999 m
 	Distance between wheels: 4.0999999999999996 m
 	Number of frontal wheels: 2
 	Number of rear wheels: 4
-	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	·····································
 	Frontal wheels height: 0.8635999999999999 m
 	Frontal wheels width: 0.254 m
-	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	·····································
 	Rear wheels height: 0.8635999999999999 m
 	Rear wheels width: 0.254 m
-	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	·····································
 
 
 
@@ -1306,21 +1306,21 @@ database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serializati
 	Beta current Climb: 0.0 deg
 	Mach Climb: 0.3
 	Altitude Climb: 17000.0 ft
-	ISA Deviation Climb: 0.0 â„ƒ
+	ISA Deviation Climb: 0.0 ?
 	Throttle Climb: 1.0
 	.....................................
 	Alpha current Cruise: 1.9999999999999996 deg
 	Beta current Cruise: 0.0 deg
 	Mach Cruise: 0.4
 	Altitude Cruise: 17000.0 ft
-	ISA Deviation Cruise: 0.0 â„ƒ
+	ISA Deviation Cruise: 0.0 ?
 	Throttle Cruise: 1.0
 	.....................................
 	Alpha current TakeOff: 1.9999999999999996 deg
 	Beta current TakeOff: 0.0 deg
 	Mach TakeOff: 0.172
 	Altitude TakeOff: 0.0 ft
-	ISA Deviation TakeOff: 0.0 â„ƒ
+	ISA Deviation TakeOff: 0.0 ?
 	Throttle TakeOff: 1.0
 	Flap deflections Take-off: [15.0 deg, 15.0 deg]
 	.....................................
@@ -1328,14 +1328,14 @@ database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serializati
 	Beta current Landing: 0.0 deg
 	Mach Landing: 0.172
 	Altitude Landing: 0.0 ft
-	ISA Deviation Landing: 0.0 â„ƒ
+	ISA Deviation Landing: 0.0 ?
 	Throttle Landing: 1.0
 	Flap deflections Landing: [35.0 deg, 35.0 deg]
 
 	.....................................
 	CLIMB
 	Climb pressure coefficient: 1.0227029548085431
-	Climb density: 0.7220337840714601 kg/mÂ³
+	Climb density: 0.7220337840714601 kg/m³
 	Climb static pressure: 52751.631132942799 Pa
 	Climb dynamic pressure: 3323.3527613753959 Pa
 	Climb stagnation pressure: 56150.433821872546 Pa
@@ -1345,11 +1345,11 @@ database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serializati
 	Climb speed (TAS): 95.94157655849537 m/s
 	Climb speed (CAS): 74.052917341952678 m/s
 	Climb speed (EAS): 73.66058166324808 m/s
-	Climb dynamic viscosity: 0.000016717378623410805 PaÂ·s
+	Climb dynamic viscosity: 0.000016717378623410805 Pa·s
 	.....................................
 	CRUISE
 	Cruise pressure coefficient: 1.0406425518727977
-	Cruise density: 0.7220337840714601 kg/mÂ³
+	Cruise density: 0.7220337840714601 kg/m³
 	Cruise static pressure: 52751.631132942799 Pa
 	Cruise dynamic pressure: 5908.182686889593 Pa
 	Cruise stagnation pressure: 58899.937441158268 Pa
@@ -1359,11 +1359,11 @@ database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serializati
 	Cruise speed (TAS): 127.92210207799386 m/s
 	Cruise speed (CAS): 99.13506504283114 m/s
 	Cruise speed (EAS): 98.21410888433078 m/s
-	Cruise dynamic viscosity: 0.000016717378623410805 PaÂ·s
+	Cruise dynamic viscosity: 0.000016717378623410805 Pa·s
 	.....................................
 	TAKE-OFF
 	Take-off pressure coefficient: 1.0074178964995402
-	Take-off density: 1.2250001734860936 kg/mÂ³
+	Take-off density: 1.2250001734860936 kg/m³
 	Take-off static pressure: 101324.99896925152 Pa
 	Take-off dynamic pressure: 2098.3191386544349 Pa
 	Take-off stagnation pressure: 103438.88322209948 Pa
@@ -1373,11 +1373,11 @@ database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serializati
 	Take-off speed (TAS): 58.530561413667627 m/s
 	Take-off speed (CAS): 58.530566077952486 m/s
 	Take-off speed (EAS): 58.53056193118344 m/s
-	Take-off dynamic viscosity: 0.000017329722120616798 PaÂ·s
+	Take-off dynamic viscosity: 0.000017329722120616798 Pa·s
 	.....................................
 	LANDING
 	Landing pressure coefficient: 1.0074178964995402
-	Landing density: 1.2250001734860936 kg/mÂ³
+	Landing density: 1.2250001734860936 kg/m³
 	Landing static pressure: 101324.99896925152 Pa
 	Landing dynamic pressure: 2098.3191386544349 Pa
 	Landing stagnation pressure: 103438.88322209948 Pa
@@ -1387,7 +1387,7 @@ database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serializati
 	Landing speed (TAS): 58.530561413667627 m/s
 	Landing speed (CAS): 58.530566077952486 m/s
 	Landing speed (EAS): 58.53056193118344 m/s
-	Landing dynamic viscosity: 0.000017329722120616798 PaÂ·s
+	Landing dynamic viscosity: 0.000017329722120616798 Pa·s
 	.....................................
 
 
@@ -1442,33 +1442,33 @@ database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serializati
 	-------------------------------------
 	-------------------------------------
 	Maximum Take-Off Mass: 27189.38540239843 kg
-	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	·····································
 	Maximum Landing Mass: 24470.44686215859 kg
-	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	·····································
 	Maximum Payload: 8928.0 kg
-	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	·····································
 	Design Payload: 6936.0 kg
-	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	·····································
 	Crew Mass: 229.54364550000003 kg
-	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	·····································
 	Max Fuel Mass: 5033.710370191 kg
-	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	·····································
 	Design Mission Fuel Mass: 5525.8792917714218 kg
-	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	·····································
 	Maximum Zero Fuel Mass: 23655.50611062701 kg
-	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	·····································
 	Zero Fuel Mass: 21663.506110627015 kg
-	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	·····································
 	Operating Empty Mass: 14727.506110627015 kg
-	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	·····································
 	Empty Mass: 14497.962465127013 kg
-	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	·····································
 	Manufacturer Empty Mass: 13912.006465127019 kg
-	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	·····································
 	Structural Mass: 8029.3077238868536 kg
-	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	·····································
 	Operating Item Mass: 585.9559999999999 kg
-	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	·····································
 	Trapped Fuel Oil Mass: 0.0 kg
 	-------------------------------------
 	COMPONENTS:
@@ -1476,27 +1476,27 @@ database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serializati
 		Fuselage Estimated Mass: 3391.5 kg
 		Fuselage Calibration Factor: 1.0
 		Fuselage Estimated Mass (Calibrated): 3391.4999999999995 kg
-		ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		·····································
 		Wing Estimated Mass: 2560.5 kg
 		Wing Calibration Factor: 1.0
 		Wing Estimated Mass (Calibrated): 2560.4999999999995 kg
-		ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		·····································
 		Horizontal Tail Estimated Mass: 224.5 kg
 		Horizontal Tail Calibration Factor: 1.0
 		Horizontal Tail Estimated Mass (Calibrated): 224.49999999999997 kg
-		ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		·····································
 		Vertical Tail Estimated Mass: 301.42857142857144 kg
 		Vertical Tail Calibration Factor: 1.0
 		Vertical Tail Estimated Mass (Calibrated): 301.42857142857139 kg
-		ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		·····································
 		Nacelles Estimated Mass: 354.0 kg
 		Nacelles Calibration Factor: 1.0
 		Nacelles Estimated Mass (Calibrated): 353.99999999999994 kg
-		ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		·····································
 		Power Plant Estimated Mass: 1756.0 kg
 		Power Plant Calibration Factor: 1.0
 		Power Plant Estimated Mass (Calibrated): 1755.9999999999998 kg
-		ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		·····································
 		Landing Gears Estimated Mass: 1197.3791524582853 kg
 		Landing Gears Calibration Factor: 1.0
 		Landing Gears Estimated Mass (Calibrated): 1197.379152458285 kg
@@ -1506,31 +1506,31 @@ database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serializati
 			APU Estimated Mass: 218.4015569614562 kg
 			APU Calibration Factor: 1.0
 			APU Estimated Mass (Calibrated): 218.40155696145618 kg
-			ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+			·····································
 			Air Conditioning and Anti-Icing System Estimated Mass: 519.9269024072964 kg
 			APU Calibration Factor: 1.0
 			Air Conditioning and Anti-Icing System Estimated Mass (Calibrated): 519.9269024072963 kg
-			ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+			·····································
 			Instruments and Navigation System Estimated Mass: 477.4433340900357 kg
 			Instruments and Navigation System Calibration Factor: 1.0
 			Instruments and Navigation System Estimated Mass (Calibrated): 477.44333409003565 kg
-			ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+			·····································
 			Hydraulic and Pneumatic Systems Estimated Mass: 208.66728065910149 kg
 			Hydraulic and Pneumatic Systems Calibration Factor: 1.0
 			Hydraulic and Pneumatic Systems Estimated Mass (Calibrated): 208.66728065910146 kg
-			ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+			·····································
 			Electrical Systems Estimated Mass: 695.3194937419307 kg
 			Electrical Systems Calibration Factor: 1.0
 			Electrical Systems Estimated Mass (Calibrated): 695.3194937419306 kg
-			ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+			·····································
 			Control Surfaces Estimated Mass: 444.54192043927117 kg
 			Control Surfaces Calibration Factor: 1.0
 			Control Surfaces Estimated Mass (Calibrated): 444.5419204392711 kg
-			ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+			·····································
 			Furnishings and Equipments Estimated Mass: 1562.3982529410805 kg
 			Furnishings and Equipments Calibration Factor: 1.0
 			Furnishings and Equipments Estimated Mass (Calibrated): 1562.3982529410805 kg
-			ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+			·····································
 
 	-------------------------------------
 	Balance Analysis
@@ -1541,42 +1541,42 @@ database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serializati
 	Ycg Structure BRF: 0.0 m
 	Zcg Structure MAC: 5.046722739735554
 	Zcg Structure BRF: 0.1170958407255597 m
-	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	·····································
 	Xcg Structure and engines MAC: 33.50484700775513
 	Xcg Structure and engines BRF: 11.785103940501518 m
 	Ycg Structure and engines MAC: 0.0
 	Ycg Structure and engines BRF: 0.0 m
 	Zcg Structure and engines MAC: 11.428281565519924
 	Zcg Structure and engines BRF: 0.26516301904730599 m
-	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	·····································
 	Xcg Manufacturer Empty Mass MAC: 33.50484700775513
 	Xcg Manufacturer Empty Mass BRF: 11.785103940501518 m
 	Ycg Manufacturer Empty Mass MAC: 0.0
 	Ycg Manufacturer Empty Mass BRF: 0.0 m
 	Zcg Manufacturer Empty Mass MAC: 11.428281565519924
 	Zcg Manufacturer Empty Mass BRF: 0.26516301904730599 m
-	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	·····································
 	Xcg Operating empty mass MAC: 33.50484700775513
 	Xcg Operating empty mass BRF: 11.785103940501518 m
 	Ycg Operating empty mass MAC: 0.0
 	Ycg Operating empty mass BRF: 0.0 m
 	Zcg Operating empty mass MAC: 11.428281565519924
 	Zcg Operating empty mass BRF: 0.26516301904730599 m
-	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	·····································
 	Xcg Maximum zero fuel mass MAC: 41.74922712669088
 	Xcg Maximum zero fuel mass BRF: 11.97639295538773 m
 	Ycg Maximum zero fuel mass MAC: 0.0
 	Ycg Maximum zero fuel mass BRF: 0.0 m
 	Zcg Maximum zero fuel mass MAC: 7.769291163243255
 	Zcg Maximum zero fuel mass BRF: 0.1802658333969227 m
-	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	·····································
 	Xcg Maximum take-off mass MAC: 41.20604407422656
 	Xcg Maximum take-off mass BRF: 11.963789830651873 m
 	Ycg Maximum take-off mass MAC: 0.0
 	Ycg Maximum take-off mass BRF: 0.0 m
 	Zcg Maximum take-off mass MAC: 20.20518522719279
 	Zcg Maximum take-off mass BRF: 0.46880783296563133 m
-	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	·····································
 	Max aft Xcg MAC: 54.32676647955055 %
 	Max forward Xcg MAC: 18.778612969176336 %
 	Operative max forward Xcg MAC: 41.20604407422656 %
@@ -1599,7 +1599,7 @@ database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serializati
 		Zcg Fuselage LRF (CALIBRATED): 0.0 m
 		Zcg Fuselage BRF (NOT CALIBRATED): 0.0 m
 		Zcg Fuselage BRF (CALIBRATED): 0.0 m
-		ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		·····································
 		Xcg Wing Correction Factor: 1.0
 		Zcg Wing Correction Factor: 1.0
 		Xcg Wing MAC (NOT CALIBRATED): 33.26255957187139
@@ -1616,7 +1616,7 @@ database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serializati
 		Zcg Wing LRF (CALIBRATED): 0.0 m
 		Zcg Wing BRF (NOT CALIBRATED): 1.5999999999999999 m
 		Zcg Wing BRF (CALIBRATED): 1.5999999999999999 m
-		ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		·····································
 		Xcg Fuel Tank Correction Factor: 1.0
 		Zcg Fuel Tank Correction Factor: 1.0
 		Xcg Fuel Tank MAC (NOT CALIBRATED): 39.07656408472137
@@ -1633,7 +1633,7 @@ database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serializati
 		Zcg Fuel Tank LRF (CALIBRATED): 0.0 m
 		Zcg Fuel Tank BRF (NOT CALIBRATED): 1.5999999999999999 m
 		Zcg Fuel Tank BRF (CALIBRATED): 1.5999999999999996 m
-		ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		·····································
 		Xcg Horizontal Tail Correction Factor: 1.0
 		Zcg Horizontal Tail Correction Factor: 1.0
 		Xcg Horizontal Tail MAC (NOT CALIBRATED): 654.0912358990008
@@ -1650,7 +1650,7 @@ database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serializati
 		Zcg Horizontal Tail LRF (CALIBRATED): 0.0 m
 		Zcg Horizontal Tail BRF (NOT CALIBRATED): 5.737399999999999 m
 		Zcg Horizontal Tail BRF (CALIBRATED): 5.737399999999999 m
-		ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		·····································
 		Xcg Vertical Tail Correction Factor: 1.0
 		Zcg Vertical Tail Correction Factor: 1.0
 		Xcg Vertical Tail MAC (NOT CALIBRATED): 584.4777395215115
@@ -1667,7 +1667,7 @@ database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serializati
 		Zcg Vertical Tail LRF (CALIBRATED): 0.0 m
 		Zcg Vertical Tail BRF (NOT CALIBRATED): 1.2999999999999998 m
 		Zcg Vertical Tail BRF (CALIBRATED): 1.2999999999999998 m
-		ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		·····································
 		Xcg Nacelles Correction Factor: 1.0
 		Zcg Nacelles Correction Factor: 1.0
 		Xcg Nacelles MAC (NOT CALIBRATED): 6.347948306468693
@@ -1684,7 +1684,7 @@ database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serializati
 		Zcg Nacelles LRF (CALIBRATED): 0.0 m
 		Zcg Nacelles BRF (NOT CALIBRATED): 0.9421999999999999 m
 		Zcg Nacelles BRF (CALIBRATED): 0.9421999999999999 m
-		ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		·····································
 		Xcg Power Plant Correction Factor: 1.0
 		Zcg Power Plant Correction Factor: 1.0
 		Xcg Power Plant MAC (NOT CALIBRATED): -36.75112941025122
@@ -1701,7 +1701,7 @@ database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serializati
 		Zcg Power Plant LRF (CALIBRATED): 0.0 m
 		Zcg Power Plant BRF (NOT CALIBRATED): 0.9421999999999999 m
 		Zcg Power Plant BRF (CALIBRATED): 0.9421999999999999 m
-		ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		·····································
 		Xcg Landing Gears Correction Factor: 1.0
 		Zcg Landing Gears Correction Factor: 1.0
 		Xcg Landing Gears MAC (NOT CALIBRATED): -19.934136097328047
@@ -1718,18 +1718,18 @@ database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serializati
 		Zcg Landing Gears LRF (CALIBRATED): -2.539799999999999 m
 		Zcg Landing Gears BRF (NOT CALIBRATED): -4.317799999999999 m
 		Zcg Landing Gears BRF (CALIBRATED): -4.317799999999998 m
-		ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		·····································
 
 	-------------------------------------
 	Inertia Analysis
 	-------------------------------------
-	Aircraft Inertia Moment Ixx: 47870.728703727516 kgÂ·mÂ²
-	Aircraft Inertia Moment Iyy: 745048.6735852612 kgÂ·mÂ²
-	Aircraft Inertia Moment Izz: 697177.9448815337 kgÂ·mÂ²
+	Aircraft Inertia Moment Ixx: 47870.728703727516 kg·m²
+	Aircraft Inertia Moment Iyy: 745048.6735852612 kg·m²
+	Aircraft Inertia Moment Izz: 697177.9448815337 kg·m²
 	.....................................
-	Aircraft Inertia Product Ixy: 0.0 kgÂ·mÂ²
-	Aircraft Inertia Product Iyz: 0.0 kgÂ·mÂ²
-	Aircraft Inertia Product Ixz: 48532.61138617322 kgÂ·mÂ²
+	Aircraft Inertia Product Ixy: 0.0 kg·m²
+	Aircraft Inertia Product Iyz: 0.0 kg·m²
+	Aircraft Inertia Product Ixz: 48532.61138617322 kg·m²
 	-------------------------------------
 
 
@@ -1739,4 +1739,4 @@ database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serializati
 
 
 
-	 TIME ESTIMATED = 8 seconds
+	 TIME ESTIMATED = 61 seconds

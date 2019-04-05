@@ -142,6 +142,8 @@ public class TakeOffCalc {
 	private FirstOrderIntegrator theIntegrator;
 	private FirstOrderDifferentialEquations ode;
 	
+	private double[] stateVector;
+	
 	//-------------------------------------------------------------------------------------
 	// BUILDER:
 	
@@ -361,6 +363,8 @@ public class TakeOffCalc {
 	 * @author Vittorio Trifari
 	 */
 	public void initialize() {
+
+		stateVector = null;
 
 		// lists cleaning
 		alphaDotPerStep.clear();
@@ -818,13 +822,13 @@ public class TakeOffCalc {
 			continuousOutputModel = new ContinuousOutputModel();
 			theIntegrator.addStepHandler(continuousOutputModel);
 			
-			double[] xAt0 = new double[] {0.0, 0.0, 0.0, 0.0, 0.0}; // initial state
+			stateVector = new double[] {0.0, 0.0, 0.0, 0.0, 0.0}; // initial state
 			System.out.println("=================================================");
 			System.out.println("Integration " + (i+1) 
 					+ " - VRot/VsTO = " + vRot.doubleValue(SI.METERS_PER_SECOND)/vSTakeOff.doubleValue(SI.METERS_PER_SECOND) 
 					+ "\n\n"
 					);
-			theIntegrator.integrate(ode, 0.0, xAt0, 1000, xAt0); // now xAt0 contains final state
+			theIntegrator.integrate(ode, 0.0, stateVector, 1000, stateVector); // now xAt0 contains final state
 
 			theIntegrator.clearEventHandlers();
 			theIntegrator.clearStepHandlers();
@@ -5440,6 +5444,11 @@ public class TakeOffCalc {
 
 	public void setvRotBFLFitted(double[] vRotBFLFitted) {
 		this.vRotBFLFitted = vRotBFLFitted;
+	}
+
+	// used when the final state is desired, at the end of ODE integration
+	public double[] getStateVector() {
+		return stateVector;
 	}
 
 }
