@@ -17,6 +17,7 @@ import javax.measure.quantity.Mass;
 import javax.measure.quantity.Velocity;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
+import javax.measure.unit.Unit;
 
 import org.apache.commons.io.FileUtils;
 import org.jscience.physics.amount.Amount;
@@ -1355,6 +1356,7 @@ public class Test_01 {
 					AtmosphereCalc.getSpeedOfSound(aircraftPointMassPropagator.getAltitude0(), 0.0);
 			
 //			// Adapt P constant
+			//Calculation of pL
 			double cm_alpha = -18.697;
 			double pL_ATR72 = // 0.7295;
 					(1./(2.0*Math.PI))*Math.sqrt(
@@ -1364,17 +1366,50 @@ public class Test_01 {
 							/(2.0*iyy)
 							);
 			
-			System.out.println(">>>>>>>>>>> pL_ATR72 = " + pL_ATR72);
+			System.out.println(">>>>>>>>>>> pL_ATR72 = " + Amount.valueOf(pL_ATR72, MyUnits.RADIAN_PER_SECOND));
 
 			aircraftPointMassPropagator.setpL(
 					Amount.valueOf(pL_ATR72, MyUnits.RADIAN_PER_SECOND)
 					);
 			
+			//Calculation of pPhi
 			
-			double pPhi_ATR72 =  3.826;
-			aircraftPointMassPropagator.setpL(
-					Amount.valueOf(pPhi_ATR72, MyUnits.RADIAN_PER_SECOND)
-					);
+			//pPhi =  -Lp/3
+			//Lp = ((cRollp*var1)+(cNp*var2))/(den)
+			//where:  
+			//var1 = q0*V^2*S*b*(b/(2*V))/Ixx
+			//var2 = q0*V^2*S*b*(b/(2*V))/Izz
+			//den = 1-i1*i2
+			
+			
+			double i1 = ixz/ixx;
+			double i2 = ixz/izz;
+			double den = (1-i1*i2);
+			
+			
+			Amount<?> var1 = Amount.valueOf(rho0*speed0
+					*aircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
+					*aircraft.getWing().getSemiSpan().doubleValue(SI.METER)
+					*aircraft.getWing().getSemiSpan().doubleValue(SI.METER)
+					/ixx, SI.SECOND.inverse());
+			
+			
+			Amount<?> var2 = Amount.valueOf(rho0*speed0
+					*aircraft.getWing().getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
+					*aircraft.getWing().getSemiSpan().doubleValue(SI.METER)
+                    *aircraft.getWing().getSemiSpan().doubleValue(SI.METER)
+					/izz, SI.SECOND.inverse());
+			
+			Amount<?> lp = ((cRollp.times(var1)).plus(cNp.times(var2))).divide(den).to(MyUnits.RADIAN_PER_SECOND);
+			
+			Amount<?> pPhi_ATR72 = lp.divide(3).opposite();
+			
+			System.out.println(">>>>>>>>>>> p_NU_ATR 72 = " + pPhi_ATR72);
+			
+			
+			aircraftPointMassPropagator.setpPhi(pPhi_ATR72);
+			
+			
 			
 			
 			//----------------------------------------------------------------------------------------------------
@@ -1468,6 +1503,11 @@ public class Test_01 {
 
 		System.out.println(">> DONE");
 
+	}
+
+	private static double doubleValuec(Amount<?> cRollp) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }
