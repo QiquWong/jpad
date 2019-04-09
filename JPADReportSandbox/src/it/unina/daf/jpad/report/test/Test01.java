@@ -28,7 +28,10 @@ public class Test01 {
 		
 		try {
 			System.out.println("------------------ JPADReport :: START -----------------");
-			JPADReportUtils.makeReport02a(aircraft, pathToMatlabWorkingDirectory);
+			//JPADReportUtils.makeReport02a(aircraft, pathToMatlabWorkingDirectory);
+			
+			JPADReportUtils.makeReport03(aircraft, pathToMatlabWorkingDirectory);
+			
 			System.out.println("------------------ JPADReport :: COMPLETE -----------------");
 			
 		} catch (Exception e) {
