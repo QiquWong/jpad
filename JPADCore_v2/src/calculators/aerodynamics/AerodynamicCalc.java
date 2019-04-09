@@ -336,7 +336,7 @@ public class AerodynamicCalc {
 				- 0.0706*(lambda_opt - delta_lambda)
 				+ 0.0119;
 
-		e_theo = 1/(f*theWing.getAspectRatio());
+		e_theo = 1/(1+(f*theWing.getAspectRatio()));
 
 		kef = 1 - (2*
 				(Math.pow(
