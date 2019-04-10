@@ -1,7 +1,7 @@
 function matrix = importMatrix(filename, row , rowLength, columnLength)
 fid = fopen(filename);
 matrix = zeros(rowLength,columnLength);
-if (row>1)
+if (row>1) %Open file at position row
     for i=0:(row-1)
         fgetl(fid);
     end

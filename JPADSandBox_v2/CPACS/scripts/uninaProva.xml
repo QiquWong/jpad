@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<runscript initialize="initialCondition" name="D150_JSBSim">
+<runscript initialize="initialCondition" name="D150_AGILE">
    <decription>CPACS simulation with JSBSim through JPAD software</decription>
-   <use aircraft="D150_JSBSim" initialize="initialCondition"/>
+   <use aircraft="Turboprop" initialize="initialCondition"/>
    <run dt="0.1" end="100" start="0">
       <property>simulation/notify-time-trigger</property>
       <property value="1">simulation/run_id</property>

@@ -74,11 +74,11 @@ public class JSBSimUtils {
 	}
 	
 	public static void createEngineXML(List<Double> properties, String engineName,
-			String type, String dirPath, String Control) 
+			String type, String dirPath, String Control, ArrayList<ArrayList<String>> enginePerformanceMap, List<String> flightLevel) 
 					throws IOException, TransformerException, ParserConfigurationException {
 		System.out.println(dirPath);
 		String engineXMLPath = dirPath+"/"+engineName+".xml";
-		Document doc = makeEngineXmlTree(properties, engineName, type);
+		Document doc = makeEngineXmlTree(properties, engineName, type, enginePerformanceMap, flightLevel);
 		
 		System.out.println("[JSBSimModel.exportToXML] writing file " + engineXMLPath + " ...");
 		JPADStaticWriteUtils.writeDocumentToXml(doc, engineXMLPath);
@@ -121,6 +121,44 @@ public class JSBSimUtils {
 		writer.close();
 	}
 	
+	
+	public static void createCheckFileTXTEngineIdleMilitary(String dirPath, List<String> engineData, double[] machVector,
+			double[] altitudeVector, String name ) 
+					throws IOException, TransformerException, ParserConfigurationException {
+		System.out.println(dirPath);
+		String filePath = dirPath+"/"+name+".txt";
+		FileWriter writer = new FileWriter(filePath); 		
+		writer.write(convertDoubleArrayAsString(altitudeVector));
+		writer.write(convertDoubleArrayAsString(machVector));
+		for(int i = 0; i< engineData.size();i++) {
+		  writer.write(engineData.get(i));
+		}
+		writer.close();
+	}
+	
+	
+	public static void createCheckFileTXTEngineCIAM(String dirPath, List<String> engineData,String machString,
+			String flightLevelString, String throttleString, String name ) 
+					throws IOException, TransformerException, ParserConfigurationException {
+		System.out.println(dirPath);
+		String filePath = dirPath+"/"+name+".txt";
+		FileWriter writer = new FileWriter(filePath);
+
+		
+		double [] flightLevelVector = getDoubleArrayFromString(flightLevelString.split(","));
+		double [] machVector = getDoubleArrayFromString(machString.split(","));
+		double [] throttleVector = getDoubleArrayFromString(throttleString.split(","));
+		writer.write(convertDoubleArrayAsString(flightLevelVector));
+		writer.write(convertDoubleArrayAsString(machVector));	
+		writer.write(convertDoubleArrayAsString(throttleVector));
+		for(int i = 0; i< engineData.size();i++) {
+		  writer.write(engineData.get(i));
+		}
+		writer.close();
+	}
+	
+	
+	
 	public static void createCheckFileControlSurfaceTXT(String dirPath, List<String> aeroData, double[] machVector,
 			double[] reynoldsVector, double[] alphaVector, double[] betaVector, double[] deflectionVector, String axis ) 
 					throws IOException, TransformerException, ParserConfigurationException {
@@ -158,11 +196,167 @@ public class JSBSimUtils {
 		return thrusterdoc;
 	}
 	
+
 	
+	public static double [] getDoubleArrayFromString(String [] arrayData) {
+		double[] doubleArray = new double [arrayData.length];
+		for (int i=0; i<arrayData.length;i++) {
+			doubleArray[i] = Double.parseDouble(arrayData[i]);
+		}
+		return doubleArray;
+	}
+	
+	
+	public static void createSimplifyEngineXML(List<Double> properties, String engineName,
+			String type, String dirPath, String Control, List<String> enginePerformanceIdle,
+			List<String> enginePerformanceMilitaryThrust) throws IOException, TransformerException, ParserConfigurationException {
+
+		System.out.println(dirPath);
+		String engineXMLPath = dirPath+"/"+engineName+".xml";
+		Document doc = makeSimplifyEngineXmlTree
+				(properties, engineName, type, enginePerformanceIdle, enginePerformanceMilitaryThrust);
+		
+		System.out.println("[JSBSimModel.exportToXML] writing file " + engineXMLPath + " ...");
+		JPADStaticWriteUtils.writeDocumentToXml(doc, engineXMLPath);
+		if (Control.equals("JET")) {
+			String thrusterXMLPath = dirPath+"/"+"direct.xml";
+			Document docThruster = writeThrusterJetXML();
+			JPADStaticWriteUtils.writeDocumentToXml(docThruster, thrusterXMLPath);
+
+		}
+	}
+	
+	
+	
+	
+	private static Document makeSimplifyEngineXmlTree(List<Double> properties, String engineName, String typeEngine,
+			List<String> enginePerformanceIdle, List<String> enginePerformanceMilitaryThrust) throws ParserConfigurationException {
+		
+		DocumentBuilderFactory docFactoryEngine = DocumentBuilderFactory.newInstance();
+		DocumentBuilder docBuilderEngine;
+		Document engineXMLdoc = null;
+		
+			try {
+				docBuilderEngine = docFactoryEngine.newDocumentBuilder();
+				engineXMLdoc = docBuilderEngine.newDocument();
+				
+				org.w3c.dom.Element rootElement = JPADStaticWriteUtils.createXMLElementWithAttributes(
+						engineXMLdoc,typeEngine+"_engine",
+						Tuple.of("name", engineName) 
+						);
+				JPADStaticWriteUtils.writeSingleNode("milthrust", properties.get(0), rootElement, engineXMLdoc);
+				JPADStaticWriteUtils.writeSingleNode("bypassratio", properties.get(2), rootElement, engineXMLdoc);
+				JPADStaticWriteUtils.writeSingleNode("idlen1", 30, rootElement, engineXMLdoc);
+				JPADStaticWriteUtils.writeSingleNode("idlen2", 60, rootElement, engineXMLdoc);
+				JPADStaticWriteUtils.writeSingleNode("maxn1", 100, rootElement, engineXMLdoc);
+				JPADStaticWriteUtils.writeSingleNode("maxn2", 100, rootElement, engineXMLdoc);
+				JPADStaticWriteUtils.writeSingleNode("augmented", 0, rootElement, engineXMLdoc);
+				JPADStaticWriteUtils.writeSingleNode("injected", 0, rootElement, engineXMLdoc);
+				engineXMLdoc.appendChild(rootElement);
+				org.w3c.dom.Element indleFunctionElement = JPADStaticWriteUtils.createXMLElementWithAttributes(
+						engineXMLdoc,"function",
+						Tuple.of("name", "IdleThrust") // TODO: get aircraft name from _cpaceReader
+						);
+				rootElement.appendChild(indleFunctionElement);			
+				indleFunctionElement.appendChild(
+						writeEngineIdlePerformanceSimplify(engineXMLdoc,indleFunctionElement,
+								enginePerformanceIdle));
+				org.w3c.dom.Element MilitaryFunctionElement = JPADStaticWriteUtils.createXMLElementWithAttributes(
+						engineXMLdoc,"function",
+						Tuple.of("name", "MilThrust") // TODO: get aircraft name from _cpaceReader
+						);
+				rootElement.appendChild(MilitaryFunctionElement);
+				MilitaryFunctionElement.appendChild(
+						writeEngineMilitaryPerformanceSimplify(engineXMLdoc,MilitaryFunctionElement,
+								enginePerformanceMilitaryThrust));
+				
+				return engineXMLdoc;
+			} catch (SecurityException Se) {
+				System.out.println("Error while creating file " + Se);
+			}
+		
+			return engineXMLdoc;
+	}
+
+	private static Node writeEngineIdlePerformanceSimplify(Document doc, Element enginePerformanceElement,
+			List<String> enginePerformanceIdle) {
+
+		
+		org.w3c.dom.Element tableElement = 
+				doc.createElement("table");
+		enginePerformanceElement.appendChild(tableElement);
+		org.w3c.dom.Element rowElement = JPADStaticWriteUtils.createXMLElementWithValueAndAttributes(
+				doc, "independentVar", "velocities/mach", 
+				3, 6, Tuple.of("lookup", "row"));
+		tableElement.appendChild(rowElement);
+
+		org.w3c.dom.Element columnElement = JPADStaticWriteUtils.createXMLElementWithValueAndAttributes(
+				doc, "independentVar", "position/h-sl-ft", 
+				3, 6, Tuple.of("lookup", "column"));
+		tableElement.appendChild(columnElement);
+		JPADStaticWriteUtils.writeSingleNode("tableData",enginePerformanceIdle.get(0),tableElement,doc);
+
+		return tableElement;
+	}
+
+	
+	private static Node writeEngineMilitaryPerformanceSimplify(Document doc, Element enginePerformanceElement,
+			List<String> enginePerformanceMilitary) {
+
+		
+		org.w3c.dom.Element tableElement = 
+				doc.createElement("table");
+		enginePerformanceElement.appendChild(tableElement);
+		org.w3c.dom.Element rowElement = JPADStaticWriteUtils.createXMLElementWithValueAndAttributes(
+				doc, "independentVar", "velocities/mach", 
+				3, 6, Tuple.of("lookup", "row"));
+		tableElement.appendChild(rowElement);
+
+		org.w3c.dom.Element columnElement = JPADStaticWriteUtils.createXMLElementWithValueAndAttributes(
+				doc, "independentVar", "position/h-sl-ft", 
+				3, 6, Tuple.of("lookup", "column"));
+		tableElement.appendChild(columnElement);
+		JPADStaticWriteUtils.writeSingleNode("tableData",enginePerformanceMilitary.get(0),tableElement,doc);
+
+		return tableElement;
+	}
+	
+	
+	
+	private static Element writeEngineIdlePerformance(
+			Document doc,org.w3c.dom.Element enginePerformanceElement, List <String> enginePerformanceMap, String flightLevelList) {
+		
+		double [] flightLevelVector = getDoubleArrayFromString(flightLevelList.split(","));
+		org.w3c.dom.Element tableElement = 
+				doc.createElement("table");
+		enginePerformanceElement.appendChild(tableElement);
+		org.w3c.dom.Element rowElement = JPADStaticWriteUtils.createXMLElementWithValueAndAttributes(
+				doc, "independentVar", "fcs/throttle-command", 
+				3, 6, Tuple.of("lookup", "row"));
+		tableElement.appendChild(rowElement);
+
+		org.w3c.dom.Element columnElement = JPADStaticWriteUtils.createXMLElementWithValueAndAttributes(
+				doc, "independentVar", "velocities/mach", 
+				3, 6, Tuple.of("lookup", "column"));
+		tableElement.appendChild(columnElement);
+		
+		org.w3c.dom.Element tableElementInner = JPADStaticWriteUtils.createXMLElementWithValueAndAttributes(
+				doc, "independentVar", "position/h-sl-ft", 
+				3, 6, Tuple.of("lookup", "table"));
+		tableElement.appendChild(tableElementInner);
+		
+		for(int i = 0; i<flightLevelVector.length;i++) {
+			org.w3c.dom.Element tableElementBreakPoint = JPADStaticWriteUtils.createXMLElementWithValueAndAttributes(
+					doc, "tableData", enginePerformanceMap.get(i), 
+					3, 6, Tuple.of("breakPoint", String.valueOf(flightLevelVector[i])));
+			tableElement.appendChild(tableElementBreakPoint);	
+		}
+		return tableElement;
+	}
 	
 	
 	private static Document makeEngineXmlTree(List<Double> properties, String engineName,
-			String typeEngine) throws TransformerException, ParserConfigurationException {
+			String typeEngine, ArrayList<ArrayList<String>> enginePerformanceMap, List <String> flightLevelList) throws TransformerException, ParserConfigurationException {
 		DocumentBuilderFactory docFactoryEngine = DocumentBuilderFactory.newInstance();
 		DocumentBuilder docBuilderEngine;
 		Document engineXMLdoc = null;
@@ -181,7 +375,7 @@ public class JSBSimUtils {
 //						3, 6, Tuple.of("unit", "N"));
 //				rootElement.appendChild(milthrustElement);
 				JPADStaticWriteUtils.writeSingleNode("milthrust", properties.get(0), rootElement, engineXMLdoc);
-				JPADStaticWriteUtils.writeSingleNode("bypassratio", properties.get(1), rootElement, engineXMLdoc);
+				JPADStaticWriteUtils.writeSingleNode("bypassratio", properties.get(2), rootElement, engineXMLdoc);
 				JPADStaticWriteUtils.writeSingleNode("idlen1", 30, rootElement, engineXMLdoc);
 				JPADStaticWriteUtils.writeSingleNode("idlen2", 60, rootElement, engineXMLdoc);
 				JPADStaticWriteUtils.writeSingleNode("maxn1", 100, rootElement, engineXMLdoc);
@@ -193,22 +387,23 @@ public class JSBSimUtils {
 						engineXMLdoc,"function",
 						Tuple.of("name", "IdleThrust") // TODO: get aircraft name from _cpaceReader
 						);
-				JPADStaticWriteUtils.writeSingleNode("value", 0.03, indleFunctionElement, engineXMLdoc);
 				rootElement.appendChild(indleFunctionElement);
 				
-				org.w3c.dom.Element millFunctionElement = JPADStaticWriteUtils.createXMLElementWithAttributes(
-						engineXMLdoc,"function",
-						Tuple.of("name", "MilThrust") // TODO: get aircraft name from _cpaceReader
-						);
-				JPADStaticWriteUtils.writeSingleNode("value", 1.0, millFunctionElement, engineXMLdoc);
-				rootElement.appendChild(millFunctionElement);
-
+				indleFunctionElement.appendChild(
+						writeEngineIdlePerformance(engineXMLdoc,indleFunctionElement,
+								enginePerformanceMap.get(flightLevelList.size()-1),
+								flightLevelList.get(flightLevelList.size()-1)));
+				return engineXMLdoc;
 			} catch (SecurityException Se) {
 				System.out.println("Error while creating file " + Se);
 			}
 		
-		return engineXMLdoc;
+			return engineXMLdoc;
 	}
+	
+	
+	
+	
 	/**
 	 * @param rootElementEngine
 	 * @param properties
@@ -273,6 +468,10 @@ public class JSBSimUtils {
 	}
 	
 	
+	
+	
+	
+	
 	public static Element createTankElement(
 			double[][] properties, Document doc, String position, org.w3c.dom.Element rootElementEngine) {
 		//INNER
@@ -295,7 +494,7 @@ public class JSBSimUtils {
 				3, 6, Tuple.of("unit", "KG"));		
 		tankInnerElement.appendChild(tankInnerCapacityElement);
 		org.w3c.dom.Element tankInnerContentsElement = JPADStaticWriteUtils.createXMLElementWithValueAndAttributes(
-				doc, "contents", properties[1][3], 
+				doc, "contents", 100, //properties[1][3]
 				3, 6, Tuple.of("unit", "KG"));		
 		tankInnerElement.appendChild(tankInnerContentsElement);
 		rootElementEngine.appendChild(tankInnerElement);
@@ -319,7 +518,7 @@ public class JSBSimUtils {
 				3, 6, Tuple.of("unit", "KG"));		
 		tankMidElement.appendChild(tankMidCapacityElement);
 		org.w3c.dom.Element tankMidContentsElement = JPADStaticWriteUtils.createXMLElementWithValueAndAttributes(
-				doc, "contents", properties[2][3], 
+				doc, "contents", 150, 
 				3, 6, Tuple.of("unit", "KG"));		
 		tankMidElement.appendChild(tankMidContentsElement);
 		rootElementEngine.appendChild(tankMidElement);
@@ -345,12 +544,39 @@ public class JSBSimUtils {
 				3, 6, Tuple.of("unit", "KG"));		
 		tankOuterElement.appendChild(tankOuterCapacityElement);
 		org.w3c.dom.Element tankOuterContentsElement = JPADStaticWriteUtils.createXMLElementWithValueAndAttributes(
-				doc, "contents", properties[0][3], 
+				doc, "contents", 50, 
 				3, 6, Tuple.of("unit", "KG"));		
 		tankOuterElement.appendChild(tankOuterContentsElement);
 		rootElementEngine.appendChild(tankOuterElement);
 		return rootElementEngine;
 	}
+	
+	
+	public static Element createTankElementApproximated(
+			double[] properties, Document doc, org.w3c.dom.Element rootElementEngine) {
+
+		org.w3c.dom.Element tankElement = doc.createElement("tank");
+		tankElement.setAttribute("type", "FUEL");
+		rootElementEngine.appendChild(tankElement);
+		org.w3c.dom.Element tankInnerLocationElement = doc.createElement("location");
+		tankInnerLocationElement.setAttribute("unit", "M");
+		JPADStaticWriteUtils.writeSingleNode("x",properties[0],tankInnerLocationElement,doc);
+		JPADStaticWriteUtils.writeSingleNode("y",properties[1],tankInnerLocationElement,doc);
+		JPADStaticWriteUtils.writeSingleNode("z",properties[2],tankInnerLocationElement,doc);
+		System.out.println("Mass Fuel = " + properties[3]);
+		tankElement.appendChild(tankInnerLocationElement);
+		org.w3c.dom.Element tankInnerCapacityElement = 
+				JPADStaticWriteUtils.createXMLElementWithValueAndAttributes(
+				doc, "capacity", properties[3], 3, 6, Tuple.of("unit", "KG"));		
+		tankElement.appendChild(tankInnerCapacityElement);
+		org.w3c.dom.Element tankInnerContentsElement = 
+				JPADStaticWriteUtils.createXMLElementWithValueAndAttributes(
+				doc, "contents", properties[3], 3, 6, Tuple.of("unit", "KG"));		
+		tankElement.appendChild(tankInnerContentsElement);
+		rootElementEngine.appendChild(tankElement);
+		return rootElementEngine;
+	}
+	
 	
 	public static Element createControlSurfaceSystemJSBSim(
 			List<String> deflection, Document doc, List<Integer> number, String controlSurface,
@@ -406,28 +632,52 @@ public class JSBSimUtils {
 		int numberDeflection = number.get(index);
 		org.w3c.dom.Element rangeElement = doc.createElement("range");	
 		aeroSurfaceElement.appendChild(rangeElement);
+		
 		if (index>0) {
 			for (int i = 0;i<index;i++) {
 				flag = flag + number.get(i);
 			}
 			flag = flag+1 ;//+1 due to array start from 0
 			String[] arrayDataMin = deflection.get(flag-1).split(";");
+			if(	Double.parseDouble(arrayDataMin[0])<0) {
+				JPADStaticWriteUtils.writeSingleNode("min",arrayDataMin[0],rangeElement,doc);
+				JPADStaticWriteUtils.writeSingleNode("min",arrayDataMin[0],domainElement,doc);
+				JPADStaticWriteUtils.writeSingleNode("min",arrayDataMin[1],rangeElement1,doc);				
+			}
+			else {
+				JPADStaticWriteUtils.writeSingleNode("max",arrayDataMin[0],rangeElement,doc);
+				JPADStaticWriteUtils.writeSingleNode("max",arrayDataMin[0],domainElement,doc);
+				JPADStaticWriteUtils.writeSingleNode("max",arrayDataMin[1],rangeElement1,doc);	
+			}
 
-			JPADStaticWriteUtils.writeSingleNode("min",arrayDataMin[0],rangeElement,doc);
-			JPADStaticWriteUtils.writeSingleNode("min",arrayDataMin[0],domainElement,doc);
-			JPADStaticWriteUtils.writeSingleNode("min",arrayDataMin[1],rangeElement1,doc);
 		}
 		else {
 			String[] arrayDataMin = deflection.get(flag).split(";");
-			JPADStaticWriteUtils.writeSingleNode("min",arrayDataMin[0],rangeElement,doc);
-			JPADStaticWriteUtils.writeSingleNode("min",arrayDataMin[0],domainElement,doc);
-			JPADStaticWriteUtils.writeSingleNode("min",arrayDataMin[1],rangeElement1,doc);
+			
+			if(	Double.parseDouble(arrayDataMin[0])<0) {
+				JPADStaticWriteUtils.writeSingleNode("min",arrayDataMin[0],rangeElement,doc);
+				JPADStaticWriteUtils.writeSingleNode("min",arrayDataMin[0],domainElement,doc);
+				JPADStaticWriteUtils.writeSingleNode("min",arrayDataMin[1],rangeElement1,doc);				
+			}
+			else {
+				JPADStaticWriteUtils.writeSingleNode("max",arrayDataMin[0],rangeElement,doc);
+				JPADStaticWriteUtils.writeSingleNode("max",arrayDataMin[0],domainElement,doc);
+				JPADStaticWriteUtils.writeSingleNode("max",arrayDataMin[1],rangeElement1,doc);	
+			}
 		}
 		String[] arrayDataMax = deflection.get(flag + numberDeflection - 2 ).split(";");
-		JPADStaticWriteUtils.writeSingleNode("max",arrayDataMax[0],rangeElement,doc);
+		
+		if(	Double.parseDouble(arrayDataMax[0])<0) {
+			JPADStaticWriteUtils.writeSingleNode("min",arrayDataMax[0],rangeElement,doc);
+			JPADStaticWriteUtils.writeSingleNode("min",arrayDataMax[0],domainElement,doc);
+			JPADStaticWriteUtils.writeSingleNode("min",arrayDataMax[1],rangeElement1,doc);				
+		}
+		else {
+			JPADStaticWriteUtils.writeSingleNode("max",arrayDataMax[0],rangeElement,doc);
+			JPADStaticWriteUtils.writeSingleNode("max",arrayDataMax[0],domainElement,doc);
+			JPADStaticWriteUtils.writeSingleNode("max",arrayDataMax[1],rangeElement1,doc);	
+		}
 		JPADStaticWriteUtils.writeSingleNode("output","fcs/" + controlSurface + "-pos-deg",aeroSurfaceElement,doc);
-		JPADStaticWriteUtils.writeSingleNode("max",arrayDataMax[0],domainElement,doc);
-		JPADStaticWriteUtils.writeSingleNode("max",arrayDataMax[1],rangeElement1,doc);
 		JPADStaticWriteUtils.writeSingleNode("output","fcs/" + controlSurface + "-pos-norm",aeroSurfaceNormElement,doc);
 		return rootElementChannel;
 	}
@@ -484,6 +734,8 @@ public class JSBSimUtils {
 		else {
 			String[] arrayDataMin = deflection.get(flag).split(";");
 			JPADStaticWriteUtils.writeSingleNode("min",arrayDataMin[0],rangeElementRight,doc);
+			JPADStaticWriteUtils.writeSingleNode("min",arrayDataMin[0],domainElementRight,doc);
+			JPADStaticWriteUtils.writeSingleNode("min",arrayDataMin[1],rangeElement1Right,doc);		
 		}
 		String[] arrayDataMax = deflection.get(flag + numberDeflection -1).split(";");
 		JPADStaticWriteUtils.writeSingleNode("max",arrayDataMax[0],rangeElementRight,doc);
@@ -682,17 +934,21 @@ public class JSBSimUtils {
 		org.w3c.dom.Element productForceElement = 
 				doc.createElement("product");
 		forceFunctionElement.appendChild(productForceElement);
-		JPADStaticWriteUtils.writeSingleNode("property","aero/qbar-area",productForceElement,doc);
+		JPADStaticWriteUtils.writeSingleNode("property","aero/qbar-psf",productForceElement,doc);
+		JPADStaticWriteUtils.writeSingleNode("value",1.0,productForceElement,doc);// 1.0 Conversion N to lbs conversion
+		JPADStaticWriteUtils.writeSingleNode("property","metrics/Sw-sqft",productForceElement,doc);
 		JPADStaticWriteUtils.writeSingleNode("property","aero/function/"+axis+"_coeff_basic_Mach",productForceElement,doc);
 		if ((axis.equals("roll"))||(axis.equals("yaw"))) {
-			JPADStaticWriteUtils.writeSingleNode("property","metrics/bw-ft",productForceElement,doc);
+			JPADStaticWriteUtils.writeSingleNode("property","metrics/cbarw-ft",productForceElement,doc);
+			JPADStaticWriteUtils.writeSingleNode("value",1,productForceElement,doc); //Conversion meter to feet
 		}
 		if (axis.equals("pitch")) {
 			JPADStaticWriteUtils.writeSingleNode("property","metrics/cbarw-ft",productForceElement,doc);
+			JPADStaticWriteUtils.writeSingleNode("value",1,productForceElement,doc); //Conversion meter to feet
 		}
 		//Output element
 		JPADStaticWriteUtils.writeSingleNode("property","aero/function/"+axis+"_coeff_basic_Mach",outputElement,doc);
-		JPADStaticWriteUtils.writeSingleNode("property","aero/forces/"+axis+"_basic_Mach",outputElement,doc);
+		//JPADStaticWriteUtils.writeSingleNode("property","aero/forces/"+axis+"_basic_Mach",outputElement,doc);
 		return axisElement;
 	}
 	
@@ -756,6 +1012,46 @@ public class JSBSimUtils {
 	}
 	
 	
+	
+	public static Element createAeroDataExternalFunctionElementWithoutSideAngle(Document doc, List<String> aeroData, int machDimension,
+			double[] machVector, String axis, org.w3c.dom.Element aeroElement ) {
+
+		int counterList = 0;
+		org.w3c.dom.Element functionElementInner = 
+				doc.createElement("function");
+		functionElementInner.setAttribute("name", "aero/function/"+axis+"_coeff_basic_Mach");
+		aeroElement.appendChild(functionElementInner);
+		JPADStaticWriteUtils.writeSingleNode("description",
+				axis+"_coefficient as function of alpha, Reynolds, Mach " ,functionElementInner,doc);
+		org.w3c.dom.Element tableElement = 
+				doc.createElement("table");
+		functionElementInner.appendChild(tableElement);
+		org.w3c.dom.Element rowElement = JPADStaticWriteUtils.createXMLElementWithValueAndAttributes(
+				doc, "independentVar", "aero/alpha-deg", 
+				3, 6, Tuple.of("lookup", "row"));
+		tableElement.appendChild(rowElement);
+
+		org.w3c.dom.Element columnElement = JPADStaticWriteUtils.createXMLElementWithValueAndAttributes(
+				doc, "independentVar", "aero/Re", 
+				3, 6, Tuple.of("lookup", "column"));
+		tableElement.appendChild(columnElement);
+		org.w3c.dom.Element tableElementInner = JPADStaticWriteUtils.createXMLElementWithValueAndAttributes(
+				doc, "independentVar", "velocities/mach", 
+				3, 6, Tuple.of("lookup", "table"));
+		tableElement.appendChild(tableElementInner);
+		
+		for (int i = 0; i<machDimension; i++) {
+				org.w3c.dom.Element tableElementBreakPoint = JPADStaticWriteUtils.createXMLElementWithValueAndAttributes(
+						doc, "tableData", aeroData.get(counterList), 
+						3, 6, Tuple.of("breakPoint", String.valueOf(machVector[i])));
+				tableElement.appendChild(tableElementBreakPoint);
+				counterList = counterList+1;
+		}
+		return aeroElement;
+	}
+	
+	
+	
 	public static Element createAeroDataBodyAxisElementSimplify (Document doc, org.w3c.dom.Element outputElement,List<String> aeroData,
 			int machDimension, double[] machVector, String axis, org.w3c.dom.Element axisElement, org.w3c.dom.Element aeroElement, String check) {
 		aeroElement.appendChild(axisElement);
@@ -808,8 +1104,7 @@ public class JSBSimUtils {
 		
 		JPADStaticWriteUtils.writeSingleNode("tableData",aeroData.get(0),tableElement,doc);
 		//Output element
-		//JPADStaticWriteUtils.writeSingleNode("property","aero/function/"+axis+"_coeff_basic_Mach",outputElement,doc);
-		JPADStaticWriteUtils.writeSingleNode("property","aero/forces/"+axis+"_basic_Mach",outputElement,doc);
+		//JPADStaticWriteUtils.writeSingleNode("property","aero/forces/"+axis+"_basic_Mach",outputElement,doc);
 		return axisElement;
 	}
 	
@@ -829,13 +1124,16 @@ public class JSBSimUtils {
 		forceFunctionElement.appendChild(productForceElement);
 		JPADStaticWriteUtils.writeSingleNode("property","aero/qbar-psf",productForceElement,doc);
 		JPADStaticWriteUtils.writeSingleNode("property","metrics/Sw-sqft",productForceElement,doc);
+		JPADStaticWriteUtils.writeSingleNode("value",1.0,productForceElement,doc);// 1.0 Conversion N to LBS
 		JPADStaticWriteUtils.writeSingleNode(
 				"property","aero/function/"+controlSurfaceUID+"_"+axis+"_coeff_basic_Mach",productForceElement,doc);
 		
 		if ((axis.equals("roll"))||(axis.equals("yaw"))) {
-			JPADStaticWriteUtils.writeSingleNode("property","metrics/bw-ft",productForceElement,doc);
+			JPADStaticWriteUtils.writeSingleNode("property","metrics/cbarw-ft",productForceElement,doc);
+			JPADStaticWriteUtils.writeSingleNode("value",1,productForceElement,doc); //Conversion meter to feet
 		}
 		if (axis.equals("pitch")) {
+			JPADStaticWriteUtils.writeSingleNode("value",1,productForceElement,doc); //Conversion meter to feet
 			JPADStaticWriteUtils.writeSingleNode("property","metrics/cbarw-ft",productForceElement,doc);
 		}
 		JPADStaticWriteUtils.writeSingleNode("property", "aero/function/"+controlSurfaceUID+"_"+axis+"_coeff_basic_Mach",outputElement,doc);
@@ -956,6 +1254,90 @@ public class JSBSimUtils {
 		}
 		return aeroElement;
 	}
+	
+	
+	
+	
+	public static Element createAeroDataExternalFunctionControlSurfaceElementSideAngle(
+			Document doc, List<String> deltaAeroDataDeflection, int machDimension, double[] machVector, int reynoldsDimension,
+			double[] reynoldsVector, String axis, double[] deflection,String controlSurfaceUID, double[] betaVector, org.w3c.dom.Element aeroElement) {
+
+		int counterList = 0;
+		for (int i = 0; i<machDimension; i++) {
+			org.w3c.dom.Element functionElementInner = 
+					doc.createElement("function");
+			functionElementInner.setAttribute("name", "aero/function/"+controlSurfaceUID+"_"+axis+"_coeff_basic_M" + i);
+			aeroElement.appendChild(functionElementInner);
+			JPADStaticWriteUtils.writeSingleNode("description",
+					axis+"_coefficient as function of alpha beta Reynolds, fixed Mach = "+machVector[i] ,functionElementInner,doc);
+			org.w3c.dom.Element tableElement = 
+					doc.createElement("table");
+			functionElementInner.appendChild(tableElement);
+			org.w3c.dom.Element rowElement = JPADStaticWriteUtils.createXMLElementWithValueAndAttributes(
+					doc, "independentVar", "aero/alpha-deg", 
+					3, 6, Tuple.of("lookup", "row"));
+			tableElement.appendChild(rowElement);
+
+			if(controlSurfaceUID.equals("aileron")) {
+				org.w3c.dom.Element columnElement = JPADStaticWriteUtils.createXMLElementWithValueAndAttributes(
+						doc, "independentVar", "fcs/right-"+controlSurfaceUID+"-pos-deg", 
+						3, 6, Tuple.of("lookup", "column"));
+				tableElement.appendChild(columnElement);
+			}
+			else if(controlSurfaceUID.equals("flap_inner")) {
+				org.w3c.dom.Element columnElement = JPADStaticWriteUtils.createXMLElementWithValueAndAttributes(
+						doc, "independentVar", "fcs/flap-pos-deg", 
+						3, 6, Tuple.of("lookup", "column"));
+				tableElement.appendChild(columnElement);
+			}
+			else if(controlSurfaceUID.equals("flap_outer")) {
+				org.w3c.dom.Element columnElement = JPADStaticWriteUtils.createXMLElementWithValueAndAttributes(
+						doc, "independentVar", "fcs/flap-pos-deg", 
+						3, 6, Tuple.of("lookup", "column"));
+				tableElement.appendChild(columnElement);
+			}
+			else{
+				org.w3c.dom.Element columnElement = JPADStaticWriteUtils.createXMLElementWithValueAndAttributes(
+						doc, "independentVar", "fcs/"+controlSurfaceUID+"-pos-deg", 
+						3, 6, Tuple.of("lookup", "column"));
+				tableElement.appendChild(columnElement);
+			}
+
+			org.w3c.dom.Element tableElementInner = JPADStaticWriteUtils.createXMLElementWithValueAndAttributes(
+					doc, "independentVar", "aero/Re", 
+					3, 6, Tuple.of("lookup", "table"));
+			tableElement.appendChild(tableElementInner);
+			for (int j = 0; j<reynoldsDimension;j++) {
+				org.w3c.dom.Element tableElementBreakPoint = JPADStaticWriteUtils.createXMLElementWithValueAndAttributes(
+						doc, "tableData", deltaAeroDataDeflection.get(counterList), 
+						3, 6, Tuple.of("breakPoint", String.valueOf(reynoldsVector[j])));
+				tableElement.appendChild(tableElementBreakPoint);
+				counterList = counterList+1;
+			}
+		}
+		
+		//Force coefficient
+		org.w3c.dom.Element functionElement = 
+				doc.createElement("function");
+		functionElement.setAttribute("name", "aero/function/"+controlSurfaceUID+"_"+axis+"_coeff_basic_Mach");
+		aeroElement.appendChild(functionElement);
+		JPADStaticWriteUtils.writeSingleNode("description",
+				axis+"_coefficient as function of alpha beta Reynolds and Mach" ,functionElement,doc);
+		org.w3c.dom.Element interpElement = doc.createElement("interpolate1d");
+		functionElement.appendChild(interpElement);
+		JPADStaticWriteUtils.writeSingleNode("p",
+				"velocities/mach" ,interpElement,doc);
+		counterList = 0;
+		for (int i = 0; i<machDimension; i++) {
+			//Coefficient
+			JPADStaticWriteUtils.writeSingleNode(
+					"v",machVector[i],interpElement,doc);	
+			JPADStaticWriteUtils.writeSingleNode("p",
+					"aero/function/"+controlSurfaceUID+"_"+axis+"_coeff_basic_M" + i ,interpElement,doc);			
+		}
+		return aeroElement;
+	}
+	
 	//Damping derivatives
 	public static Element createAeroDataDampingDerivativesBodyAxisElement(Document doc, org.w3c.dom.Element outputElement,List<String> aeroData,
 			int machDimension, double[] machVector, String axis, org.w3c.dom.Element axisElement, String DampingDerivatives ,org.w3c.dom.Element aeroElement) {
@@ -973,31 +1355,35 @@ public class JSBSimUtils {
 		forceFunctionElement.appendChild(productForceElement);
 		JPADStaticWriteUtils.writeSingleNode("property","aero/qbar-psf",productForceElement,doc);
 		JPADStaticWriteUtils.writeSingleNode("property","metrics/Sw-sqft",productForceElement,doc);
+		JPADStaticWriteUtils.writeSingleNode("value",0.0,productForceElement,doc); // 1.0 Conversion N to pound
 		JPADStaticWriteUtils.writeSingleNode(
 				"property","aero/function/"+axis+"_coeff_basic_Mach",productForceElement,doc);
 		
-		if (DampingDerivatives.equals("p")) {
-			JPADStaticWriteUtils.writeSingleNode("property","velocities/p-aero-rad_sec",productForceElement,doc);
-			JPADStaticWriteUtils.writeSingleNode("property","aero/bi2vel",productForceElement,doc);
-		}
-		if (DampingDerivatives.equals("q")) {
-			JPADStaticWriteUtils.writeSingleNode("property","velocities/q-aero-rad_sec",productForceElement,doc);
-			JPADStaticWriteUtils.writeSingleNode("property","aero/ci2vel",productForceElement,doc);
-		}
-		if (DampingDerivatives.equals("r")) {
-			JPADStaticWriteUtils.writeSingleNode("property","velocities/r-aero-rad_sec",productForceElement,doc);
-			JPADStaticWriteUtils.writeSingleNode("property","aero/bi2vel",productForceElement,doc);
-		}
+
 		if ((axis.equals(DampingDerivatives+"-roll"))||(axis.equals(DampingDerivatives+"-yaw"))) {
-			JPADStaticWriteUtils.writeSingleNode("property","metrics/bw-ft",productForceElement,doc);
+			JPADStaticWriteUtils.writeSingleNode("property","metrics/cbarw-ft",productForceElement,doc);
+			JPADStaticWriteUtils.writeSingleNode("value",1,productForceElement,doc); //Conversion meter to feet
 		}
 		if (axis.equals(DampingDerivatives+"-pitch")) {
 			JPADStaticWriteUtils.writeSingleNode("property","metrics/cbarw-ft",productForceElement,doc);
+			JPADStaticWriteUtils.writeSingleNode("value",1,productForceElement,doc); //Conversion meter to feet
 		}
 		
+		if (DampingDerivatives.equals("p")) {
+			JPADStaticWriteUtils.writeSingleNode("property","velocities/p-rad_sec",productForceElement,doc);
+			JPADStaticWriteUtils.writeSingleNode("property","aero/ci2vel",productForceElement,doc);
+		}
+		if (DampingDerivatives.equals("q")) {
+			JPADStaticWriteUtils.writeSingleNode("property","velocities/q-rad_sec",productForceElement,doc);
+			JPADStaticWriteUtils.writeSingleNode("property","aero/ci2vel",productForceElement,doc);
+		}
+		if (DampingDerivatives.equals("r")) {
+			JPADStaticWriteUtils.writeSingleNode("property","velocities/r-rad_sec",productForceElement,doc);
+			JPADStaticWriteUtils.writeSingleNode("property","aero/ci2vel",productForceElement,doc);
+		}
 		//output
 		JPADStaticWriteUtils.writeSingleNode("property","aero/function/"+axis+"_coeff_basic_Mach",outputElement,doc);
-		JPADStaticWriteUtils.writeSingleNode("property","aero/forces/"+axis+"_basic_Mach",outputElement,doc);
+		//JPADStaticWriteUtils.writeSingleNode("property","aero/forces/"+axis+"_basic_Mach",outputElement,doc);
 		return axisElement;
 	}
 	
@@ -1064,6 +1450,45 @@ public class JSBSimUtils {
 	}
 	
 	
+	
+	public static Element createAeroDataDampingDerivativesExternalFunctionElementWithoutSideAngle(Document doc, List<String> aeroData, int machDimension,
+			double[] machVector, int reynoldsDimension, double[] reynoldsVector, String axis, org.w3c.dom.Element aeroElement ) {
+		int counterList = 0;
+		org.w3c.dom.Element functionElementInner = 
+				doc.createElement("function");
+		functionElementInner.setAttribute("name", "aero/function/"+axis+"_coeff_basic_Mach");
+		aeroElement.appendChild(functionElementInner);
+		JPADStaticWriteUtils.writeSingleNode("description",
+				axis+"_coefficient as function of alpha, Reynolds, Mach " ,functionElementInner,doc);
+		org.w3c.dom.Element tableElement = 
+				doc.createElement("table");
+		functionElementInner.appendChild(tableElement);
+		org.w3c.dom.Element rowElement = JPADStaticWriteUtils.createXMLElementWithValueAndAttributes(
+				doc, "independentVar", "aero/alpha-deg", 
+				3, 6, Tuple.of("lookup", "row"));
+		tableElement.appendChild(rowElement);
+
+		org.w3c.dom.Element columnElement = JPADStaticWriteUtils.createXMLElementWithValueAndAttributes(
+				doc, "independentVar", "aero/Re", 
+				3, 6, Tuple.of("lookup", "column"));
+		tableElement.appendChild(columnElement);
+		org.w3c.dom.Element tableElementInner = JPADStaticWriteUtils.createXMLElementWithValueAndAttributes(
+				doc, "independentVar", "velocities/mach", 
+				3, 6, Tuple.of("lookup", "table"));
+		tableElement.appendChild(tableElementInner);
+		
+		for (int i = 0; i<machDimension; i++) {
+				org.w3c.dom.Element tableElementBreakPoint = JPADStaticWriteUtils.createXMLElementWithValueAndAttributes(
+						doc, "tableData", aeroData.get(counterList), 
+						3, 6, Tuple.of("breakPoint", String.valueOf(machVector[i])));
+				tableElement.appendChild(tableElementBreakPoint);
+				counterList = counterList+1;
+		}
+		return aeroElement;
+	}
+	
+	
+	
 	public static void runJSBSIM(List<String> commandList, String Argument) throws IOException, InterruptedException {
 //		public static void runJSBSIM( List<String> commandList) throws IOException {
 	        List<String> command = new ArrayList<String>();
@@ -1104,6 +1529,8 @@ public class JSBSimUtils {
 	            }
 	        }
 	    }
+
+
 
 
 }//end class

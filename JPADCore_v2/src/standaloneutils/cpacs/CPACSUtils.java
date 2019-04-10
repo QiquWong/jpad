@@ -82,6 +82,22 @@ public final class CPACSUtils {
 			}
 		return result.toString();
 	}
+	
+	
+	public static String doubleVectorToString(double[] vector) {
+
+		StringBuffer result = new StringBuffer();
+
+		// iterate over the first dimension
+		for (int i = 0; i < vector.length; i++) {
+			// iterate over the second dimension
+					result.append(vector[i]);
+					result.append(",");
+			}
+		return result.toString();
+	}
+	
+
 	/**
 	 * Returns a string made up of N rows and 2 columns, that displays a 2D array in a tabular format
 	 * recognized by JSBSim
@@ -439,5 +455,64 @@ public final class CPACSUtils {
 		}
 		return outputVector;
 	}
+	
+	
+	
+	public static double [] addZeroInTheAeroPerformanceMapControlSurface(
+			double[] dataVector, int deflection, int alpha, int yaw, int reynolds, int mach) {
+		int deltaCorrection = deflection;
+		if (deflection == 2) {
+			deltaCorrection = deflection + 1;
+		}
+		double[] outputVector = new double[alpha*yaw*(deltaCorrection)*reynolds*mach];
+		int counter = 0;
+			for (int i = 0; i< dataVector.length; i++) {
+				if(i%2 == 0) {
+					outputVector[counter] = dataVector[i];
+					counter = counter +1 ;
+					if (deflection<deltaCorrection) {
+					outputVector[counter + 1] = 0;
+					counter = counter +1 ;
+					}
+				}
+				if(i%2 !=0) {
+					outputVector[counter] = dataVector[i];
+					counter = counter +1 ;
+				}
+			}
+
+		return outputVector;
+	}
+	
+	public static double[] getElementInTheVector(double[] inputVector, int initialIndex, int finalIndex){
+
+		double[] outputVector = new double [finalIndex-initialIndex + 1];
 		
+		
+		for(int i = 0;i<finalIndex-initialIndex+1;i++) {
+			outputVector[i] = inputVector[i+initialIndex];
+		}
+		return outputVector;
+	}
+
+	public static int getIdexAeroPerformaceControlSurface(NodeList controlSurfaceAeroPerformanceList, Document docAero, String string) {
+			int index = 0;
+			for (int i = 0;i<controlSurfaceAeroPerformanceList.getLength()-1;i++) {
+				Node nodeControlSurface  = controlSurfaceAeroPerformanceList.item(i); // .getNodeValue();
+				//Element controlSurfaceElement = (Element) nodeControlSurface;
+				String controlSurfacePositionString = MyXMLReaderUtils.getXMLPropertyByPath(
+						controlSurfaceAeroPerformanceList.item(i),
+						"//controlSurfaceUID/text()");
+				if(controlSurfacePositionString.equals(string)) {
+					index = i;
+				}
+				
+			}
+
+			return index;
+			
+	}
+		
+	
+
 }

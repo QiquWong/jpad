@@ -1,6 +1,6 @@
 clc; clear all; close all;
-%C_D 
-filename = 'C_D.txt';
+%C_x
+filename = 'C_x.txt';
 machVector = importRow(filename,1); machLength = length(machVector);
 altitudeVector = importRow(filename,2); altitudeLength = length(altitudeVector);
 betaVector = importRow(filename,3); betaLength = length(betaVector);
