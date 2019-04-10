@@ -23,15 +23,15 @@
 					<cLmax_landing_configuration>2.94</cLmax_landing_configuration>
 					<cL_alpha_landing unit="1/°">0.0869</cL_alpha_landing>
 					<cL0_landing_configuration>1.8291</cL0_landing_configuration>
-					<delta_CD0_flap_take_off></delta_CD0_flap_take_off>
-					<delta_CD0_flap_landing></delta_CD0_flap_landing>
-					<delta_CD0_landing_gears>0.015</delta_CD0_landing_gears>
+					<delta_CD0_flap_take_off>0.0100</delta_CD0_flap_take_off>
+					<delta_CD0_flap_landing>0.0600</delta_CD0_flap_landing>
+					<delta_CD0_landing_gears>0.0150</delta_CD0_landing_gears>
 					<!-- the following data are used only if parabolicDragPolar flag is set to TRUE. In any other case, they can be left blank -->
-					<cD0></cD0>
-					<oswald_cruise></oswald_cruise> 
-					<oswald_climb></oswald_climb>
-					<oswald_take_off></oswald_take_off>
-					<oswald_landing></oswald_landing>
+					<cD0>0.0185</cD0>
+					<oswald_cruise>0.85</oswald_cruise> 
+					<oswald_climb>0.85</oswald_climb>
+					<oswald_take_off>0.83</oswald_take_off>
+					<oswald_landing>0.81</oswald_landing>
 					<!---->
 					<polar_curves>
 						<cruise>
@@ -75,7 +75,7 @@
 				<dt_hold unit="s"></dt_hold> <!-- the duration of the constant CL phase (default = 0.5s) -->
 				<alpha_ground unit="°"></alpha_ground> <!-- angle of attack in BRF along the runway (default = 0°)-->
 				<obstacle_take_off unit="ft"></obstacle_take_off> <!-- default = 35 ft -->
-				<k_rotation></k_rotation> <!-- V_rotation/V_stall in take-off (default = 1.05) -->
+				<k_rotation>1.07</k_rotation> <!-- V_rotation/V_stall in take-off (default = 1.05) -->
 				<alpha_dot_rotation></alpha_dot_rotation> <!-- rotation angular velocity (must be in deg/s) (default = 3.0) -->
 				<k_cLmax_take_off>0.85</k_cLmax_take_off> <!-- percentage of the CLmax,TO not to be surpassed during the rotation  (default = 0.9)-->
 				<drag_due_to_engine_failure>0.005</drag_due_to_engine_failure> <!-- drag coefficient to be added due to the failed engine and rudder deflection (default = 0.0) -->

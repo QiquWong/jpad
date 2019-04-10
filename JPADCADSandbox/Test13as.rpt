@@ -1,0 +1,27 @@
+*****************************************************************
+      SolidWorks Corporation - IGES Processor Status Report
+*****************************************************************
+AVVERTIMENTO: Impossibile leggere il file IGES. Il file è troncato o contiene dati non validi.                                
+
+
+=================================================================
+Sintesi entità
+=================================================================
+-----------------------------------------------------------------
+Immetti nome                                         Conteggio convertito
+---- ----                                         ----- ---------
+_________________________________________________________________
+
+
+=================================================================
+Sintesi dei risultati
+=================================================================
+Tipo di funzione SolidWorks                Conteggio
+-----------------------                -----
+Funzioni solide                       0
+Funzioni di superficie                     0
+Funzioni di curva/schizzo                0
+--------------------------------------------
+Inizio: mercoledì, febbraio 13, 2019 13:25:04
+Fine: mercoledì, febbraio 13, 2019 13:25:06
+Tempo di elaborazione: 0 days, 00 hours, 00 mins, 02 secs

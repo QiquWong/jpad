@@ -56,8 +56,10 @@ import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcLiftDistrib
 import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcMachCr;
 import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcMomentDistribution;
 import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcXAC;
+import analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcYAC;
 import analyses.nacelles.NacelleAerodynamicsManager;
 import calculators.aerodynamics.AerodynamicCalc;
+import calculators.aerodynamics.AlphaEffective;
 import calculators.aerodynamics.DragCalc;
 import calculators.aerodynamics.LiftCalc;
 import calculators.aerodynamics.MomentCalc;
@@ -86,6 +88,7 @@ public class ACAerodynamicAndStabilityManagerUtils {
 			ComponentEnum type
 			) {
 
+
 		LiftingSurfaceAerodynamicsManager liftingSurfaceAerodynamicManager = aerodynamicAndStabilityManager.getLiftingSurfaceAerodynamicManagers().get(type);
 		Amount<Angle> alphaComponentCurrent = null;
 		switch (type) {
@@ -108,8 +111,33 @@ public class ACAerodynamicAndStabilityManagerUtils {
 		double currentMachNumber = aerodynamicAndStabilityManager.getCurrentMachNumber();
 		Amount<Length> currentAltitude = aerodynamicAndStabilityManager.getCurrentAltitude();
 		Amount<Temperature> currentDeltaTemperature = aerodynamicAndStabilityManager.getCurrentDeltaTemperature();
-
-
+		
+// 		AlphaEffective theAlphaEffectiveCalculator = new AlphaEffective(
+//				liftingSurfaceAerodynamicManager, 
+//				liftingSurfaceAerodynamicManager.getTheLiftingSurface() ,
+//				aerodynamicAndStabilityManager.getTheAerodynamicBuilderInterface().getTheOperatingConditions());
+//		
+//		theAlphaEffectiveCalculator.calculateAlphaEffective(
+//				Amount.valueOf(5.0, NonSI.DEGREE_ANGLE),
+//				aerodynamicAndStabilityManager.getTheAerodynamicBuilderInterface().getTheOperatingConditions().getTasClimb());
+//		
+//		double[] ystat = {0.000,
+//				1.211,
+//				2.422,
+//				3.633,
+//				4.844,
+//				6.055,
+//				8.929,
+//				11.802,
+//				14.676,
+//				17.550};
+//		
+//
+//		double[] alphaInduced = theAlphaEffectiveCalculator.getAlphaInduced();
+//
+//		Double[] alphaOutput = MyMathUtils.getInterpolatedValue1DLinear(MyArrayUtils.convertListOfAmountTodoubleArray(liftingSurfaceAerodynamicManager.getYStationDistribution()),
+//				alphaInduced,
+//				ystat);
 		//.........................................................................................................................
 		//	CL_AT_ALPHA  
 		CalcCLAtAlpha calcCLAtAlpha = liftingSurfaceAerodynamicManager.new CalcCLAtAlpha();
@@ -123,10 +151,22 @@ public class ACAerodynamicAndStabilityManagerUtils {
 		//.........................................................................................................................
 		//	AERODYNAMIC_CENTER
 		CalcXAC calcXAC = liftingSurfaceAerodynamicManager.new CalcXAC();
-		calcXAC.datcomNapolitano();
+		if(liftingSurfaceAerodynamicManager.getTheLiftingSurface().getType() == ComponentEnum.WING) {
+		calcXAC.pointAtCmConstant();
 		liftingSurfaceAerodynamicManager.setMomentumPole(
-				liftingSurfaceAerodynamicManager.getXacLRF().get(MethodEnum.NAPOLITANO_DATCOM )
+				liftingSurfaceAerodynamicManager.getXacLRF().get(MethodEnum.CMCONSTANT)
 				);
+		}
+		else {
+			calcXAC.datcomNapolitano();
+			liftingSurfaceAerodynamicManager.setMomentumPole(
+					liftingSurfaceAerodynamicManager.getXacLRF().get(MethodEnum.NAPOLITANO_DATCOM)
+					);
+		}
+//		calcXAC.deYoungHarper();
+		
+		CalcYAC calcYAC = liftingSurfaceAerodynamicManager.new CalcYAC();
+		calcYAC.withIntegral();
 
 		//.........................................................................................................................
 		//	CL_ALPHA
@@ -203,9 +243,9 @@ public class ACAerodynamicAndStabilityManagerUtils {
 
 		//.........................................................................................................................
 		//	MOMENT_CURVE_3D
-		analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcMomentCurve calcMomentCurve = liftingSurfaceAerodynamicManager.new CalcMomentCurve();
+ 		analyses.liftingsurface.LiftingSurfaceAerodynamicsManager.CalcMomentCurve calcMomentCurve = liftingSurfaceAerodynamicManager.new CalcMomentCurve();
 		calcMomentCurve.fromAirfoilDistribution();
-
+		
 		//.........................................................................................................................
 		//	CM_AT_ALPHA  
 		CalcCMAtAlpha calcCMAtAlpha = liftingSurfaceAerodynamicManager.new CalcCMAtAlpha();
@@ -2018,11 +2058,12 @@ public class ACAerodynamicAndStabilityManagerUtils {
 			}
 		}
 		
-		for (int i=1; i< temporaryCLCoefficient.size()-1; i++) {
+		for (int i=0; i< temporaryCLCoefficient.size()-1; i++) {
 			if(temporaryCLCoefficient.get(i+1)<temporaryCLCoefficient.get(i)) {
-				temporaryCLCoefficient.set(i+1, temporaryCLCoefficient.get(i) + (Math.abs(temporaryCLCoefficient.get(i+1) - temporaryCLCoefficient.get(i))));
+				temporaryCLCoefficient.set(i+1, temporaryCLCoefficient.get(i) + (Math.abs(temporaryCLCoefficient.get(i+1) - temporaryCLCoefficient.get(i)))+0.01);
 			}
 		}
+		
 		aerodynamicAndStabilityManager.getTotalDragCoefficient().put(
 				de,
 				MyArrayUtils.convertDoubleArrayToListDouble(
@@ -2035,6 +2076,7 @@ public class ACAerodynamicAndStabilityManagerUtils {
 						)
 						)
 				);
+		
 		});
 
 	}
@@ -2050,6 +2092,12 @@ public class ACAerodynamicAndStabilityManagerUtils {
 			IACAerodynamicAndStabilityManager_v2 _theAerodynamicBuilderInterface = aerodynamicAndStabilityManager.getTheAerodynamicBuilderInterface();
 			FuselageAerodynamicsManager fuselageAerodynamicManagers = aerodynamicAndStabilityManager.getFuselageAerodynamicManagers().get(ComponentEnum.FUSELAGE);
 			NacelleAerodynamicsManager nacelleAerodynamicManagers = aerodynamicAndStabilityManager.getNacelleAerodynamicManagers().get(ComponentEnum.NACELLE);
+						
+			Amount.valueOf(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getZApexConstructionAxes().doubleValue(SI.METER) + 
+			_theAerodynamicBuilderInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeY().doubleValue(SI.METER) 
+			* Math.tan(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getDihedralAtYActual(
+					_theAerodynamicBuilderInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeY().doubleValue(SI.METER)).doubleValue(SI.RADIAN))
+					, SI.METER);
 			
 			_theAerodynamicBuilderInterface.getXCGAircraft().stream().forEach(xcg ->{
 				int i = _theAerodynamicBuilderInterface.getXCGAircraft().indexOf(xcg);
@@ -2076,7 +2124,11 @@ public class ACAerodynamicAndStabilityManagerUtils {
 								.get(_theAerodynamicBuilderInterface.getComponentTaskList()
 										.get(ComponentEnum.WING)
 										.get(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER)).plus(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes()), 
-								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getZApexConstructionAxes(), 
+								Amount.valueOf(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getZApexConstructionAxes().doubleValue(SI.METER) + 
+								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeY().doubleValue(SI.METER) 
+								* Math.tan(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getDihedralAtYActual(
+										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getMeanAerodynamicChordLeadingEdgeY().doubleValue(SI.METER)).doubleValue(SI.RADIAN))
+										, SI.METER), 
 								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getMeanAerodynamicChord(),
 								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSurfacePlanform(), 
 								aerodynamicAndStabilityManager.getCurrent3DWingLiftCurve(),

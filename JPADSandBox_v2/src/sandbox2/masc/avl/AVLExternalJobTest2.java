@@ -2,10 +2,8 @@ package sandbox2.masc.avl;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +58,7 @@ public class AVLExternalJobTest2 {
 				System.out.println("\n--------------------------------------------- Prepare AVL job:\n");
 				theOperatingConditions = AVLTestUtils.importOperatingConditions(args);
 				AVLTestUtils.performAnalyses(theAircraft, theOperatingConditions);
-				
+	
 				//System.out.println(theAircraft.toString());
 				//System.out.println("Operating conditions:\n\n");
 				//System.out.println(theOperatingConditions.toString());
@@ -95,6 +93,7 @@ public class AVLExternalJobTest2 {
 							;
 					job.setBinDirectory(new File(binDirPath));	
 				}
+				
 				job.setEnvironmentVariable("AVLROOT", binDirPath);
 					
 				System.out.println("Binary directory: " + job.getBinDirectory());
@@ -125,11 +124,7 @@ public class AVLExternalJobTest2 {
 					try {
 						System.out.println("Deleting file: " + path);
 						Files.delete(path);
-					} catch (NoSuchFileException e) {
-						System.err.format("%s: no such" + " file or directory: %1$s\n", path);
-					} catch (DirectoryNotEmptyException e) {
-						System.err.format("%1$s not empty\n", path);
-					} catch (IOException e) {
+					}catch (IOException e) {
 						System.err.println(e);
 					}
 				});
@@ -145,9 +140,9 @@ public class AVLExternalJobTest2 {
 				// Generate data
 
 				AVLMainInputData inputData = job.importToMainInputData(theOperatingConditions, theAircraft);
-				
+
 				AVLAircraft avlAircraft = job.importToAVLAircraft(theAircraft);
-				
+
 				AVLMassInputData massData = job.importToMassInputData(theAircraft);
 
 				if (massData != null) { // true if massData != null

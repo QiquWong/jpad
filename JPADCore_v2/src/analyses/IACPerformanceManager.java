@@ -75,7 +75,6 @@ public interface IACPerformanceManager {
 	Double getKLandingWeight();
 	Amount<Length> getInitialALtitudeLanding();
 	Amount<Length> getObstacleLanding();
-	Amount<Angle> getApproachAngle();
 	Double getKCLmaxLanding();
 	Double getKApproach();
 	Double getKFlare();
@@ -109,7 +108,6 @@ public interface IACPerformanceManager {
 	Amount<Duration> getTakeOffNoiseTrajectoryLandingGearRetractionTimeInterval();
 	Amount<Duration> getTakeOffNoiseTrajectoryThrustReductionCutbackTimeInterval();
 	Amount<Length> getLandingNoiseTrajectoryInitialAltitude();
-	Amount<Angle> getLandingNoiseTrajectoryTrajectoryAngle();
 	//..............................................................................
 	// Mission Profile:
 	Amount<Length> getMissionRange();

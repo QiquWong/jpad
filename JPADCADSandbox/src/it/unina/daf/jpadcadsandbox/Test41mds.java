@@ -135,19 +135,19 @@ public class Test41mds {
 		List<OCCShape> canardShapes = AircraftCADUtils.getLiftingSurfaceCAD(
 				canard, WingTipType.ROUNDED, exportWires, exportShells, exportSolids);
 
-		List<OCCShape> wingFairingShapes = AircraftCADUtils.getFairingShapes(
+		List<OCCShape> wingFairingShapes = AircraftCADUtils.getFairingCAD(
 				fuselage, wing, 
 				0.60, 0.75, 0.85, 0.05, 
 				0.75, 0.65, 0.75, 
 				exportWires, exportShells, exportSolids);
 				
-		List<OCCShape> canardFairingShapes = AircraftCADUtils.getFairingShapes(
+		List<OCCShape> canardFairingShapes = AircraftCADUtils.getFairingCAD(
 				fuselage, canard, 
 				0.85, 0.85, 0.55, 0.20, 
 				0.15, 0.95, 0.50, 
 				exportWires, exportShells, exportSolids);
 
-		List<OCCShape> engineShapes = AircraftCADUtils.getEnginesCAD(inputDirectory,
+		List<OCCShape> engineShapes = AircraftCADUtils.getEnginesCADFromTemplate(inputDirectory,
 				nacelles, engines, templatesMapList, bladePitchAngleList, exportWires, exportShells, exportSolids);
 		
 		long endTime = System.nanoTime();

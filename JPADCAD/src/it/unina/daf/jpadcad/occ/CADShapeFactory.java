@@ -247,6 +247,13 @@ public abstract class CADShapeFactory {
 	public abstract CADSolid newSolidFromAdjacentShells(List<CADShell> cadShells);
 	
 	/**
+	 * Create a solid from a shell
+	 * @param cadShell the shell object
+	 * @return the created CADSolid
+	 */
+	public abstract CADSolid newSolidFromShell(CADShell cadShell);
+	
+	/**
 	 * Create a wire from adjacent edges
 	 * @param cadEdges adjacent edges
 	 * @return the created wire

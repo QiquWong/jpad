@@ -1,30 +1,63 @@
 -------------------------------------------------------------
 ------------------ JPADReport modeling test -----------------
 -------------------------------------------------------------
-MATLAB WORKING DIRECTORY ===> d:\agodemar\github\jpad\JPADReport\matlab\examples
-AIRCRAFT INPUT ===> d:\agodemar\github\jpad\JPADSandBox_v2\in\Template_Aircraft\aircraft_IRON_CANARD_LOOP2_FINAL.xml
-AIRFOILS ===> D:\agodemar\github\jpad\JPADSandBox_v2\in\Template_Aircraft\lifting_surfaces\airfoils
-FUSELAGES ===> D:\agodemar\github\jpad\JPADSandBox_v2\in\Template_Aircraft\fuselages
-LIFTING SURFACES ===> D:\agodemar\github\jpad\JPADSandBox_v2\in\Template_Aircraft\lifting_surfaces
-ENGINES ===> D:\agodemar\github\jpad\JPADSandBox_v2\in\Template_Aircraft\engines
-NACELLES ===> D:\agodemar\github\jpad\JPADSandBox_v2\in\Template_Aircraft\nacelles
-LANDING GEARS ===> D:\agodemar\github\jpad\JPADSandBox_v2\in\Template_Aircraft\landing_gears
-CABIN CONFIGURATIONS ===> D:\agodemar\github\jpad\JPADSandBox_v2\in\Template_Aircraft\cabin_configurations
+MATLAB WORKING DIRECTORY ===> C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADReport\matlab\dev
+AIRCRAFT INPUT ===> C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\in\Template_Aircraft\aircraft_IRON_CANARD_LOOP2_FINAL.xml
+AIRFOILS ===> C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\in\Template_Aircraft\lifting_surfaces\airfoils
+FUSELAGES ===> C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\in\Template_Aircraft\fuselages
+LIFTING SURFACES ===> C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\in\Template_Aircraft\lifting_surfaces
+ENGINES ===> C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\in\Template_Aircraft\engines
+NACELLES ===> C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\in\Template_Aircraft\nacelles
+LANDING GEARS ===> C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\in\Template_Aircraft\landing_gears
+CABIN CONFIGURATIONS ===> C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\in\Template_Aircraft\cabin_configurations
 --------------
 SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
 SLF4J: Defaulting to no-operation (NOP) logger implementation
 SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.
-De-serializing file: d:\agodemar\github\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterAerodynamicDatabase.xml ...
+De-serializing file: C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterAerodynamicDatabase.xml ...
 database.databasefunctions.aerodynamics.AerodynamicDatabaseReader de-serialization complete
-De-serializing file: d:\agodemar\github\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterHighLiftDatabase.xml ...
+De-serializing file: C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterHighLiftDatabase.xml ...
 database.databasefunctions.aerodynamics.HighLiftDatabaseReader de-serialization complete
-De-serializing file: d:\agodemar\github\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterFusDesDatabase.xml ...
+De-serializing file: C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterFusDesDatabase.xml ...
 database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader de-serialization complete
-De-serializing file: d:\agodemar\github\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterVeDSCDatabase.xml ...
+De-serializing file: C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADSandBox_v2\data\serializedDatabase\interpolaterVeDSCDatabase.xml ...
 database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader de-serialization complete
 Creating the Aircraft ... 
 ------------------ JPADReport :: START -----------------
 Unable to initialize connector: null
------------------- JPADReport :: COMPLETE -----------------
+[makeReport03] writing a report...
+Writing report...
+Unable to check out a Report Generator license. Reason: 
+
+Error in mlreportgen.report.internal.Document/open
+
+Error in mlreportgen.report.ReportBase/openImpl
+
+Error in mlreportgen.report.ReportBase/open
+
+Error in mlreportgen.report.ReportBase/add
+
+Error in makeReport (line 21)
+
+... Matlab M-code Stack Trace ...
+file C:\Program Files\MATLAB\MATLAB Runtime\v95\mcr\toolbox\shared\mlreportgen\rpt\rpt\+mlreportgen\+report\+internal\Document.p, name Document.open, line 0.
+file C:\Program Files\MATLAB\MATLAB Runtime\v95\mcr\toolbox\shared\mlreportgen\rpt\rpt\+mlreportgen\+report\ReportBase.p, name ReportBase.openImpl, line 0.
+file C:\Program Files\MATLAB\MATLAB Runtime\v95\mcr\toolbox\shared\mlreportgen\rpt\rpt\+mlreportgen\+report\ReportBase.p, name ReportBase.open, line 0.
+file C:\Program Files\MATLAB\MATLAB Runtime\v95\mcr\toolbox\shared\mlreportgen\rpt\rpt\+mlreportgen\+report\ReportBase.p, name ReportBase.add, line 0.
+file C:\Users\DeMarco-PC\AppData\Local\Temp\DeMarco-PC\mcrCache9.5\MRepor0\MReportUtils\makeReport.m, name makeReport, line 21.
+com.mathworks.toolbox.javabuilder.MWException: Unable to check out a Report Generator license. Reason: 
+	at com.mathworks.toolbox.javabuilder.internal.MWMCR.mclFeval(Native Method)
+	at com.mathworks.toolbox.javabuilder.internal.MWMCR.access$600(MWMCR.java:31)
+	at com.mathworks.toolbox.javabuilder.internal.MWMCR$6.mclFeval(MWMCR.java:891)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at com.mathworks.toolbox.javabuilder.internal.MWMCR$5.invoke(MWMCR.java:778)
+	at com.sun.proxy.$Proxy3.mclFeval(Unknown Source)
+	at com.mathworks.toolbox.javabuilder.internal.MWMCR.invoke(MWMCR.java:445)
+	at MReportUtils.MReportUtils.makeReport(MReportUtils.java:669)
+	at it.unina.daf.jpad.report.JPADReportUtils.makeReport03(JPADReportUtils.java:100)
 
 	DONE.
+	at it.unina.daf.jpad.report.test.Test01.main(Test01.java:33)

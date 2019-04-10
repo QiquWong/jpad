@@ -35,15 +35,15 @@ public final class AVLTestUtils {
 	static String pathToAnalysesXML;
 
 	public static File getAVLExecutable(String[] args) {
-		
+
 		CmdLineUtils.va = new ArgumentsAVLTests();
 		CmdLineUtils.theCmdLineParser = new CmdLineParser(CmdLineUtils.va);
-		
+
 		try {
 			CmdLineUtils.theCmdLineParser.parseArgument(args);
-			
+
 			return CmdLineUtils.va.getAvlExecutableFile();
-			
+
 		} catch (CmdLineException e) {
 			System.err.println("Error: " + e.getMessage());
 			CmdLineUtils.theCmdLineParser.printUsage(System.err);

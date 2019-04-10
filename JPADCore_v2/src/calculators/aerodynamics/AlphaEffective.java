@@ -1,5 +1,6 @@
 package calculators.aerodynamics;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.measure.quantity.Angle;
@@ -7,6 +8,7 @@ import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Temperature;
 import javax.measure.quantity.Velocity;
+import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
@@ -53,9 +55,9 @@ public class AlphaEffective {
 		this.theLSManager = theLSManager;
 		this.theWing = theWing;
 		this.theOperatingConditions = theOperatingConditions;
-
+		vortexSemiSpanToSemiSpanRatio = 1.0/(2*theWing.getDiscretizedChords().size());
 		vortexSemiSpan = vortexSemiSpanToSemiSpanRatio * theWing.getSemiSpan().getEstimatedValue();
-		mach = theOperatingConditions.getMachCruise();
+		mach = theOperatingConditions.getMachClimb();
 		semispan = theWing.getSemiSpan();
 
 		dihedral = MyArrayUtils
@@ -72,7 +74,7 @@ public class AlphaEffective {
 						);
 		chordsVsYActual = MyArrayUtils
 				.convertListOfAmountTodoubleArray(
-						theWing.getChordsBreakPoints()
+						theWing.getDiscretizedChords()
 						);
 		yStationsActual = MyArrayUtils.linspace(0., semispan.doubleValue(SI.METER), numberOfPoints);
 		yStationsAlpha = MyArrayUtils.linspace(0., semispan.doubleValue(SI.METER), 50);
@@ -82,10 +84,10 @@ public class AlphaEffective {
 						);
 		xLEvsYActual = MyArrayUtils
 				.convertListOfAmountTodoubleArray(
-						theWing.getXLEBreakPoints()
+						theWing.getDiscretizedXle()
 						);
 		surface = theWing.getSurfacePlanform();
-		altitude = theOperatingConditions.getAltitudeCruise();
+		altitude = theOperatingConditions.getAltitudeClimb();
 		deltaTemperature = theOperatingConditions.getDeltaTemperatureCruise();
 
 	}
@@ -109,18 +111,47 @@ public class AlphaEffective {
 		double summ =0.0 ;
 		int lowerLimit = 0, upperLimit=(numberOfPoints-1);
 
+		double [] diedro = new double [chordsVsYActual.length];
+		for(int i =0; i< chordsVsYActual.length; i++) {
+			diedro[i] = 0.0;
+		}
+		
+		List<Amount<Angle>> listAol = new ArrayList<>();
+		
+		for(int i=0; i<chordsVsYActual.length; i++) {
+			if(yStationsActual[i]<theWing.getEquivalentWing().getRealWingDimensionlessKinkPosition()*theWing.getSemiSpan().doubleValue(SI.METER)) {
+			listAol.add(
+					i,
+					Amount.valueOf((theWing.getAlpha0VsY().get(1).doubleValue(NonSI.DEGREE_ANGLE) - theWing.getAlpha0VsY().get(0).doubleValue(NonSI.DEGREE_ANGLE))*
+					(yStationsActual[i]/(theWing.getEquivalentWing().getRealWingDimensionlessKinkPosition()*theWing.getSemiSpan().doubleValue(SI.METER))) + 
+					theWing.getAlpha0VsY().get(0).doubleValue(NonSI.DEGREE_ANGLE),
+					NonSI.DEGREE_ANGLE)
+					);
+			}
+			else {
+				listAol.add(
+						i,
+						Amount.valueOf((theWing.getAlpha0VsY().get(2).doubleValue(NonSI.DEGREE_ANGLE) - theWing.getAlpha0VsY().get(1).doubleValue(NonSI.DEGREE_ANGLE))*
+						((yStationsActual[i] - (theWing.getEquivalentWing().getRealWingDimensionlessKinkPosition()*theWing.getSemiSpan().doubleValue(SI.METER))))
+								/((theWing.getSemiSpan().doubleValue(SI.METER) - theWing.getEquivalentWing().getRealWingDimensionlessKinkPosition()*theWing.getSemiSpan().doubleValue(SI.METER))) + 
+						theWing.getAlpha0VsY().get(0).doubleValue(NonSI.DEGREE_ANGLE),
+						NonSI.DEGREE_ANGLE)
+						);
+			}
+		}
+		
 		NasaBlackwell theCalculator = new NasaBlackwell(
 				semispan, surface, yStationsActual,
 				chordsVsYActual, xLEvsYActual,
-				dihedral, theWing.getTwistsBreakPoints(),
-				theWing.getAlpha0VsY(), vortexSemiSpanToSemiSpanRatio,
+				diedro, theWing.getDiscretizedTwists(),
+				listAol, vortexSemiSpanToSemiSpanRatio,
 				alphaInitial, mach, altitude, deltaTemperature);
 
 		theCalculator.calculateVerticalVelocity(alphaInitial);
 		influenceFactor = theCalculator.getInfluenceFactor();
 		gamma = theCalculator.getGamma();
 
-		velocity = vTAS.getEstimatedValue(); //meters per second
+		velocity = vTAS.doubleValue(SI.METERS_PER_SECOND); //meters per second
 
 		Double[] twistDistribution = MyMathUtils.getInterpolatedValue1DLinear(
 				MyArrayUtils.convertListOfAmountTodoubleArray(

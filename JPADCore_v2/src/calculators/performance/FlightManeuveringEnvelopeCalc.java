@@ -520,8 +520,7 @@ public class FlightManeuveringEnvelopeCalc {
 		StringBuilder sb = new StringBuilder();
 		
 		if(_regulations == RegulationsEnum.FAR_23) {
-			sb.append("\t-------------------------------------\n")
-			.append("\t\tRegulation : " + _regulations + "\n")
+			sb.append("\t\tRegulation : " + _regulations + "\n")
 			.append("\t\tAicraft type : " + _aircraftType + "\n")
 			.append("\t\t.....................................\n")
 			.append("\t\tBASIC MANEUVERING DIAGRAM" + "\n")
@@ -692,8 +691,7 @@ public class FlightManeuveringEnvelopeCalc {
 			.append("\t\t\t_____________________________________\n")
 			.append("\t\t\tDesign flap speed = " + getDesignFlapSpeed().to(SI.METERS_PER_SECOND) + "\n")
 			.append("\t\t\tDesign flap speed = " + getDesignFlapSpeed().to(NonSI.KNOT) + "\n")
-			.append("\t\t\tNegative limit load factor design flap speed (GUST) = " + getNegativeLoadFactorDesignFlapSpeedWithGust()+ "\n")
-			;
+			.append("\t\t\tNegative limit load factor design flap speed (GUST) = " + getNegativeLoadFactorDesignFlapSpeedWithGust()+ "\n");
 			
 		}
 		return sb.toString();

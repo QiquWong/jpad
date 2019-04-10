@@ -606,6 +606,17 @@ public class OCCShapeFactory extends CADShapeFactory
 	}
 	
 	@Override
+	public CADSolid newSolidFromShell(CADShell cadShell) {
+		CADSolid ret = null;
+		TopoDS_Shape tds_shape = ((OCCShell) cadShell).getShape();
+		BRepBuilderAPI_MakeSolid solidMaker = new BRepBuilderAPI_MakeSolid();
+		solidMaker.Add(TopoDS.ToShell(tds_shape));
+		solidMaker.Build();
+		ret = (CADSolid) newShape(solidMaker.Solid()); 
+		return ret;
+	}
+	
+	@Override
 	public CADWire newWireFromAdjacentEdges(CADEdge ... cadEdges) {
 		return new OCCWire(Arrays.asList(cadEdges));
 	}

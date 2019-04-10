@@ -23,6 +23,7 @@ import aircraft.components.liftingSurface.airfoils.Airfoil;
 import analyses.OperatingConditions;
 import calculators.aerodynamics.AerodynamicCalc;
 import calculators.aerodynamics.AirfoilCalc;
+import calculators.aerodynamics.AlphaEffective;
 import calculators.aerodynamics.AnglesCalc;
 import calculators.aerodynamics.DragCalc;
 import calculators.aerodynamics.LiftCalc;
@@ -101,6 +102,13 @@ public class LiftingSurfaceAerodynamicsManager {
 	 */
 	private Map<MethodEnum, Double> _xacMRF; 
 	private Map<MethodEnum, Amount<Length>> _xacLRF; 
+	
+	// Yac
+	/**
+	 * MRF = Mean aerodynamic chord Reference Frame
+	 * LRF = Local Reference Frame (of the lifting surface)
+	 */
+	private Map<MethodEnum, Amount<Length>> _yacLRF; 
 	
 	// LIFT 
 	private Map <MethodEnum, Amount<Angle>> _alphaZeroLift;
@@ -610,6 +618,8 @@ public class LiftingSurfaceAerodynamicsManager {
 		this._xacMRF = new HashMap<MethodEnum, Double>();
 		this._xacLRF = new HashMap<MethodEnum, Amount<Length>>();
 		
+		this._yacLRF = new HashMap<MethodEnum, Amount<Length>>();
+		
 		this._alphaZeroLift = new HashMap<MethodEnum, Amount<Angle>>();
 		this._alphaStar = new HashMap<MethodEnum, Amount<Angle>>();
 		this._alphaMaxLinear = new HashMap<MethodEnum, Amount<Angle>>();
@@ -839,12 +849,69 @@ public class LiftingSurfaceAerodynamicsManager {
 							)
 					);
 		}
+		
+		public void pointAtCmConstant() {
+			_xacMRF.put(
+					MethodEnum.CMCONSTANT,
+					LSGeometryCalc.calcXacPointAtCmConstant(
+							theNasaBlackwellCalculator, 
+							_theLiftingSurface.getMeanAerodynamicChord(),
+							_theLiftingSurface.getMeanAerodynamicChordLeadingEdgeX(),
+							_yStationDistribution,
+							_clZeroDistribution,
+							_clAlphaDistribution.stream()
+							.map(cla -> cla.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue())
+							.collect(Collectors.toList()), 
+							_cmACDistribution,
+							_chordDistribution,
+							_xLEDistribution,
+							_xACDistribution,
+							_theLiftingSurface.getSurfacePlanform()
+							)
+					
+					);
+			_xacLRF.put(
+					MethodEnum.CMCONSTANT, 
+					Amount.valueOf(
+							_xacMRF.get(MethodEnum.CMCONSTANT)
+							*_theLiftingSurface.getMeanAerodynamicChord().doubleValue(SI.METER),
+							SI.METER)
+						.plus(getTheLiftingSurface()
+							
+								.getMeanAerodynamicChordLeadingEdgeX()
+							)
+					);
+		}
 
 	}
+	
+	
 	//............................................................................
 	// END OF THE CALC XacCL INNER CLASS
 	//............................................................................
 	
+	//............................................................................
+	// END OF THE CRITICAL MACH INNER CLASS
+	//............................................................................
+
+	//............................................................................
+	// CALC XacCL INNER CLASS
+	//............................................................................
+	/** 
+	 * Evaluate the AC x coordinate relative to MAC
+	 */
+	public class CalcYAC {
+
+		public void withIntegral() {
+			_yacLRF.put(
+					MethodEnum.INTEGRAL_MEAN, 
+					LSGeometryCalc.calcYacFromIntegral(
+							_theLiftingSurface.getSurfacePlanform(),
+							_theLiftingSurface.getDiscretizedYs(),
+							_theLiftingSurface.getDiscretizedChords())
+					);
+		}
+	}
 	//............................................................................
 	// CL AT APLHA INNER CLASS
 	//............................................................................
@@ -3120,14 +3187,15 @@ public class LiftingSurfaceAerodynamicsManager {
 									_cmACDistribution,
 									_chordDistribution,
 									_xLEDistribution,
-									_discretizedAirfoilsCl,
-									_alphaArrayClean, 
+									_xACDistribution,
 									_theLiftingSurface.getSurfacePlanform(), 
 									_momentumPole
 									)
 							)
 
 					);
+			
+		
 		}
 		
 	}

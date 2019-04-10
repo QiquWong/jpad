@@ -14,7 +14,7 @@
 			<!-- angle of attack at which the user wants to evaluate a generic aerodynamic output -->
 			<alpha_current unit="deg">2</alpha_current>
 			<beta_current unit="deg">0.0</beta_current>
-			<mach>0.46</mach>	
+			<mach>0.4</mach>	
 			<altitude unit="ft">17000.0</altitude>
 			<ISA_deviation unit="°C">0</ISA_deviation>
 			<throttle>1.0</throttle>
@@ -27,7 +27,7 @@
 			<altitude unit="ft">0.0</altitude> <!-- default = 0.0 -->
 			<ISA_deviation unit="°C">0</ISA_deviation>
 			<throttle>1.0</throttle>
-			<delta_flap unit="deg">20;20</delta_flap>
+			<delta_flap unit="deg">15;15</delta_flap>
 			<delta_slat unit="deg"></delta_slat>
 		</take_off>
 		<landing>
@@ -38,7 +38,7 @@
 			<altitude unit="m"></altitude> <!-- default = 0.0 -->
 			<ISA_deviation unit="°C">0</ISA_deviation>
 			<throttle>1.0</throttle>
-			<delta_flap unit="deg">40;40</delta_flap>
+			<delta_flap unit="deg">35;35</delta_flap>
 			<delta_slat unit="deg"></delta_slat>
 		</landing>
 	</operating_conditions>

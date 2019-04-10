@@ -9,7 +9,7 @@
                 <position>
                     <x unit="m">12.17</x>
                     <y unit="m">0.0</y>
-                    <z unit="m">-1.25</z>
+                    <z unit="m">-0.8</z>
                 </position>
                 <rigging_angle unit="deg">2</rigging_angle>
             </wing>
@@ -19,7 +19,7 @@
                     <y unit="m">0.0</y>
                     <z unit="m">1.0</z>
                 </position>
-                <rigging_angle unit="deg">0.0</rigging_angle>
+                <rigging_angle unit="deg">-4.0</rigging_angle>
             </horizontal_tail>
             <vertical_tail file="vtail_CS300.xml">
                 <position>

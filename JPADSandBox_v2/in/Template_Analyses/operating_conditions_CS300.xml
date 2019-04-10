@@ -5,8 +5,8 @@
 			<!-- angle of attack at which the user wants to evaluate a generic aerodynamic output -->
 			<alpha_current unit="deg">10</alpha_current>
 			<beta_current unit="deg">0.0</beta_current>
-			<mach>0.3</mach>
-			<altitude unit="ft">30000</altitude>
+			<mach>0.17</mach>
+			<altitude unit="ft">0</altitude>
 			<ISA_deviation unit="°C">0</ISA_deviation>
 			<throttle>1.0</throttle>
 		</climb>

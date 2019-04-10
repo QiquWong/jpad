@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import it.unina.daf.jpadcad.enums.FileExtension;
+import javaslang.Tuple2;
 import opencascade.Adaptor3d_Curve;
 import opencascade.Adaptor3d_HCurve;
 import opencascade.BOPAlgo_PaveFiller;
@@ -153,13 +154,13 @@ public final class OCCUtils {
 		switch (fileExtension) {
 		
 		case BREP:
-			shapes.forEach(s -> builder.Add(compound, s.getShape()));
+			shapes.stream().filter(s -> s != null).forEach(s -> builder.Add(compound, s.getShape()));
 			BRepTools.Write(compound, fileNameComplete);
 			
 			break;
 			
 		case STEP:
-			shapes.forEach(s -> builder.Add(compound, s.getShape()));
+			shapes.stream().filter(s -> s != null).forEach(s -> builder.Add(compound, s.getShape()));
 			STEPControl_Writer stepWriter = new STEPControl_Writer();
 			Interface_Static.SetCVal("xstep.cascade.unit", "M");
 //			Interface_Static.SetCVal("write.step.unit", "M");
@@ -171,7 +172,7 @@ public final class OCCUtils {
 		case IGES:
 			if (IGESControl_Controller.Init() == 1) {
 				IGESControl_Writer igesWriter = new IGESControl_Writer("2HM");
-				shapes.forEach(s -> igesWriter.AddShape(s.getShape()));
+				shapes.stream().filter(s -> s != null).forEach(s -> igesWriter.AddShape(s.getShape()));
 				igesWriter.ComputeModel();
 				igesWriter.Write(fileNameComplete);
 			} else
@@ -869,9 +870,7 @@ public final class OCCUtils {
 		return pars;		
 	}
 	
-	public static OCCShell applyFilletOnShell(OCCShell shell, int[] edgeIndexes, double radius) {
-		
-		OCCShell filletShell = null;
+	public static Tuple2<OCCShell, Boolean> applyFilletOnShell(OCCShell shell, int[] edgeIndexes, double radius) {
 
 		BRepFilletAPI_MakeFillet filletMaker = new BRepFilletAPI_MakeFillet(shell.getShape());
 
@@ -884,17 +883,19 @@ public final class OCCUtils {
 		}
 
 		Arrays.stream(edgeIndexes).forEach(i -> filletMaker.Add(radius, ((OCCEdge) shellEdges.get(i)).getShape()));
-
-		List<TopoDS_Shell> filletShells = new ArrayList<>();
-		TopExp_Explorer filletShellExplorer = new TopExp_Explorer(filletMaker.Shape(), TopAbs_ShapeEnum.TopAbs_SHELL);
-		while(filletShellExplorer.More() > 0) {
-			filletShells.add(TopoDS.ToShell(filletShellExplorer.Current()));
-			filletShellExplorer.Next();
-		}
-
-		filletShell = (OCCShell) OCCUtils.theFactory.newShape(filletShells.get(0));
-
-		return filletShell;
+		filletMaker.Build();
+		if (filletMaker.NbFaultyVertices() > 0 || filletMaker.NbFaultyContours() > 0) {
+			return new Tuple2<OCCShell, Boolean>(shell, false);
+		} else {
+			List<TopoDS_Shell> filletShells = new ArrayList<>();
+			TopExp_Explorer filletShellExplorer = new TopExp_Explorer(filletMaker.Shape(), TopAbs_ShapeEnum.TopAbs_SHELL);
+			while(filletShellExplorer.More() > 0) {
+				filletShells.add(TopoDS.ToShell(filletShellExplorer.Current()));
+				filletShellExplorer.Next();
+			}
+			OCCShell filletShell = (OCCShell) OCCUtils.theFactory.newShape(filletShells.get(0));
+			return new Tuple2<OCCShell, Boolean>(filletShell, true);
+		}	
 	}
 	
 	public static List<CADWire> revolveWireAroundGuideCurve(

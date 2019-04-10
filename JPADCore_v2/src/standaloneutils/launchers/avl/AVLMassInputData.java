@@ -11,14 +11,17 @@ import javaslang.Tuple6;
 
 @FreeBuilder
 public interface AVLMassInputData {
-	
+	/*
+	 * A data class defining the properties of mass and inertia of the aircraft for AVL.
+	 * */
+
 	String getDescription();
 	Double getLUnit();
 	Double getMUnit();
 	Double getTUnit();
 	Double getGravityAcceleration();
 	Double getFluidDensity();
-	
+
 	List<
 		Tuple2<
 			Tuple4<
@@ -37,11 +40,11 @@ public interface AVLMassInputData {
 			>
 		>
 	> getMassProperties();
-	
-	
+
+
 	/** Builder of AVLMassInputData instances. */
 	class Builder extends AVLMassInputData_Builder {
-		
+
 		public Builder() {
 			// Set defaults in the builder constructor.
 			setDescription("Mass properties - agodemar");
@@ -50,7 +53,7 @@ public interface AVLMassInputData {
 			setTUnit(1.0);
 			setGravityAcceleration(9.81);
 			setFluidDensity(1.225);
-			
+
 			clearMassProperties();
 			addAllMassProperties(new ArrayList<>());
 		}

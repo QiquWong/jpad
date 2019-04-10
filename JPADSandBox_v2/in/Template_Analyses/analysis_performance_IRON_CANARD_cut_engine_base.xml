@@ -98,7 +98,6 @@
 				<k_landing_weight>0.9</k_landing_weight> <!-- percentage of the maximum take-off weight to be used for the landing performance - (default = 0.97) -->
 				<initial_altitude_landing unit="ft"></initial_altitude_landing> <!-- default = 1500ft -->
 				<obstacle_landing unit="ft"></obstacle_landing> <!-- default = 50ft -->
-				<approach_angle unit="deg"></approach_angle> <!-- default = -3deg -->
 				<k_cLmax_landing></k_cLmax_landing> <!-- percentage of the CLmax,LND not to be surpassed during the flare rotation  (default = 0.9)-->
 				<k_approach>1.23</k_approach> <!-- V_approach/V_stall in landing (default = 1.3) -->
 				<k_flare></k_flare> <!-- V_flare/V_stall in landing (default = 1.2) -->
@@ -136,7 +135,6 @@
 				</take_off>
 				<landing>
 					<initial_altitude unit="ft"></initial_altitude> <!-- (default = 4000ft -->
-					<trajectory_angle unti="deg"></trajectory_angle> <!-- (default = -3deg -->
 				</landing>
 			</noise_trajectories>
 			<mission_profile_and_payload_range>

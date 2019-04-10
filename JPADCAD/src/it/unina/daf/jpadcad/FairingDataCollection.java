@@ -1,6 +1,8 @@
 package it.unina.daf.jpadcad;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,6 +14,7 @@ import org.jscience.physics.amount.Amount;
 
 import aircraft.components.fuselage.Fuselage;
 import aircraft.components.liftingSurface.LiftingSurface;
+import configuration.enumerations.ComponentEnum;
 import it.unina.daf.jpadcad.enums.FairingPosition;
 import it.unina.daf.jpadcad.utils.AircraftCADUtils;
 import javaslang.Tuple2;
@@ -72,6 +75,8 @@ public class FairingDataCollection {
 	private double _width = 0.0;
 	
 	private FairingPosition _fairingPosition;	
+	
+	private boolean _populated = false;
 	
 	public FairingDataCollection (Fuselage fuselage, LiftingSurface liftingSurface, 
 			double frontLengthFactor, double backLengthFactor, double widthFactor, double heightFactor,
@@ -400,8 +405,55 @@ public class FairingDataCollection {
 					
 				}				
 			}
-		}		
+		}
+		
+		_populated = true;
 	}
+	
+	@Override
+	public String toString() {
+		
+		StringBuilder stringBuilder = new StringBuilder();
+		
+		if (_populated) {
+			DecimalFormat df = new DecimalFormat("#.##");
+					
+			stringBuilder.append("\n\t\tFairingDataCollection class attributes summary:\n\n")
+						 .append("\t\t\tInterested components: " + _liftingSurface.getType().name() + ", " + ComponentEnum.FUSELAGE.name() + "\n")
+						 .append("\t\t\tFront length factor: " + df.format(_frontLengthFactor) + "\n")
+						 .append("\t\t\tBack length factor: " + df.format(_backLengthFactor) + "\n")
+						 .append("\t\t\tWidth factor: " + df.format(_widthFactor) + "\n")
+						 .append("\t\t\tHeight factor: " + df.format(_heightFactor) + "\n")
+						 .append("\t\t\tHeight below reference factor: " + df.format(_heightBelowReferenceFactor) + "\n")
+						 .append("\t\t\theight above reference factor: " + df.format(_heightAboveReferenceFactor) + "\n")
+						 .append("\t\t\tFillet radius factor: " + df.format(_filletRadiusFactor) + "\n")
+						 .append("\t\t\tReference airfoil chord (root, m): " + df.format(_rootChord) + "\n")
+						 .append("\t\t\tReference airfoil thickness (root, m): " + df.format(_rootThickness) + "\n")
+						 .append("\t\t\tRoot airfoil xLE (m): " + df.format(_rootAirfoilLE[0]) + "\n")
+						 .append("\t\t\tRoot airfoil xTE (m): " + df.format(_rootAirfoilTE[0]) + "\n")
+						 .append("\t\t\tRoot airfoil zTop (m): " + df.format(_rootAirfoilTop[2]) + "\n")
+						 .append("\t\t\tRoot airfoil zBot (m): " + df.format(_rootAirfoilBottom[2]) + "\n")
+						 .append("\t\t\tSide airfoil zTop (m): " + df.format(_sideAirfoilTop[2]) + "\n")
+						 .append("\t\t\tSide airfoil zBot (m): " + df.format(_sideAirfoilBottom[2]) + "\n")
+						 .append("\t\t\tTip airfoil zTop (m): " + df.format(_tipAirfoilTop[2]) + "\n")
+						 .append("\t\t\tTip airfoil zBot (m): " + df.format(_tipAirfoilBottom[2]) + "\n")
+						 .append("\t\t\tFuselage middle curve zTop (m): " + df.format(_fuselageSCMiddleTopPnt[2]) + "\n")
+						 .append("\t\t\tFuselage middle curve zBot (m): " + df.format(_fuselageSCMiddleBottomPnt[2]) + "\n")
+						 .append("\t\t\tFuselage front curve zTop (m): " + df.format(_fuselageSCFrontTopPnt[2]) + "\n")
+						 .append("\t\t\tFuselage front curve zBot (m): " + df.format(_fuselageSCFrontBottomPnt[2]) + "\n")
+						 .append("\t\t\tFuselage back curve zTop (m): " + df.format(_fuselageSCBackTopPnt[2]) + "\n")
+						 .append("\t\t\tFuselage back curve zBot (m): " + df.format(_fuselageSCBackBottomPnt[2]) + "\n")
+						 .append("\t\t\tFuselage minimum z (m): " + df.format(_fuselageMinimumZ) + "\n")
+						 .append("\t\t\tFuselage maximum z (m): " + df.format(_fuselageMaximumZ) + "\n")
+						 .append("\t\t\tFuselage-Fairing lower contact point z (m): " + df.format(_fusFairingLowContactPnt[2]) + "\n")
+						 .append("\t\t\tFuselage-Fairing upper contact point z (m): " + df.format(_fusFairingUppContactPnt[2]) + "\n")
+						 .append("\t\t\tFairing minimum z (m): " + df.format(_fairingMinimumZ) + "\n")
+						 .append("\t\t\tFairing reference z (m): " + df.format(_fairingReferenceZ) + "\n")
+						 .append("\t\t\tFairing maximum z (m): " + df.format(_fairingMaximumZ));
+		}
+			
+		return stringBuilder.toString();
+	} 
 	
 	private FairingPosition checkFairingPosition() {
 
@@ -658,5 +710,9 @@ public class FairingDataCollection {
 	
 	public FairingPosition getFairingPosition() {
 		return _fairingPosition;
-	}		
+	}	
+	
+	public boolean isPopulated() {
+		return _populated;
+	}
 }

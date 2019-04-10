@@ -791,7 +791,7 @@ public class CADManager {
 		// ENGINES
 		if (_theCADBuilderInterface.getGenerateEngines()) {
 			
-			List<OCCShape> enginesShapes = AircraftCADUtils.getEnginesCAD(
+			List<OCCShape> enginesShapes = AircraftCADUtils.getEnginesCADFromTemplate(
 					_theInputDirectory,
 					_theAircraft.getNacelles().getNacellesList(), 
 					_theAircraft.getPowerPlant().getEngineList(), 
@@ -809,7 +809,7 @@ public class CADManager {
 		// WING-FUSELAGE FAIRING 
 		if (_theCADBuilderInterface.getGenerateWingFairing()) {
 			
-			List<OCCShape> wingFairingShapes = AircraftCADUtils.getFairingShapes(
+			List<OCCShape> wingFairingShapes = AircraftCADUtils.getFairingCAD(
 					_theAircraft.getFuselage(), 
 					_theAircraft.getWing(), 
 					_theCADBuilderInterface.getWingFairingFrontLengthFactor(), 
@@ -831,7 +831,7 @@ public class CADManager {
 		// CANARD-FUSELAGE FAIRING
 		if (_theCADBuilderInterface.getGenerateCanardFairing()) {
 			
-			List<OCCShape> canardFairingShapes = AircraftCADUtils.getFairingShapes(
+			List<OCCShape> canardFairingShapes = AircraftCADUtils.getFairingCAD(
 					_theAircraft.getFuselage(), 
 					_theAircraft.getCanard(), 
 					_theCADBuilderInterface.getCanardFairingFrontLengthFactor(), 

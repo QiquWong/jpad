@@ -685,7 +685,7 @@ public class PayloadRangeCalc {
 					1.0 // gidl H2O correction factor (not needed)
 					);
 
-			theTakeOffCalculator.calculateTakeOffDistanceODE(null, false, false, vMC);
+			theTakeOffCalculator.calculateTakeOffDistanceODE(null, false, false, vMC, false);
 			
 			rangeTakeOff.addAll(theTakeOffCalculator.getGroundDistance());			
 			fuelUsedTakeOff.addAll(theTakeOffCalculator.getFuelUsed());
@@ -2432,7 +2432,7 @@ public class PayloadRangeCalc {
 							theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 							);
 
-					theLandingCalculator.calculateLanding(true);
+					theLandingCalculator.calculateLanding(true, false);
 
 					rangeLanding.addAll(theLandingCalculator.getGroundDistanceList());			
 					fuelUsedLanding.addAll(theLandingCalculator.getFuelUsedList());
@@ -2622,7 +2622,6 @@ public class PayloadRangeCalc {
 		MyConfiguration.customizeAmountOutput();
 
 		StringBuilder sb = new StringBuilder()
-				.append("\t-------------------------------------\n")
 				.append("\t\tRANGE AT MAX PAYLOAD\n")
 				.append("\t\t.....................................\n")
 				.append("\t\t\tRange = " + getRangeAtMaxPayload() + "\n")
@@ -2654,8 +2653,6 @@ public class PayloadRangeCalc {
 				.append("\t\t\tPayload mass = " + 0.0 + " kg \n")
 				.append("\t\t\tPassengers number = " + 0.0 + "\n")
 				.append("\t\t\tFuel mass required= " + getMaxFuelMass() + "\n");
-		
-		sb.append("\t-------------------------------------\n");
 		
 		return sb.toString();
 	}

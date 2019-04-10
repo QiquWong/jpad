@@ -15,54 +15,14 @@ import com.mathworks.toolbox.javabuilder.MWArray;
 import com.mathworks.toolbox.javabuilder.MWCharArray;
 import com.mathworks.toolbox.javabuilder.MWStructArray;
 
-import MReportUtils.ReportMaker;
+import MReportUtils.MReportUtils;
 
 //import com.mathworks.engine.*;
 //import com.mathworks.matlab.types.*;
 
 public class JPADReportUtils {
 
-	//	public static void makeReport02(Aircraft aircraft, String pathToMatlabWorkingDirectory) throws Exception {
-	//
-	//		In Java Build Path: MATLAB_ROOT/extern/engines/java/jar/engine.jar
-	//
-	//		System.out.println("\t>> JPADReportUtils.makeReport02");
-	//
-	//		//Start MATLAB asynchronously
-	//		Future<MatlabEngine> engineFuture = MatlabEngine.startMatlabAsync();
-	//
-	//		System.out.println("\t>> Starting Matlab engine asynchronously...");
-	//
-	//		// Get engine instance from the future result
-	//		MatlabEngine engine = engineFuture.get();
-	//
-	//
-	////		Map<String, Object> reportDataMap = Stream.of(new Object[][] { 
-	////			{ "title", "Title from Java" }, 
-	////			{ "subtitle", "Subtitle from Java" }, 
-	////			{ "author", "jagodemar" }, 
-	////			{ "wingSpan", aircraft.getWing().getSpan().doubleValue(SI.METER) }, 
-	////		}).collect(Collectors.toMap(data -> (String) data[0], data -> (Object) data[1]));
-	//
-	//		Struct reportDataStruct = new Struct(
-	//				"title", "Title from Java", 
-	//				"subtitle", "Subtitle from Java", 
-	//				"author", "jagodemar", 
-	//				"wingSpan", aircraft.getWing().getSpan().doubleValue(SI.METER)				
-	//				);
-	//
-	//		// make sure you are in the proper working folder
-	//		
-	//		engine.eval("cd " + pathToMatlabWorkingDirectory);
-	//		engine.putVariableAsync("reportData", reportDataStruct);
-	//		
-	//		engine.feval(0, "makeReport02", "JPADReport_Test", "docx", reportDataStruct);
-	//		
-	//		System.out.println("\t>> Disconnecting Matlab engine...");
-	//		engine.disconnect();
-	//		
-	//	}
-
+/*
 	public static void makeReport02a(Aircraft aircraft, String pathToMatlabWorkingDirectory) throws Exception {
 
 //		Map<String, Object> reportDataMap = Stream.of(new Object[][] { 
@@ -109,5 +69,37 @@ public class JPADReportUtils {
 		reportMaker.makeReport02(lhs, rhs);
 
 	}
-
+*/
+	
+	public static void makeReport03(Aircraft aircraft, String pathToMatlabWorkingDirectory) throws Exception {
+	
+		/* Matlab call:
+		 * 
+			rpt = makeReport('Airbus A320', 'pdf', 'DAF_template', 'en', ...
+	                'WikiPage: Airbus_A320 ', '_figures/Airbus_A320_prova.jpg','UNINA', 'Prince94');
+		 */
+		
+		
+		MReportUtils reportUtilsObj = new MReportUtils();
+		
+		List<MWArray> lhs = new ArrayList<>(); // this remains empty, means 0 output
+		List<MWArray> rhs = new ArrayList<>();
+		
+		// add "fileName" makeReport02.m
+		rhs.add(new MWCharArray(new String("Airbus A320")));
+		rhs.add(new MWCharArray(new String("pdf")));
+		rhs.add(new MWCharArray(new String("DAF_template")));
+		rhs.add(new MWCharArray(new String("en")));
+		rhs.add(new MWCharArray(new String("WikiPage: Airbus_A320")));
+		rhs.add(new MWCharArray(new String("_figures/Airbus_A320_prova.jpg")));
+		rhs.add(new MWCharArray(new String("UNINA")));
+		rhs.add(new MWCharArray(new String("Prince94")));
+		
+		System.out.println("[makeReport03] writing a report...");
+		
+		reportUtilsObj.makeReport(lhs, rhs);
+		
+		System.out.println("[makeReport03] done.");
+	}
+	
 }

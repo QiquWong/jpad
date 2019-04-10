@@ -468,6 +468,10 @@ public class NasaBlackwell {
 					4 * Math.PI * SpeedCalc.calculateTAS(mach, altitude, deltaTemperature).doubleValue(SI.METERS_PER_SECOND)
 					* _gammaSignedDistribution.get(i));
 
+			if(sum ==0)
+				_ccLDistribution.add(0.0);
+			
+			else
 			_ccLDistribution.add(
 					_cLCurrent * meanGeometricChord.doubleValue(SI.METER) * semispan.doubleValue(SI.METER) * _gammaSignedDistribution.get(i)
 					/sum);
