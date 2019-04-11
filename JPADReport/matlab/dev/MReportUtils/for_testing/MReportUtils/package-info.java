@@ -12,7 +12,7 @@
  * <ul>
  * <li>MATLAB Runtime is the collection of platform specific native libraries required to execute MATLAB functions exported by the classes of this package.</li>
  * <li>It can be made available either by installing MATLAB, MATLAB Compiler and MATLAB Compiler SDK, or by running the MCRInstaller executable.</li>
- * <li>This package is compatible with MATLAB Runtime version 9.5 only.</li>
+ * <li>This package is compatible with MATLAB Runtime version 9.6 only.</li>
  * <li>Please contact the creator of this package for specific details about the MATLAB Runtime (such as the MATLAB version with which it originated, since the MATLAB Runtime version is tied to the MATLAB version).</li>
  * </ul> 
  *
@@ -26,7 +26,7 @@
  * <ul>
  * <li>Provides classes that act as the bridge between your application and the MATLAB Runtime</li>
  * <li>Located in the $MCR/toolbox/javabuilder/jar directory (where $MCR is the root of an installation of either MATLAB or MATLAB Runtime)</li>
- * <li>The <code>MReportUtils</code> package will only work with the javabuilder.jar file included with MATLAB Runtime version 9.5</li>
+ * <li>The <code>MReportUtils</code> package will only work with the javabuilder.jar file included with MATLAB Runtime version 9.6</li>
  * </ul>
  *
  * <p>

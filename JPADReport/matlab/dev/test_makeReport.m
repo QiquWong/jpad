@@ -17,6 +17,7 @@ Spec = {'Length', 37.57, 'm'; 'wingspan',34.1,'m';...
         'S wing',122.6,'m^2'};
 makeTable(chapt,Spec,header,'Specification');
 closeChapter(rpt,chapt);%to close the chapter 
+
  %% CHAPTER 2 
 [chapt2]= makeChapter('Developments');
 [chapt2]= makeSection(chapt2,'Origins');

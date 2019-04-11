@@ -1,11 +1,11 @@
 <deployment-project plugin="plugin.ezdeploy" plugin-version="1.0">
-  <configuration build-checksum="2187006652" file="C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADReport\matlab\dev\MReportUtils.prj" location="C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADReport\matlab\dev" name="MReportUtils" preferred-package-location="C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADReport\matlab\dev\MReportUtils\for_redistribution" preferred-package-type="package.type.exe" target="target.ezdeploy.library" target-name="Library Compiler">
+  <configuration build-checksum="1391960991" file="C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADReport\matlab\dev\MReportUtils.prj" location="C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADReport\matlab\dev" name="MReportUtils" preferred-package-location="C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADReport\matlab\dev\MReportUtils\for_redistribution" preferred-package-type="package.type.exe" target="target.ezdeploy.library" target-name="Library Compiler">
     <param.appname>MReportUtils</param.appname>
     <param.icon />
     <param.icons />
     <param.version>1.0</param.version>
-    <param.authnamewatermark>Francesco Orefice</param.authnamewatermark>
-    <param.email>francesco.orefice2@unina.it</param.email>
+    <param.authnamewatermark>Agostino De Marco</param.authnamewatermark>
+    <param.email>agostino.demarco@unina.it</param.email>
     <param.company>DAF_group</param.company>
     <param.summary />
     <param.description />
@@ -121,23 +121,23 @@
     </fileset.resources>
     <fileset.depfun />
     <fileset.package />
-    <fileset.examples />
+    <fileset.examples>
+      <file>${PROJECT_ROOT}\test_makeReport.m</file>
+    </fileset.examples>
     <fileset.documentation />
     <build-deliverables>
-      <file location="${PROJECT_ROOT}\MReportUtils\for_testing" name="readme.txt" optional="true">C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADReport\matlab\dev\MReportUtils\for_testing\readme.txt</file>
       <file location="${PROJECT_ROOT}\MReportUtils\for_testing" name="MReportUtils.jar" optional="false">C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADReport\matlab\dev\MReportUtils\for_testing\MReportUtils.jar</file>
       <file location="${PROJECT_ROOT}\MReportUtils\for_testing" name="doc" optional="false">C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADReport\matlab\dev\MReportUtils\for_testing\doc</file>
     </build-deliverables>
     <workflow />
     <matlab>
-      <root>C:\Program Files\MATLAB\R2018b</root>
+      <root>C:\Program Files\MATLAB\R2019a</root>
       <toolboxes>
         <toolbox name="matlabcoder" />
         <toolbox name="embeddedcoder" />
         <toolbox name="gpucoder" />
         <toolbox name="fixedpoint" />
         <toolbox name="matlabhdlcoder" />
-        <toolbox name="polyspacebugfinder" />
         <toolbox name="neuralnetwork" />
       </toolboxes>
       <toolbox>
@@ -164,11 +164,6 @@
         <matlabhdlcoder>
           <enabled>true</enabled>
         </matlabhdlcoder>
-      </toolbox>
-      <toolbox>
-        <polyspacebugfinder>
-          <enabled>true</enabled>
-        </polyspacebugfinder>
       </toolbox>
       <toolbox>
         <neuralnetwork>

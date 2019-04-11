@@ -1,6 +1,6 @@
 /*
- * MATLAB Compiler: 7.0 (R2018b)
- * Date: Tue Apr  9 13:10:53 2019
+ * MATLAB Compiler: 7.0.1 (R2019a)
+ * Date: Thu Apr 11 11:35:45 2019
  * Arguments: 
  * "-B""macro_default""-v""-K""-W""java:MReportUtils,MReportUtils""-T""link:lib""-d""C:\\Users\\DeMarco-PC\\JPAD_PROJECT\\jpad\\JPADReport\\matlab\\dev\\MReportUtils\\for_testing""class{MReportUtils:C:\\Users\\DeMarco-PC\\JPAD_PROJECT\\jpad\\JPADReport\\matlab\\dev\\closeChapter.m,C:\\Users\\DeMarco-PC\\JPAD_PROJECT\\jpad\\JPADReport\\matlab\\dev\\closeReport.m,C:\\Users\\DeMarco-PC\\JPAD_PROJECT\\jpad\\JPADReport\\matlab\\dev\\makeChapter.m,C:\\Users\\DeMarco-PC\\JPAD_PROJECT\\jpad\\JPADReport\\matlab\\dev\\makeFigure.m,C:\\Users\\DeMarco-PC\\JPAD_PROJECT\\jpad\\JPADReport\\matlab\\dev\\makeParagraph.m,C:\\Users\\DeMarco-PC\\JPAD_PROJECT\\jpad\\JPADReport\\matlab\\dev\\makeReport.m,C:\\Users\\DeMarco-PC\\JPAD_PROJECT\\jpad\\JPADReport\\matlab\\dev\\makeSection.m,C:\\Users\\DeMarco-PC\\JPAD_PROJECT\\jpad\\JPADReport\\matlab\\dev\\makeTable.m}""-a""C:\\Users\\DeMarco-PC\\JPAD_PROJECT\\jpad\\JPADReport\\matlab\\dev\\DAF_template.pdftx"
  */
@@ -15,10 +15,8 @@ import com.mathworks.toolbox.javabuilder.internal.*;
  */
 public class MReportUtilsMCRFactory
 {
-   
-    
     /** Component's uuid */
-    private static final String sComponentId = "MReportUtils_ECEE3C2D61BAF6521087FE44FB25F003";
+    private static final String sComponentId = "MReportUtils_5D038F1DA5672033A3EC45770B0DD2BC";
     
     /** Component name */
     private static final String sComponentName = "MReportUtils";
@@ -48,7 +46,7 @@ public class MReportUtilsMCRFactory
             MReportUtilsMCRFactory.class, 
             sComponentName, 
             sComponentId,
-            new int[]{9,5,0}
+            new int[]{9,6,0}
         );
     }
     

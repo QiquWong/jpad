@@ -1,6 +1,6 @@
 /*
- * MATLAB Compiler: 7.0 (R2018b)
- * Date: Tue Apr  9 13:10:53 2019
+ * MATLAB Compiler: 7.0.1 (R2019a)
+ * Date: Thu Apr 11 11:35:45 2019
  * Arguments: 
  * "-B""macro_default""-v""-K""-W""java:MReportUtils,MReportUtils""-T""link:lib""-d""C:\\Users\\DeMarco-PC\\JPAD_PROJECT\\jpad\\JPADReport\\matlab\\dev\\MReportUtils\\for_testing""class{MReportUtils:C:\\Users\\DeMarco-PC\\JPAD_PROJECT\\jpad\\JPADReport\\matlab\\dev\\closeChapter.m,C:\\Users\\DeMarco-PC\\JPAD_PROJECT\\jpad\\JPADReport\\matlab\\dev\\closeReport.m,C:\\Users\\DeMarco-PC\\JPAD_PROJECT\\jpad\\JPADReport\\matlab\\dev\\makeChapter.m,C:\\Users\\DeMarco-PC\\JPAD_PROJECT\\jpad\\JPADReport\\matlab\\dev\\makeFigure.m,C:\\Users\\DeMarco-PC\\JPAD_PROJECT\\jpad\\JPADReport\\matlab\\dev\\makeParagraph.m,C:\\Users\\DeMarco-PC\\JPAD_PROJECT\\jpad\\JPADReport\\matlab\\dev\\makeReport.m,C:\\Users\\DeMarco-PC\\JPAD_PROJECT\\jpad\\JPADReport\\matlab\\dev\\makeSection.m,C:\\Users\\DeMarco-PC\\JPAD_PROJECT\\jpad\\JPADReport\\matlab\\dev\\makeTable.m}""-a""C:\\Users\\DeMarco-PC\\JPAD_PROJECT\\jpad\\JPADReport\\matlab\\dev\\DAF_template.pdftx"
  */
@@ -108,9 +108,10 @@ public interface MReportUtilsRemote extends Poolable
      *
      * Documentation as provided by the author of the MATLAB function:
      * <pre>
-     * % @see 
-     * https://it.mathworks.com/help/rptgen/ug/mlreportgen.report.report-class.html?searchHighlight=mlreportgen.report&s_tid=doc_srchtitle#mw_63820826-78dc-459b-a646-67d4d77f91e5 
-     * )
+     * %% Check if this is running as a Matlab code or as deployed executable via Matlab 
+     * Runtime Compiler
+     * % https://it.mathworks.com/help/rptgen/ug/compile-a-report-program.html
+     * % If compiling, make the DOM compilable
      * </pre>
      *
      * @param nargout Number of outputs to return.
@@ -139,9 +140,10 @@ public interface MReportUtilsRemote extends Poolable
      *
      * Documentation as provided by the author of the MATLAB function:
      * <pre>
-     * % @see 
-     * https://it.mathworks.com/help/rptgen/ug/mlreportgen.report.report-class.html?searchHighlight=mlreportgen.report&s_tid=doc_srchtitle#mw_63820826-78dc-459b-a646-67d4d77f91e5 
-     * )
+     * %% Check if this is running as a Matlab code or as deployed executable via Matlab 
+     * Runtime Compiler
+     * % https://it.mathworks.com/help/rptgen/ug/compile-a-report-program.html
+     * % If compiling, make the DOM compilable
      * </pre>
      *
      * @param rhs The inputs to the MATLAB function.
@@ -169,9 +171,10 @@ public interface MReportUtilsRemote extends Poolable
      *
      * Documentation as provided by the author of the MATLAB function:
      * <pre>
-     * % @see 
-     * https://it.mathworks.com/help/rptgen/ug/mlreportgen.report.report-class.html?searchHighlight=mlreportgen.report&s_tid=doc_srchtitle#mw_63820826-78dc-459b-a646-67d4d77f91e5 
-     * )
+     * %% Check if this is running as a Matlab code or as deployed executable via Matlab 
+     * Runtime Compiler
+     * % https://it.mathworks.com/help/rptgen/ug/compile-a-report-program.html
+     * % If compiling, make the DOM compilable
      * </pre>
      *
      * @param rhs The inputs to the MATLAB function.
@@ -199,9 +202,10 @@ public interface MReportUtilsRemote extends Poolable
      *
      * Documentation as provided by the author of the MATLAB function:
      * <pre>
-     * % @see 
-     * https://it.mathworks.com/help/rptgen/ug/mlreportgen.report.report-class.html?searchHighlight=mlreportgen.report&s_tid=doc_srchtitle#mw_63820826-78dc-459b-a646-67d4d77f91e5 
-     * )
+     * %% Check if this is running as a Matlab code or as deployed executable via Matlab 
+     * Runtime Compiler
+     * % https://it.mathworks.com/help/rptgen/ug/compile-a-report-program.html
+     * % If compiling, make the DOM compilable
      * </pre>
      *
      * @param nargout Number of outputs to return.
@@ -230,9 +234,10 @@ public interface MReportUtilsRemote extends Poolable
      *
      * Documentation as provided by the author of the MATLAB function:
      * <pre>
-     * % @see 
-     * https://it.mathworks.com/help/rptgen/ug/mlreportgen.report.report-class.html?searchHighlight=mlreportgen.report&s_tid=doc_srchtitle#mw_63820826-78dc-459b-a646-67d4d77f91e5 
-     * )
+     * %% Check if this is running as a Matlab code or as deployed executable via Matlab 
+     * Runtime Compiler
+     * % https://it.mathworks.com/help/rptgen/ug/compile-a-report-program.html
+     * % If compiling, make the DOM compilable
      * </pre>
      *
      * @param nargout Number of outputs to return.
@@ -261,9 +266,10 @@ public interface MReportUtilsRemote extends Poolable
      *
      * Documentation as provided by the author of the MATLAB function:
      * <pre>
-     * % @see 
-     * https://it.mathworks.com/help/rptgen/ug/mlreportgen.report.report-class.html?searchHighlight=mlreportgen.report&s_tid=doc_srchtitle#mw_63820826-78dc-459b-a646-67d4d77f91e5 
-     * )
+     * %% Check if this is running as a Matlab code or as deployed executable via Matlab 
+     * Runtime Compiler
+     * % https://it.mathworks.com/help/rptgen/ug/compile-a-report-program.html
+     * % If compiling, make the DOM compilable
      * </pre>
      *
      * @param rhs The inputs to the MATLAB function.
