@@ -47,8 +47,6 @@
 			method_landing_gears=""
 		/>
 
-		<point_mass_simulation file="analysis_mission_simulation_CLIMB-TURN.xml"/>
-
 		<!--
 		<aerodynamic_and_stability
 			plot="FALSE"
@@ -77,6 +75,10 @@
 			noise_trajectories="FALSE"
 			mission_profile="FALSE"
 		/>
+
+		<point_mass_simulation file="analysis_mission_simulation_CLIMB-TURN.xml"/>
+
+
 		<!--
 		<costs 
 			file="analysis_costs_ATR72.xml"

@@ -1580,39 +1580,39 @@ public class ACPerformanceManager {
 							);
 				//...............................................................
 				// OSWALD CRUISE
-				List<String> oswladCruiseProperty = reader.getXMLPropertiesByPath("//oswald_cruise");
-				if(!oswladCruiseProperty.isEmpty())
-					for(int i=0; i<oswladCruiseProperty.size(); i++)
+				List<String> oswaldCruiseProperty = reader.getXMLPropertiesByPath("//oswald_cruise");
+				if(!oswaldCruiseProperty.isEmpty())
+					for(int i=0; i<oswaldCruiseProperty.size(); i++)
 						oswaldCruise.put(
 							centerOfGravityList.get(i),
-							Double.valueOf(oswladCruiseProperty.get(i))
+							Double.valueOf(oswaldCruiseProperty.get(i))
 							);
 				//...............................................................
 				// OSWALD CLIMB
-				List<String> oswladClimbProperty = reader.getXMLPropertiesByPath("//oswald_climb");
-				if(!oswladClimbProperty.isEmpty())
-					for(int i=0; i<oswladClimbProperty.size(); i++)
+				List<String> oswaldClimbProperty = reader.getXMLPropertiesByPath("//oswald_climb");
+				if(!oswaldClimbProperty.isEmpty())
+					for(int i=0; i<oswaldClimbProperty.size(); i++)
 						oswaldClimb.put(
 							centerOfGravityList.get(i),
-							Double.valueOf(oswladClimbProperty.get(i))
+							Double.valueOf(oswaldClimbProperty.get(i))
 							);
 				//...............................................................
 				// OSWALD TO
-				List<String> oswladTOProperty = reader.getXMLPropertiesByPath("//oswald_take_off");
-				if(!oswladTOProperty.isEmpty())
-					for(int i=0; i<oswladTOProperty.size(); i++)
+				List<String> oswaldTOProperty = reader.getXMLPropertiesByPath("//oswald_take_off");
+				if(!oswaldTOProperty.isEmpty())
+					for(int i=0; i<oswaldTOProperty.size(); i++)
 						oswaldTakeOff.put(
 							centerOfGravityList.get(i),
-							Double.valueOf(oswladTOProperty.get(i))
+							Double.valueOf(oswaldTOProperty.get(i))
 							);
 				//...............................................................
 				// OSWALD LND
-				List<String> oswladLNDProperty = reader.getXMLPropertiesByPath("//oswald_landing");
-				if(!oswladLNDProperty.isEmpty())
-					for(int i=0; i<oswladLNDProperty.size(); i++)
+				List<String> oswaldLNDProperty = reader.getXMLPropertiesByPath("//oswald_landing");
+				if(!oswaldLNDProperty.isEmpty())
+					for(int i=0; i<oswaldLNDProperty.size(); i++)
 						oswaldLanding.put(
 							centerOfGravityList.get(i),
-							Double.valueOf(oswladLNDProperty.get(i))
+							Double.valueOf(oswaldLNDProperty.get(i))
 							);
 					
 				int numberOfPolarPoints = 50;
