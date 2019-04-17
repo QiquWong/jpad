@@ -16,6 +16,7 @@ import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
 import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
+import standaloneutils.aircraft.AircraftAndComponentsViewPlotUtils;
 import writers.JPADStaticWriteUtils;
 
 public final class AircraftUtils {
@@ -146,6 +147,34 @@ public static Aircraft importAircraft(String[] args) {
 			String aircraftFolder = JPADStaticWriteUtils.createNewFolder(folderPath + aircraft.getId() + File.separator);
 			String subfolderPath = JPADStaticWriteUtils.createNewFolder(aircraftFolder);
 
+			String subfolderViewPath = JPADStaticWriteUtils.createNewFolder(aircraftFolder + "VIEWS" + File.separator);
+			String subfolderViewComponentsPath = JPADStaticWriteUtils.createNewFolder(subfolderViewPath + "COMPONENTS");
+			if(aircraft != null) {
+				AircraftAndComponentsViewPlotUtils.createAircraftTopView(aircraft, subfolderViewPath);
+				AircraftAndComponentsViewPlotUtils.createAircraftSideView(aircraft, subfolderViewPath);
+				AircraftAndComponentsViewPlotUtils.createAircraftFrontView(aircraft, subfolderViewPath);
+			}
+			if(aircraft.getFuselage() != null) {
+				AircraftAndComponentsViewPlotUtils.createFuselageTopView(aircraft, subfolderViewComponentsPath);
+				AircraftAndComponentsViewPlotUtils.createFuselageSideView(aircraft, subfolderViewComponentsPath);
+				AircraftAndComponentsViewPlotUtils.createFuselageFrontView(aircraft, subfolderViewComponentsPath);
+			}
+			if(aircraft.getWing() != null) {
+				AircraftAndComponentsViewPlotUtils.createWingPlanformView(aircraft, subfolderViewComponentsPath);
+				AircraftAndComponentsViewPlotUtils.createEquivalentWingView(aircraft, subfolderViewComponentsPath);
+			}
+			if(aircraft.getHTail() != null)
+				AircraftAndComponentsViewPlotUtils.createHTailPlanformView(aircraft, subfolderViewComponentsPath);
+			if(aircraft.getVTail() != null)
+				AircraftAndComponentsViewPlotUtils.createVTailPlanformView(aircraft, subfolderViewComponentsPath);
+			if(aircraft.getCanard() != null)
+				AircraftAndComponentsViewPlotUtils.createCanardPlanformView(aircraft, subfolderViewComponentsPath);
+			if(aircraft.getNacelles() != null) {
+				AircraftAndComponentsViewPlotUtils.createNacelleTopView(aircraft, subfolderViewComponentsPath);
+				AircraftAndComponentsViewPlotUtils.createNacelleSideView(aircraft, subfolderViewComponentsPath);
+				AircraftAndComponentsViewPlotUtils.createNacelleFrontView(aircraft, subfolderViewComponentsPath);
+			}
+			
 			////////////////////////////////////////////////////////////////////////
 			// Defining the operating conditions ...
 //			System.setOut(originalOut);

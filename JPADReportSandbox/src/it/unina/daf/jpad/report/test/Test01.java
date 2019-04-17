@@ -23,13 +23,6 @@ public class Test01 {
 		// ----------------------
 		Aircraft aircraft = AircraftUtils.importAircraft(args);
 		
-		Fuselage fuselage = aircraft.getFuselage();
-		LiftingSurface wing = aircraft.getWing();
-		LiftingSurface hTail = aircraft.getHTail();
-		LiftingSurface vTail = aircraft.getVTail();
-		
-		String pathToMatlabWorkingDirectory = CmdLineUtils.va.getMatlabWorkingDirectory().getAbsolutePath();
-		
 		try {
 			System.out.println("------------------ JPADReport :: START -----------------");
 			// JPADReportUtils.makeReport02a(aircraft, pathToMatlabWorkingDirectory);
