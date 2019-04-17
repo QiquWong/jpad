@@ -11,10 +11,19 @@ makeFigure(chapt,'_figures/Airbus_A320_prova.jpg','Airbus A320');
 makeParagraph(chapt,['The first member of the A320 family was launched in March 1984,'...
                      'first flew on 22 February 1987, and was first delivered in' ...
                      'March 1988 to launch customer Air France']);
-header={'Geometrical parameters','value','dimension'};
-Spec = {'Length', 37.57, 'm'; 'wingspan',34.1,'m';...
-        'Fus_Diameter',3.95,'m'; 'Freccia',25,'deg';...
-        'S wing',122.6,'m^2'};
+header={'Geometrical parameters','value'};
+% Spec = {'Length', 37.57, 'm'; 'wingspan',34.1,'m';...
+%         'Fus_Diameter',3.95,'m'; 'Freccia',25,'deg';...
+%         'S wing',122.6,'m^2'};
+Spec = struct();
+Spec(1).Name = "Length ";
+Spec(1).Value = "37.57 m ";
+Spec(2).Name = "WingSpan ";
+Spec(2).Value= "34.1 m ";
+Spec(3).Name = "Wing Area ";
+Spec(3).Value = "122.6 m^2";
+
+
 makeTable(chapt,Spec,header,'Specification');
 closeChapter(rpt,chapt);%to close the chapter 
 

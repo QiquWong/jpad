@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.ezdeploy" plugin-version="1.0">
-  <configuration build-checksum="1391960991" file="C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADReport\matlab\dev\MReportUtils.prj" location="C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADReport\matlab\dev" name="MReportUtils" preferred-package-location="C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADReport\matlab\dev\MReportUtils\for_redistribution" preferred-package-type="package.type.exe" target="target.ezdeploy.library" target-name="Library Compiler">
+  <configuration build-checksum="1391960991" file="C:\Users\Prince\Tesi\jpad\JPADReport\matlab\dev\MReportUtils.prj" location="C:\Users\Prince\Tesi\jpad\JPADReport\matlab\dev" name="MReportUtils" preferred-package-location="C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADReport\matlab\dev\MReportUtils\for_redistribution" preferred-package-type="package.type.exe" target="target.ezdeploy.library" target-name="Library Compiler">
     <param.appname>MReportUtils</param.appname>
     <param.icon />
     <param.icons />
@@ -45,7 +45,7 @@
     <param.net.tsa.namespace />
     <param.net.tsa.superclass>MReportUtils</param.net.tsa.superclass>
     <param.net.tsa.metadata />
-    <param.net.tsa.metadata.assembly>C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADReport\matlab\dev</param.net.tsa.metadata.assembly>
+    <param.net.tsa.metadata.assembly>C:\Users\Prince\Tesi\jpad\JPADReport\matlab\dev</param.net.tsa.metadata.assembly>
     <param.net.saved.interface />
     <param.cpp.api>option.cpp.all</param.cpp.api>
     <unset>
@@ -126,8 +126,8 @@
     </fileset.examples>
     <fileset.documentation />
     <build-deliverables>
-      <file location="${PROJECT_ROOT}\MReportUtils\for_testing" name="MReportUtils.jar" optional="false">C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADReport\matlab\dev\MReportUtils\for_testing\MReportUtils.jar</file>
-      <file location="${PROJECT_ROOT}\MReportUtils\for_testing" name="doc" optional="false">C:\Users\DeMarco-PC\JPAD_PROJECT\jpad\JPADReport\matlab\dev\MReportUtils\for_testing\doc</file>
+      <file location="${PROJECT_ROOT}\MReportUtils\for_testing" name="doc" optional="false">C:\Users\Prince\Tesi\jpad\JPADReport\matlab\dev\MReportUtils\for_testing\doc</file>
+      <file location="${PROJECT_ROOT}\MReportUtils\for_testing" name="MReportUtils.jar" optional="false">C:\Users\Prince\Tesi\jpad\JPADReport\matlab\dev\MReportUtils\for_testing\MReportUtils.jar</file>
     </build-deliverables>
     <workflow />
     <matlab>

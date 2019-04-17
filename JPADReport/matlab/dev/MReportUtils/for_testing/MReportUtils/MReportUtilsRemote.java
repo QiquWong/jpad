@@ -1,8 +1,8 @@
 /*
  * MATLAB Compiler: 7.0.1 (R2019a)
- * Date: Thu Apr 11 11:35:45 2019
+ * Date: Tue Apr 16 15:33:02 2019
  * Arguments: 
- * "-B""macro_default""-v""-K""-W""java:MReportUtils,MReportUtils""-T""link:lib""-d""C:\\Users\\DeMarco-PC\\JPAD_PROJECT\\jpad\\JPADReport\\matlab\\dev\\MReportUtils\\for_testing""class{MReportUtils:C:\\Users\\DeMarco-PC\\JPAD_PROJECT\\jpad\\JPADReport\\matlab\\dev\\closeChapter.m,C:\\Users\\DeMarco-PC\\JPAD_PROJECT\\jpad\\JPADReport\\matlab\\dev\\closeReport.m,C:\\Users\\DeMarco-PC\\JPAD_PROJECT\\jpad\\JPADReport\\matlab\\dev\\makeChapter.m,C:\\Users\\DeMarco-PC\\JPAD_PROJECT\\jpad\\JPADReport\\matlab\\dev\\makeFigure.m,C:\\Users\\DeMarco-PC\\JPAD_PROJECT\\jpad\\JPADReport\\matlab\\dev\\makeParagraph.m,C:\\Users\\DeMarco-PC\\JPAD_PROJECT\\jpad\\JPADReport\\matlab\\dev\\makeReport.m,C:\\Users\\DeMarco-PC\\JPAD_PROJECT\\jpad\\JPADReport\\matlab\\dev\\makeSection.m,C:\\Users\\DeMarco-PC\\JPAD_PROJECT\\jpad\\JPADReport\\matlab\\dev\\makeTable.m}""-a""C:\\Users\\DeMarco-PC\\JPAD_PROJECT\\jpad\\JPADReport\\matlab\\dev\\DAF_template.pdftx"
+ * "-B""macro_default""-v""-K""-W""java:MReportUtils,MReportUtils""-T""link:lib""-d""C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\MReportUtils\\for_testing""class{MReportUtils:C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\closeChapter.m,C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\closeReport.m,C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\makeChapter.m,C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\makeFigure.m,C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\makeParagraph.m,C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\makeReport.m,C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\makeSection.m,C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\makeTable.m}""-a""C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\DAF_template.pdftx"
  */
 
 package MReportUtils;
@@ -16,14 +16,14 @@ import java.rmi.RemoteException;
  * The <code>MReportUtilsRemote</code> class provides a Java RMI-compliant interface to 
  * MATLAB functions. The interface is compiled from the following files:
  * <pre>
- *  C:\\Users\\DeMarco-PC\\JPAD_PROJECT\\jpad\\JPADReport\\matlab\\dev\\closeChapter.m
- *  C:\\Users\\DeMarco-PC\\JPAD_PROJECT\\jpad\\JPADReport\\matlab\\dev\\closeReport.m
- *  C:\\Users\\DeMarco-PC\\JPAD_PROJECT\\jpad\\JPADReport\\matlab\\dev\\makeChapter.m
- *  C:\\Users\\DeMarco-PC\\JPAD_PROJECT\\jpad\\JPADReport\\matlab\\dev\\makeFigure.m
- *  C:\\Users\\DeMarco-PC\\JPAD_PROJECT\\jpad\\JPADReport\\matlab\\dev\\makeParagraph.m
- *  C:\\Users\\DeMarco-PC\\JPAD_PROJECT\\jpad\\JPADReport\\matlab\\dev\\makeReport.m
- *  C:\\Users\\DeMarco-PC\\JPAD_PROJECT\\jpad\\JPADReport\\matlab\\dev\\makeSection.m
- *  C:\\Users\\DeMarco-PC\\JPAD_PROJECT\\jpad\\JPADReport\\matlab\\dev\\makeTable.m
+ *  C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\closeChapter.m
+ *  C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\closeReport.m
+ *  C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\makeChapter.m
+ *  C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\makeFigure.m
+ *  C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\makeParagraph.m
+ *  C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\makeReport.m
+ *  C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\makeSection.m
+ *  C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\makeTable.m
  * </pre>
  * The {@link #dispose} method <b>must</b> be called on a <code>MReportUtilsRemote</code> 
  * instance when it is no longer needed to ensure that native resources allocated by this 
@@ -240,7 +240,6 @@ public interface MReportUtilsRemote extends Poolable
      * % If compiling, make the DOM compilable
      * </pre>
      *
-     * @param nargout Number of outputs to return.
      * @param rhs The inputs to the MATLAB function.
      *
      * @return Array of length nargout containing the function outputs. Outputs are 
@@ -250,7 +249,7 @@ public interface MReportUtilsRemote extends Poolable
      * @throws java.rmi.RemoteException An error has occurred during the function call or 
      * in communication with the server.
      */
-    public Object[] makeSection(int nargout, Object... rhs) throws RemoteException;
+    public Object[] makeSection(Object... rhs) throws RemoteException;
     /**
      * Provides the standard interface for calling the <code>makeTable</code> MATLAB 
      * function with 4 input arguments.  

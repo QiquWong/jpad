@@ -9,7 +9,6 @@
 <mapAttribute key="org.eclipse.debug.core.environmentVariables">
 <mapEntry key="Path" value="${build_files}${JPAD_ROOT}\libraries\hdf;${MATLAB_RUNTIME_ROOT}\bin\win64"/>
 </mapAttribute>
-<stringAttribute key="org.eclipse.debug.ui.ATTR_CAPTURE_IN_FILE" value="${JPAD_ROOT}\JPADSandBox_v2\out\DynamicAnalysis_IRON_CANARD_SCITECH.log"/>
 <stringAttribute key="org.eclipse.debug.ui.ATTR_CONSOLE_ENCODING" value="ISO-8859-1"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="it.unina.daf.jpad.report.test.Test01"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-mwd ${JPAD_ROOT}/JPADReport/matlab/dev&#13;&#10;-i ${JPAD_ROOT}/JPADSandBox_v2/in/Template_Aircraft/aircraft_IRON_CANARD_LOOP2_FINAL.xml &#13;&#10;-ia ${JPAD_ROOT}/JPADSandBox_v2/in/Template_Analyses/analysis_IRON_CANARD_LOOP2_FINAL.xml &#13;&#10;-ioc ${JPAD_ROOT}/JPADSandBox_v2/in/Template_Analyses/operating_conditions_IRON_CANARD_LOOP2_FINAL.xml &#13;&#10;-db ${JPAD_ROOT}/JPADSandBox_v2/data &#13;&#10;-da ${JPAD_ROOT}/JPADSandBox_v2/in/Template_Aircraft/lifting_surfaces/airfoils &#13;&#10;-df ${JPAD_ROOT}/JPADSandBox_v2/in/Template_Aircraft/fuselages &#13;&#10;-dls ${JPAD_ROOT}/JPADSandBox_v2/in/Template_Aircraft/lifting_surfaces &#13;&#10;-de ${JPAD_ROOT}/JPADSandBox_v2/in/Template_Aircraft/engines &#13;&#10;-dn ${JPAD_ROOT}/JPADSandBox_v2/in/Template_Aircraft/nacelles &#13;&#10;-dlg ${JPAD_ROOT}/JPADSandBox_v2/in/Template_Aircraft/landing_gears&#13;&#10;-dcc ${JPAD_ROOT}/JPADSandBox_v2/in/Template_Aircraft/cabin_configurations"/>

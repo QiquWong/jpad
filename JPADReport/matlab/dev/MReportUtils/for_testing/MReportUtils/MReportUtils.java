@@ -1,8 +1,8 @@
 /*
  * MATLAB Compiler: 7.0.1 (R2019a)
- * Date: Thu Apr 11 11:35:45 2019
+ * Date: Tue Apr 16 15:33:02 2019
  * Arguments: 
- * "-B""macro_default""-v""-K""-W""java:MReportUtils,MReportUtils""-T""link:lib""-d""C:\\Users\\DeMarco-PC\\JPAD_PROJECT\\jpad\\JPADReport\\matlab\\dev\\MReportUtils\\for_testing""class{MReportUtils:C:\\Users\\DeMarco-PC\\JPAD_PROJECT\\jpad\\JPADReport\\matlab\\dev\\closeChapter.m,C:\\Users\\DeMarco-PC\\JPAD_PROJECT\\jpad\\JPADReport\\matlab\\dev\\closeReport.m,C:\\Users\\DeMarco-PC\\JPAD_PROJECT\\jpad\\JPADReport\\matlab\\dev\\makeChapter.m,C:\\Users\\DeMarco-PC\\JPAD_PROJECT\\jpad\\JPADReport\\matlab\\dev\\makeFigure.m,C:\\Users\\DeMarco-PC\\JPAD_PROJECT\\jpad\\JPADReport\\matlab\\dev\\makeParagraph.m,C:\\Users\\DeMarco-PC\\JPAD_PROJECT\\jpad\\JPADReport\\matlab\\dev\\makeReport.m,C:\\Users\\DeMarco-PC\\JPAD_PROJECT\\jpad\\JPADReport\\matlab\\dev\\makeSection.m,C:\\Users\\DeMarco-PC\\JPAD_PROJECT\\jpad\\JPADReport\\matlab\\dev\\makeTable.m}""-a""C:\\Users\\DeMarco-PC\\JPAD_PROJECT\\jpad\\JPADReport\\matlab\\dev\\DAF_template.pdftx"
+ * "-B""macro_default""-v""-K""-W""java:MReportUtils,MReportUtils""-T""link:lib""-d""C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\MReportUtils\\for_testing""class{MReportUtils:C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\closeChapter.m,C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\closeReport.m,C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\makeChapter.m,C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\makeFigure.m,C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\makeParagraph.m,C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\makeReport.m,C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\makeSection.m,C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\makeTable.m}""-a""C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\DAF_template.pdftx"
  */
 
 package MReportUtils;
@@ -15,14 +15,14 @@ import java.util.*;
  * The <code>MReportUtils</code> class provides a Java interface to MATLAB functions. 
  * The interface is compiled from the following files:
  * <pre>
- *  C:\\Users\\DeMarco-PC\\JPAD_PROJECT\\jpad\\JPADReport\\matlab\\dev\\closeChapter.m
- *  C:\\Users\\DeMarco-PC\\JPAD_PROJECT\\jpad\\JPADReport\\matlab\\dev\\closeReport.m
- *  C:\\Users\\DeMarco-PC\\JPAD_PROJECT\\jpad\\JPADReport\\matlab\\dev\\makeChapter.m
- *  C:\\Users\\DeMarco-PC\\JPAD_PROJECT\\jpad\\JPADReport\\matlab\\dev\\makeFigure.m
- *  C:\\Users\\DeMarco-PC\\JPAD_PROJECT\\jpad\\JPADReport\\matlab\\dev\\makeParagraph.m
- *  C:\\Users\\DeMarco-PC\\JPAD_PROJECT\\jpad\\JPADReport\\matlab\\dev\\makeReport.m
- *  C:\\Users\\DeMarco-PC\\JPAD_PROJECT\\jpad\\JPADReport\\matlab\\dev\\makeSection.m
- *  C:\\Users\\DeMarco-PC\\JPAD_PROJECT\\jpad\\JPADReport\\matlab\\dev\\makeTable.m
+ *  C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\closeChapter.m
+ *  C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\closeReport.m
+ *  C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\makeChapter.m
+ *  C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\makeFigure.m
+ *  C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\makeParagraph.m
+ *  C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\makeReport.m
+ *  C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\makeSection.m
+ *  C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\makeTable.m
  * </pre>
  * The {@link #dispose} method <b>must</b> be called on a <code>MReportUtils</code> 
  * instance when it is no longer needed to ensure that native resources allocated by this 
@@ -97,7 +97,7 @@ public class MReportUtils extends MWComponentInstance<MReportUtils>
      * Maintains information used in calling the <code>makeSection</code> MATLAB function.
      */
     private static final MWFunctionSignature sMakeSectionSignature =
-        new MWFunctionSignature(/* max outputs = */ 1,
+        new MWFunctionSignature(/* max outputs = */ 0,
                                 /* has varargout = */ false,
                                 /* function name = */ "makeSection",
                                 /* max inputs = */ 2,
@@ -824,7 +824,6 @@ public class MReportUtils extends MWComponentInstance<MReportUtils>
      * % https://it.mathworks.com/help/rptgen/ug/compile-a-report-program.html
      * % If compiling, make the DOM compilable
      * </pre>
-     * @param nargout Number of outputs to return.
      * @param rhs The inputs to the MATLAB function.
      * @return Array of length nargout containing the function outputs. Outputs
      * are returned as sub-classes of
@@ -832,9 +831,9 @@ public class MReportUtils extends MWComponentInstance<MReportUtils>
      * should be freed by calling its <code>dispose()</code> method.
      * @throws MWException An error has occurred during the function call.
      */
-    public Object[] makeSection(int nargout, Object... rhs) throws MWException
+    public Object[] makeSection(Object... rhs) throws MWException
     {
-        Object[] lhs = new Object[nargout];
+        Object[] lhs = new Object[0];
         fMCR.invoke(Arrays.asList(lhs), 
                     MWMCR.getRhsCompat(rhs, sMakeSectionSignature), 
                     sMakeSectionSignature);

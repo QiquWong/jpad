@@ -1,4 +1,4 @@
-function [ch]= makeSection(ch,sec_title)
+function []= makeSection(ch,sec_title)
 
 %% Check if this is running as a Matlab code or as deployed executable via Matlab Runtime Compiler
 % https://it.mathworks.com/help/rptgen/ug/compile-a-report-program.html
