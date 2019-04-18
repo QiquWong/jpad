@@ -1,6 +1,8 @@
 package it.unina.daf.jpad.report.test;
 
+import java.util.List;
 import java.io.File;
+import java.util.ArrayList;
 
 import com.mathworks.toolbox.javabuilder.MWArray;
 
@@ -21,7 +23,7 @@ public class Test01 {
 		// ----------------------
 		// Import the aircraft
 		// ----------------------
-		Aircraft aircraft = AircraftUtils.importAircraft(args);
+		//Aircraft aircraft = AircraftUtils.importAircraft(args);
 		
 		try {
 			System.out.println("------------------ JPADReport :: START -----------------");
@@ -61,6 +63,29 @@ public class Test01 {
 					
 			JPADReportUtils.addParagraph(chapter, sb1.toString());
 			
+		
+			List<String> head = new ArrayList<String>();
+		
+			
+			
+			List<ArrayList<String>> data = new ArrayList<ArrayList<String>>();
+			ArrayList<String> l1 = new ArrayList<String>();
+			ArrayList<String> l2 = new ArrayList<String>();
+			
+			l1.add(new String("wingSpan"));
+			l1.add(new String("25"));
+			l2.add(new String("wingArea"));
+			l2.add(new String("180.0"));
+			data.add(l1);
+			data.add(l2);
+			
+			
+			
+			head.add("Geometrical Parameters");
+			head.add("value");
+			
+			
+			JPADReportUtils.addTable(chapter, data, head, "Specifications");
 			
 			JPADReportUtils.closeChapter(report,chapter);
 			

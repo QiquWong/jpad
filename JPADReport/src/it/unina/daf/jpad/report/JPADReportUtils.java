@@ -391,4 +391,43 @@ public class JPADReportUtils {
 			 text);
 	}
 	
-}
+	
+	public static void addTable (
+			MWArray chapter,
+			List<ArrayList<String>> data, 
+			List<String> head,
+			String tableTitle) throws MWException {
+		
+		List<MWArray> lhsTbl = new ArrayList<>(); 
+		List<MWArray> rhsTbl = new ArrayList<>();
+		
+	
+		int columns = data.get(0).size();
+		int rows = data.size();
+		
+		int[] dimT = {rows,columns} , dimH = {1,columns}; 
+		
+		MWCellArray Header = new MWCellArray(dimH);
+		MWCellArray Table = new MWCellArray(dimT);
+		
+		//set the header
+		for(int k=0;k<columns;k++) {
+			int[] dik = {1,k+1};
+			Header.set(dik, head.get(k));
+		}
+		
+		for(int i=0;i<rows;i++)
+			for(int j=0; j<columns; j++ ) {
+				int[] dij = {i+1,j+1};
+				
+				Table.set(dij, data.get(i).get(j));
+				}
+		
+        rhsTbl.add(chapter);
+        rhsTbl.add(Table);
+        rhsTbl.add(Header);
+        rhsTbl.add(new MWCharArray(tableTitle));
+        
+        reportFactory.makeTable(lhsTbl, rhsTbl);
+        
+}}

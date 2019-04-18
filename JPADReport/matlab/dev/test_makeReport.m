@@ -12,16 +12,16 @@ makeParagraph(chapt,['The first member of the A320 family was launched in March 
                      'first flew on 22 February 1987, and was first delivered in' ...
                      'March 1988 to launch customer Air France']);
 header={'Geometrical parameters','value'};
-% Spec = {'Length', 37.57, 'm'; 'wingspan',34.1,'m';...
-%         'Fus_Diameter',3.95,'m'; 'Freccia',25,'deg';...
-%         'S wing',122.6,'m^2'};
-Spec = struct();
-Spec(1).Name = "Length ";
-Spec(1).Value = "37.57 m ";
-Spec(2).Name = "WingSpan ";
-Spec(2).Value= "34.1 m ";
-Spec(3).Name = "Wing Area ";
-Spec(3).Value = "122.6 m^2";
+Spec = {'Length', 37.57, 'm'; 'wingspan',34.1,'m';...
+        'Fus_Diameter',3.95,'m'; 'Freccia',25,'deg';...
+        'S wing',122.6,'m^2'};
+% Spec = struct();
+% Spec(1).Name = "Length ";
+% Spec(1).Value = "37.57 m ";
+% Spec(2).Name = "WingSpan ";
+% Spec(2).Value= "34.1 m ";
+% Spec(3).Name = "Wing Area ";
+% Spec(3).Value = "122.6 m^2";
 
 
 makeTable(chapt,Spec,header,'Specification');
@@ -29,11 +29,11 @@ closeChapter(rpt,chapt);%to close the chapter
 
  %% CHAPTER 2 
 [chapt2]= makeChapter('Developments');
-[chapt2]= makeSection(chapt2,'Origins');
+ makeSection(chapt2,'Origins');
 makeParagraph(chapt2,['When Airbus designed the Airbus A300 during the late 1960s'...
                       'it envisaged a broad family of airliners with which to compete'...
                       'against Boeing and Douglas, two established US aerospace manufacturers.']);
-[chapt2]= makeSection(chapt2,'Design effort'); 
+makeSection(chapt2,'Design effort'); 
 makeFigure(chapt2,'_figures/Airbus_A320_design_effort.jpg','Airbus A320_Design effort');
 makeParagraph(chapt2,['In june 1977 was set up a new Joint European Transport JET programme.'...
                       'It was based at the British Aerospace site in Weybridge,Surrey,UK.']);
