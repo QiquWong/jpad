@@ -1,6 +1,6 @@
 /*
  * MATLAB Compiler: 7.0.1 (R2019a)
- * Date: Tue Apr 16 15:33:02 2019
+ * Date: Fri Apr 19 11:02:57 2019
  * Arguments: 
  * "-B""macro_default""-v""-K""-W""java:MReportUtils,MReportUtils""-T""link:lib""-d""C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\MReportUtils\\for_testing""class{MReportUtils:C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\closeChapter.m,C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\closeReport.m,C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\makeChapter.m,C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\makeFigure.m,C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\makeParagraph.m,C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\makeReport.m,C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\makeSection.m,C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\makeTable.m}""-a""C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\DAF_template.pdftx"
  */
@@ -16,7 +16,7 @@ import com.mathworks.toolbox.javabuilder.internal.*;
 public class MReportUtilsMCRFactory
 {
     /** Component's uuid */
-    private static final String sComponentId = "MReportUtils_69711B94C6C429214FC5DF5C6BAD4C9D";
+    private static final String sComponentId = "MReportUtils_29393B0FB9F90381B2CCEBE485EE02F3";
     
     /** Component name */
     private static final String sComponentName = "MReportUtils";

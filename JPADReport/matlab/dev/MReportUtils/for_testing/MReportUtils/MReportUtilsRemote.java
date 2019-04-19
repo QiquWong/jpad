@@ -1,6 +1,6 @@
 /*
  * MATLAB Compiler: 7.0.1 (R2019a)
- * Date: Tue Apr 16 15:33:02 2019
+ * Date: Fri Apr 19 11:02:57 2019
  * Arguments: 
  * "-B""macro_default""-v""-K""-W""java:MReportUtils,MReportUtils""-T""link:lib""-d""C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\MReportUtils\\for_testing""class{MReportUtils:C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\closeChapter.m,C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\closeReport.m,C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\makeChapter.m,C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\makeFigure.m,C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\makeParagraph.m,C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\makeReport.m,C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\makeSection.m,C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\makeTable.m}""-a""C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\DAF_template.pdftx"
  */
@@ -95,7 +95,7 @@ public interface MReportUtilsRemote extends Poolable
     public Object[] closeReport(Object... rhs) throws RemoteException;
     /**
      * Provides the standard interface for calling the <code>makeChapter</code> MATLAB 
-     * function with 1 input argument.  
+     * function with 2 input arguments.  
      *
      * Input arguments to standard interface methods may be passed as sub-classes of 
      * <code>com.mathworks.toolbox.javabuilder.MWArray</code>, or as arrays of any 
@@ -221,7 +221,7 @@ public interface MReportUtilsRemote extends Poolable
     public Object[] makeReport(int nargout, Object... rhs) throws RemoteException;
     /**
      * Provides the standard interface for calling the <code>makeSection</code> MATLAB 
-     * function with 2 input arguments.  
+     * function with 3 input arguments.  
      *
      * Input arguments to standard interface methods may be passed as sub-classes of 
      * <code>com.mathworks.toolbox.javabuilder.MWArray</code>, or as arrays of any 

@@ -317,16 +317,19 @@ public class JPADReportUtils {
 		
 	}
 
-	public static MWArray openChapter( String chapterTitle) throws MWException {
+	public static MWArray openChapter( 
+			String chapterTitle,
+			File templateFile
+			) throws MWException {
 		
 		initializeReportFactory();
 		
 		List<MWArray> lhsCh = new ArrayList<>(); // this remains empty, means 0 output
 	    List<MWArray> rhsCh = new ArrayList<>();
 	
-	    // add chapter title
+	    // add chapter title and template file 
 	    rhsCh.add(new MWCharArray(chapterTitle));
-	 
+	    rhsCh.add(new MWCharArray(templateFile.getAbsolutePath()));
 	    // return object
 	    lhsCh.add(new MWStructArray());
 	    
@@ -347,15 +350,17 @@ public class JPADReportUtils {
 	
 	public static void addSection(
 			MWArray chapter ,
-			String sectionTitle) throws MWException {
+			String sectionTitle,
+			File templateFile
+			) throws MWException {
 		
 		initializeReportFactory();
 		List<MWArray> lhsSec = new ArrayList<>(); //this remains empty, means 0 output
 		List<MWArray> rhsSec = new ArrayList<>();
     	// add section title title
 		rhsSec.add(chapter);
-	    rhsSec.add(new MWCharArray(sectionTitle));
-
+	    rhsSec.add(new MWCharArray(sectionTitle)); 
+	    rhsSec.add(new MWCharArray(templateFile.getAbsolutePath()));
 	    reportFactory.makeSection(lhsSec,rhsSec);
 		
 	}

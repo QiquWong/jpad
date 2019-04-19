@@ -1,4 +1,4 @@
-function []= makeSection(ch,sec_title)
+function []= makeSection(ch,sec_title,template_name)
 
 %% Check if this is running as a Matlab code or as deployed executable via Matlab Runtime Compiler
 % https://it.mathworks.com/help/rptgen/ug/compile-a-report-program.html
@@ -15,7 +15,7 @@ import mlreportgen.dom.*     % import document object model DOM API (DOM related
  % @see https://it.mathworks.com/help/search.html?qdoc=mlreportgen.dom&submitsearch=)
 
 %%
-sec = Section('TemplateSrc','DAF_template','TemplateName','Section'); 
+sec = Section('TemplateSrc',template_name,'TemplateName','Section'); 
 sec.Title = sec_title;
 add(ch,sec)
 end

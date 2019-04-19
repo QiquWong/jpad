@@ -33,15 +33,16 @@ public class Test01 {
 			MWArray report = JPADReportUtils.openReport(
 					"Airbus A320", 
 					"pdf", 
-					new File("C:/Users/Prince/Desktop/fabrizio/DAF_template"), 
+					new File("C:/Users/Prince/Tesi/jpad/JPADReportSandbox/DAF_template"), 
 					"en", 
 					"WikiPage: Airbus_A320", 
-					new File("C:/Users/Prince/Desktop/fabrizio/Airbus_A320_prova.jpg"), 
+					new File("C:/Users/Prince/Tesi/jpad/JPADReportSandbox/_figures/Airbus_A320_prova.jpg"), 
 					"UNINA",
 					"Prince94"
 					);
 			
-			MWArray chapter = JPADReportUtils.openChapter("Airbus A320 family");
+			MWArray chapter = JPADReportUtils.openChapter("Airbus A320 family",
+					new File("C:/Users/Prince/Tesi/jpad/JPADReportSandbox/DAF_template"));
 			
 			StringBuilder sb = new StringBuilder();
 			sb
@@ -54,7 +55,8 @@ public class Test01 {
 			File imageFile = new File("C:/Users/Prince/Desktop/fabrizio/Airbus_A320_prova.jpg");
 			JPADReportUtils.addFigure(chapter, imageFile, "Airbus A320");
 			
-			JPADReportUtils.addSection(chapter, "Origins");
+			JPADReportUtils.addSection(chapter, "Origins",
+					new File("C:/Users/Prince/Tesi/jpad/JPADReportSandbox/DAF_template"));
 			
 			StringBuilder sb1 = new StringBuilder();
 			sb1

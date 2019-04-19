@@ -1,4 +1,4 @@
-function [ch] = makeChapter(chap_title)
+function [ch] = makeChapter(chap_title,template_name)
 
 %% Check if this is running as a Matlab code or as deployed executable via Matlab Runtime Compiler
 % https://it.mathworks.com/help/rptgen/ug/compile-a-report-program.html
@@ -15,7 +15,7 @@ import mlreportgen.dom.*     % import document object model DOM API (DOM related
                              % @see https://it.mathworks.com/help/search.html?qdoc=mlreportgen.dom&submitsearch=)                                     
                       
 %%
-ch = Chapter('TemplateSrc','DAF_template','TemplateName','Section'); 
+ch = Chapter('TemplateSrc',template_name,'TemplateName','Section'); 
 ch.Title = chap_title;
 
 

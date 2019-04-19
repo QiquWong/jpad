@@ -1,6 +1,6 @@
 /*
  * MATLAB Compiler: 7.0.1 (R2019a)
- * Date: Tue Apr 16 15:33:02 2019
+ * Date: Fri Apr 19 11:02:57 2019
  * Arguments: 
  * "-B""macro_default""-v""-K""-W""java:MReportUtils,MReportUtils""-T""link:lib""-d""C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\MReportUtils\\for_testing""class{MReportUtils:C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\closeChapter.m,C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\closeReport.m,C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\makeChapter.m,C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\makeFigure.m,C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\makeParagraph.m,C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\makeReport.m,C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\makeSection.m,C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\makeTable.m}""-a""C:\\Users\\Prince\\Tesi\\jpad\\JPADReport\\matlab\\dev\\DAF_template.pdftx"
  */
@@ -63,7 +63,7 @@ public class MReportUtils extends MWComponentInstance<MReportUtils>
         new MWFunctionSignature(/* max outputs = */ 1,
                                 /* has varargout = */ false,
                                 /* function name = */ "makeChapter",
-                                /* max inputs = */ 1,
+                                /* max inputs = */ 2,
                                 /* has varargin = */ false);
     /**
      * Maintains information used in calling the <code>makeFigure</code> MATLAB function.
@@ -100,7 +100,7 @@ public class MReportUtils extends MWComponentInstance<MReportUtils>
         new MWFunctionSignature(/* max outputs = */ 0,
                                 /* has varargout = */ false,
                                 /* function name = */ "makeSection",
-                                /* max inputs = */ 2,
+                                /* max inputs = */ 3,
                                 /* has varargin = */ false);
     /**
      * Maintains information used in calling the <code>makeTable</code> MATLAB function.
@@ -427,7 +427,7 @@ public class MReportUtils extends MWComponentInstance<MReportUtils>
 
     /**
      * Provides the standard interface for calling the <code>makeChapter</code> MATLAB function with 
-     * 1 input argument.
+     * 2 comma-separated input arguments.
      * Input arguments may be passed as sub-classes of
      * <code>com.mathworks.toolbox.javabuilder.MWArray</code>, or as arrays of
      * any supported Java type. Arguments passed as Java types are converted to
@@ -809,7 +809,7 @@ public class MReportUtils extends MWComponentInstance<MReportUtils>
 
     /**
      * Provides the standard interface for calling the <code>makeSection</code> MATLAB function with 
-     * 2 comma-separated input arguments.
+     * 3 comma-separated input arguments.
      * Input arguments may be passed as sub-classes of
      * <code>com.mathworks.toolbox.javabuilder.MWArray</code>, or as arrays of
      * any supported Java type. Arguments passed as Java types are converted to
